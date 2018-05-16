@@ -1,0 +1,100 @@
+/* HOME PAGE STYLES */
+
+.main-content {
+  background-color: #E8EBF1;
+}
+
+
+/* page-header */
+.page-header {
+  text-align: center;
+  padding: 95px 0 213px 0;
+  background: url(../images/banners/home-banner.jpg) no-repeat center center;
+  .background-size(cover);
+}
+.page-header-descr {
+  font-size: 16px;
+  line-height: 19px;
+  color: @white-txt-blur;
+  margin-top: 10px;
+}
+.page-header-btn {
+  margin-top: 30px;
+}
+
+
+/* page-main */
+.page-main {
+  background-color: #E8EBF1;
+  padding: 20px 0;
+}
+
+.main-cards-blocks {
+  background-color: #FFFFFF;
+  .box-shadow(0 3px 20px 0 rgba(13,37,62,0.1));
+  padding: 20px 10px;
+  .justify-content(space-between);
+  position: relative;
+  margin-top: -140px;
+
+  .card-block {
+    display: block;
+    width: 270px;
+    .border-radiuses(0, 0, 2px, 2px);
+    background-color: #FFFFFF;
+    border-top: 2px solid #E8EBF1;
+    text-align: center;
+    padding: 0 15px 5px 15px;
+    margin: 30px 10px;
+    .transition(all .2s ease-in-out);
+    min-height: 130px;
+    cursor: pointer;
+
+    .cards-block-info {
+      display: block;
+    }
+
+    .cards-block-icon {
+      display: inline-block;
+      vertical-align: top;
+      background-color: #fff;
+      width: 59px;
+      position: relative;
+      margin-top: -12.5px;
+      height: 25px;
+    }
+
+    .cards-block-icon-svg {
+      margin: 0 auto;
+    }
+    .cards-block-icon-svg,
+    .cards-block-icon-svg-use {
+      width: 32px;
+      height: 32px;
+    }
+    .cards-block-icon-svg-use {
+      fill: #BDC4D4;
+      .transition(all .2s ease-in-out);
+    }
+
+    .cards-block-title {
+      margin-top: 13px;
+    }
+    .cards-block-descr {
+      font-size: 14px;
+      line-height: 24px;
+      color: @main-color-light;
+      margin-top: 5px;
+    }
+
+    &:hover {
+      .box-shadow2(0 1px 4px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.04));
+      border-top-color: #0288D1;
+      .transform(translate(0, -10px));
+
+      .cards-block-icon-svg-use {
+        fill: #0288D1;
+      }
+    }
+  }
+}

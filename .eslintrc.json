@@ -1,0 +1,21 @@
+{
+	"env": {
+		"browser": true,
+		"es6": true
+	},
+	"globals": {
+		"webix": true,
+		"APPNAME": true,
+		"VERSION": true,
+		"PRODUCTION": true,
+		"$$": true
+	},
+	"extends": "./node_modules/eslint-xbsoftware/1__double_quotes_and_tabs/.eslintrc",
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"rules": {
+		"no-extra-parens": "warn",
+		"valid-jsdoc": "warn"
+	}
+}

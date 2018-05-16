@@ -1,0 +1,66 @@
+<div class="inner-page-content">
+	<p><span class="main-subtitle3">Thank you for visiting the ISIC Archive API! </span>
+		<span class="main-subtitle4">A summary of how to accomplish the most common tasks is provided here:</span>
+	</p>
+	<br>
+
+	<div>
+		<span class="main-subtitle4">Retrieving a List of Images</span>
+		<p>
+			Use the /image endpoint
+		</p>
+		<br>
+	</div>
+	<div>
+		<span class="main-subtitle4">Retrieving a List of Current Studies</span>
+		<p>Use the /study endpoint</p>
+		<br>
+	</div>
+	<div>
+		<span class="main-subtitle4">Retrieving Image Metadata</span>
+		<p>Use the /image/{id} endpoint, with the “_id” value from the data provided by the /image endpoint. Data can be
+			returned for only one image at a time.</p>
+		<br>
+	</div>
+
+	<div>
+		<span class="main-subtitle4">Download an Image</span>
+		<p>Use the /image/{id}/download endpoint, with the “_id” value from the data provided by the /image endpoint.
+			Data
+			can
+			be returned for only one image at a time.</p>
+		<br>
+	</div>
+	<div>
+		<span class="main-subtitle4">Download Image Superpixel Data</span>
+		<p>Use the /image/{id}/superpixels endpoint, with the “_id” value from the data provided by the /image endpoint.
+			Data
+			can be returned for only one image at a time.</p>
+		<br>
+	</div>
+	<div>
+		<span class="main-subtitle4">Download a Segmentation Mask</span>
+		<p>Use the /segmentation endpoint, with the “_id” value from the data provided by the /image endpoint. In the
+			data
+			returned, retrieve the “_id” value for the desired segmentation mask, and use that value with the
+			/segmentation/{id}/mask endpoint. Data can be returned for only one mask at a time.</p>
+		<br>
+	</div>
+
+	<div>
+		<span class="main-subtitle4">Download an Annotation Mask</span>
+		<p>Use the /study endpoint to get a list of studies. For the desired study, use the “_id” variable with the
+			/annotation
+			endpoint to get a list of annotations for that given study. From the list of annotations, select the “_id”
+			(annotationId) variable of the desired annotation and use the /annotation/{annotationId} endpoint to get a
+			list
+			of
+			annotated features for that annotation. You can then use the annotationId and the feature name with the
+			/annotation/{annotationId}/{featureId}/mask endpoint to download an annotation mask. Data can be returned
+			for
+			only
+			one mask at a time.</p>
+		<br>
+	</div>
+
+</div>
