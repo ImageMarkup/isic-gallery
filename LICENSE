@@ -1,0 +1,10 @@
+License for ISIC-archive frontend code, based on Webix GPLv3.
+
+ISIC-archive.com frontend code has GNU General Public License version 3 (GPLv3) as it is based on Webix GPLv3. Details,
+please, see here: https://webix.com/legalnote/developer-license-agreement/
+
+GNU General Public License version 3 (GPLv3) is for open source projects. It means that if you release any program that
+uses Webix to the public in some way, the GPL requires you to make the modified source code available to the program's users.
+Please, note, that you can not develop a program under GPLv3 and later convert to a commercial license.
+
+The full text of GPLv3 License and a quick guide can be seen by the link: https://www.gnu.org/licenses/gpl-3.0.en.html
