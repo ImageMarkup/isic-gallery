@@ -70,6 +70,7 @@ export default {
 	URL_API: `${process.env.ISIC_SITE_URL}api/v1`,
 	URL_ANNOTATIONS_TOOL: `${process.env.ISIC_SITE_URL}#tasks/annotate/`,
 	URL_ANNOTATIONS_TOOL_SEGMENT: `${process.env.ISIC_SITE_URL}/markup/segment#/`,
+	URL_BATCH_UPLOAD: `${process.env.ISIC_SITE_URL}#dataset/upload/batch`,
 	URL_CHALLENGE_2016: "http://challenge2016.isic-archive.com",
 	URL_CHALLENGE_2017: "http://challenge2017.isic-archive.com",
 	URL_CHALLENGE_2018: "http://challenge2018.isic-archive.com/",
