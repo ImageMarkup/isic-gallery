@@ -1,8 +1,6 @@
 ISIC App
 ===================
 
-- Set ```baseApiUrl``` and ```isicSiteUrl``` in ```appconfig.json```.
-Example: ```https://stage.isic-archive.com/api/v1/``` and ```https://stage.isic-archive.com/```
 - ```npm install```
 
 ### How to run for development

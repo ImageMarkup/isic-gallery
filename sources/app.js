@@ -30,6 +30,7 @@ import Literature from "./views/subviews/about/subviews/literature";
 import WorkingGroups from "./views/subviews/about/subviews/workingGroups";
 import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
 import ChallengesVIew from "./views/subviews/challenges/challenges";
+import ErrorPage from "./views/subviews/errorPage";
 
 webix.ready(() => {
 	const app = new JetApp({
@@ -37,6 +38,7 @@ webix.ready(() => {
 		version: VERSION,
 		start: constants.PATH_MAIN,
 		views: {
+			error: ErrorPage,
 			main: MainView,
 			wideContentTop: WideContentTop,
 			tightContentTop: TightContentTop,
@@ -68,8 +70,8 @@ webix.ready(() => {
 
 	app.render();
 
-	app.attachEvent("app:error:resolve", (name, error) => {
-		auth.showMainPage();
+	app.attachEvent("app:error:resolve", (err, url) => {
+		webix.delay(() => app.show("error"));
 	});
 
 	state.app = app;
