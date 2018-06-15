@@ -1,6 +1,4 @@
 {
-	"isicSiteUrl": "https://isic-archive.com/",
-	"baseApiUrl": "https://stage.isic-archive.com/api/v1/",
 	"devHost": "display.isic-archive.com",
 	"devPort": 80
 }

@@ -2,7 +2,7 @@ import authService from "../services/auth";
 import axios from "../../node_modules/axios/dist/axios.min";
 import appconfig from "../../appconfig.json";
 
-const BASE_API_URL = appconfig.baseApiUrl;
+const BASE_API_URL = process.env.ISIC_BASE_API_URL;
 
 function parseError(xhr) {
 	let message;
