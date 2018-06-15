@@ -81,7 +81,7 @@ module.exports = function (env) {
 			]),
 			new webpack.EnvironmentPlugin({
 				ISIC_SITE_URL: "https://isic-archive.com/",
-				ISIC_BASE_API_URL: "https://stage.isic-archive.com/api/v1/",
+				ISIC_BASE_API_URL: "https://isic-archive.com/api/v1/",
 			})
 		],
 		devServer: {
