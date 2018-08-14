@@ -54,7 +54,8 @@ export default class DatasetView extends JetView {
 								hidden: !isNeedShowButton,
 								on: {
 									onItemClick() {
-										const url = `${constants.URL_ISIC_SITE}#dataset/${item._id}/metadata/register`;
+										//const url = `${constants.URL_ISIC_SITE}#dataset/${item._id}/metadata/register`;
+										const url = `${constants.URL_API}/redirects/registerMetadata?datasetId=${item._id}`;
 										util.openInNewTab(url);
 									}
 								}
@@ -68,7 +69,8 @@ export default class DatasetView extends JetView {
 								hidden: !isNeedShowButton,
 								on: {
 									onItemClick() {
-										const url = `${constants.URL_ISIC_SITE}#dataset/${item._id}/metadata/apply`;
+										//const url = `${constants.URL_ISIC_SITE}#dataset/${item._id}/metadata/apply`;
+										const url = `${constants.URL_API}/redirects/applyMetadata?datasetId=${item._id}`;
 										util.openInNewTab(url);
 									}
 								}
