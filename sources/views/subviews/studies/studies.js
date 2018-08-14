@@ -129,6 +129,7 @@ export default class StudiesView extends JetView {
 							StudiesService.getFirstAnnotationId(item)
 								.then((annotationId) => {
 									if (annotationId) {
+										console.log(study._id);
 										util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${study._id}`);
 									}
 									else {
