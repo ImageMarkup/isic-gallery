@@ -90,7 +90,7 @@ export default class DashboardView extends JetView {
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
-											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
+											//util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
 										}
 										else {
 											webix.message({
