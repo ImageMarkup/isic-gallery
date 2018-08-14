@@ -126,13 +126,14 @@ export default class StudiesView extends JetView {
 							const dataview = $$(DATAVIEW_ID);
 							const itemId = dataview.locate(e);
 							const item = dataview.getItem(itemId);
+							console.log('dataview', dataview);
+							console.log('itemId', itemId);
+							console.log('item', item);
+							//util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${study._id}`);
 							StudiesService.getFirstAnnotationId(item)
 								.then((annotationId) => {
 									if (annotationId) {
-										console.log('dataview', dataview);
-										console.log('itemId', itemId);
-										console.log('item', item);
-										util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${study._id}`);
+										//util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
 									}
 									else {
 										webix.message({
