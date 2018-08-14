@@ -85,6 +85,8 @@ export default class DashboardView extends JetView {
 						on: {
 							onItemClick(id) {
 								const currentStudy = this.getItem(id);
+								console.log('currentStudy', currentStudy);
+								util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${currentStudy._id}`);
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
