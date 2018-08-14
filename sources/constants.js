@@ -46,7 +46,7 @@ export default {
 	PATH_ABOUT_HISTORY: "/topWithHeader/tightContentTop/about/history",
 	PATH_ABOUT_ISIC_ARCHIVE: "/topWithHeader/tightContentTop/about/isicArchive",
 	PATH_ABOUT_ISIC_STANDARDS: "/topWithHeader/tightContentTop/about/isicStandards",
-	PATH_ABOUT_LITERATURE: "/topWithHeader/tightContentTop/about/literature",
+	PATH_ABOUT_LITERATURE: "https://isic-archive.com/api/v1/redirects/literature", //"/topWithHeader/tightContentTop/about/literature",
 	PATH_ABOUT_WORKING_GROUPS: "/topWithHeader/tightContentTop/about/workingGroups",
 	PATH_MAIN: "/topWithHeader/wideContentTop/main",
 	PATH_STUDIES: "/topWithHeader/tightDarkContentTop/studies",
