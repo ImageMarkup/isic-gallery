@@ -13,7 +13,7 @@
     "webix",
     "jet"
   ],
-  "license": "MIT",
+  "license": "GPLv3",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
