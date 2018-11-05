@@ -33,6 +33,7 @@ export default class Header extends JetView {
 			borderless: true,
 			data: [
 				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
+				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
 				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
 				{id: constants.ID_HEADER_MENU_CHALLENGES, value: "Challenges"},
 				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
@@ -49,9 +50,11 @@ export default class Header extends JetView {
 				onBeforeRender() {
 					if (authService.isLoggedin()) {
 						this.showItem("dashboard");
+						this.showItem("forum");
 					}
 					else {
 						this.hideItem("dashboard");
+						this.hideItem("forum");
 					}
 				},
 				onMenuItemClick(id) {
@@ -59,6 +62,11 @@ export default class Header extends JetView {
 						case constants.ID_HEADER_MENU_ABOUT:
 						{
 							menuHandlerService.clickAbout();
+							break;
+						}
+						case constants.ID_HEADER_MENU_FORUM:
+						{
+							menuHandlerService.clickForum();
 							break;
 						}
 						case constants.ID_HEADER_MENU_GALLERY:

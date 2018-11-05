@@ -1,0 +1,115 @@
+import {JetView} from "webix-jet";
+import ajax from "../../../../services/ajaxActions";
+import "../../../components/activeList";
+
+export default class AnnotatorsView extends JetView {
+	config() {
+		const searchField = {
+			view: "combo",
+			css: "select-field",
+			placeholder: "Search for annotators",
+			width: 327,
+			options: {
+				keyPressTimeout: 300,
+				body: {
+					scheme: {
+						$init(obj) {
+							if (obj._modelType === "user") {
+								obj.name = `${obj.lastName} ${obj.firstName} (${obj.login})`;
+							}
+						}
+					},
+					template(obj) {
+						if (obj._modelType === "user") {
+							return `<span class="webix_icon fa-user"></span> ${obj.name}`;
+						}
+						return `<span class="webix_icon fa-users"></span> ${obj.name}`;
+					},
+					on: {
+						onAfterSelect: (id) => {
+							let selectedUser = this.searchUser.getList().getItem(id);
+							this.annotatorsList.parse({
+								data: selectedUser
+							});
+							this.annotatorsList.callEvent("onAfterUserUpdated");
+						}
+					},
+					dataFeed(text) {
+						const params = {
+							q: text,
+							mode: "prefix",
+							types: ["user"]
+						};
+						ajax.search(params).then((data) => {
+							this.clearAll();
+							if (data.user && data.user.length) {
+								this.parse(data.user);
+								this.sort("name");
+							}
+						});
+					}
+				}
+			}
+		};
+
+		const activeUserList = {
+			view: "activeList",
+			css: "feature-set-list",
+			activeContent: {
+				deleteButton: {
+					view: "button",
+					type: "icon",
+					css: "delete-icon-button",
+					icon: "times",
+					width: 25,
+					height: 25,
+					click: (id) => {
+						const deleteButton = $$(id);
+						let listItemId = deleteButton.config.$masterId;
+						this.annotatorsList.remove(listItemId);
+						this.annotatorsList.callEvent("onAfterUserUpdated");
+					}
+				}
+			},
+			template: (obj, common) => `<div>
+						<div class='active-list-delete-button'>${common.deleteButton(obj, common)}</div>
+ 						<div class='active-list-name'>${obj.firstName} ${obj.lastName} (${obj.login})</div>
+					</div>`
+		};
+
+		return {
+        	width: 349,
+			name: "studyAnnotatorsClass",
+			rows: [
+				{
+					css: "annonators-search-layout",
+					cols: [
+						{width: 10},
+						{
+							rows: [
+								{height: 10},
+								searchField,
+								{height: 10}
+							]
+						},
+						{width: 10}
+					]
+				},
+				activeUserList
+			]
+		};
+	}
+
+	init() {
+    	this.searchUser = this.getSearchUserView();
+    	this.annotatorsList = this.getAnnotatorsList();
+	}
+
+	getSearchUserView() {
+    	return this.getRoot().queryView({view: "combo"});
+	}
+
+	getAnnotatorsList() {
+    	return this.getRoot().queryView({view: "activeList"});
+	}
+}

@@ -3,13 +3,15 @@ import util from "../../utils/util";
 import storage from "../../models/wizardUploaderStorage";
 
 class WizzardUploaderService {
-	constructor(view, form, uploader, removeButton, exportButton, clearSessionButton) {
+	constructor(view, form, uploader, removeButton, exportButton, clearSessionButton, previewTemplate, dropArea) {
 		this._view = view;
 		this._form = form;
 		this._uploader = uploader;
 		this._removeButton = removeButton;
 		this._exportButton = exportButton;
 		this._clearSessionButton = clearSessionButton;
+		this._previewTemplate = previewTemplate;
+		this._dropArea = dropArea;
 		this._init();
 	}
 
@@ -46,6 +48,7 @@ class WizzardUploaderService {
 						self._clearForm();
 						self._removeButton.disable();
 						self._exportButton.disable();
+						self._dropArea.show(false, false);
 					}
 				}
 			});
@@ -69,6 +72,9 @@ class WizzardUploaderService {
 		this._uploader.attachEvent("onAfterFileAdd", () => {
 			const fileData = this._uploader.files.getItem(this._uploader.files.getFirstId());
 			this._form.elements.filename.setValue(fileData.name);
+			const url = URL.createObjectURL(fileData.file);
+			this._previewTemplate.setValues({src: url});
+			this._previewTemplate.show(false, false);
 			this._removeButton.enable();
 		});
 
@@ -159,6 +165,7 @@ class WizzardUploaderService {
 		this._form.elements.filename.setValue("");
 		this._uploader.files.clearAll(); // remove all files from uploader
 		this._removeButton.disable();
+		this._dropArea.show(false, false);
 	}
 
 	_initFormRestrictions() {

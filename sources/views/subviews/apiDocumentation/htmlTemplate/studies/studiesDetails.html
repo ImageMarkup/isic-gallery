@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="page-wrapper">
+    <div class="content">
+        <h2 id="get-details-for-study">Get Details for Study</h2>
+        <ul>
+            <li>Endpoints used:
+                <ul>
+                    <li><a href="https://isic-archive.com/api/v1/study">https://isic-archive.com/api/v1/study</a></li>
+                    <li><a href="https://isic-archive.com/api/v1/study/%7Bstudy_id%7D">https://isic-archive.com/api/v1/study/{study_id}</a></li>
+                </ul>
+            </li>
+        </ul>
+        <p><strong>Arguments used for the /study/{study_id} endpoint:</strong></p>
+        <table>
+            <thead>
+            <tr>
+                <th>Argument</th>
+                <th>Description</th>
+                <th>Example Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>study_id*</td>
+                <td>The '_id' field of records returned from the /study endpoint</td>
+                <td>573f11119fc3c132505c0ee7 (default: empty)</td>
+            </tr>
+            <tr>
+                <td>format</td>
+                <td>Desired format for data output, can be 'json' or 'csv'</td>
+                <td>json (default: json)</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>[ * denotes that argument is mandatory]</p>
+        <p>Notes:</p>
+        <ul>
+            <li>This endpoint returns the study ID, date created, study description (if available), and list of images. The list of images included in a study is usually the data of interest from this endpoint</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

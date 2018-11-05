@@ -1,8 +1,19 @@
-import {JetView} from "webix-jet";
-
+import constants from "../../constants";
+import util from "../../utils/util";
 /*
  config: closed = true/false, type = left/right
  */
+
+function changeDataviewItemDimensions(collapsedView) {
+	if (collapsedView.config.id === "gallery-left-panel") {
+		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
+		let dataviewSelectionId = util.getDataviewSelectionId();
+		if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
+			galleryRichselect.callEvent("onChange", [dataviewSelectionId])
+		}
+	}
+}
+
 function getConfig(collapsedViewId, config) {
 	const BTN_CLOSED_STATE_ID = `collapser-btn-closed-${webix.uid()}`;
 	const BTN_OPENED_STATE_ID = `collapser-btn-opened-${webix.uid()}`;
@@ -25,6 +36,7 @@ function getConfig(collapsedViewId, config) {
 						this.hide();
 						$$(BTN_CLOSED_STATE_ID).show();
 						webix.ui.resize();
+						changeDataviewItemDimensions(collapsedView);
 					}
 				}
 			},
@@ -43,6 +55,7 @@ function getConfig(collapsedViewId, config) {
 						this.hide();
 						$$(BTN_OPENED_STATE_ID).show();
 						webix.ui.resize();
+						changeDataviewItemDimensions(collapsedView);
 					}
 				}
 			}

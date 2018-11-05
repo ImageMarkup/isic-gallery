@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="code-samples">
+    <pre class="highlight tab tab-python"><code><span class="hljs-comment"># Initialize the API; no login is necessary for public data</span>
+    api = ISICApi(username=<span class="hljs-string">'ISIC'</span>, password=<span class="hljs-string">'ARCHIVE'</span>)
+    outputFileName = <span class="hljs-string">'imagedata'</span>
+
+    imageList = api.getJson(<span class="hljs-string">'image?limit=100&amp;offset=0&amp;sort=name'</span>)
+
+    print(<span class="hljs-string">'Fetching metadata for %s images'</span> % len(imageList))
+    imageDetails = []
+    <span class="hljs-keyword">for</span> image <span class="hljs-keyword">in</span> imageList:
+        print(<span class="hljs-string">' '</span>, image[<span class="hljs-string">'name'</span>])
+        <span class="hljs-comment"># Fetch the full image details</span>
+        imageDetail = api.getJson(<span class="hljs-string">'image/%s'</span> % image[<span class="hljs-string">'_id'</span>])
+        imageDetails.append(imageDetail)
+
+    <span class="hljs-comment"># Determine the union of all image metadata fields</span>
+    metadataFields = set(
+        field
+        <span class="hljs-keyword">for</span> imageDetail <span class="hljs-keyword">in</span> imageDetails
+        <span class="hljs-keyword">for</span> field <span class="hljs-keyword">in</span> imageDetail[<span class="hljs-string">'meta'</span>][<span class="hljs-string">'clinical'</span>].viewkeys()
+    )
+    metadataFields = [<span class="hljs-string">'isic_id'</span>] + sorted(metadataFields)
+
+    <span class="hljs-comment"># Write the metadata to a CSV</span>
+    print(<span class="hljs-string">'Writing metadata to CSV: %s'</span> % outputFileName+<span class="hljs-string">'.csv'</span>)
+    <span class="hljs-keyword">with</span> open(outputFilePath+<span class="hljs-string">'.csv'</span>, <span class="hljs-string">'wb'</span>) <span class="hljs-keyword">as</span> outputStream:
+        csvWriter = csv.DictWriter(outputStream, metadataFields)
+        csvWriter.writeheader()
+        <span class="hljs-keyword">for</span> imageDetail <span class="hljs-keyword">in</span> imageDetails:
+            rowDict = imageDetail[<span class="hljs-string">'meta'</span>][<span class="hljs-string">'clinical'</span>].copy()
+            rowDict[<span class="hljs-string">'isic_id'</span>] = imageDetail[<span class="hljs-string">'name'</span>]
+            csvWriter.writerow(rowDict)
+</code></pre>
+</div>
+</body>
+</html>

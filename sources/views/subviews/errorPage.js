@@ -1,6 +1,6 @@
 import {JetView} from "webix-jet";
 
-export default class ErrorPage extends JetView {
+export default class ErrorView extends JetView {
 	config() {
 		let template = {
 			view: "template",

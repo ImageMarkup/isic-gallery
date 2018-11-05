@@ -2,7 +2,7 @@ import authService from "../services/auth";
 import axios from "../../node_modules/axios/dist/axios.min";
 import appconfig from "../../appconfig.json";
 
-const BASE_API_URL = process.env.ISIC_BASE_API_URL;
+const BASE_API_URL = appconfig.baseApiUrl;
 
 function parseError(xhr) {
 	let message;
@@ -21,7 +21,7 @@ function parseError(xhr) {
 			}
 			catch (e) {
 				message = xhr.response;
-				console.log("Not JSON response for request to " + xhr.responseURL);
+				console.log(`Not JSON response for request to ${xhr.responseURL}`);
 			}
 			webix.message({type: "error", text: message, expire: -1});
 			break;
@@ -71,14 +71,14 @@ class AjaxActions {
 		}
 		return webix.ajax()
 			.headers({
-				"Authorization": `Basic ${hash}`
+				Authorization: `Basic ${hash}`
 			})
-			.get(`${BASE_API_URL}/user/authentication`)
+			.get(`${BASE_API_URL}user/authentication`)
 			.then(result => this._parseData(result));
 	}
 
 	logout() {
-		return webix.ajax().del(`${BASE_API_URL}/user/authentication`)
+		return webix.ajax().del(`${BASE_API_URL}user/authentication`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -89,8 +89,27 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
+	postUserTermsOfUse(acceptTerms) {
+		return this._ajax().post(`${BASE_API_URL}user/acceptTerms`, acceptTerms)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	getUsers(userParams) {
+		const params = userParams ? {
+			limit: userParams.limit || 26,
+			offset: userParams.offset || 0,
+			sort: userParams.sort || "lastName",
+			sortdir: userParams.sortdir || "1"
+		} : {};
+
+		return this._ajaxGet(`${BASE_API_URL}user`, params)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
 	getStudy(id) {
-		return this._ajaxGet(`${BASE_API_URL}/study/${id}`)
+		return this._ajaxGet(`${BASE_API_URL}study/${id}`)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
@@ -119,15 +138,16 @@ class AjaxActions {
 			limit: sourceParams.limit || 0,
 			offset: sourceParams.offset || 0,
 			sort: sourceParams.sort || "_id",
-			sortdir: sourceParams.sortdir || "-1"
+			sortdir: sourceParams.sortdir || "-1",
+			detail: sourceParams.detail || false
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/dataset`, params)
+		return this._ajaxGet(`${BASE_API_URL}dataset`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getDatasetItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/dataset/${id}`)
+		return this._ajaxGet(`${BASE_API_URL}dataset/${id}`)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
@@ -139,13 +159,13 @@ class AjaxActions {
 			sort: sourceParams.sort || "name",
 			sortdir: sourceParams.sortdir || "1"
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/featureset`, params)
+		return this._ajaxGet(`${BASE_API_URL}featureset`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getFeaturesetItem(id) {
-		return webix.ajax().get(`${BASE_API_URL}/featureset/${id}`)
+		return webix.ajax().get(`${BASE_API_URL}featureset/${id}`)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
@@ -167,18 +187,18 @@ class AjaxActions {
 		if (sourceParams && sourceParams.filter) {
 			params.filter = sourceParams.filter;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/image`, params)
+		return this._ajaxGet(`${BASE_API_URL}image`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getImageItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/image/${id}`)
+		return this._ajaxGet(`${BASE_API_URL}image/${id}`)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
-	/*getResource(name) {
+	/* getResource(name) {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1"; // TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const url = `${BASE_API_URL}/resource/search?mode=prefix&types=%5B%22item%22%5D&q=${name}`;
 		return this._ajaxGet(url)
@@ -225,13 +245,13 @@ class AjaxActions {
 			sortdir: sourceParams.sortdir || "-1",
 			imageId: sourceParams.imageId
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/segmentation`, params)
+		return this._ajaxGet(`${BASE_API_URL}segmentation`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getSegmentationItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/segmentation/${id}`)
+		return this._ajaxGet(`${BASE_API_URL}segmentation/${id}`)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
@@ -241,7 +261,7 @@ class AjaxActions {
 		if (filter) {
 			params.filter = filter;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/image/histogram`, params)
+		return this._ajaxGet(`${BASE_API_URL}image/histogram`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
@@ -259,13 +279,13 @@ class AjaxActions {
 		if (sourceParams && sourceParams.state) {
 			params.state = sourceParams.state;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/annotation`, params)
+		return this._ajaxGet(`${BASE_API_URL}annotation`, params)
 			.fail(this._parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getSegmentationMask(id) {
-		return webix.ajax().response("blob").get(`${BASE_API_URL}/segmentation/${id}/mask`)
+		return webix.ajax().response("blob").get(`${BASE_API_URL}segmentation/${id}/mask`)
 			.fail(this._parseError);
 	}
 
@@ -342,7 +362,7 @@ class AjaxActions {
 			return;
 		}
 		const params = {
-			"new": sourceParams.new,
+			new: sourceParams.new,
 			old: sourceParams.old
 		};
 		return webix.ajax().put(`${BASE_API_URL}user/password`, params)
@@ -436,6 +456,23 @@ class AjaxActions {
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
+	// batchUpload zip (dataset)
+	// addZipMetadata(zipId, sourceParams) {
+	// 	debugger
+	// 	if (!(sourceParams && imageId)) {
+	// 		return;
+	// 	}
+	// 	const params = {
+	// 		id: imageId,
+	// 		metadata: sourceParams.metadata
+	// 	};
+	// 	if (sourceParams.validityPeriod) {
+	// 		params.save = sourceParams.save;
+	// 	}
+	// 	return webix.ajax().post(`${BASE_API_URL}image/${imageId}/metadata`, params)
+	// 		.fail(parseError)
+	// 		.then(result => this._parseData(result));
+	// }
 
 	participateStudy(studyId) {
 		if (!studyId) {
@@ -450,7 +487,7 @@ class AjaxActions {
 		if (!(sourceParams && datasetId)) {
 			return;
 		}
-		/*const reader = new FileReader();
+		/* const reader = new FileReader();
 		reader.readAsBinaryString(file);
 		return webix.ajax()
 			.headers({
@@ -509,6 +546,123 @@ class AjaxActions {
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
+
+	postImageMetadata(imageId, metadata) {
+		let params = {
+			save: "true",
+			metadata
+		};
+		if (metadata.sex) {
+
+				params.age_approx = metadata.age_approx,
+				params.benign_malignant = metadata.benign_malignant,
+				params.diagnosis = metadata.diagnosis,
+				params.diagnosis_confirm_type = metadata.diagnosis_confirm_type,
+				params.melanocytic = metadata.melanocytic,
+				params.sex = metadata.sex
+
+		} else if (metadata.pixelsX) {
+			params = {
+				//save: metadata ? "true" : "false",
+				image_type: metadata.image_type,
+				pixelsX: metadata.pixelsX,
+				pixelsY: metadata.pixelsY
+			};
+
+		} else if (metadata.site) {
+			params = {
+				//save: metadata ? "true" : "false",
+				id1: metadata.id1,
+				localization: metadata.localization,
+				diagnosis: metadata.diagnosis,
+				site: metadata.site
+			};
+		}
+
+		return webix.ajax().post(`${BASE_API_URL}/image/${imageId}/metadata`, params)
+		.fail(parseError)
+		.then(result => this._parseData(result));
+	}
+
+	getAllImages(sourceParams, annotatedImages) {
+		const params = sourceParams ? {
+			limit: sourceParams.limit || 0,
+			sort: sourceParams.sort || "name",
+			detail: sourceParams.detail || "true"
+		} : {};
+
+		if (sourceParams && sourceParams.filter) {
+			params.filter = sourceParams.filter;
+		}
+
+		return this._ajax().get(`${BASE_API_URL}image`, params)
+			.fail(parseError)
+			.then(result => {
+				if (annotatedImages) {
+					return {
+						allImages: this._parseData(result),
+						annotatedImages:  annotatedImages
+					}
+				} else {
+					return this._parseData(result);
+				}
+			});
+	}
+
+	createNewStudy(studyParams) {
+		const newStudyParams = studyParams ? {
+			name: studyParams.name,
+			userIds: studyParams.userIds,
+			imageIds: studyParams.imageIds,
+			questions: studyParams.questions,
+			features: studyParams.features
+		} : {};
+		return this._ajax().header({
+			"Content-Type": "application/json"
+		}).post(`${BASE_API_URL}study`, newStudyParams)
+	}
+
+	getDatasetMetadata(id) {
+		return this._ajaxGet(`${BASE_API_URL}dataset/${id}/metadata`)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postDatasetMetadata(datasetId, fileId, sourceParams) {
+		const params = {
+			save: sourceParams && sourceParams.save ? "true" : "false"
+		};
+		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/metadata/${fileId}/apply`, params)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postRegisterMetadata(datasetId, filename, binary) {
+		return webix.ajax().headers({
+			"Content-Type": "text/csv"
+		}).post(`${BASE_API_URL}dataset/${datasetId}/metadata?filename=${filename}`, binary)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postBatchUpload(datasetId, signature) {
+		return webix.ajax().headers({
+			"Content-Type": "application/json"
+		}).post(`${BASE_API_URL}dataset/${datasetId}/zip`, signature)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
+	finalizePostBatchUpload(datasetId, batchId) {
+		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
+			.fail(this._parseError)
+			.then(result => this._parseData(result));
+	}
+
+	getUrlForDownloadRegisteredMetadata(datasetId, metadataFileId) {
+		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${authService.getToken()}`
+	}
+
 }
 
 const instance = new AjaxActions();
