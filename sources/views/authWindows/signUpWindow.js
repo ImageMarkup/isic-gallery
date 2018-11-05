@@ -12,10 +12,7 @@ const signupForm = {
 		email: webix.rules.isEmail,
 		firstName: webix.rules.isNotEmpty,
 		lastName: webix.rules.isNotEmpty,
-		password(value) {
-			const vals = this.getValues();
-			return validationRules.validatePassword(value, vals.firstName, vals.lastName, vals.email, vals.login);
-		},
+		password: webix.rules.isNotEmpty,
 		confirmPassword(value) {
 			const password = this.getValues().password;
 			return password === value;

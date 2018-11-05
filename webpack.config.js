@@ -79,10 +79,12 @@ module.exports = function (env) {
 				{from: path.join(__dirname, "sources/images"), to: "sources/images"},
 				{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"}
 			]),
+
 			new webpack.EnvironmentPlugin({
 				ISIC_SITE_URL: "https://isic-archive.com/",
-				ISIC_BASE_API_URL: "https://isic-archive.com/api/v1/",
+				ISIC_BASE_API_URL: "https://sandbox.isic-archive.com/api/v1/",
 			})
+
 		],
 		devServer: {
 			host: appconfig.devHost,
@@ -101,4 +103,4 @@ module.exports = function (env) {
 	}
 
 	return config;
-}
+};

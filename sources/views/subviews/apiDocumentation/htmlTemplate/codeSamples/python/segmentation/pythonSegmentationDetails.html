@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="code-samples">
+    <pre class="highlight tab tab-python"><code><span class="hljs-comment">#Insert Username and Password Below</span>
+    api = ISICApi(username=<span class="hljs-string">"ISIC"</span>, password=<span class="hljs-string">"ARCHIVE"</span>)
+    segmentationId = <span class="hljs-string">'5463934bbae47821f88025ad'</span> <span class="hljs-comment">#Using image ISIC_0000000 as example</span>
+    segmentationData = api.getJson(<span class="hljs-string">'segmentation/'</span>+segmentationId)
+</code></pre>
+</div>
+</body>
+</html>

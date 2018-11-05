@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="code-samples">
+    <pre class="highlight tab tab-python"><code><span class="hljs-keyword">import</span> urllib
+    <span class="hljs-keyword">import</span> os
+    <span class="hljs-keyword">import</span> re
+
+    savePath = <span class="hljs-string">'ISICArchive/'</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(savePath):
+    os.makedirs(savePath)
+
+    <span class="hljs-comment">#Insert Username and Password Below</span>
+    api = ISICApi(username=<span class="hljs-string">"ISIC"</span>, password=<span class="hljs-string">"ARCHIVE"</span>)
+    studyList = api.getJson(<span class="hljs-string">'study?limit=50&amp;state=complete'</span>)
+    selectedStudy = studyList[<span class="hljs-number">1</span>][<span class="hljs-string">'_id'</span>] <span class="hljs-comment">#Just an example. Can also use selectedStudy = 'INSERT STUDY ID'</span>
+    listOfStudyAnnotations = api.getJson(<span class="hljs-string">'annotation?studyId='</span>+selectedStudy)
+    annotationId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'_id'</span>]
+    imageId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'imageId'</span>]
+    studyId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'studyId'</span>]
+    userId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'userId'</span>]
+    annotationDetails = api.getJson(<span class="hljs-string">'annotation/'</span>+annotationId)
+    featureId = list(annotationDetails[<span class="hljs-string">'markups'</span>].keys())[<span class="hljs-number">0</span>] <span class="hljs-comment">#select the first feature returned</span>
+    featureIdForFilename = re.sub(<span class="hljs-string">r"[^A-Za-z]+"</span>, <span class="hljs-string">''</span>, featureId)
+
+    print(featureId)
+    maskFileResp = api.get(<span class="hljs-string">'annotation/%s/%s/mask'</span> % (annotationId, featureId))
+    maskFileResp.raise_for_status()
+    maskFileOutputPath = os.path.join(savePath, <span class="hljs-string">'%s_%s_%s_%s.jpg'</span> % (studyId, imageId, userId, featureIdForFilename))
+    <span class="hljs-keyword">with</span> open(maskFileOutputPath, <span class="hljs-string">'wb'</span>) <span class="hljs-keyword">as</span> maskFileOutputStream:
+    <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> maskFileResp:
+        maskFileOutputStream.write(chunk)
+</code></pre>
+
+</div>
+</body>
+</html>

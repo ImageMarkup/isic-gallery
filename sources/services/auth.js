@@ -5,6 +5,7 @@ import termOfUseWindow from "../views/authWindows/termOfUse";
 import gallerySelectedImages from "../models/selectedGalleryImages";
 import appliedFilters from "../models/appliedFilters";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
+import util from "../utils/util";
 
 function login(params, afterLoginPage) {
 	return ajax.login(params).then((data) => {
@@ -35,7 +36,8 @@ function logout() {
 	ajax.logout().then(() => {
 		webix.storage.local.remove("user");
 		webix.storage.local.remove("authToken");
-		gallerySelectedImages.clearAll();
+		gallerySelectedImages.clearImagesForDownload();
+		gallerySelectedImages.clearImagesForStudies();
 		appliedFilters.clearAll();
 		wizardUploaderStorage.clearAll();
 		state.clear();
@@ -59,12 +61,22 @@ function getToken() {
 	return authToken.token;
 }
 
+function isUserInfoChanged(newData) {
+	let currentUserInfo = getUserInfo();
+	return !util.deepCompare(currentUserInfo, newData);
+}
 
 function refreshUserInfo() {
 	return ajax.getUserInfo().then((data) => {
-		if (data) {
+		if (data && isUserInfoChanged(data)) {
 			webix.storage.local.put("user", data.user);
-			state.app.callEvent("userInfoChanged");
+			webix.alert({
+				title: "Close",
+				text: "Your user permissions or other information have been changed",
+				callback() {
+					state.app.refresh();
+				}
+			});
 		}
 		return data;
 	});
@@ -75,11 +87,15 @@ function isLoggedin() {
 }
 
 function isTermsOfUseAccepted() {
-	return !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
+	const user = getUserInfo();
+	let termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
+	return termOfUse ? termOfUse : user.permissions.acceptTerms;
 }
 
 function acceptTermOfUse() {
-	webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+	ajax.postUserTermsOfUse(true).then(() => {
+		webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+	})
 }
 
 function showMainPage() {
