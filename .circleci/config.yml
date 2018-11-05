@@ -21,6 +21,3 @@ jobs:
       - run:
           name: Do a production build
           command: npm run build
-      - run:
-          name: Check for dependency vulnerabilities
-          command: npm audit
