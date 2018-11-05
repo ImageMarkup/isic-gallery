@@ -1,5 +1,5 @@
 // for storing tempraraly blob urls for gallery images
-let previewUrls = {};
+const previewUrls = {};
 const normalUrls = {};
 
 function setPreviewImageUrl(imageId, url) {
@@ -18,14 +18,10 @@ function getNormalImageUrl(imageId) {
 	return normalUrls[imageId];
 }
 
-function clearPreviewUrls() {
-	previewUrls = {};
-}
 
 export default {
 	setPreviewImageUrl,
 	getPreviewImageUrl,
 	setNormalImageUrl,
-	getNormalImageUrl,
-	clearPreviewUrls
+	getNormalImageUrl
 };

@@ -10,9 +10,6 @@ export default {
 
 	MAX_COUNT_IMAGES_SELECTION: 300,
 
-	SELECTED_BY_ALL_ON_PAGE: "allOnPage",
-	SELECTED_BY_ON_ALL_PAGES: "onAllPages",
-
 	PATTERN_PASSWORD: "^[!@_#$%^&?*()\"\\\/0-9a-zA-Z]{6,15}$",
 	PATTERN_PASSWORD_HAS_SPEC_SYMBOLS: "[!@_#$%^&?*()\"\\\/0-9]+",
 	PATTERN_LOGIN: "^[a-zA-Z]{1}[a-zA-Z0-9_.]{3,}$",
@@ -35,7 +32,6 @@ export default {
 
 	ID_HEADER_MENU_MAIN: "isic",
 	ID_HEADER_MENU_ABOUT: "about",
-	ID_HEADER_MENU_FORUM: "forum",
 	ID_HEADER_MENU_GALLERY: "gallery",
 	ID_HEADER_MENU_CHALLENGES: "challenges",
 	ID_HEADER_MENU_STUDIES: "studies",
@@ -43,18 +39,6 @@ export default {
 	ID_HEADER_MENU_ARCHIVE: "archive",
 	ID_HEADER_MENU_DOWNLOAD: "download",
 	ID_HEADER_MENU_DASHBOARD: "dashboard",
-	ID_GALLERY_RICHSELECT: "gallery-richselect-viewid",
-
-	NEW_STUDY_BUTTON_ID: "create-new-study-button-id",
-	DOWNLOAD_MENU_ID: "download-menu",
-	DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID: "gallery-buttons-layout-id",
-
-	TWO_DATAVIEW_COLUMNS: "Display two columns",
-	THREE_DATAVIEW_COLUMNS: "Display three columns",
-	FOUR_DATAVIEW_COLUMNS: "Display four columns",
-	FIVE_DATAVIEW_COLUMNS: "Display five columns",
-	SIX_DATAVIEW_COLUMNS: "Display six columns",
-	DEFAULT_DATAVIEW_COLUMNS: "Display default columns number",
 
 	PATH_MULTIRATER: "/topWithHeader/onlyHeaderTop/multirater",
 	PATH_ABOUT: "/topWithHeader/tightContentTop/about",
@@ -62,7 +46,7 @@ export default {
 	PATH_ABOUT_HISTORY: "/topWithHeader/tightContentTop/about/history",
 	PATH_ABOUT_ISIC_ARCHIVE: "/topWithHeader/tightContentTop/about/isicArchive",
 	PATH_ABOUT_ISIC_STANDARDS: "/topWithHeader/tightContentTop/about/isicStandards",
-	PATH_ABOUT_LITERATURE: "/topWithHeader/tightContentTop/about/literature",
+	PATH_ABOUT_LITERATURE: "https://isic-archive.com/api/v1/redirects/literature", //"/topWithHeader/tightContentTop/about/literature",
 	PATH_ABOUT_WORKING_GROUPS: "/topWithHeader/tightContentTop/about/workingGroups",
 	PATH_MAIN: "/topWithHeader/wideContentTop/main",
 	PATH_STUDIES: "/topWithHeader/tightDarkContentTop/studies",
@@ -73,19 +57,9 @@ export default {
 	PATH_DASHBOARD: "/topWithHeader/tightContentTop/dashboard",
 	PATH_USER_ACCOUNT: "/topWithHeader/tightContentTop/userAccount",
 	PATH_CREATE_DATASET: "/topWithHeader/tightContentTop/createDataset",
-	PATH_MANAGEMENT_UI: "/topWithHeader/wideContentTop/managementUI",
-	PATH_MANAGEMENT_UI_ABOUT: "/topWithHeader/wideContentTop/managementUI/aboutManagement",
-	PATH_MANAGEMENT_COLLECTIONS: "/topWithHeader/wideContentTop/managementUI/managementCollections",
-	PATH_MANAGEMENT_GROUPS: "/topWithHeader/wideContentTop/managementUI/managementGroups",
-	PATH_MANAGEMENT_USERS: "/topWithHeader/wideContentTop/managementUI/managementUsers",
 	PATH_INVITE_USER: "/topWithHeader/tightContentTop/inviteUser",
-	PATH_WIZZARD_UPLOADER: "/topWithHeader/tightContentTop/wizardUploader",
+	PATH_WIZZARD_UPLOADER: "/topWithHeader/tightContentTop/wizzardUploader",
 	PATH_CHALLENGES: "/topWithHeader/tightContentTop/challenges",
-	PATH_BATCH_UPLOADER: "/topWithHeader/tightContentTop/batchUploader",
-	PATH_APPLY_METADATA: "/topWithHeader/tightContentTop/applyMetadata",
-	PATH_REGISTER_METADATA: "/topWithHeader/tightContentTop/registerMetadata",
-	PATH_CREATE_STUDY: "/topWithHeader/tightContentTop/createStudy",
-	PATH_API_DOCUMENTATION: "/topWithHeader/onlyHeaderTop/apiDocumentation",
 
 	PATH_DOWNLOAD_PDF_TERMS_OF_USE: "/sources/filesForDownload/termsOfUse.pdf",
 	PATH_DOWNLOAD_TXT_TERMS_OF_USE: "/sources/filesForDownload/termsOfUse.txt",
@@ -96,12 +70,11 @@ export default {
 	URL_API: `${process.env.ISIC_SITE_URL}api/v1`,
 	URL_ANNOTATIONS_TOOL: `${process.env.ISIC_SITE_URL}#tasks/annotate/`,
 	URL_ANNOTATIONS_TOOL_SEGMENT: `${process.env.ISIC_SITE_URL}/markup/segment#/`,
-	URL_BATCH_UPLOAD: `${process.env.ISIC_SITE_URL}#dataset/upload/batch`,
+	URL_BATCH_UPLOAD: `${process.env.ISIC_SITE_URL}/api/v1/redirects/uploadBatch`,
 	URL_CHALLENGE_2016: "http://challenge2016.isic-archive.com",
 	URL_CHALLENGE_2017: "http://challenge2017.isic-archive.com",
 	URL_CHALLENGE_2018: "http://challenge2018.isic-archive.com/",
-	URL_MULTIRATER: "https://dermannotator.org/multirater/",
-	URL_FORUM: "https://forum.isic-archive.com",
+	URL_MULTIRATER: "http://www.dermannotator.org/multirater/",
 
 	NAME_VIEW_DASHBOARD: "dashboard"
 };

@@ -2,15 +2,6 @@ import filterService from "../services/gallery/filter";
 import state from "../models/state";
 
 const appliedFilters = new webix.DataCollection();
-let filterByName;
-
-function setFilterByName(filter) {
-	filterByName = filter;
-}
-
-function getFilterByName() {
-	return filterByName;
-}
 
 function prepareDataForList() {
 	let result = [];
@@ -294,9 +285,7 @@ export default {
 	prepareDataForList,
 	getConditionsForApi,
 	clearAll,
-	count,
-	getFilterByName,
-	setFilterByName
+	count
 };
 
 /* example of conditions for API */

@@ -2,7 +2,6 @@ import windowWithHeader from "../../components/windowWithHeader";
 import util from "../../../utils/util";
 import constants from "../../../constants";
 import template from "../../templates/apiInfo.html";
-import state from "../../../models/state";
 
 const body = {
 	width: 700,
@@ -29,18 +28,6 @@ const body = {
 		{
 			paddingY: 10,
 			cols: [
-				{
-					view: "button",
-					css: "btn",
-					value: "API Documentation",
-					width: 140,
-					on: {
-						onItemClick() {
-							this.getTopParentView().hide();
-							state.app.show(constants.PATH_API_DOCUMENTATION);
-						}
-					}
-				},
 				{},
 				{
 					view: "button",

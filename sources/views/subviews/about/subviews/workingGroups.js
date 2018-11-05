@@ -1,7 +1,7 @@
 import {JetView} from "webix-jet";
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import template from "../../../templates/about/workingGroups.html";
+import template from "../../../templates/about/literature.html";
 
 export default class WorkingGroupsView extends JetView {
 	config() {

@@ -8,58 +8,6 @@ const SEGMENTATION_TEMPLATE_ID = "segmentation-template";
 
 let scrollviewId;
 let isolateLayoutId;
-let imageObj;
-
-//todo NEED TO BE FIXED!!!!!
-webix.protoUI({
-	name: "mytestview",
-	$init: function(){
-		this.$ready.push(this.custom_func)
-	},
-	custom_func: function() {
-		let scrollView = $$(scrollviewId);
-		let editButton = scrollView.queryView({name: "editButtonName"});
-		let saveButton = scrollView.queryView({name: "saveButtonName"});
-		let cancelButton = scrollView.queryView({name: "cancelButtonName"});
-		let editForm = scrollView.queryView({name: "editFormName"});
-		let editViews = scrollView.queryView({name: "editViewsName"});
-		let testForm1 = scrollView.queryView({name: "clinical-editFormName"});
-		let testForm2 = scrollView.queryView({name: "acquisition-editFormName"});
-		let testForm3 = scrollView.queryView({name: "unstructured-editFormName"});
-		let topParent = this.getTopParentView()
-
-		editButton.attachEvent("onItemClick",  () => {
-			editButton.hide();
-			saveButton.show();
-			cancelButton.show();
-			editForm.show();
-
-		});
-		saveButton.attachEvent("onItemClick", function () {
-			let valuesOne = testForm1.getValues();
-			let valuesTwo = testForm2.getValues();
-			let valuesThree = testForm3.getValues();
-			ajax.postImageMetadata(imageObj._id, valuesOne).then(() => {
-				ajax.postImageMetadata(imageObj._id, valuesTwo).then(() => {
-					ajax.postImageMetadata(imageObj._id, valuesThree).then(()=> {
-						this.hide();
-						cancelButton.hide();
-						editButton.show();
-						editViews.back();
-						topParent.hide();
-					});
-				})
-			})
-		});
-		cancelButton.attachEvent("onItemClick", function () {
-			this.hide();
-			saveButton.hide();
-			editButton.show();
-			editViews.back()
-		});
-	}
-
-}, webix.ui.scrollview);
 
 const segmentationSelect = {
 	view: "richselect",
@@ -87,44 +35,6 @@ const segmentationSelect = {
 	}
 };
 
-function createEditForm(itemData, name) {
-
-	let dataForElements = [];
-
-	//const metaKeys = Object.keys(data.meta);
-	// metaKeys.forEach((metaKey) => {
-	// 	console.log(metaKey)
-	// 	if (metaKey === "acquisition") {
-	// 		itemData = data.meta.acquisiton
-	// 	} else if (metaKey === "clinical") {
-	// 		itemData = data.meta.clinical
-	// 	} else if (metaKey === "private") {
-	// 		return
-	// 	} else if (metaKey === "unstructured") {
-	// 		itemData = data.meta.unstructured
-	// 	}
-		const keys = Object.keys(itemData);
-		keys.forEach((key) => {
-			let element = {
-				css: "select-field",
-				view: "text",
-				label: key,
-				name: key,
-				value: itemData[key],
-				labelWidth: 190
-			};
-			dataForElements.push(element);
-		});
-	// });
-
-	const view = {
-		view: "form",
-		name: name + "-editFormName",
-		elements: dataForElements
-	};
-	return view;
-}
-
 function createTemplateRows(itemData) {
 	let template = "";
 	if (!itemData) {
@@ -139,7 +49,6 @@ function createTemplateRows(itemData) {
 	});
 	return template;
 }
-
 
 function createTagsTemplate(data) {
 	let template = "";
@@ -173,107 +82,6 @@ function prepareReviewSkill(reviews) {
 	return skill;
 }
 
-function createTemplate(data, acquisitionDynamicProps) {
-	return {
-		rows: [
-			{
-				header: "CLINICAL INFORMATION",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: {
-					view: "template",
-
-					template: `<div class="accordion-item-template">
-								<div class="item-content-block">
-									${createTemplateRows(data.meta.clinical)}
-								</div>
-							</div>`,
-					autoheight: true,
-					borderless: true
-				}
-			},
-			{
-				header: "ACQUISITION METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: {
-					view: "template",
-					template: `	<div class="accordion-item-template">
-								<div class="item-content-block">
-									<div class="item-content-row">
-										<div class="item-content-label">Dimentions (pixels)</div>
-										<div class="item-content-value">${data.meta.acquisition.pixelsX || ""} &#9747 ${data.meta.acquisition.pixelsY || ""}</div>
-									</div>
-									${createTemplateRows(acquisitionDynamicProps)}
-								</div>
-							</div>`,
-					autoheight: true,
-					borderless: true
-				}
-			},
-			{
-				header: "UNSTRUCTURED METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: {
-					view: "template",
-					name: "editTemplateName",
-					template: `	<div class="accordion-item-template">
-								<div class="item-content-block">
-									${createTemplateRows(data.meta.unstructured)}
-								</div>
-							</div>`,
-					autoheight: true,
-					borderless: true
-				}
-			}
-		]
-	}
-}
-
-function createFormView(data) {
-	return {
-		name: "editFormName",
-		rows: [
-			{
-				header: "CLINICAL INFORMATION",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.meta.clinical, "clinical")
-			},
-			{
-				header: "ACQUISITION METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.meta.acquisition, "acquisition")
-			},
-			{
-				header: "UNSTRUCTURED METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.meta.unstructured, "unstructured")
-			}
-		]
-	}
-}
-
-function createMutliView(data, acquisitionDynamicProps) {
-	let multiview = {
-		name: "editViewsName",
-		cells:[
-			createTemplate(data, acquisitionDynamicProps),
-			createFormView(data)
-		]
-	};
-	return multiview;
-}
-
 function createAccordionRows(data) {
 	let acquisitionDynamicProps;
 	if (data.acquisition) {
@@ -282,7 +90,58 @@ function createAccordionRows(data) {
 		delete acquisitionDynamicProps.pixelsY;
 	}
 	return [
-		createMutliView(data, acquisitionDynamicProps),
+		{
+			header: "CLINICAL INFORMATION",
+			css: "accordion-item-pale",
+			headerAltHeight: HEADER_HEIGHT,
+			headerHeight: HEADER_HEIGHT,
+			body: {
+				view: "template",
+				template: `<div class="accordion-item-template">
+								<div class="item-content-block">
+									${createTemplateRows(data.meta.clinical)}
+								</div>
+							</div>`,
+				autoheight: true,
+				borderless: true
+			}
+		},
+		{
+			header: "ACQUISITION METADATA",
+			css: "accordion-item-pale",
+			headerAltHeight: HEADER_HEIGHT,
+			headerHeight: HEADER_HEIGHT,
+			body: {
+				view: "template",
+				template: `	<div class="accordion-item-template">
+								<div class="item-content-block">
+									<div class="item-content-row">
+										<div class="item-content-label">Dimentions (pixels)</div>
+										<div class="item-content-value">${data.meta.acquisition.pixelsX || ""} &#9747 ${data.meta.acquisition.pixelsY || ""}</div>
+									</div>
+									${createTemplateRows(acquisitionDynamicProps)}
+								</div>
+							</div>`,
+				autoheight: true,
+				borderless: true
+			}
+		},
+		{
+			header: "UNSTRUCTURED METADATA",
+			css: "accordion-item-pale",
+			headerAltHeight: HEADER_HEIGHT,
+			headerHeight: HEADER_HEIGHT,
+			body: {
+				view: "template",
+				template: `	<div class="accordion-item-template">
+								<div class="item-content-block">
+									${createTemplateRows(data.meta.unstructured)}
+								</div>
+							</div>`,
+				autoheight: true,
+				borderless: true
+			}
+		},
 		{
 			header: "TAGS",
 			css: "accordion-item-pale",
@@ -385,50 +244,15 @@ function createConfig(data) {
 	segmentationSelect.options.body.data = webix.copy(data.segmentation);
 	return {
 		css: "metadata-scrollview",
-		view: "mytestview",
+		view: "scrollview",
 		body: {
 			isolate: true, // if true, we can use child components by id only like this: $$("isolateComponentId").$$("childComponemtId")
 			rows: [
 				{
-					cols: [
-						{
-							css: "metadata-layout-image-name main-subtitle3",
-							template: data.name,
-							autoheight: true,
-							borderless: true
-						},
-						{
-							view: "button",
-							type: "icon",
-							icon: "pencil",
-							width: 70,
-							height: 30,
-							label: "Edit",
-							name: "editButtonName",
-							hidden: false
-						},
-						{
-							view: "button",
-							type: "icon",
-							width: 70,
-							height: 30,
-							icon: "floppy-o",
-							label: "Save",
-							name: "saveButtonName",
-							hidden: true
-						},
-						{
-							view: "button",
-							type: "icon",
-							width: 100,
-							height: 30,
-							icon: "times",
-							label: "Cancel",
-							name: "cancelButtonName",
-							hidden: true
-						}
-
-					]
+					css: "metadata-layout-image-name main-subtitle3",
+					template: data.name,
+					autoheight: true,
+					borderless: true
 				},
 				{
 					view: "accordion",
@@ -443,7 +267,7 @@ function createConfig(data) {
 	};
 }
 
-function getConfig(id, data, image) {
+function getConfig(id, data) {
 	let resultConfig = {};
 	if (data) {
 		resultConfig = createConfig(data);
@@ -452,7 +276,6 @@ function getConfig(id, data, image) {
 	scrollviewId = resultConfig.id;
 	resultConfig.body.id = `isolate-layout-${webix.uid()}`;
 	isolateLayoutId = resultConfig.body.id;
-	imageObj = image;
 	return resultConfig;
 }
 
