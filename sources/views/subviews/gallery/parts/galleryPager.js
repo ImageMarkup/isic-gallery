@@ -1,5 +1,3 @@
-import appliedFilters from "../../../../models/appliedFilters";
-
 let dataviewId;
 
 const pager = {
@@ -25,11 +23,8 @@ const pager = {
 				if (e.keyCode === 13) { // enter
 					let value = parseInt(this.value);
 					if (value && value > 0 && value <= currentPager.data.limit) {
-						let filterByName = appliedFilters.getFilterByName();
-						if (!filterByName) {
-							let offset = currentPager.data.size * (value - 1); // because in pager first page is 0
-							$$(dataviewId).loadNext(currentPager.data.size, offset);
-						}
+						let offset = currentPager.data.size * (value - 1); // because in pager first page is 0
+						$$(dataviewId).loadNext(currentPager.data.size, offset);
 						currentPager.select(value - 1); // because in pager first page is 0
 					}
 					else {
@@ -64,10 +59,7 @@ const pager = {
 					break;
 				}
 			}
-			let filterByName = appliedFilters.getFilterByName();
-			if (!filterByName) {
-				$$(dataviewId).loadNext(this.data.size, offset);
-			}
+			$$(dataviewId).loadNext(this.data.size, offset);
 		}
 	}
 

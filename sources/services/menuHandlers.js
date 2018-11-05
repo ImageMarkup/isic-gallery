@@ -10,10 +10,6 @@ export default {
 		state.app.show(constants.PATH_ABOUT_ISIC_ARCHIVE);
 	},
 
-	clickForum() {
-		util.openInNewTab(constants.URL_FORUM);
-	},
-
 	clickGallery() {
 		state.app.show(constants.PATH_GALLERY);
 	},

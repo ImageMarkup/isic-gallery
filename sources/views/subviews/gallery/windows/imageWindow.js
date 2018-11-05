@@ -3,31 +3,21 @@ import "../../../components/slideButton";
 import ajax from "../../../../services/ajaxActions";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 
-
 const templateViewer = {
 	view: "template",
 	css: "absolute-centered-image-template",
 	template(obj) {
 		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
+			galleryImageUrl.setPreviewImageUrl(obj.imageId, ""); // to prevent sending query more than 1 times
 			ajax.getImage(obj.imageId, 553, 1000).then((data) => {
 				galleryImageUrl.setNormalImageUrl(obj.imageId, URL.createObjectURL(data));
 				$$(templateViewer.id).refresh();
 			});
 		}
-
-		return `<div class="image-zoom-container">
-  					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
-  					<button class="btn-plus">+</button>
-  					<button class="btn-minus">-</button>
-				</div>
-					<a class="prev">&#10094;</a>
- 					<a class="next">&#10095;</a>
-				`;
+		return `<img src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>`;
 	},
 	borderless: true
 };
-
-
 
 // this rows will be set during initialisation. we set id to this element in getConfig method
 const layoutForMetadata = {
@@ -90,18 +80,12 @@ const windowBody = {
 	]
 };
 
-function getConfig(id, studyImage) {
-	let windowTitle;
+function getConfig(id) {
 	templateViewer.id = `viewer-${webix.uid()}`;
 	slideButton.id = `slidebutton-${webix.uid()}`;
 	layoutForMetadata.id = `layout-for-metadata-${webix.uid()}`;
 	metadataContainer.id = `metadata-container-${webix.uid()}`;
-	if (!studyImage) {
-		windowTitle = "Metadata";
-	} else {
-		windowTitle = studyImage;
-	}
-	return windowWithHeader.getConfig(id, windowBody, windowTitle);
+	return windowWithHeader.getConfig(id, windowBody, "Metadata");
 }
 
 function getIdFromConfig() {

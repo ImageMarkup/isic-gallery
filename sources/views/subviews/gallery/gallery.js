@@ -9,8 +9,6 @@ import appliedFiltersList from "./parts/appliedFiltersList";
 import constants from "../../../constants";
 import authService from "../../../services/auth";
 import selectedImages from "../../../models/selectedGalleryImages";
-import "../../components/activeList";
-import utils from "../../../utils/util";
 
 
 const PAGER_ID = "gallery-pager-id";
@@ -22,45 +20,20 @@ const FILTERS_FORM_ID = "filters-form";
 const APPLIED_FILTERS_LIST_ID = "applied-filters-list";
 const CONTENT_HEADER_ID = "content-header";
 const IMAGES_SELECTION_TEMPLATE_ID = "gallery-images-selection-template";
-const DOWNLOADING_MENU_ID = constants.DOWNLOAD_MENU_ID;
+const DOWNLOADING_MENU_ID = "download-menu";
 const SEARCH_ID = "search-field";
 const CLEAR_ALL_FILTERS_TEMPLATE_ID = "clear-all-template";
 
 export default class GalleryView extends JetView {
 	config() {
-		const clearNamesFilterTemplate = {
-			template: "<span class='link clear-name-filters'>Clear name filter</span>",
-			name: "clearNamesFilterTemplateName",
-			autoheight: true,
-			width: 105,
-			borderless: true
-		};
-
-		const leftPanelSwitchButton = {
-			view: "switch",
-			name: "leftPanelSwitchButtonName",
-			css: "switch-search-gallery-button",
-			label: "Search by filters",
-			labelRight: "Search by name",
-			width: 285,
-			labelWidth: 112,
-			height: 30
-		};
 
 		const leftPanel = {
 			id: LEFT_PANEL_ID,
 			width: 400,
 			paddingX: 15,
-			paddingY: 15,
+			paddingY: 30,
 			margin: 20,
 			rows: [
-				{
-					cols: [
-						{},
-						leftPanelSwitchButton,
-						{}
-					]
-				},
 				{
 					view: "search",
 					id: SEARCH_ID,
@@ -69,22 +42,10 @@ export default class GalleryView extends JetView {
 					width: 270
 				},
 				{
-					css: {"margin-left": "0px !important;", "margin-top": "5px !important;"},
-					name: "clearNamesFilterLayoutName",
-					hidden: true,
-					cols: [
-						{},
-						clearNamesFilterTemplate,
-						{width: 9}
-					]
-				},
-				{
 					margin: 10,
-					css: {"margin-top": "10px !important;"},
 					rows: [
 						{
 							cols: [
-								{width: 10},
 								{
 									template: "APPLIED FILTERS",
 									css: "gallery-sidebar-title",
@@ -124,10 +85,10 @@ export default class GalleryView extends JetView {
 
 		const downloadingMenu = {
 			view: "menu",
-			hidden: true,
 			id: DOWNLOADING_MENU_ID,
 			css: "downloading-menu",
 			width: 150,
+			height: 36,
 			submenuConfig: {
 				width: 300
 			},
@@ -152,47 +113,8 @@ export default class GalleryView extends JetView {
 			}
 		};
 
-		const createStudyButton = {
-			view: "button",
-			css: "btn",
-			id: constants.NEW_STUDY_BUTTON_ID,
-			label: "Create Study",
-			hidden: true,
-			name: "createStudyButtonName",
-			width: 150,
-			height: 30
-		};
-
-		const dataviewYCountSelction = {
-			view: "richselect",
-			css: "select-field",
-			hidden: true,
-			name: "dataviewYCountSelctionName",
-			id: constants.ID_GALLERY_RICHSELECT,
-			width: 245,
-			height: 36,
-			placeholder: "Select number of columns",
-			options: [
-				constants.TWO_DATAVIEW_COLUMNS,
-				constants.THREE_DATAVIEW_COLUMNS,
-				constants.FOUR_DATAVIEW_COLUMNS,
-				constants.FIVE_DATAVIEW_COLUMNS,
-				constants.SIX_DATAVIEW_COLUMNS,
-				constants.DEFAULT_DATAVIEW_COLUMNS
-			]
-		};
-
-		const switchView = {
-			view: "switch",
-			hidden: true,
-			name: "toggleSelectAllButtonName",
-			height: 30,
-			width: 70,
-			value: 0
-		};
-
 		const galleryHeader = {
-			name: "galleryHeaderName",
+			height: 75,
 			rows: [
 				{height: 15},
 				{
@@ -225,56 +147,28 @@ export default class GalleryView extends JetView {
 					]
 				},
 				{
-					css: {"overflow": "visible;"},
 					cols: [
 						{
-							view: "template",
 							css: "gallery-main-header",
 							id: IMAGES_SELECTION_TEMPLATE_ID,
-							template() {
-								let text = `<span class='gallery-select-all-images link'> Select All on the Page for Download <span class="tooltipdownload"> You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for download.</span> </span>`;
+							template(obj) {
+								let text = `<span class='gallery-select-all-images link'> Select All on the Page</span> You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images.`;
 								const selectedImagesCount = selectedImages.count();
 								if (selectedImagesCount) {
-									this.width = 360;
 									return `${text} <span class='unselect-images-link link'>Unselect ${selectedImagesCount} ${selectedImagesCount === 1 ? 'image' : "images"}</span>`;
-								} else {
-									this.width = 240;
 								}
 								return text;
 							},
 							borderless: true,
-							autoheight: true,
+							autoheight: true
 						},
 						{width: 15},
-						switchView,
+						downloadingMenu,
+						{width: 15},
 						{
-							name: "allPagesSelector",
-							height: 36,
-							css: {"overflow": "visible;"},
-							cols: [
-								{
-									css: "gallery-main-header",
-									name: "selectAllImagesOnAllPagesTemplate",
-									hidden: true,
-									template() {
-										let text = `<span class='gallery-select-all-images-on-all-pages link'> Select First ${constants.MAX_COUNT_IMAGES_SELECTION} images for Study Creation<span class="tooltipstudy">You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for creating a study.</span></span>`;
-										const selectedImagesCount = selectedImages.countForStudies();
-										if (selectedImagesCount) {
-											this.width = 410;
-											return `${text} <span class='unselect-images-on-all-pages link'>Unselect ${selectedImagesCount} ${selectedImagesCount === 1 ? 'image' : "images"}</span>`;
-										} else {
-											this.width = 270;
-										}
-										return text;
-									},
-									borderless: true
-								},
-								{},
-								{width: 13},
-								dataviewYCountSelction,
-								{width: 15},
+							rows: [
 								pager.getConfig(PAGER_ID, DATAVIEW_ID),
-								{width: 10}
+								{}
 							]
 						}
 					]
@@ -282,48 +176,12 @@ export default class GalleryView extends JetView {
 			]
 		};
 
-		const cartList = {
-			view: "activeList",
-			css: "cart-list-view",
-			hidden: true,
-			name: "activeGalleryCartListName",
-			width: 170,
-			activeContent: {
-				deleteButton: {
-					view: "button",
-					type: "icon",
-					icon: "times",
-					width: 25,
-					height: 25,
-					click: (...args) => {
-						this.getActiveGalleryCartList().callEvent("onDeleteButtonClick", args);
-					}
-				}
-			}
-		};
-
 		const content = {
 			css: "gallery-main",
 			paddingX: 15,
 			rows: [
 				galleryHeader,
-				{
-					cols: [
-						dataview.getConfig(DATAVIEW_ID),
-						cartList
-					]
-				},
-				{height: 10},
-				{
-					id: constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID,
-					height: 1,
-					cols: [
-						{width: 10},
-						createStudyButton,
-						downloadingMenu,
-						{}
-					]
-				},
+				dataview.getConfig(DATAVIEW_ID),
 				{height: 10}
 			]
 
@@ -351,13 +209,6 @@ export default class GalleryView extends JetView {
 	init(view) {
 		this.imageWindow = this.ui(imageWindow.getConfig(IMAGE_WINDOW_ID));
 		this.metadataWindow = this.ui(metadataWindow.getConfig(METADATA_WINDOW_ID));
-		this.allPagesTemplate = this.getSelectAllImagesOnAllPagesTemplate();
-		this.allPagesSelector = this.getAllPagesSelector();
-		this.galleryHeader = this.getGalleryHeader();
-		this.createStudyButton = this.getCreateStudyButton();
-		this.dataviewYCountSelection = this.getDataviewYCountSelection();
-		this.activeGalleryList = this.getActiveGalleryCartList();
-		this.toggleButton = this.getToggleButton();
 		this._galleryService = new GalleryService(
 			view,
 			$$(PAGER_ID),
@@ -373,8 +224,7 @@ export default class GalleryView extends JetView {
 			$$(IMAGES_SELECTION_TEMPLATE_ID),
 			$$(DOWNLOADING_MENU_ID),
 			$$(SEARCH_ID),
-			$$(CLEAR_ALL_FILTERS_TEMPLATE_ID),
-			this.allPagesTemplate,
+			$$(CLEAR_ALL_FILTERS_TEMPLATE_ID)
 		);
 	}
 
@@ -388,71 +238,5 @@ export default class GalleryView extends JetView {
 				this._galleryService.load();
 			});
 		}
-		if (authService.isLoggedin()) {
-			this.dataviewYCountSelection.show();
-			if (authService.getUserInfo().permissions.adminStudy){
-				this.allPagesTemplate.show();
-				this.toggleButton.show();
-			}
-		}
 	}
-
-	getSelectAllImagesOnAllPagesTemplate() {
-		return this.getRoot().queryView({name: "selectAllImagesOnAllPagesTemplate"});
-	}
-
-	getCreateStudyButton() {
-		return this.getRoot().queryView({name: "createStudyButtonName"});
-	}
-
-	getDataviewYCountSelection() {
-		return this.getRoot().queryView({name: "dataviewYCountSelctionName"});
-	}
-
-	getAllPagesSelector() {
-		return this.getRoot().queryView({name: "allPagesSelector"});
-	}
-
-	getGalleryHeader() {
-		return this.getRoot().queryView({name: "galleryHeaderName"});
-	}
-
-	getActiveGalleryCartList() {
-		return this.getRoot().queryView({name: "activeGalleryCartListName"});
-	}
-
-	getToggleButton() {
-		return this.getRoot().queryView({name: "toggleSelectAllButtonName"});
-	}
-
-	getLeftPanelToggleButton() {
-		return this.getRoot().queryView({name: "leftPanelSwitchButtonName"});
-	}
-
-	getClearNamesFilterLayout() {
-		return this.getRoot().queryView({name: "clearNamesFilterLayoutName"});
-	}
-
-	getClearNamesFilterTemplate() {
-		return this.getRoot().queryView({name: "clearNamesFilterTemplateName"});
-	}
-
-	showList() {
-		this.activeGalleryList.show();
-		this.changeDataviewYCount();
-	}
-
-	hideList() {
-		this.activeGalleryList.hide();
-		this.changeDataviewYCount();
-	}
-
-	changeDataviewYCount() {
-		let gallerySelectionId = utils.getDataviewSelectionId();
-		if (gallerySelectionId && gallerySelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-			const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
-			galleryRichselect.callEvent("onChange", [gallerySelectionId]);
-		}
-	}
-
 }

@@ -28,7 +28,7 @@ const body = {
 				"batch-upload-btn": function() {
 					if (auth.canCreateDataset()) {
 						this.getTopParentView().hide();
-						state.app.show(constants.PATH_BATCH_UPLOADER);
+						util.openInNewTab(constants.URL_BATCH_UPLOAD);
 					}
 					else {
 						const win = $$(constants.ID_WINDOW_ACCESS_REQUEST) || webix.ui(accessRequestWindow.getConfig(constants.ID_WINDOW_ACCESS_REQUEST));

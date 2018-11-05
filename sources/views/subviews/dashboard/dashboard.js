@@ -10,7 +10,6 @@ import BreadcrumbsManager from "../../../services/breadcrumbs";
 import state from "../../../models/state";
 
 const ID_BUTTON_INVITE_USER = "invite-user-button";
-const ID_BUTTON_MANAGEMENT_UI = "management-ui-button";
 
 const ID_PANEL_ADMIN_STUDIES = "admin-studies-panel";
 const ID_PANEL_ADMIN_DATASET = "admin-dataset-panel";
@@ -86,10 +85,12 @@ export default class DashboardView extends JetView {
 						on: {
 							onItemClick(id) {
 								const currentStudy = this.getItem(id);
+								console.log('currentStudy', currentStudy);
+								util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${currentStudy._id}`);
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
-											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
+											//util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
 										}
 										else {
 											webix.message({
@@ -101,6 +102,7 @@ export default class DashboardView extends JetView {
 							}
 						}
 					}
+
 				]
 			}
 		};
@@ -140,16 +142,7 @@ export default class DashboardView extends JetView {
 		};
 
 		const adminToolbar = {
-			margin: 15,
 			cols: [
-				{
-					view: "button",
-					id: ID_BUTTON_MANAGEMENT_UI,
-					css: "btn",
-					value: "Management UI",
-					width: 120,
-					hidden: true,
-				},
 				{
 					view: "button",
 					id: ID_BUTTON_INVITE_USER,
@@ -224,10 +217,6 @@ export default class DashboardView extends JetView {
 			rows: [
 				BreadcrumbsManager.getBreadcrumbsTemplate("dashboard"),
 				{
-					name: "infoTemplateName",
-					rows: []
-				},
-				{
 					paddingY: 20,
 					margin: 10,
 					type: "clean",
@@ -284,7 +273,6 @@ export default class DashboardView extends JetView {
 			$$(ID_PANEL_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_TEMPLATE_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_LIST_PARTISIPANT_TASKS_SEGMENTATION),
-			$$(ID_BUTTON_MANAGEMENT_UI),
 			$$(ID_BUTTON_INVITE_USER),
 			$$(ID_ACCORDION_ITEM_SEGMENTATION_TASKS)
 		);
@@ -306,9 +294,5 @@ export default class DashboardView extends JetView {
 		else {
 			authService.showMainPage();
 		}
-	}
-
-	getInfoTemplate() {
-		return this.getRoot().queryView({name: "infoTemplateName"});
 	}
 }

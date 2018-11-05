@@ -72,21 +72,6 @@ const map = new Map([
 		path: constants.PATH_CHALLENGES,
 		text: "Challenges",
 		parent: "home"
-	}],
-	["batchUploader", {
-		path: constants.PATH_BATCH_UPLOADER,
-		text: "Batch upload",
-		parent: "home"
-	}],
-	["gallery", {
-		path: constants.PATH_GALLERY,
-		text: "Gallery",
-		parent: "home"
-	}],
-	["createNewStudy", {
-		path: constants.PATH_CREATE_STUDY,
-		text: "Create New Study",
-		parent: "gallery"
 	}]
 ]);
 

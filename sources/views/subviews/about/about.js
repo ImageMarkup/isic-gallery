@@ -11,11 +11,7 @@ const menuData = [
 		value: "About ISIC",
 		data: [
 			{id: "isicArchive", src: "/sources/views/templates/about/isicArchive.html", value: "ISIC Archive"},
-			{
-				id: "isicStandards",
-				src: "/sources/views/templates/about/isicStandards.html",
-				value: "ISIC Standards for Skin Imaging"
-			},
+			{id: "isicStandards", src: "/sources/views/templates/about/isicStandards.html", value: "ISIC Standards for Skin Imaging"},
 			{id: "isicHistory", src: "/sources/views/templates/about/isicHistory.html", value: "History"}
 		]
 	},

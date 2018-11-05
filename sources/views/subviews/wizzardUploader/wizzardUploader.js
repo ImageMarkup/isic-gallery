@@ -4,13 +4,10 @@ import WizzardUploadService from "../../../services/wizzardUploader/wizzardUploa
 import auth from "../../../services/auth";
 import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
 import constants from "../../../constants";
-import "../../components/templateWithImages";
 
 const MARGIN_FORM = 15;
 
-const ID_TEMPLATE_PREVIEW = "template-image-preview";
 const ID_TEMPLATE_DROP_AREA = "drag-and-drop-area-template";
-const ID_DROP_AREA_PANEL = "drop-area-panel";
 const ID_TEMPLATE_UPLOADER_BODY = "uploader-body-template";
 const ID_UPLOADER = "uploader-api-only";
 const ID_FORM = "wizzard-uploader-form";
@@ -29,35 +26,19 @@ export default class WizzardUploaderView extends JetView {
 			css: "uploader-panel",
 			rows: [
 				{
-					view: "multiview",
-					cells: [
-						{
-							align: "absolute",
-							css: "drag-and-drop-area",
-							id: ID_DROP_AREA_PANEL,
-							body: {
-								id: ID_TEMPLATE_DROP_AREA,
-								template: "<p class='drag-and-drop-area-inner'>Drop Files to Upload or <span class='link click-here-link'>Click Here</span></p>",
-								width: 360,
-								height: 360,
-								onClick: {
-									"click-here-link": () => {
-										$$(ID_UPLOADER).fileDialog();
-									}
-								}
+					align: "absolute",
+					css: "drag-and-drop-area",
+					body: {
+						id: ID_TEMPLATE_DROP_AREA,
+						template: `<p class="drag-and-drop-area-inner">Drop Files to Upload or <span class="link click-here-link">Click Here</span></p>`,
+						width: 360,
+						height: 360,
+						onClick: {
+							"click-here-link": () => {
+								$$(ID_UPLOADER).fileDialog();
 							}
-						},
-						{
-							id: ID_TEMPLATE_PREVIEW,
-							view: "templateWithImages",
-							css: "image-width-100",
-							template(data) {
-								return `<img src="${data.src}" alt="">`;
-							},
-							borderless: true,
-							autoheight: true
 						}
-					]
+					}
 				},
 				{
 					margin: 20,
@@ -488,9 +469,7 @@ export default class WizzardUploaderView extends JetView {
 			this.uploader,
 			$$(ID_BUTTON_DELETE_FILE),
 			$$(ID_BUTTON_EXPORT_CSV),
-			$$(ID_BUTTON_CLEAR_SESSION),
-			$$(ID_TEMPLATE_PREVIEW),
-			$$(ID_DROP_AREA_PANEL)
+			$$(ID_BUTTON_CLEAR_SESSION)
 		);
 	}
 
