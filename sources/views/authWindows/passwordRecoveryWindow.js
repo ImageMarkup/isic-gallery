@@ -80,10 +80,8 @@ const recoveryForm = {
 					on: {
 						onItemClick() {
 							const form = this.getFormView();
-							const emailInput = encodeURIComponent(this.getTopParentView().ed.children[0].children[0].children[1].children[0].children[1].value);
 							if (form.validate()) {
-								webix.ajax().put("https://isic-archive.com/api/v1/user/password/temporary?email="+emailInput);
-								this.getTopParentView().hide();
+								webix.message("Not implemented yet");
 							}
 						}
 					}
