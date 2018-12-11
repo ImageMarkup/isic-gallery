@@ -304,7 +304,7 @@ export default class DashboardView extends JetView {
     script.onload = function() {
         var $ = window.jQuery;
         var my_annotations_data = "";
-        my_annotations_data_ = webix.ajax().get("https://isic-archive.com/api/v1/task/me/annotation").then(function(b) {
+        var my_annotations_data_ = webix.ajax().get("https://isic-archive.com/api/v1/task/me/annotation").then(function(b) {
             my_annotations_data = b.json()
             var studyList = jQuery(document.querySelectorAll('[view_id="partiipate-studies-list"]')).children().children();
             studyList.each(a => {
