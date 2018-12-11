@@ -82,7 +82,7 @@ const recoveryForm = {
 							const form = this.getFormView();
 							const emailInput = encodeURIComponent(this.getTopParentView().ed.children[0].children[0].children[1].children[0].children[1].value);
 							if (form.validate()) {
-								webix.ajax().put(`${BASE_API_URL}`+"user/password/temporary?email="+emailInput);
+								webix.ajax().put("https://isic-archive.com/api/v1/user/password/temporary?email="+emailInput);
 								this.getTopParentView().hide();
 							}
 						}
