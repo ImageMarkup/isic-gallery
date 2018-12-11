@@ -80,8 +80,10 @@ const recoveryForm = {
 					on: {
 						onItemClick() {
 							const form = this.getFormView();
+							const emailInput = encodeURIComponent(this.getTopParentView().ed.children[0].children[0].children[1].children[0].children[1].value);
 							if (form.validate()) {
-								webix.message("Not implemented yet");
+								webix.ajax().put(`${BASE_API_URL}`+"user/password/temporary?email="+emailInput);
+								this.getTopParentView().hide();
 							}
 						}
 					}
