@@ -303,18 +303,18 @@ export default class DashboardView extends JetView {
     script.type = 'text/javascript';
     script.onload = function() {
         var $ = window.jQuery;
-        my_annotations_data = "";
+        var my_annotations_data = "";
         my_annotations_data_ = webix.ajax().get("https://isic-archive.com/api/v1/task/me/annotation")
         my_annotations_data_.then(function(b) {
             my_annotations_data = b.json()
-            studyList = jQuery(document.querySelectorAll('[view_id="partiipate-studies-list"]')).children().children()
+            var studyList = jQuery(document.querySelectorAll('[view_id="partiipate-studies-list"]')).children().children()
             studyList.each(a => {
-                studyDiv = studyList[a];
+                var studyDiv = studyList[a];
                 my_annotations_data.forEach((b) => {
-                    currentStudyName = b['study']['name'];
-                    studyCount = b['count'];
+                    var currentStudyName = b['study']['name'];
+                    var studyCount = b['count'];
                     if (studyDiv.innerText == currentStudyName) {
-                        taskCountSpan = document.createElement('span');
+                        var taskCountSpan = document.createElement('span');
                         taskCountSpan.className = 'taskCountBadge';
                         taskCountSpan.style = 'float:right;'
                         taskCountSpan.innerText = studyCount + ' Remaining';
