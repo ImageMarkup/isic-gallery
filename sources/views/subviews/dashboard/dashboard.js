@@ -296,32 +296,3 @@ export default class DashboardView extends JetView {
 		}
 	}
 }
-(function() {
-    // Load the script
-    var script = document.createElement("SCRIPT");
-    script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
-    script.type = 'text/javascript';
-    script.onload = function() {
-        var $ = window.jQuery;
-        var my_annotations_data_ = webix.ajax().get("https://isic-archive.com/api/v1/task/me/annotation").then(function(b) {
-        var my_annotations_data = b.json();
-            var studyList = jQuery(document.querySelectorAll('[view_id="partiipate-studies-list"]')).children().children();
-            studyList.each(a => {
-                var studyDiv = studyList[a];
-                my_annotations_data.forEach((b) => {
-                    var currentStudyName = b['study']['name'];
-                    var studyCount = b['count'];
-                    if (studyDiv.innerText == currentStudyName) {
-                        var taskCountSpan = document.createElement('span');
-                        taskCountSpan.className = 'taskCountBadge';
-                        taskCountSpan.style = 'float:right;';
-                        taskCountSpan.innerText = studyCount + ' Remaining';
-                        jQuery(studyDiv).append(taskCountSpan);
-                    }
-                })
-            })
-
-        });
-    };
-    document.getElementsByTagName("head")[0].appendChild(script);
-})();
