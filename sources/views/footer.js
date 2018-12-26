@@ -20,7 +20,7 @@ export default class Footer extends JetView {
 				"menu-upload": () => menuHandlerService.clickUpload(),
 				"menu-participate": () => menuHandlerService.clickStudies(),
 				"menu-dermoscopedia": () => menuHandlerService.clickDermoscopedia(),
-				"menu-api": () => menuHandlerService.clickAPI(),
+				"menu-api": () => menuHandlerService.clickAPI(this.view),
 				"menu-terms-of-use": () => menuHandlerService.clickTermsOfUse(),
 				"menu-privacy-policy": () => menuHandlerService.clickPrivacyPolicy(),
 				"menu-medical-disclaimer": () => menuHandlerService.clickMedicalDisclaimer(),
@@ -36,5 +36,9 @@ export default class Footer extends JetView {
 				{}
 			]
 		};
+	}
+
+	init(view) {
+		this.view = view;
 	}
 }

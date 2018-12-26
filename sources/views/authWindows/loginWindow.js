@@ -100,7 +100,7 @@ const loginForm = {
 									.fail((xhr) => {
 										if (xhr.status === 401) {
 											const errorLabel = form.elements["error-label"];
-											errorLabel.setValue("Login failed");
+											errorLabel.setValue("Login or password are not correct");
 											errorLabel.show();
 										}
 										win.hideProgress();

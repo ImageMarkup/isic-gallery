@@ -38,14 +38,16 @@ export default class InviteUserView extends JetView {
 							{
 								view: "text",
 								css: "text-field",
+								required: true,
 								label: "Login",
 								name: "login",
-								invalidMessage: "Enter your login"
+								invalidMessage: "Enter new user login"
 							},
 							{
 								view: "text",
 								css: "text-field",
 								label: "Email",
+								required: true,
 								name: "email",
 								invalidMessage: "Incorrect email"
 							},
@@ -53,15 +55,17 @@ export default class InviteUserView extends JetView {
 								view: "text",
 								css: "text-field",
 								label: "First name",
+								required: true,
 								name: "firstName",
-								invalidMessage: "Enter your first name"
+								invalidMessage: "Enter new user first name"
 							},
 							{
 								view: "text",
 								css: "text-field",
 								label: "Last name",
+								required: true,
 								name: "lastName",
-								invalidMessage: "Enter your last name"
+								invalidMessage: "Enter new user last name"
 							}
 						]
 					}
@@ -86,6 +90,10 @@ export default class InviteUserView extends JetView {
 				{
 					paddingY: 10,
 					cols: [
+						{
+							template: "<div style=\"padding-top: 11px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
+							borderless: true
+						},
 						{},
 						{
 							view: "button",

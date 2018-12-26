@@ -33,6 +33,7 @@ export default class Header extends JetView {
 			borderless: true,
 			data: [
 				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
+				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
 				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
 				{id: constants.ID_HEADER_MENU_CHALLENGES, value: "Challenges"},
 				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
@@ -49,16 +50,23 @@ export default class Header extends JetView {
 				onBeforeRender() {
 					if (authService.isLoggedin()) {
 						this.showItem("dashboard");
+						this.showItem("forum");
 					}
 					else {
 						this.hideItem("dashboard");
+						this.hideItem("forum");
 					}
 				},
-				onMenuItemClick(id) {
+				onMenuItemClick: (id) => {
 					switch (id) {
 						case constants.ID_HEADER_MENU_ABOUT:
 						{
 							menuHandlerService.clickAbout();
+							break;
+						}
+						case constants.ID_HEADER_MENU_FORUM:
+						{
+							menuHandlerService.clickForum();
 							break;
 						}
 						case constants.ID_HEADER_MENU_GALLERY:
@@ -93,7 +101,7 @@ export default class Header extends JetView {
 						}
 						case constants.ID_HEADER_MENU_DOWNLOAD:
 						{
-							menuHandlerService.clickAPI();
+							menuHandlerService.clickAPI(this.view);
 							break;
 						}
 					}
@@ -162,6 +170,7 @@ export default class Header extends JetView {
 	}
 
 	init(view) {
+		this.view = view;
 		this.loginWindow = $$(constants.ID_WINDOW_LOGIN) || webix.ui(loginWindow.getConfig(constants.ID_WINDOW_LOGIN));
 		this.signupWindow = $$(constants.ID_WINDOW_SIGNUP) || webix.ui(signupWindow.getConfig(constants.ID_WINDOW_SIGNUP));
 		this.recoveryWindow = $$(constants.ID_WINDOW_RECOVERY) || webix.ui(recoveryWindow.getConfig(constants.ID_WINDOW_RECOVERY));

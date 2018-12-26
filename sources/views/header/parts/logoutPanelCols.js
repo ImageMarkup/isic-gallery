@@ -3,7 +3,7 @@ import state from "../../../models/state";
 import constants from "../../../constants";
 
 function calcUserMenuWidth(str) {
-	return str && str.length ? str.length * 20 : 1;
+	return (str && str.length ? str.length * 20 : 1) <= 150 || 150;
 }
 
 function createConfig(firstName, lastName, imageUrl) {
@@ -20,11 +20,12 @@ function createConfig(firstName, lastName, imageUrl) {
 				{},
 				{
 					view: "menu",
+					openAction: "click",
 					width: calcUserMenuWidth(name),
 					data: [
 						{
 							id: "name",
-							value: name,
+							value: `<span style="margin-left: -10px; width: ${calcUserMenuWidth(name)}px;" title="${firstName} ${lastName}"}>${name}</span>`,
 							submenu: [
 								{id: "account", value: "<span class='webix_icon fa-cog'></span> My account"},
 								{$template: "Separator"},

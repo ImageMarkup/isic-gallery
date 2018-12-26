@@ -28,6 +28,7 @@ function getCheckboxUI(data) {
 
 	function handleAgregateButton(data, elements, newValue, app) {
 		const filtersInfo = [];
+		let selectNone = !newValue;
 		data.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, data.id);
 			const controlName = filterService.getOptionId(data.id, option);
@@ -40,7 +41,7 @@ function getCheckboxUI(data) {
 			params.remove = !newValue;
 			filtersInfo.push(params);
 		});
-		app.callEvent("filtersChanged", [filtersInfo]);
+		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
 	}
 	const selectAllLabel = {
 		view: "template",
@@ -96,6 +97,7 @@ function getCheckboxUI(data) {
 				value: 0,
 				name: id,
 				height: 28,
+				tooltip: `${optionName} (0)`,
 				labelWidth: 0,
 				filtersChangedData,
 				on: {

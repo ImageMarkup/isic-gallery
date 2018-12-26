@@ -12,8 +12,7 @@ function hasConsecutiveCharacters(str, maxLength) {
 		let nextCharPosInReferenceStr = referenceString.indexOf(nextChar);
 		if (currentCharPosInReferenceStr !== -1 && currentCharPosInReferenceStr + 1 === nextCharPosInReferenceStr) {
 			length++;
-		}
-		else {
+		} else {
 			length = 0;
 		}
 		if (length === maxLength) {
@@ -46,7 +45,7 @@ function validatePassword(value, firstName, lastName, email, login) {
 		patternHasSpecSymbols.test(value) &&
 		!isAllCharsTheSame(value) &&
 		!hasConsecutiveCharacters(value, 4) &&
-			// if login is empty then  we do not need to react on existing login in value
+		// if login is empty then  we do not need to react on existing login in value
 		(!login || value.toUpperCase().indexOf(login) === -1) &&
 		(!email || value.toUpperCase().indexOf(email) === -1) &&
 		(!firstName || value.toUpperCase().indexOf(firstName) === -1) &&

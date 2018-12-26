@@ -1,0 +1,44 @@
+<div class="main-text-info">
+    <h1>Studies</h1>
+    <h2>Get List of Studies</h2>
+    <ul>
+        <li>Endpoints used:
+            <ul>
+                <li><a href="https://isic-archive.com/api/v1/study">https://isic-archive.com/api/v1/study</a></li>
+            </ul>
+        </li>
+    </ul>
+    <p><strong>Arguments used for the /study endpoint:</strong></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Description</th>
+            <th>Example Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>limit</td>
+            <td>Limit on records returned</td>
+            <td>50 (default:50)</td>
+        </tr>
+        <tr>
+            <td>offset</td>
+            <td>Offset for records returned (i.e. for pagination)</td>
+            <td>50 (default: 0)</td>
+        </tr>
+        <tr>
+            <td>state</td>
+            <td>Filter for study status, either 'active' or 'complete'</td>
+            <td>complete (default: empty)</td>
+        </tr>
+        <tr>
+            <td>userId</td>
+            <td>Filter studies to those containing a particular user ID, or 'me'</td>
+            <td>me (default: empty)</td>
+        </tr>
+        </tbody>
+    </table>
+    <p>[ * denotes that argument is mandatory]</p>
+</div>

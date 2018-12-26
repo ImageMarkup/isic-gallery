@@ -1,0 +1,58 @@
+<div class="main-code-info">
+        <pre><code><span class="hljs-keyword">import</span> urllib
+    <span class="hljs-keyword">import</span> os
+    <span class="hljs-keyword">import</span> re
+
+    savePath = <span class="hljs-string">'ISICArchive/'</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(savePath):
+    os.makedirs(savePath)
+
+    <span class="hljs-comment">#Insert Username and Password Below</span>
+    api = ISICApi(username=<span class="hljs-string">"ISIC"</span>, password=<span class="hljs-string">"ARCHIVE"</span>)
+    studyList = api.getJson(<span class="hljs-string">'study?limit=50&amp;state=complete'</span>)
+    selectedStudy = studyList[<span class="hljs-number">1</span>][<span class="hljs-string">'_id'</span>] <span class="hljs-comment">#Just an example. Can also use selectedStudy = 'INSERT STUDY ID'</span>
+    listOfStudyAnnotations = api.getJson(<span class="hljs-string">'annotation?studyId='</span>+selectedStudy)
+    annotationId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'_id'</span>]
+    imageId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'imageId'</span>]
+    studyId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'studyId'</span>]
+    userId = listOfStudyAnnotations[<span class="hljs-number">0</span>][<span class="hljs-string">'userId'</span>]
+    annotationDetails = api.getJson(<span class="hljs-string">'annotation/'</span>+annotationId)
+    featureId = list(annotationDetails[<span class="hljs-string">'markups'</span>].keys())[<span class="hljs-number">0</span>] <span class="hljs-comment">#select the first feature returned</span>
+    featureIdForFilename = re.sub(<span class="hljs-string">r"[^A-Za-z]+"</span>, <span class="hljs-string">''</span>, featureId)
+
+    print(featureId)
+    maskFileResp = api.get(<span class="hljs-string">'annotation/%s/%s/mask'</span> % (annotationId, featureId))
+    maskFileResp.raise_for_status()
+    maskFileOutputPath = os.path.join(savePath, <span class="hljs-string">'%s_%s_%s_%s.jpg'</span> % (studyId, imageId, userId, featureIdForFilename))
+    <span class="hljs-keyword">with</span> open(maskFileOutputPath, <span class="hljs-string">'wb'</span>) <span class="hljs-keyword">as</span> maskFileOutputStream:
+    <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> maskFileResp:
+        maskFileOutputStream.write(chunk)
+
+    savePath = <span class="hljs-string">"ISICArchive/"</span>
+    <span class="hljs-keyword">if</span> (!dir.exists(savePath)){
+      dir.create(savePath)
+    }
+
+    desired_endpoint = <span class="hljs-string">"https://isic-archive.com/api/v1/study?limit=10"</span>
+    studyList = get_data(desired_endpoint, logindata)
+    selectedStudy = studyList$`_id`[<span class="hljs-number">2</span>] <span class="hljs-comment">#Just an example. Can also use selectedStudy = 'INSERT STUDY ID'</span>
+
+    desired_endpoint = paste0(<span class="hljs-string">'https://isic-archive.com/api/v1/annotation?studyId='</span>, selectedStudy)
+    listOfStudyAnnotations = get_data(desired_endpoint, logindata)
+    annotationId = listOfStudyAnnotations$`_id`[<span class="hljs-number">1</span>]
+    imageId = listOfStudyAnnotations$imageId[<span class="hljs-number">1</span>]
+    studyId = listOfStudyAnnotations$studyId[<span class="hljs-number">1</span>]
+    userId = listOfStudyAnnotations$userId[<span class="hljs-number">1</span>]
+
+    desired_endpoint = paste0(<span class="hljs-string">'https://isic-archive.com/api/v1/annotation/'</span>, annotationId)
+    annotationDetails = get_data(desired_endpoint, logindata)
+
+    featureId = names(annotationDetails$markups)[<span class="hljs-number">2</span>]
+    featureIdForFilename = gsub(featureId, pattern=<span class="hljs-string">"[^A-za-z]"</span>, replacement=<span class="hljs-string">""</span>)
+
+    getURL = paste0(<span class="hljs-string">"https://isic-archive.com/api/v1/annotation/"</span>, annotationId, <span class="hljs-string">"/"</span>, featureId, <span class="hljs-string">"/mask"</span>)
+    saveFile = paste0(savePath, studyId, <span class="hljs-string">"_"</span>, imageId, <span class="hljs-string">"_"</span>, userId, <span class="hljs-string">"_"</span>, featureIdForFilename, <span class="hljs-string">".jpg"</span>)
+    download.file(url=getURL, destfile = saveFile, quiet = <span class="hljs-literal">TRUE</span>, method=<span class="hljs-string">"auto"</span>, mode=<span class="hljs-string">"wb"</span>)
+</code></pre>
+</div>

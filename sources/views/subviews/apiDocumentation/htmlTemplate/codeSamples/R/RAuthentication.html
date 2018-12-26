@@ -1,0 +1,23 @@
+<div class="main-code-info">
+    <pre><code><span class="hljs-keyword">library</span>(httr)
+    <span class="hljs-keyword">library</span>(jsonlite)
+    <span class="hljs-keyword">library</span>(gtools)
+
+    login_ = <span class="hljs-keyword">function</span>(username, password) {
+      isicauth = httr::GET(url=<span class="hljs-string">"https://isic-archive.com/api/v1/user/authentication"</span>, config=c(authenticate(user=username, password = password)),verbose())
+      logindata = fromJSON(rawToChar(isicauth$content))
+      <span class="hljs-keyword">return</span>(logindata)
+    }
+
+    get_data = <span class="hljs-keyword">function</span>(desired_endpoint_url, logindata) {
+      data = httr::GET(url=desired_endpoint_url, config=c(progress(<span class="hljs-string">"down"</span>), accept_json(), add_headers(<span class="hljs-string">"Girder-Token"</span> = logindata$authToken$token)))
+      data = fromJSON(rawToChar(data$content))
+      <span class="hljs-keyword">return</span>(data)
+    }
+
+    username=<span class="hljs-string">""</span> <span class="hljs-comment"># Insert ISIC Archive Username</span>
+    password = .rs.askForPassword(<span class="hljs-string">"password"</span>) <span class="hljs-comment">#this funtion is specific to R-Studio. If not using R-Studio then just replace with password as string</span>
+    logindata = login_(username, password)
+    remove(password)
+    </code></pre>
+</div>

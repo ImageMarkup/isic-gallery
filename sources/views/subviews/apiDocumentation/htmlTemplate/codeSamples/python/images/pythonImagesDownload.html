@@ -1,0 +1,25 @@
+<div class="main-code-info">
+    <pre><code><span class="hljs-keyword">import</span> urllib
+    <span class="hljs-keyword">import</span> os
+
+    <span class="hljs-comment"># Initialize the API; no login is necessary for public data</span>
+    api = ISICApi()
+    savePath = <span class="hljs-string">'ISICArchive/'</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(savePath):
+        os.makedirs(savePath)
+
+    imageList = api.getJson(<span class="hljs-string">'image?limit=100&amp;offset=0&amp;sort=name'</span>)
+
+    print(<span class="hljs-string">'Downloading %s images'</span> % len(imageList))
+    imageDetails = []
+    <span class="hljs-keyword">for</span> image <span class="hljs-keyword">in</span> imageList:
+    print(image[<span class="hljs-string">'_id'</span>])
+    imageFileResp = api.get(<span class="hljs-string">'image/%s/download'</span> % image[<span class="hljs-string">'_id'</span>])
+    imageFileResp.raise_for_status()
+    imageFileOutputPath = os.path.join(savePath, <span class="hljs-string">'%s.jpg'</span> % image[<span class="hljs-string">'name'</span>])
+    <span class="hljs-keyword">with</span> open(imageFileOutputPath, <span class="hljs-string">'wb'</span>) <span class="hljs-keyword">as</span> imageFileOutputStream:
+        <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> imageFileResp:
+            imageFileOutputStream.write(chunk)
+</code></pre>
+</div>

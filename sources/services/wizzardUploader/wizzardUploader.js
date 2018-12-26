@@ -3,17 +3,39 @@ import util from "../../utils/util";
 import storage from "../../models/wizardUploaderStorage";
 
 class WizzardUploaderService {
-	constructor(view, form, uploader, removeButton, exportButton, clearSessionButton) {
+	constructor(view, form, uploader, removeButton, exportButton, clearSessionButton, previewTemplate, dropArea) {
 		this._view = view;
 		this._form = form;
 		this._uploader = uploader;
 		this._removeButton = removeButton;
 		this._exportButton = exportButton;
 		this._clearSessionButton = clearSessionButton;
+		this._previewTemplate = previewTemplate;
+		this._dropArea = dropArea;
 		this._init();
 	}
 
 	_init() {
+		this._form.attachEvent("onAfterValidation", (result, values) => {
+			if (!result) {
+				for (let key in values) {
+					if (key === "mel_thick_mm") {
+						const thicknessTextView = this._form.queryView({name: key});
+						thicknessTextView.define("bottomPadding", 30);
+						thicknessTextView.resize();
+					}
+				}
+			}
+		});
+
+		this._form.attachEvent("onChange", () => {
+			if (this._form.isDirty()) {
+				if (!this._clearSessionButton.isEnabled()) {
+					this._clearSessionButton.enable();
+				}
+			}
+		});
+
 		if (storage.getFilesInfoFromStorage()) {
 			this._exportButton.enable();
 		}
@@ -46,6 +68,8 @@ class WizzardUploaderService {
 						self._clearForm();
 						self._removeButton.disable();
 						self._exportButton.disable();
+						self._dropArea.show(false, false);
+						self._clearSessionButton.disable();
 					}
 				}
 			});
@@ -59,22 +83,24 @@ class WizzardUploaderService {
 			this._removeFiles();
 		});
 
-		this._uploader.attachEvent("onBeforeFileDrop", (files) => {
-			if (files.length !== 1 || !files[0].type) {
-				webix.alert({type: "alert-warning", text: "You can upload only one image"});
-				return false;
-			}
-		});
-
 		this._uploader.attachEvent("onAfterFileAdd", () => {
 			const fileData = this._uploader.files.getItem(this._uploader.files.getFirstId());
 			this._form.elements.filename.setValue(fileData.name);
+			const url = URL.createObjectURL(fileData.file);
+			this._previewTemplate.setValues({src: url});
+			this._previewTemplate.show(false, false);
 			this._removeButton.enable();
+			let datasetInputNode = document.getElementsByTagName("INPUT")[0];
+			let inputWidth = datasetInputNode.offsetWidth;
 		});
 
 		// This mark is needed for correct processing several files after drag and drop. We should show alert only once. But "onBeforeFileAdd" calls for every attempt
 		// this.isNeedShowNotOneFileAlert = false;
 		this._uploader.attachEvent("onBeforeFileAdd", (item) => {
+			if (!(item.type === "png" || item.type === "jpg" || item.type === "jpeg")) {
+				webix.alert({type: "alert-warning", text: "You can upload only one image"});
+				return false;
+			}
 			if (!item.size) {
 				webix.alert({type: "alert-warning", text: "Please, select not empty file"});
 				return false;
@@ -119,12 +145,13 @@ class WizzardUploaderService {
 							storage.addFileInfoToStorage(preparedValues);
 							storage.saveSignature(this._form.elements.signature.getValue());
 							this._view.app.callEvent("imageAdded");
+							this._uploader.files.clearAll();
+							this._removeButton.disable();
+							this._dropArea.show(false, false);
 							this._clearForm();
 						});
 					}
 				});
-				this._uploader.files.clearAll();
-				this._removeButton.disable();
 			}
 		});
 		this._initFormRestrictions();
@@ -159,6 +186,7 @@ class WizzardUploaderService {
 		this._form.elements.filename.setValue("");
 		this._uploader.files.clearAll(); // remove all files from uploader
 		this._removeButton.disable();
+		this._dropArea.show(false, false);
 	}
 
 	_initFormRestrictions() {
@@ -216,6 +244,7 @@ class WizzardUploaderService {
 		});
 
 		this._form.elements.diagnosis.attachEvent("onChange", (newv) => {
+			this._setLabelForThickness();
 			if (newv === "benign") {
 				this._form.elements.mel_thick_mm.setValue("");
 				this._form.elements.thickness_categorical.setValue("not applicable");
@@ -240,6 +269,9 @@ class WizzardUploaderService {
 				this._form.elements.mel_ulcer.setValue("");
 				this._form.elements.nevus_type.setValue("not applicable");
 				this._form.elements.thickness_categorical.setValue("");
+				if (newv === "melanoma") {
+					this._setLabelForThickness(true);
+				}
 			}
 			if (newv === "nevus") {
 				this._form.elements.benign_malignant.setValue("benign");
@@ -298,6 +330,15 @@ class WizzardUploaderService {
 	_exportCsv() {
 		const data = storage.getFilesInfoFromStorage();
 		util.exportCsv(this._prepareDataForExportCsv(data));
+	}
+
+	_setLabelForThickness(asterisk) {
+		if (asterisk) {
+			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical) <span style='color: red;'>*</span> "
+		} else {
+			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical)"
+		}
+		this._form.elements.thickness_categorical.refresh();
 	}
 }
 

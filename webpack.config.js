@@ -20,6 +20,7 @@ module.exports = function (env) {
 			publicPath: "/",
 			filename: "app.js"
 		},
+		mode: "production",
 		devtool: "inline-source-map",
 		module: {
 			rules: [
@@ -64,6 +65,10 @@ module.exports = function (env) {
 				"jet-locales": path.resolve(__dirname, "sources/locales")
 			}
 		},
+		performance: {
+			maxAssetSize: 100000000,
+			maxEntrypointSize: 400000000
+		},
 		plugins: [
 			new ExtractTextPlugin("app.css"),
 			new webpack.DefinePlugin({
@@ -79,10 +84,12 @@ module.exports = function (env) {
 				{from: path.join(__dirname, "sources/images"), to: "sources/images"},
 				{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"}
 			]),
+
 			new webpack.EnvironmentPlugin({
 				ISIC_SITE_URL: "https://isic-archive.com/",
-				ISIC_BASE_API_URL: "https://isic-archive.com/api/v1/",
+				ISIC_BASE_API_URL: "https://sandbox.isic-archive.com/api/v1/",
 			})
+
 		],
 		devServer: {
 			host: appconfig.devHost,
@@ -101,4 +108,4 @@ module.exports = function (env) {
 	}
 
 	return config;
-}
+};

@@ -1,6 +1,5 @@
 /* BOXES STYLES */
 
-
 /* accordions (datasets, gallery pages) */
 .accordion-item.webix_accordionitem,
 .accordion-item-pale.webix_accordionitem {
@@ -112,7 +111,8 @@
     font-weight: 500;
   }
   .item-content-value {
-    margin-left: 100px;
+    margin-left: 200px;
+    display: block;
   }
 
   .feature-options-table {
@@ -240,6 +240,36 @@
   }
 }
 
+
+/* item-content-table */
+.item-content-table {
+  padding: 0 20px;
+
+  .item-content-row {
+    border-top: 1px solid @dark-main-bg;
+    padding: 5px 0;
+    .cf();
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+
+  .item-content-label {
+    float: left;
+    width: 95px;
+    margin-right: 5px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-content-value {
+    margin-left: 200px;
+    display: block;
+  }
+}
 
 
 /* tabview */

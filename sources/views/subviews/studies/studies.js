@@ -102,19 +102,6 @@ export default class StudiesView extends JetView {
 							</div>
 						</div>`;
 			},
-			on: {
-				onAfterLoad() {
-					if (!this.count()) { // if no data is available
-						webix.extend(this, webix.OverlayBox);
-						this.showOverlay("<div style='overlay'>There is no data</div>");
-						this.define("autoheight", true); // hide scroll
-					}
-					else {
-						this.define("autoheight", false); // see result with scroll
-					}
-					this.refresh();
-				}
-			},
 			activeContent: {
 				goToStudyButton: {
 					view: "button",
@@ -126,14 +113,10 @@ export default class StudiesView extends JetView {
 							const dataview = $$(DATAVIEW_ID);
 							const itemId = dataview.locate(e);
 							const item = dataview.getItem(itemId);
-							console.log('dataview', dataview);
-							console.log('itemId', itemId);
-							console.log('item', item);
-							util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${item._id}`);
 							StudiesService.getFirstAnnotationId(item)
 								.then((annotationId) => {
 									if (annotationId) {
-										//util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${annotationId}`);
+										util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${item._id}`);
 									}
 									else {
 										webix.message({
@@ -184,7 +167,10 @@ export default class StudiesView extends JetView {
 							const thisDataview = $$(DATAVIEW_ID);
 							const itemId = thisDataview.locate(e);
 							const item = thisDataview.getItem(itemId);
-							thisDataview.$scope.app.show(`${constants.PATH_MULTIRATER}?studyId=${item._id}`);
+							const imageId = item && item.images.length ? item.images[0]._id : "";
+							const token = authService.getToken();
+							const url = `${constants.URL_MULTIRATER}?id=${imageId}&sid=${item._id}&uid=${token}`;
+							util.openInNewTab(url);
 						}
 					}
 				}
