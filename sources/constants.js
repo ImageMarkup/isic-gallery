@@ -1,5 +1,3 @@
-import appconfig from "../appconfig.json";
-
 export default {
 	CONTENT_WIDTH: 1220,
 
