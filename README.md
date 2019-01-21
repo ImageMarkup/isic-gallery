@@ -19,5 +19,6 @@ Example: ```https://stage.isic-archive.com/api/v1/``` and ```https://stage.isic-
 
 - ```npm run build```
 - copy the "codebase" folder to the production server
+  - Configure your HTTP server to ensure that files served from `codebase/sources/filesForDownload` are given a `Content-Disposition: attachment` header
 
 
