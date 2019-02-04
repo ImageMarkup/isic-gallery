@@ -37,6 +37,8 @@ function _prepereListDataForAPI(data) {
 
 const list = {
 	view: "activeList",
+	autoheight: true,
+	yCount: 5,
 	template(obj, common) {
 		let iconNameHtml = "";
 		if (obj._modelType === "user") {
@@ -66,22 +68,20 @@ const list = {
 					</div>`;
 	},
 	on: {
-		onBeforeRender() {
-			const count = this.count();
-			if (count < 5) {
-				this.define({autoheight: true, yCount: count});
-			}
-			else {
-				this.define({yCount: 5, autoheight: false});
-			}
-		},
 		onBeforeAdd(id, item) {
 			item.level = DEFAULT_ACCESS_LEVEL;
 		}
 	},
 	onClick: {
 		"remove-user": function (e, id) {
-			this.remove(id);
+			if (this.data.count() > 1) {
+				this.remove(id);
+			}
+			else {
+				webix.alert({
+					text: "At least one user is required"
+				});
+			}
 			return false; // blocks the default click behavior
 		}
 	},
@@ -114,22 +114,24 @@ const searchFieldset = {
 				labelWidth: 150,
 				options: [
 					{
-						id: "prefix", value: '<span class="tooltip-container tooltip-search-prefix">' +
+						id: "prefix",
+						value: '<span class="tooltip-container tooltip-search-prefix">' +
 					'<span class="tooltip-title">Search by prefix</span>' +
 					'<span class="tooltip-block tooltip-block-xs tooltip-block-right">You are searching by prefix. Start typing the first letters of whatever you are searching for.</span>' +
-					'</span>'
+					"</span>"
 					},
 					{
-						id: "text", value: '<span class="tooltip-container tooltip-search-text">' +
+						id: "text",
+						value: '<span class="tooltip-container tooltip-search-text">' +
 					'<span class="tooltip-title">Full text search</span>' +
 					'<span class="tooltip-block tooltip-block-xs tooltip-block-right">By default, search results will be returned if they contain any of the terms of the search. If you wish to search for documents containing all of the terms, place them in quotes. Examples:' +
 					'<ul class="tooltip-block-list">' +
 					'<li><span class="code">cat dog</span> returns documents containing either "cat" or "dog".</li>' +
 					'<li><span class="code">"cat" "dog"</span> returns documents containing both "cat" and "dog".</li>' +
 					'<li><span class="code">"cat dog"</span> returns documents containing the phrase "cat dog".</li>' +
-					'</ul>' +
-					'</span>' +
-					'</span>'
+					"</ul>" +
+					"</span>" +
+					"</span>"
 					}
 				]
 			},
@@ -158,7 +160,7 @@ const searchFieldset = {
 							return `<span class="webix_icon fa-users"></span> ${obj.name}`;
 						},
 						on: {
-							onAfterSelect(id) {
+							onItemClick(id) {
 								const item = this.getItem(id);
 								const existingUsersList = $$(list.id);
 								if (existingUsersList.getItem(item._id)) {
@@ -272,14 +274,22 @@ const form = {
 								onItemClick() {
 									const thisForm = this.getFormView();
 									const permissionsList = $$(list.id);
-									const usersList = _prepereListDataForAPI(permissionsList.data.serialize());
-									const params = {
-										access: usersList,
-										"public": thisForm.getValues().public
-									};
-									// form.config.datasetId has been added after window initialisation
-									ajax.putDatasetAccess(thisForm.config.datasetId, params);
-									this.getTopParentView().hide();
+									const ownersArray = permissionsList.data.find(obj => obj.level.toString() === "2");
+									if (ownersArray.length > 0) {
+										const usersList = _prepereListDataForAPI(permissionsList.data.serialize());
+										const params = {
+											access: usersList,
+											public: thisForm.getValues().public
+										};
+										// form.config.datasetId has been added after window initialisation
+										ajax.putDatasetAccess(thisForm.config.datasetId, params);
+										this.getTopParentView().hide();
+									}
+									else {
+										webix.alert({
+											text: "At least one owner is required"
+										});
+									}
 								}
 							}
 

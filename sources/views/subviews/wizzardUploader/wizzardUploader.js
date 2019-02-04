@@ -4,10 +4,13 @@ import WizzardUploadService from "../../../services/wizzardUploader/wizzardUploa
 import auth from "../../../services/auth";
 import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
 import constants from "../../../constants";
+import "../../components/templateWithImages";
 
 const MARGIN_FORM = 15;
 
+const ID_TEMPLATE_PREVIEW = "template-image-preview";
 const ID_TEMPLATE_DROP_AREA = "drag-and-drop-area-template";
+const ID_DROP_AREA_PANEL = "drop-area-panel";
 const ID_TEMPLATE_UPLOADER_BODY = "uploader-body-template";
 const ID_UPLOADER = "uploader-api-only";
 const ID_FORM = "wizzard-uploader-form";
@@ -26,19 +29,35 @@ export default class WizzardUploaderView extends JetView {
 			css: "uploader-panel",
 			rows: [
 				{
-					align: "absolute",
-					css: "drag-and-drop-area",
-					body: {
-						id: ID_TEMPLATE_DROP_AREA,
-						template: `<p class="drag-and-drop-area-inner">Drop Files to Upload or <span class="link click-here-link">Click Here</span></p>`,
-						width: 360,
-						height: 360,
-						onClick: {
-							"click-here-link": () => {
-								$$(ID_UPLOADER).fileDialog();
+					view: "multiview",
+					cells: [
+						{
+							align: "absolute",
+							css: "drag-and-drop-area",
+							id: ID_DROP_AREA_PANEL,
+							body: {
+								id: ID_TEMPLATE_DROP_AREA,
+								template: "<p class='drag-and-drop-area-inner'>Drop Files to Upload or <span class='link click-here-link'>Click Here</span></p>",
+								width: 360,
+								height: 360,
+								onClick: {
+									"click-here-link": () => {
+										$$(ID_UPLOADER).fileDialog();
+									}
+								}
 							}
+						},
+						{
+							id: ID_TEMPLATE_PREVIEW,
+							view: "templateWithImages",
+							css: "image-width-100",
+							template(data) {
+								return `<img src="${data.src}" alt="">`;
+							},
+							borderless: true,
+							autoheight: true
 						}
-					}
+					]
 				},
 				{
 					margin: 20,
@@ -97,6 +116,7 @@ export default class WizzardUploaderView extends JetView {
 							id: ID_BUTTON_CLEAR_SESSION,
 							css: "btn-contour",
 							width: 105,
+							disabled: true,
 							value: "Clear session"
 						}
 					]
@@ -113,6 +133,7 @@ export default class WizzardUploaderView extends JetView {
 					view: "richselect",
 					css: "select-field",
 					name: "dataset",
+					required: true,
 					label: "Dataset",
 					invalidMessage: "Choose Dataset",
 					options: {
@@ -123,7 +144,7 @@ export default class WizzardUploaderView extends JetView {
 				},
 				{
 					view: "text",
-					css: "text-field",
+					css: "text-field name-input-overflow",
 					name: "filename",
 					label: "Filename",
 					disabled: true,
@@ -132,8 +153,8 @@ export default class WizzardUploaderView extends JetView {
 				{
 					view: "text",
 					css: "text-field",
-					//type: "number",
 					name: "age",
+					required: true,
 					invalidMessage: "Incorrect value. Please enter whole number from 1 to 99, enter 0 if age is unknown",
 					label: "Age"
 				},
@@ -180,6 +201,7 @@ export default class WizzardUploaderView extends JetView {
 					view: "richselect",
 					css: "select-field",
 					name: "diagnosis",
+					required: true,
 					label: "Diagnosis",
 					invalidMessage: "Diagnosis is required",
 					options: [
@@ -198,6 +220,7 @@ export default class WizzardUploaderView extends JetView {
 					css: "select-field",
 					name: "benign_malignant",
 					label: "Benign/Malignant",
+					required: true,
 					invalidMessage: "Benign/Malignant is required",
 					options: [
 						{id: "", value: "", $empty: true},
@@ -284,10 +307,9 @@ export default class WizzardUploaderView extends JetView {
 								{
 									view: "text",
 									css: "text-field multiline-label",
-									//type: "number",
 									name: "mel_thick_mm",
 									label: "Thickness <br> (in millimeters)",
-									invalidMessage: "Empty or incorrect value"
+									invalidMessage: "Incorrect value. Please enter number from 0 to 999. Can be fractional."
 								}
 							]
 						},
@@ -349,7 +371,7 @@ export default class WizzardUploaderView extends JetView {
 				{
 					cols: [
 						{
-							template: "<span class='main-subtitle3 line-height-38'>Signed by</span>",
+							template: "<span class='main-subtitle3 line-height-38'>Signed by <span style='color: red;'>*</span></span>",
 							borderless: true,
 							autoheight: true,
 							width: WIDTH_LABEL
@@ -375,10 +397,14 @@ export default class WizzardUploaderView extends JetView {
 				},
 				{
 					cols: [
+						{
+							template: `<div style="padding-top: 11px;"><span style="color: red;">*</span> Indicates required field</div>`,
+							borderless: true
+						},
 						{},
 						{
 							view: "button",
-							css: "btn-contour",
+							css: "btn",
 							width: 105,
 							value: "Submit",
 							name: "submit"
@@ -469,7 +495,9 @@ export default class WizzardUploaderView extends JetView {
 			this.uploader,
 			$$(ID_BUTTON_DELETE_FILE),
 			$$(ID_BUTTON_EXPORT_CSV),
-			$$(ID_BUTTON_CLEAR_SESSION)
+			$$(ID_BUTTON_CLEAR_SESSION),
+			$$(ID_TEMPLATE_PREVIEW),
+			$$(ID_DROP_AREA_PANEL)
 		);
 	}
 
@@ -489,10 +517,15 @@ export default class WizzardUploaderView extends JetView {
 				image_type: lastStoredFile.image_type,
 				diagnosis_confirm_type: lastStoredFile.diagnosis_confirm_type
 			});
+			$$(ID_BUTTON_CLEAR_SESSION).enable();
 		}
 
 		if (!auth.canCreateDataset()) {
 			auth.showMainPage();
 		}
+	}
+
+	getDiagnosisSelectView() {
+		return this.getRoot().queryView({name: "diagnosis"});
 	}
 }

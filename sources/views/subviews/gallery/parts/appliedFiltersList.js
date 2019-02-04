@@ -35,7 +35,7 @@ const list = {
 					</span>`;
 	},
 	onClick: {
-		"remove-filter-icon": function(e, id) {
+		"remove-filter-icon": function (e, id) {
 			const clickedItem = this.getItem(id);
 			this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
 				view: clickedItem.view,

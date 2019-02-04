@@ -1,10 +1,10 @@
 function togglePasswordVisibility(elem) {
 	if (elem.config.icon === "eye") {
-		elem.define("type", "base");
+		elem.define("type", "password");
 		elem.define("icon", "eye-slash");
 	}
 	else {
-		elem.define("type", "password");
+		elem.define("type", "base");
 		elem.define("icon", "eye");
 	}
 	elem.refresh();
@@ -20,7 +20,7 @@ webix.protoUI({
 	},
 	defaults: {
 		type: "password",
-		icon: "eye"
+		icon: "eye-slash"
 	}
 }, webix.ui.search);
 

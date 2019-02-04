@@ -54,6 +54,11 @@ svg.svg {
 img, iframe {
   max-width: 100%;
 }
+.image-width-100 {
+  img {
+    width: 100%;
+  }
+}
 
 strong, b {
   font-weight: 500;
@@ -212,7 +217,9 @@ a, .link {
   .collapser-btn {
     border: none;
     cursor: pointer;
-
+    .webix_template {
+      position: relative;
+    }
     .webix_icon {
       font-weight: 600;
       text-align: center;
@@ -261,6 +268,7 @@ a, .link {
     &.tooltip-block-right {
       &:after,
       &:before {
+        z-index: 100000;
         content: "\2666";
         width: 40px;
         height: 40px;

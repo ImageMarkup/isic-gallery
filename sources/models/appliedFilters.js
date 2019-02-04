@@ -2,6 +2,39 @@ import filterService from "../services/gallery/filter";
 import state from "../models/state";
 
 const appliedFilters = new webix.DataCollection();
+const removedFilters = new webix.DataCollection();
+const collapsedRows = new webix.DataCollection();
+const appliedFilterBySearch = new webix.DataCollection();
+let filterValue = "";
+let filterByName;
+
+function getCollapsedRowsCollection() {
+	return collapsedRows;
+}
+
+function getAppliedFilterBySearchCollection() {
+	return appliedFilterBySearch;
+}
+
+function setAppliedFiltersToLocalStorage(appliedFiltersToStorage) {
+	webix.storage.local.put("appliedFiltersStorage", appliedFiltersToStorage);
+}
+
+function getAppliedFiltersFromLocalStorage() {
+	return webix.storage.local.get("appliedFiltersStorage");
+}
+
+function getRemovedFiltersCollection() {
+	return removedFilters;
+}
+
+function setFilterByName(filter) {
+	filterByName = filter;
+}
+
+function getFilterByName() {
+	return filterByName;
+}
 
 function prepareDataForList() {
 	let result = [];
@@ -52,7 +85,7 @@ function processNewFilter(filter) {
 		{
 			let checkboxId = filterService.getOptionId(filter.key, filter.value);
 			if (filter.remove) {
-				appliedFilters.remove(checkboxId);
+					appliedFilters.remove(checkboxId);
 			}
 			else {
 				filter.id = checkboxId;
@@ -279,13 +312,30 @@ function getFiltersArray() {
 	return Object.values(appliedFilters.data.pull);
 }
 
+function setFilterValue(value) {
+	filterValue = value;
+}
+
+function getFilterValue() {
+	return filterValue;
+}
+
 export default {
 	getFiltersArray,
 	processNewFilters,
 	prepareDataForList,
 	getConditionsForApi,
 	clearAll,
-	count
+	count,
+	getFilterByName,
+	setFilterByName,
+	getRemovedFiltersCollection,
+	setAppliedFiltersToLocalStorage,
+	getAppliedFiltersFromLocalStorage,
+	getCollapsedRowsCollection,
+	getAppliedFilterBySearchCollection,
+	setFilterValue,
+	getFilterValue
 };
 
 /* example of conditions for API */

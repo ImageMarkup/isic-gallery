@@ -2,6 +2,7 @@ import ajaxActions from "../ajaxActions";
 import state from "../../models/state";
 import authService from "../auth";
 import {plugins} from "webix-jet";
+import utils from "../../utils/util";
 
 class StudiesService {
 	constructor(view, dataview, toolbar, progressChart) {
@@ -32,12 +33,17 @@ class StudiesService {
 		this._dataview.attachEvent("onAfterLoad", () => {
 			this._dataview.enable();
 			this._view.hideProgress();
+			let dataviewNode = this._dataview.getNode();
+			let dataviewOverflown = utils.isOverflown(dataviewNode);
+			if (dataviewOverflown) {
+				this._dataview.define("scroll", "true");
+			} else {
+				this._dataview.define("scroll", "false");
+			}
 			if (!this._dataview.count()) { // if no data is available
-				this._dataview.showOverlay("<div style='overlay'>There is no data</div>");
-				this._dataview.define("autoheight", true); // hide scroll
+				this._dataview.showOverlay("<div style='height: 200px; font-size: 17px; font-weight: bold;'>There is no data</div>");
 			}
 			else {
-				this._dataview.define("autoheight", false); // see result with scroll
 				this._dataview.hideOverlay();
 			}
 			this._dataview.refresh();
@@ -72,7 +78,6 @@ class StudiesService {
 		this._view.showProgress({type: "icon"});
 		this._dataview.disable();
 
-		// TODO: change this code if api call response will have state for every study
 		if (!params.state) {
 			const activeStudiesPromise = ajaxActions.getStudies(webix.copy(params, {state: "active"}));
 			const completedStudiesPromise = ajaxActions.getStudies(webix.copy(params, {state: "complete"}));

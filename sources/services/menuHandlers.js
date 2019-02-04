@@ -3,11 +3,15 @@ import util from "../utils/util";
 import constants from "../constants";
 import authService from "../services/auth";
 import uploadWindow from "../views/header/windows/uploadTypeWindow";
-import apiWindow from "../views/header/windows/apiWindow";
+import ApiWindow from "../views/header/windows/apiWindow";
 
 export default {
 	clickAbout() {
 		state.app.show(constants.PATH_ABOUT_ISIC_ARCHIVE);
+	},
+
+	clickForum() {
+		util.openInNewTab(constants.URL_FORUM);
 	},
 
 	clickGallery() {
@@ -80,9 +84,9 @@ export default {
 		state.app.show(constants.PATH_MAIN);
 	},
 
-	clickAPI() {
-		const win = $$(constants.ID_WINDOW_API) || webix.ui(apiWindow.getConfig(constants.ID_WINDOW_API));
-		win.show();
+	clickAPI(thisView) {
+		let apiWindow = thisView.$scope.ui(ApiWindow);
+		apiWindow.showWindow()
 	},
 
 	clickTermsOfUse() {

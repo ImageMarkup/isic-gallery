@@ -1,6 +1,5 @@
 import authService from "../services/auth";
 import axios from "../../node_modules/axios/dist/axios.min";
-import appconfig from "../../appconfig.json";
 
 const BASE_API_URL = process.env.ISIC_BASE_API_URL;
 
@@ -21,9 +20,11 @@ function parseError(xhr) {
 			}
 			catch (e) {
 				message = xhr.response;
-				console.log("Not JSON response for request to " + xhr.responseURL);
+				console.log(`Not JSON response for request to ${xhr.responseURL}`);
 			}
-			webix.message({type: "error", text: message, expire: -1});
+			const regexForId = /".*?" /;
+			const messageToShow = message.replace(regexForId, "");
+			webix.message({text: messageToShow, expire: 5000});
 			break;
 		}
 	}
@@ -71,14 +72,14 @@ class AjaxActions {
 		}
 		return webix.ajax()
 			.headers({
-				"Authorization": `Basic ${hash}`
+				Authorization: `Basic ${hash}`
 			})
-			.get(`${BASE_API_URL}/user/authentication`)
+			.get(`${BASE_API_URL}user/authentication`)
 			.then(result => this._parseData(result));
 	}
 
 	logout() {
-		return webix.ajax().del(`${BASE_API_URL}/user/authentication`)
+		return webix.ajax().del(`${BASE_API_URL}user/authentication`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -89,9 +90,28 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
+	postUserTermsOfUse(acceptTerms) {
+		return this._ajax().post(`${BASE_API_URL}user/acceptTerms`, acceptTerms)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	getUsers(userParams) {
+		const params = userParams ? {
+			limit: userParams.limit || 26,
+			offset: userParams.offset || 0,
+			sort: userParams.sort || "lastName",
+			sortdir: userParams.sortdir || "1"
+		} : {};
+
+		return this._ajaxGet(`${BASE_API_URL}user`, params)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
 	getStudy(id) {
-		return this._ajaxGet(`${BASE_API_URL}/study/${id}`)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}study/${id}`)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -110,7 +130,7 @@ class AjaxActions {
 			params.userId = sourceParams.userId;
 		}
 		return this._ajaxGet(`${BASE_API_URL}/study`, params)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -119,16 +139,17 @@ class AjaxActions {
 			limit: sourceParams.limit || 0,
 			offset: sourceParams.offset || 0,
 			sort: sourceParams.sort || "_id",
-			sortdir: sourceParams.sortdir || "-1"
+			sortdir: sourceParams.sortdir || "-1",
+			detail: sourceParams.detail || false
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/dataset`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}dataset`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getDatasetItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/dataset/${id}`)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}dataset/${id}`)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -139,14 +160,14 @@ class AjaxActions {
 			sort: sourceParams.sort || "name",
 			sortdir: sourceParams.sortdir || "1"
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/featureset`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}featureset`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getFeaturesetItem(id) {
-		return webix.ajax().get(`${BASE_API_URL}/featureset/${id}`)
-			.fail(this._parseError)
+		return webix.ajax().get(`${BASE_API_URL}featureset/${id}`)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -167,22 +188,22 @@ class AjaxActions {
 		if (sourceParams && sourceParams.filter) {
 			params.filter = sourceParams.filter;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/image`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}image`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getImageItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/image/${id}`)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}image/${id}`)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
-	/*getResource(name) {
+	/* getResource(name) {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1"; // TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const url = `${BASE_API_URL}/resource/search?mode=prefix&types=%5B%22item%22%5D&q=${name}`;
 		return this._ajaxGet(url)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -190,7 +211,7 @@ class AjaxActions {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const folderUrl = `${BASE_API_URL}/folder/${folderId}`;
 		return this._ajaxGet(folderUrl)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -198,7 +219,7 @@ class AjaxActions {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const url = `${BASE_API_URL}/item/${itemId}/tiles`;
 		return this._ajaxGet(url)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -206,14 +227,14 @@ class AjaxActions {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const filesUrl = `${BASE_API_URL}/item/${itemId}/files`;
 		return this._ajaxGet(filesUrl)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 	downloadFile(fileId) {
 		let BASE_API_URL = "http://dermannotator.org:8080/api/v1"; // TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
 		const downloadUrl = `${BASE_API_URL}/file/${fileId}/download`;
 		return this._ajaxGet(downloadUrl)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}*/
 
@@ -225,14 +246,14 @@ class AjaxActions {
 			sortdir: sourceParams.sortdir || "-1",
 			imageId: sourceParams.imageId
 		} : {};
-		return this._ajaxGet(`${BASE_API_URL}/segmentation`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}segmentation`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getSegmentationItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}/segmentation/${id}`)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}segmentation/${id}`)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -241,8 +262,8 @@ class AjaxActions {
 		if (filter) {
 			params.filter = filter;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/image/histogram`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}image/histogram`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -259,14 +280,14 @@ class AjaxActions {
 		if (sourceParams && sourceParams.state) {
 			params.state = sourceParams.state;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/annotation`, params)
-			.fail(this._parseError)
+		return this._ajaxGet(`${BASE_API_URL}annotation`, params)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
 	getSegmentationMask(id) {
-		return webix.ajax().response("blob").get(`${BASE_API_URL}/segmentation/${id}/mask`)
-			.fail(this._parseError);
+		return webix.ajax().response("blob").get(`${BASE_API_URL}segmentation/${id}/mask`)
+			.fail(parseError);
 	}
 
 	search(sourceParams) {
@@ -276,7 +297,7 @@ class AjaxActions {
 			types: sourceParams && sourceParams.types ? sourceParams.types : ["user"]
 		};
 		return this._ajaxGet(`${BASE_API_URL}resource/search`, params)
-			.fail(this._parseError)
+			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
@@ -342,7 +363,7 @@ class AjaxActions {
 			return;
 		}
 		const params = {
-			"new": sourceParams.new,
+			new: sourceParams.new,
 			old: sourceParams.old
 		};
 		return webix.ajax().put(`${BASE_API_URL}user/password`, params)
@@ -436,6 +457,23 @@ class AjaxActions {
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
+	// batchUpload zip (dataset)
+	// addZipMetadata(zipId, sourceParams) {
+	// 	debugger
+	// 	if (!(sourceParams && imageId)) {
+	// 		return;
+	// 	}
+	// 	const params = {
+	// 		id: imageId,
+	// 		metadata: sourceParams.metadata
+	// 	};
+	// 	if (sourceParams.validityPeriod) {
+	// 		params.save = sourceParams.save;
+	// 	}
+	// 	return webix.ajax().post(`${BASE_API_URL}image/${imageId}/metadata`, params)
+	// 		.fail(parseError)
+	// 		.then(result => this._parseData(result));
+	// }
 
 	participateStudy(studyId) {
 		if (!studyId) {
@@ -450,7 +488,7 @@ class AjaxActions {
 		if (!(sourceParams && datasetId)) {
 			return;
 		}
-		/*const reader = new FileReader();
+		/* const reader = new FileReader();
 		reader.readAsBinaryString(file);
 		return webix.ajax()
 			.headers({
@@ -471,10 +509,10 @@ class AjaxActions {
 				"Content-Type": file.type,
 				"Girder-Token": authService.getToken()
 			}
-		}).catch((e) => {
+		}).then(result => result.data, (e) => {
 			webix.message({type: "error", text: "Uploading file error"});
 			return Promise.reject(e);
-		}).then(result => result.data);
+		});
 	}
 
 	getImage(id, height, width) {
@@ -509,6 +547,113 @@ class AjaxActions {
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
+
+	postImageMetadata(imageId, metadata) {
+		let params = {};
+		if (metadata) {
+			params.age = metadata.age_approx;
+			params.benign_malignant = metadata.benign_malignant;
+			params.diagnosis = metadata.diagnosis;
+			params.anatom_site_general = metadata.anatom_site_general;
+			params.diagnosis_confirm_type = metadata.diagnosis_confirm_type;
+			params.melanocytic = metadata.melanocytic;
+			params.sex = metadata.sex;
+			params.image_type = metadata.image_type;
+		}
+
+		return webix.ajax().header({
+			"Content-Type": "application/json"
+		})
+			.post(`${BASE_API_URL}image/${imageId}/metadata?save=true`, params)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	getAllImages(sourceParams, annotatedImages) {
+		const params = sourceParams ? {
+			limit: sourceParams.limit || 0,
+			sort: sourceParams.sort || "name",
+			detail: sourceParams.detail || "true"
+		} : {};
+
+		if (sourceParams && sourceParams.filter) {
+			params.filter = sourceParams.filter;
+		}
+
+		return this._ajax().get(`${BASE_API_URL}image`, params)
+			.fail(parseError)
+			.then(result => {
+				if (annotatedImages) {
+					return {
+						allImages: this._parseData(result),
+						annotatedImages:  annotatedImages
+					}
+				} else {
+					return this._parseData(result);
+				}
+			});
+	}
+
+	createNewStudy(studyParams) {
+		const newStudyParams = studyParams ? {
+			name: studyParams.name,
+			userIds: studyParams.userIds,
+			imageIds: studyParams.imageIds,
+			questions: studyParams.questions,
+			features: studyParams.features
+		} : {};
+		return this._ajax().header({
+			"Content-Type": "application/json"
+		}).post(`${BASE_API_URL}study`, newStudyParams)
+	}
+
+	getDatasetMetadata(id) {
+		return this._ajaxGet(`${BASE_API_URL}dataset/${id}/metadata`)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postDatasetMetadata(datasetId, fileId, sourceParams) {
+		const params = {
+			save: sourceParams && sourceParams.save ? "true" : "false"
+		};
+		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/metadata/${fileId}/apply`, params)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postRegisterMetadata(datasetId, filename, binary) {
+		return webix.ajax().headers({
+			"Content-Type": "text/csv"
+		}).post(`${BASE_API_URL}dataset/${datasetId}/metadata?filename=${filename}`, binary)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	postBatchUpload(datasetId, signature) {
+		return webix.ajax().headers({
+			"Content-Type": "application/json"
+		}).post(`${BASE_API_URL}dataset/${datasetId}/zip`, signature)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	finalizePostBatchUpload(datasetId, batchId) {
+		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
+	getUrlForDownloadRegisteredMetadata(datasetId, metadataFileId) {
+		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${authService.getToken()}`
+	}
+
+	putForgotPasswordEmail(email) {
+		return webix.ajax().put(`${BASE_API_URL}user/password/temporary?email=${email}`)
+			.fail(parseError)
+			.then(result => this._parseData(result));
+	}
+
 }
 
 const instance = new AjaxActions();

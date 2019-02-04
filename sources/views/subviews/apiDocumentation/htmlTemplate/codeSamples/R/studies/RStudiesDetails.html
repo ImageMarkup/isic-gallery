@@ -1,0 +1,9 @@
+<div class="main-code-info">
+    <pre><code>desired_endpoint = <span class="hljs-string">"https://isic-archive.com/api/v1/study/573f11119fc3c132505c0ee7"</span>
+    studyData = get_data(desired_endpoint, logindata)
+
+    studyData_images = data.frame(studyData$images, stringsAsFactors=<span class="hljs-literal">FALSE</span>)
+
+    write.csv(studyData_images, <span class="hljs-string">'studyDataImages.csv'</span>, row.names=<span class="hljs-literal">FALSE</span>)
+    </code></pre>
+</div>

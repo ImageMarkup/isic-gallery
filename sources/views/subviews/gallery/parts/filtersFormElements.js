@@ -1,4 +1,8 @@
 import filtersViewHelper from "./filters";
+import appliedFilters from "../../../../models/appliedFilters";
+
+const removedFiltersCollection = appliedFilters.getRemovedFiltersCollection();
+const collapsedRowsCollection = appliedFilters.getCollapsedRowsCollection();
 
 function transformToFormFormat(data, expandedFilters) {
 	const elems = [];
@@ -22,10 +26,10 @@ function transformToFormFormat(data, expandedFilters) {
 					}
 				}
 				let collapsed = true;
-				if (expandedFilters.indexOf(dataForCreatingControl.id) !== -1) {
+				if (expandedFilters.indexOf(dataForCreatingControl.id) !== -1 || removedFiltersCollection.find(key => dataForCreatingControl.id === key.id).length !== 0) {
 					collapsed = false;
 				}
-				elems.push(_attachCollapseToFilter(filtersConfig, collapsed));
+				elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
 			}
 		}
 	}
@@ -34,29 +38,41 @@ function transformToFormFormat(data, expandedFilters) {
 
 // we assume that the first child of any filter will be a label
 // and then we attach the handler for its click event to hide or show the other children
-function _attachCollapseToFilter(filter, collapsed) {
+function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	const collapsibleFilter = webix.copy(filter);
 	const template = collapsibleFilter.rows[0];
 	template.onClick = {
 		"collapssible-filter": function () {
 			const children = this.getParentView().getChildViews();
 			const labelObject = children[0];
+			let labelText = labelObject.getNode().innerText;
 			const controls = children[1];
-			if (!this.config.isRowsVisible) {
+			const regexForLabelText = /\r?\n|\r/;
+			labelText = labelText.replace(regexForLabelText, "");
+			if (!controls.isVisible()) {
 				webix.html.addCss(labelObject.getNode(), "showed-filter");
 				webix.html.removeCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = true;
 				controls.show();
+				collapsedRowsCollection.remove(labelText);
 			}
 			else {
 				webix.html.removeCss(labelObject.getNode(), "showed-filter");
 				webix.html.addCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = false;
+				removedFiltersCollection.remove(dataForCreatingControl.id);
 				controls.hide();
+				collapsedRowsCollection.add({
+					id: labelText
+				});
 			}
 		}
 	};
-
+	collapsedRowsCollection.find((obj) => {
+		if (obj.id.toLowerCase() === template.template.toLowerCase()) {
+			collapsed = true;
+		}
+	}, true);
 	if (collapsed) {
 		template.css += " collapssible-filter hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;

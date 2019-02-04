@@ -1,5 +1,5 @@
 import windowWithHeader from "../components/windowWithHeader";
-import ajax from "../../services/ajaxActions";
+import ajaxActions from "../../services/ajaxActions";
 
 const recoveryForm = {
 	view: "form",
@@ -66,6 +66,7 @@ const recoveryForm = {
 					value: "Cancel",
 					on: {
 						onItemClick() {
+							clearTextViewInput(this);
 							this.getTopParentView().hide();
 						}
 					}
@@ -80,10 +81,23 @@ const recoveryForm = {
 					on: {
 						onItemClick() {
 							const form = this.getFormView();
-							const emailInput = encodeURIComponent(this.getTopParentView().ed.children[0].children[0].children[1].children[0].children[1].value);
+							webix.extend(form, webix.ProgressBar);
 							if (form.validate()) {
-								webix.ajax().put("https://isic-archive.com/api/v1/user/password/temporary?email="+emailInput);
-								this.getTopParentView().hide();
+								const email = encodeURIComponent(form.getValues().email);
+								form.showProgress();
+								ajaxActions.putForgotPasswordEmail(email)
+									.then((data) => {
+										webix.alert({
+											text: data.message
+										});
+										form.hideProgress();
+										this.getTopParentView().hide();
+										clearTextViewInput(this);
+									})
+									.fail(() => {
+										form.hideProgress();
+									});
+
 							}
 						}
 					}
@@ -95,6 +109,10 @@ const recoveryForm = {
 		labelWidth: 80
 	}
 };
+
+function clearTextViewInput(thisView) {
+	thisView.getParentView().getParentView().queryView({view: "text"}).setValue("");
+}
 
 function getConfig(id) {
 	recoveryForm.id = `recovery-form-${webix.uid()}`;

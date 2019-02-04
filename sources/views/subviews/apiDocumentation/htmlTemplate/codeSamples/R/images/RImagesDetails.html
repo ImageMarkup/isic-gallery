@@ -1,0 +1,14 @@
+<div class="main-code-info">
+    <pre><code>desired_endpoint = <span class="hljs-string">"https://isic-archive.com/api/v1/image?limit=100&amp;offset=0&amp;sort=name&amp;sortdir=1"</span>
+    imageList = get_data(desired_endpoint, logindata)
+
+    imageMetadata = data.frame()
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(imageList$`_id`)) {
+      desired_endpoint = paste0(<span class="hljs-string">"https://isic-archive.com/api/v1/image/"</span>, imageList$`_id`[i])
+      data = get_data(desired_endpoint, logindata)
+      imageMetadata = smartbind(imageMetadata, unlist(data))
+    }
+
+    write.csv(imageMetadata, <span class="hljs-string">'imageMetadata.csv'</span>, row.names=<span class="hljs-literal">FALSE</span>)
+    </code></pre>
+</div>

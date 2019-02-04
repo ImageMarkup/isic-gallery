@@ -62,7 +62,6 @@ const pager = {
 			$$(dataviewId).loadNext(this.data.size, offset);
 		}
 	}
-
 };
 
 function getConfig(id, sourceDataviewId) {

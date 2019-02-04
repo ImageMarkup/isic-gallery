@@ -33,7 +33,7 @@ function getChartConfig() {
 				label: "#active#%",
 				color: "#C8C8C8",
 				tooltip: {
-					template: "Active #active#%"
+					template: "Remain #active#%"
 				}
 			}
 		]

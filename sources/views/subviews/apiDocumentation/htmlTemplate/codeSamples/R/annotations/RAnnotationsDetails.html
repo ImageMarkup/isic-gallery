@@ -1,0 +1,9 @@
+<div class="main-code-info">
+    <pre><code>desired_endpoint = <span class="hljs-string">"https://isic-archive.com/api/v1/study?limit=10"</span>
+    studyList = get_data(desired_endpoint, logindata)
+    selectedStudy = studyList$`_id`[<span class="hljs-number">2</span>] <span class="hljs-comment">#Just an example. Can also use selectedStudy = 'INSERT STUDY ID'</span>
+
+    desired_endpoint = paste0(<span class="hljs-string">'https://isic-archive.com/api/v1/annotation?studyId='</span>, selectedStudy)
+    listOfStudyAnnotations = get_data(desired_endpoint, logindata)
+    </code></pre>
+</div>

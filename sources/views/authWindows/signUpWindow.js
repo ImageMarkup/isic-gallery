@@ -28,6 +28,7 @@ const signupForm = {
 			name: "login",
 			label: "Login",
 			placeholder: "Enter your login",
+			required: true,
 			invalidMessage: "Incorrect login",
 			tooltip: "Login must contain at least 4 characters, start with a letter, and must only contain letters, numbers, dashes, and dots."
 		},
@@ -36,6 +37,7 @@ const signupForm = {
 			css: "text-field",
 			name: "email",
 			label: "Email",
+			required: true,
 			placeholder: "Enter your email",
 			invalidMessage: "Enter your email"
 		},
@@ -44,6 +46,7 @@ const signupForm = {
 			css: "text-field",
 			name: "firstName",
 			label: "First name",
+			required: true,
 			placeholder: "Enter your first name",
 			invalidMessage: "Enter your first name"
 		},
@@ -52,6 +55,7 @@ const signupForm = {
 			css: "text-field",
 			name: "lastName",
 			label: "Last name",
+			required: true,
 			placeholder: "Enter your last name",
 			invalidMessage: "Enter your last name"
 		},
@@ -59,6 +63,7 @@ const signupForm = {
 			view: "passwordInput",
 			css: "search-field",
 			name: "password",
+			required: true,
 			label: "Password",
 			placeholder: "Choose a password",
 			invalidMessage: "Incorrect password",
@@ -68,8 +73,9 @@ const signupForm = {
 			view: "passwordInput",
 			css: "search-field",
 			name: "confirmPassword",
+			required: true,
 			label: "Retype password",
-			placeholder: "",
+			placeholder: "Retype password",
 			invalidMessage: "Passwords are not similar"
 		},
 		{
@@ -95,6 +101,10 @@ const signupForm = {
 		},
 		{
 			cols: [
+				{
+					template: "<div style=\"padding-top: 11px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
+					borderless: true
+				},
 				{},
 				{
 					view: "button",
@@ -134,7 +144,7 @@ const signupForm = {
 		}
 	],
 	elementsConfig: {
-		labelWidth: 120
+		labelWidth: 130
 	}
 };
 
