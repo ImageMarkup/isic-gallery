@@ -2,6 +2,7 @@ import {JetView} from "webix-jet";
 import authService from "../../../services/auth";
 import ApplyMetadataService from "../../../services/applyMetadata/applyMetadata";
 import formats from "../../../utils/formats";
+import constants from "../../../constants";
 
 const ID_TEMPLATE_DATASET_INFO = "dataset-info-template";
 const ID_PANEL_VALIDATION_RESULTS = "validation-results-panel";
@@ -246,6 +247,7 @@ export default class ApplyMetadataView extends JetView {
 			authService.showMainPage();
 		}
 		else {
+			this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_DASHBOARD}]);
 			const id = url[url.length - 1].params.datasetId;
 			this.registerMetadataService.load(id);
 		}

@@ -89,7 +89,7 @@ export default class DashboardView extends JetView {
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
-											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}${currentStudy._id}`);
+											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}redirect?studyId=${currentStudy._id}`);
 										}
 										else {
 											webix.message({
@@ -126,7 +126,13 @@ export default class DashboardView extends JetView {
 						view: "list",
 						id: ID_LIST_PARTISIPANT_TASKS_SEGMENTATION,
 						autoheight: true,
-						template: "<div class='task-info'>#dataset.name#<span class='tasks-count'>#count#</span> </div>"
+						template: "<div class='task-info'>#dataset.name#<span class='tasks-count'>#count#</span> </div>",
+						on: {
+							onItemClick(id) {
+								const currentTask = this.getItem(id);
+								util.openInNewTab(`${constants.URL_SEGMENTATION_TOOL}redirect?datasetId=${currentTask.dataset._id}`);
+							}
+						}
 					}
 
 				]
@@ -136,14 +142,14 @@ export default class DashboardView extends JetView {
 		const adminToolbar = {
 			margin: 15,
 			cols: [
-				{
-					view: "button",
-					id: ID_BUTTON_MANAGEMENT_UI,
-					css: "btn",
-					value: "Management UI",
-					width: 120,
-					hidden: true,
-				},
+				// {
+				// 	view: "button",
+				// 	id: ID_BUTTON_MANAGEMENT_UI,
+				// 	css: "btn",
+				// 	value: "Management UI",
+				// 	width: 120,
+				// 	hidden: true,
+				// },
 				{
 					view: "button",
 					id: ID_BUTTON_INVITE_USER,
@@ -278,7 +284,7 @@ export default class DashboardView extends JetView {
 			$$(ID_PANEL_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_TEMPLATE_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_LIST_PARTISIPANT_TASKS_SEGMENTATION),
-			$$(ID_BUTTON_MANAGEMENT_UI),
+			//$$(ID_BUTTON_MANAGEMENT_UI),
 			$$(ID_BUTTON_INVITE_USER),
 			$$(ID_ACCORDION_ITEM_SEGMENTATION_TASKS),
 			$$(ID_ACCORDION_ITEM_PARTICIPANT_STUDY),

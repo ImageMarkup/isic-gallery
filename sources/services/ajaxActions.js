@@ -52,8 +52,7 @@ class AjaxActions {
 		if (!params) {
 			params = {};
 		}
-		// to prevent caching(because of cache we have problems on dashboard page for ie11 on win10)
-		params.uid = webix.uid();
+
 		return webix.ajax().get(url, params);
 	}
 
@@ -85,7 +84,7 @@ class AjaxActions {
 	}
 
 	getUserInfo() {
-		return this._ajaxGet(`${BASE_API_URL}/user/me`)
+		return this._ajaxGet(`${BASE_API_URL}user/me`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -129,7 +128,7 @@ class AjaxActions {
 		if (sourceParams && sourceParams.userId !== undefined && sourceParams.userId !== "") {
 			params.userId = sourceParams.userId;
 		}
-		return this._ajaxGet(`${BASE_API_URL}/study`, params)
+		return this._ajaxGet(`${BASE_API_URL}study`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -551,7 +550,16 @@ class AjaxActions {
 	postImageMetadata(imageId, metadata) {
 		let params = {};
 		if (metadata) {
-			params.age = metadata.age_approx;
+			/*
+			 Age approx rules
+				value will be automatically clipped at 85, where any value greater than this will be stored as 85.
+				value will automatically rounded to 5-year intervals, to ensure data de-identification.
+				the original value will continue to be stored internally as private metadata.
+			 */
+			let ageApprox = parseInt(metadata.age_approx) >= 85
+				? 85
+				: Math.round(parseInt(metadata.age_approx) / 5) * 5;
+			params.age_approx = ageApprox;
 			params.benign_malignant = metadata.benign_malignant;
 			params.diagnosis = metadata.diagnosis;
 			params.anatom_site_general = metadata.anatom_site_general;
@@ -561,9 +569,10 @@ class AjaxActions {
 			params.image_type = metadata.image_type;
 		}
 
-		return webix.ajax().header({
-			"Content-Type": "application/json"
-		})
+		return webix.ajax()
+			.header({
+				"Content-Type": "application/json"
+			})
 			.post(`${BASE_API_URL}image/${imageId}/metadata?save=true`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
@@ -582,15 +591,15 @@ class AjaxActions {
 
 		return this._ajax().get(`${BASE_API_URL}image`, params)
 			.fail(parseError)
-			.then(result => {
+			.then((result) => {
 				if (annotatedImages) {
 					return {
 						allImages: this._parseData(result),
-						annotatedImages:  annotatedImages
-					}
-				} else {
-					return this._parseData(result);
+						annotatedImages
+					};
 				}
+
+				return this._parseData(result);
 			});
 	}
 
@@ -604,7 +613,7 @@ class AjaxActions {
 		} : {};
 		return this._ajax().header({
 			"Content-Type": "application/json"
-		}).post(`${BASE_API_URL}study`, newStudyParams)
+		}).post(`${BASE_API_URL}study`, newStudyParams);
 	}
 
 	getDatasetMetadata(id) {
@@ -645,7 +654,7 @@ class AjaxActions {
 	}
 
 	getUrlForDownloadRegisteredMetadata(datasetId, metadataFileId) {
-		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${authService.getToken()}`
+		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${authService.getToken()}`;
 	}
 
 	putForgotPasswordEmail(email) {
@@ -653,7 +662,6 @@ class AjaxActions {
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
-
 }
 
 const instance = new AjaxActions();

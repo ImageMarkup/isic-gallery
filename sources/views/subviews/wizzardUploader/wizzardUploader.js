@@ -5,6 +5,8 @@ import auth from "../../../services/auth";
 import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
 import constants from "../../../constants";
 import "../../components/templateWithImages";
+import termsOfUseDownloadingPanel from "jet-views/parts/termsOfUseLinks";
+import termsOfUseHTML from "../../templates/termsOfUse.html";
 
 const MARGIN_FORM = 15;
 
@@ -23,7 +25,6 @@ const WIDTH_LABEL = 135;
 
 export default class WizzardUploaderView extends JetView {
 	config() {
-
 		const uploaderPanel = {
 			margin: 15,
 			css: "uploader-panel",
@@ -37,7 +38,7 @@ export default class WizzardUploaderView extends JetView {
 							id: ID_DROP_AREA_PANEL,
 							body: {
 								id: ID_TEMPLATE_DROP_AREA,
-								template: "<p class='drag-and-drop-area-inner'>Drop Files to Upload or <span class='link click-here-link'>Click Here</span></p>",
+								template: "<p class='drag-and-drop-area-inner'>Drop Image to Upload or <span class='link click-here-link'>Click Here</span></p>",
 								width: 360,
 								height: 360,
 								onClick: {
@@ -58,6 +59,11 @@ export default class WizzardUploaderView extends JetView {
 							autoheight: true
 						}
 					]
+				},
+				{
+					template: "You can only choose one image to upload",
+					autoheight: true,
+					borderless: true
 				},
 				{
 					margin: 20,
@@ -369,9 +375,43 @@ export default class WizzardUploaderView extends JetView {
 					]
 				},
 				{
+					margin: 2,
 					cols: [
 						{
-							template: "<span class='main-subtitle3 line-height-38'>Signed by <span style='color: red;'>*</span></span>",
+							template: "Contributor license agreement",
+							css: "left-label-template wizard-tool-license-template",
+							autoheight: true,
+							borderless: true,
+							width: WIDTH_LABEL
+						},
+						{
+							rows: [
+								{
+									align: "absolute",
+									body: {
+										view: "scrollview",
+										css: "wizard-tool-license-scrollview",
+										height: 250,
+										body: {
+											rows: [
+												{
+													view: "template",
+													template: termsOfUseHTML,
+													autoheight: true
+												}
+											]
+										}
+									}
+								},
+								termsOfUseDownloadingPanel.getDownloadingPanel()
+							]
+						}
+					]
+				},
+				{
+					cols: [
+						{
+							template: "<span class='main-subtitle3'>Electronic <span style='color: red;'>*</span> signature</span>",
 							borderless: true,
 							autoheight: true,
 							width: WIDTH_LABEL
@@ -398,13 +438,13 @@ export default class WizzardUploaderView extends JetView {
 				{
 					cols: [
 						{
-							template: `<div style="padding-top: 11px;"><span style="color: red;">*</span> Indicates required field</div>`,
+							template: "<div style=\"padding-top: 11px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
 							borderless: true
 						},
 						{},
 						{
 							view: "button",
-							css: "btn",
+							css: "btn wizard-tool-submit-button",
 							width: 105,
 							value: "Submit",
 							name: "submit"
@@ -427,24 +467,24 @@ export default class WizzardUploaderView extends JetView {
 			type: "clean",
 			borderless: true,
 			rules: {
-				"age": (value, fields, name) => {
+				age: (value, fields, name) => {
 					const pattern = new RegExp("^[0-9]{1,2}$");
 					return pattern.test(value);
 				},
-				"filename": webix.rules.isNotEmpty,
-				"dataset": webix.rules.isNotEmpty,
-				"signature": (value, fields, name) => {
+				filename: webix.rules.isNotEmpty,
+				dataset: webix.rules.isNotEmpty,
+				signature: (value, fields, name) => {
 					const pattern = new RegExp("^[a-zA-Z]+$");
 					return pattern.test(value);
 				},
-				"benign_malignant": webix.rules.isNotEmpty,
-				"diagnosis": webix.rules.isNotEmpty,
-				"mel_thick_mm": (value, fields, name) => {
+				benign_malignant: webix.rules.isNotEmpty,
+				diagnosis: webix.rules.isNotEmpty,
+				mel_thick_mm: (value, fields, name) => {
 					const pattern = new RegExp("^[0-9]{1,3}[\\.]?[0-9]*$");
 					const num = parseFloat(value) || 0;
-					return (num >= 0 && num < 1000) && (value !== "" ? pattern.test(value) : true);
+					return num >= 0 && num < 1000 && (value !== "" ? pattern.test(value) : true);
 				},
-				"thickness_categorical": thicknessRule
+				thickness_categorical: thicknessRule
 			},
 			elementsConfig: {
 				labelWidth: WIDTH_LABEL
@@ -504,7 +544,7 @@ export default class WizzardUploaderView extends JetView {
 	urlChange() {
 		// we should mark "archive" item in header menu for this page
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_ARCHIVE}]);
-		//if we set signature earlier we can't change it
+		// if we set signature earlier we can't change it
 		const signature = wizardUploaderStorage.getSignature();
 		if (signature) {
 			const form = $$(ID_FORM);

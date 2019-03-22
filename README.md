@@ -1,8 +1,8 @@
 ISIC App
 ===================
 
-- Set ```baseApiUrl``` and ```isicSiteUrl``` in ```appconfig.json```.
-Example: ```https://stage.isic-archive.com/api/v1/``` and ```https://stage.isic-archive.com/```
+- Set ```ISIC_BASE_API_URL``` and ```ISIC_SITE_URL``` in ```webpack.config.js``` in ```Environment plugin````.
+Example: ```https://sandbox.isic-archive.com/api/v1/``` and ```https://isic-archive.com/```
 - ```npm install```
 
 ### How to run for development
@@ -19,5 +19,5 @@ Example: ```https://stage.isic-archive.com/api/v1/``` and ```https://stage.isic-
 
 - ```npm run build```
 - copy the "codebase" folder to the production server
-
+- configure your HTTP server to ensure that files served from `codebase/sources/filesForDownload` are given a `Content-Disposition: attachment` header
 

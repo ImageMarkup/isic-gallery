@@ -21,11 +21,11 @@ import PrivacyPolicy from "./views/subviews/privacyPolicy/privacyPolicy";
 import Dashboard from "./views/subviews/dashboard/dashboard";
 import UserAccount from "./views/subviews/userAccount/userAccount";
 import InviteUser from "./views/subviews/inviteUser/inviteUser";
-import ManagementUI from "./views/subviews/managementUI/managementTop";
-import ManagementUIAbout from "./views/subviews/managementUI/subviews/aboutManagement";
-import ManagementCollections from "./views/subviews/managementUI/subviews/managementCollections";
-import ManagementGroups from "./views/subviews/managementUI/subviews/managementGroups";
-import ManagementUsers from "./views/subviews/managementUI/subviews/managementUsers";
+// import ManagementUI from "./views/subviews/managementUI/managementTop";
+// import ManagementUIAbout from "./views/subviews/managementUI/subviews/aboutManagement";
+// import ManagementCollections from "./views/subviews/managementUI/subviews/managementCollections";
+// import ManagementGroups from "./views/subviews/managementUI/subviews/managementGroups";
+// import ManagementUsers from "./views/subviews/managementUI/subviews/managementUsers";
 import CreateDataset from "./views/subviews/createDataset/createDataset";
 import ContactInfo from "./views/subviews/about/subviews/contactInfo";
 import History from "./views/subviews/about/subviews/history";
@@ -65,11 +65,11 @@ webix.ready(() => {
 			privacyPolicy: PrivacyPolicy,
 			[constants.NAME_VIEW_DASHBOARD]: Dashboard,
 			userAccount: UserAccount,
-			managementUI: ManagementUI,
-			aboutManagement: ManagementUIAbout,
-			managementCollections: ManagementCollections,
-			managementGroups: ManagementGroups,
-			managementUsers: ManagementUsers,
+			// managementUI: ManagementUI,
+			// aboutManagement: ManagementUIAbout,
+			// managementCollections: ManagementCollections,
+			// managementGroups: ManagementGroups,
+			// managementUsers: ManagementUsers,
 			inviteUser: InviteUser,
 			createDataset: CreateDataset,
 			contactInfo: ContactInfo,

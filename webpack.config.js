@@ -20,7 +20,7 @@ module.exports = function (env) {
 			publicPath: "/",
 			filename: "app.js"
 		},
-		mode: "production",
+		mode: "development",
 		devtool: "inline-source-map",
 		module: {
 			rules: [

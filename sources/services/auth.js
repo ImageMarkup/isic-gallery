@@ -43,7 +43,7 @@ function logout() {
 		state.clear();
 		state.app.refresh();
 	});
-	//state.app.callEvent("logout");
+	// state.app.callEvent("logout");
 }
 
 function getToken() {
@@ -69,11 +69,11 @@ function isUserInfoChanged(newData) {
 function refreshUserInfo() {
 	return ajax.getUserInfo().then((data) => {
 		if (data && isUserInfoChanged(data)) {
-			logout();
 			webix.alert({
 				title: "Close",
 				text: "Your user permissions or other information have been changed",
 				callback() {
+					webix.storage.local.put("user", data);
 					state.app.refresh();
 				}
 			});
@@ -91,7 +91,8 @@ function isTermsOfUseAccepted() {
 	let termOfUse;
 	if (user) {
 		termOfUse = user.permissions.acceptTerms;
-	} else {
+	}
+	else {
 		termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
 	}
 	return termOfUse;
@@ -101,10 +102,10 @@ function acceptTermOfUse() {
 	const user = getUserInfo();
 	if (user) {
 		ajax.postUserTermsOfUse(true);
-	} else {
+	}
+	else {
 		webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
 	}
-
 }
 
 function showMainPage() {

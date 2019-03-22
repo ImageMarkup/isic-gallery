@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
 import authService from "../../../services/auth";
 import RegisterMetadataService from "../../../services/registerMetadata/registerMetadata";
+import constants from "../../../constants";
 
 const ID_TEMPLATE_DATASET_INFO = "register-metadata-dataset-info-template";
 const ID_UPLOADER = "register-metadata-uploader";
@@ -160,6 +161,7 @@ export default class RegisterMetadataView extends JetView {
 			authService.showMainPage();
 		}
 		else {
+			this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_DASHBOARD}]);
 			const id = url[url.length - 1].params.datasetId;
 			this.registerMetadataService.load(id);
 		}

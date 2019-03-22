@@ -1,166 +1,187 @@
 import ajax from "../services/ajaxActions";
 import state from "../models/state";
 
-let filtersData = [
-	{
-		"label": "Diagnostic Attributes",
-		"data": [
-			{
-				"id": "meta.clinical.benign_malignant",
-				"name": "Benign or Malignant",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["benign", "indeterminate", "indeterminate/benign", "indeterminate/malignant", "malignant", null]
-			},
-			{
-				"id": "meta.clinical.diagnosis",
-				"name": "Lesion Diagnosis",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["actinic keratosis", "angiofibroma or fibrous papule", "atypical melanocytic proliferation", "basal cell carcinoma", "dermatofibroma", "lentigo NOS",
-					"lentigo simplex", "lichenoid keratosis", "melanoma", "nevus", "other", "scar", "seborrheic keratosis", "solar lentigo", "squamous cell carcinoma", null]
-			}]
-	},
-	{
-		"label": "Clinical Attributes",
-		"data": [
-			{
-				"id": "meta.clinical.age_approx",
-				"name": "Approximate Age",
-				"type": "rangeCheckbox",
-				"datatype": "number",
-				"options": [
-					{highBound: 10, label: "[0 - 10)", lowBound: 0},
-					{highBound: 20, label: "[10 - 20)", lowBound: 10},
-					{highBound: 30, label: "[20 - 30)", lowBound: 20},
-					{highBound: 40, label: "[30 - 40)", lowBound: 30},
-					{highBound: 50, label: "[40 - 50)", lowBound: 40},
-					{highBound: 60, label: "[50 - 60)", lowBound: 50},
-					{highBound: 70, label: "[60 - 70)", lowBound: 60},
-					{highBound: 80, label: "[70 - 80)", lowBound: 70},
-					{highBound: 90, label: "[80 - 90)", lowBound: 80},
-					null
-				]
-			},
-			{
-				"id": "meta.clinical.clin_size_long_diam_mm",
-				"name": "Clinical Size - Longest Diameter (mm)",
-				"type": "rangeCheckbox",
-				"datatype": "number",
-				"options": [
-					{highBound: 10, label: "[0.0 - 10.0)", lowBound: 0},
-					{highBound: 20, label: "[10.0 - 20.0)", lowBound: 10},
-					{highBound: 30, label: "[20.0 - 30.0)", lowBound: 20},
-					{highBound: 40, label: "[30.0 - 40.0)", lowBound: 30},
-					{highBound: 50, label: "[40.0 - 50.0)", lowBound: 40},
-					{highBound: 90, label: "[80.0 - 90.0)", lowBound: 80},
-					{highBound: 110, label: "[100.0 - 110.0)", lowBound: 100},
-					null
-				]
-			},
-			{
-				"id": "meta.clinical.diagnosis_confirm_type",
-				"name": "Type of Diagnosis",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["histopathology", "single image expert consensus", null]
-			},
-			{
-				"id": "meta.clinical.family_hx_mm",
-				"name": "Family History of Melanoma",
-				"type": "checkbox",
-				"datatype": "boolean",
-				"options": ["true", "false", null]
-			},
-			/*{
-				"id": "meta.clinical.mel_class",
-				"name": "Melanoma Class",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": [null]
-			},
-			{
-				"id": "meta.clinical.mel_mitotic_index",
-				"name": "Melanoma Mitotic Index",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": [null]
-			},
-			{
-				"id": "meta.clinical.mel_thick_mm",
-				"name": "Melanoma Thickness (mm)",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": [null]
-			},
-			{
-				"id": "meta.clinical.mel_type",
-				"name": "Melanoma Type",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": [null]
-			},*/
-			{
-				"id": "meta.clinical.mel_ulcer",
-				"name": "Melanoma Ulceration",
-				"type": "checkbox",
-				"datatype": "boolean",
-				"options": ["true", "false", null]
-			},
-			{
-				"id": "meta.clinical.melanocytic",
-				"name": "Melanocytic",
-				"type": "checkbox",
-				"datatype": "boolean",
-				"options": ["true", "false", null]
-			},
-			{
-				"id": "meta.clinical.nevus_type",
-				"name": "Nevus Type",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["blue", "combined", "halo", "nevus NOS", "persistent/recurrent", "pigmented spindle cell of reed", "plexiform spindle cell", "spitz", null]
-			},
-			{
-				"id": "meta.clinical.personal_hx_mm",
-				"name": "Personal History of Melanoma",
-				"type": "checkbox",
-				"datatype": "boolean",
-				"options": ["true", "false", null]
-			},
-			{
-				"id": "meta.clinical.sex",
-				"name": "Sex",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["female", "male", null]
-			}
-		]
-	},
-	{
-		"label": "Technological Attributes",
-		"data": [
-			{
-				"id": "meta.acquisition.dermoscopic_type",
-				"name": "Dermoscopic Type",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["contact non-polarized", "contact polarized", "non-contact polarized", null]
-			},
-			{
-				"id": "meta.acquisition.image_type",
-				"name": "Image Type",
-				"type": "checkbox",
-				"datatype": "string",
-				"options": ["clinical", "dermoscopic", null]
-			}]
-	},
-	// this block must be in the end of array
-	{
-		"label": "Database Attributes",
-		"data": []
-	}
-];
+let filtersData;
+
+const filtersIds = {
+	benignMelignant: "meta.clinical.benign_malignant",
+	lesionDiagnosis: "meta.clinical.diagnosis",
+	approximateAge: "meta.clinical.age_approx",
+	generalAnatomicSite: "meta.clinical.anatom_site_general",
+	clinicalSize: "meta.clinical.clin_size_long_diam_mm",
+	typeDiagnosis: "meta.clinical.diagnosis_confirm_type",
+	familyHistoryMelanoma: "meta.clinical.family_hx_mm",
+	melanomaClass: "meta.clinical.mel_class",
+	melanomaMitoticIndex: "meta.clinical.mel_mitotic_index",
+	melanomaThickness: "meta.clinical.mel_thick_mm",
+	melanomaType: "meta.clinical.mel_type",
+	melanomaUlceration: "meta.clinical.mel_ulcer",
+	melanocytic: "meta.clinical.melanocytic",
+	nevusType: "meta.clinical.nevus_type",
+	personalHistoryMelanoma: "meta.clinical.personal_hx_mm",
+	sex: "meta.clinical.sex",
+	dermoscopicType: "meta.acquisition.dermoscopic_type",
+	imageType: "meta.acquisition.image_type",
+	datasetTags: "meta.tags"
+};
+
+function getFiltersDataValues() {
+	const filtersDataValues = [
+		{
+			label: "Diagnostic Attributes",
+			data: [
+				{
+					id: filtersIds.benignMelignant,
+					name: "Benign or Malignant",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.benignMelignant]
+				},
+				{
+					id: filtersIds.lesionDiagnosis,
+					name: "Lesion Diagnosis",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.lesionDiagnosis]
+				}]
+		},
+		{
+			label: "Clinical Attributes",
+			data: [
+				{
+					id: filtersIds.approximateAge,
+					name: "Approximate Age",
+					type: "rangeCheckbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.approximateAge]
+				},
+				{
+					id: filtersIds.generalAnatomicSite,
+					name: "General Anatomic Site",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.generalAnatomicSite]
+				},
+				{
+					id: filtersIds.clinicalSize,
+					name: "Clinical Size - Longest Diameter (mm)",
+					type: "rangeCheckbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.clinicalSize]
+				},
+				{
+					id: filtersIds.typeDiagnosis,
+					name: "Type of Diagnosis",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.typeDiagnosis]
+				},
+				{
+					id: filtersIds.familyHistoryMelanoma,
+					name: "Family History of Melanoma",
+					type: "checkbox",
+					datatype: "boolean",
+					options: state.imagesTotalCounts[filtersIds.familyHistoryMelanoma]
+				},
+				{
+					id: filtersIds.melanomaClass,
+					name: "Melanoma Class",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.melanomaClass]
+				},
+				{
+					id: filtersIds.melanomaMitoticIndex,
+					name: "Melanoma Mitotic Index",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.melanomaMitoticIndex]
+				},
+				{
+					id: filtersIds.melanomaThickness,
+					name: "Melanoma Thickness (mm)",
+					type: "rangeCheckbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.melanomaThickness]
+				},
+				{
+					id: filtersIds.melanomaType,
+					name: "Melanoma Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.melanomaType]
+				},
+				{
+					id: filtersIds.melanomaUlceration,
+					name: "Melanoma Ulceration",
+					type: "checkbox",
+					datatype: "boolean",
+					options: state.imagesTotalCounts[filtersIds.melanomaUlceration]
+				},
+				{
+					id: filtersIds.melanocytic,
+					name: "Melanocytic",
+					type: "checkbox",
+					datatype: "boolean",
+					options: state.imagesTotalCounts[filtersIds.melanocytic]
+				},
+				{
+					id: filtersIds.nevusType,
+					name: "Nevus Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.nevusType]
+				},
+				{
+					id: filtersIds.personalHistoryMelanoma,
+					name: "Personal History of Melanoma",
+					type: "checkbox",
+					datatype: "boolean",
+					options: state.imagesTotalCounts[filtersIds.personalHistoryMelanoma]
+				},
+				{
+					id: filtersIds.sex,
+					name: "Sex",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.sex]
+				}
+			]
+		},
+		{
+			label: "Technological Attributes",
+			data: [
+				{
+					id: filtersIds.dermoscopicType,
+					name: "Dermoscopic Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.dermoscopicType]
+				},
+				{
+					id: filtersIds.imageType,
+					name: "Image Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.imageType]
+				}]
+		},
+		// this block must be in the end of array
+		{
+			label: "Database Attributes",
+			data: [
+				{
+					id: filtersIds.datasetTags,
+					name: "Tags",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.datasetTags]
+				}
+			]
+		}
+	];
+	return filtersDataValues;
+}
 
 function isNeedShow(datasetId) {
 	const hiddenDatasetIds = [
@@ -181,11 +202,11 @@ function prepareDatasetFilterData(dataset) {
 		}
 	});
 	result.push({
-		"id": "meta.datasetId",
-		"name": "Dataset",
-		"type": "checkbox",
-		"datatype": "objectid",
-		"options": options
+		id: "meta.datasetId",
+		name: "Dataset",
+		type: "checkbox",
+		datatype: "objectid",
+		options
 	});
 	return result;
 }
@@ -193,16 +214,21 @@ function prepareDatasetFilterData(dataset) {
 function getFiltersData(forceRebuild) {
 	return new Promise((resolve) => {
 		// we should rewrite the last item in filtersData (it is place for Database Attributes)
+		if (forceRebuild || !filtersData) {
+			filtersData = getFiltersDataValues();
+		}
 		const DATASET_POSITION = filtersData.length - 1;
 		const DB_ATTRIBUTE_LABEL = "Database Attributes";
 		// if we have no datasets  we should get them with ajax and add to 'filtersData'
-		if (forceRebuild || (filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL && !filtersData[DATASET_POSITION].data.length)) {
+		if ((forceRebuild || filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL) && filtersData[DATASET_POSITION].data.length === 1) {
 			ajax.getDataset().then((dataset) => {
-				filtersData[DATASET_POSITION] = {
-					"label": DB_ATTRIBUTE_LABEL,
-					"data": prepareDatasetFilterData(dataset)
-				};
-				resolve (filtersData);
+				if (filtersData[DATASET_POSITION].data.length === 1) {
+					filtersData[DATASET_POSITION] = {
+						label: DB_ATTRIBUTE_LABEL,
+						data: filtersData[DATASET_POSITION].data.concat(prepareDatasetFilterData(dataset))
+					};
+				}
+				resolve(filtersData);
 			});
 		}
 		else {

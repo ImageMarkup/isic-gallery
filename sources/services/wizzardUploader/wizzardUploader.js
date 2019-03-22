@@ -41,11 +41,13 @@ class WizzardUploaderService {
 		}
 
 		ajaxActions.getDataset().then((data) => {
-			if (data && data.map) {
-				const preparedData = data.map((item) => {
+			if (data && data.filter) {
+				const preparedData = data.filter((item) => {
 					const newItem = webix.copy(item);
 					newItem.id = item._id;
-					return newItem;
+					if (newItem._accessLevel >= 1) {
+						return newItem;
+					}
 				});
 				this._form.elements.dataset.getList().parse(preparedData);
 			}
@@ -90,8 +92,6 @@ class WizzardUploaderService {
 			this._previewTemplate.setValues({src: url});
 			this._previewTemplate.show(false, false);
 			this._removeButton.enable();
-			let datasetInputNode = document.getElementsByTagName("INPUT")[0];
-			let inputWidth = datasetInputNode.offsetWidth;
 		});
 
 		// This mark is needed for correct processing several files after drag and drop. We should show alert only once. But "onBeforeFileAdd" calls for every attempt
@@ -131,7 +131,10 @@ class WizzardUploaderService {
 			}
 			if (this._form.validate()) {
 				const fileItem = this._uploader.files.getItem(this._uploader.files.getFirstId());
-				ajaxActions.addImageToDataset(values.dataset, values, fileItem.file).then((imageData) => {
+				const datasetWebixId = values.dataset;
+				const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
+				const datasetId = datasetItem._id;
+				ajaxActions.addImageToDataset(datasetId, values, fileItem.file).then((imageData) => {
 					if (imageData) {
 						webix.message("Image has been uploaded");
 						const preparedValues = this._prepareDataForStorage(values);
@@ -190,7 +193,6 @@ class WizzardUploaderService {
 	}
 
 	_initFormRestrictions() {
-
 		this._form.elements.signature_approve.attachEvent("onChange", (newv, oldv) => {
 			if (storage.getSignature() && newv == 0) {
 				webix.alert({type: "alert-warning", text: "Please, clear session, if you want to change signature"});
@@ -334,9 +336,10 @@ class WizzardUploaderService {
 
 	_setLabelForThickness(asterisk) {
 		if (asterisk) {
-			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical) <span style='color: red;'>*</span> "
-		} else {
-			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical)"
+			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical) <span style='color: red;'>*</span> ";
+		}
+		else {
+			this._form.elements.thickness_categorical.config.label = "Thickness <br> (categorical)";
 		}
 		this._form.elements.thickness_categorical.refresh();
 	}

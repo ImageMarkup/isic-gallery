@@ -29,7 +29,7 @@ webix.protoUI({
 		const acquisitInitialionValues = acquisitionForm.getValues();
 		const window = scrollView.getTopParentView();
 
-		//show button for study admin
+		// show button for study admin
 		if (auth.isStudyAdmin()) {
 			editButton.show();
 		}
@@ -54,7 +54,8 @@ webix.protoUI({
 						editViews.back();
 						window.hide();
 						webix.message("Metadata has been edited successfully!");
-					} else {
+					}
+					else {
 						const regexForTextName = /'.*?'/;
 						const regexToReplace = /'/g;
 						errorsArray.forEach((errorMessage) => {
@@ -62,10 +63,12 @@ webix.protoUI({
 							errorField = errorField.replace(regexToReplace, "");
 							let errorElement;
 							if (errorField === "age") {
-								errorElement = clinicalForm.elements["age_approx"];
-							} else if (errorField !== "image_type") {
+								errorElement = clinicalForm.elements.age_approx;
+							}
+							else if (errorField !== "image_type") {
 								errorElement = clinicalForm.elements[errorField];
-							} else {
+							}
+							else {
 								errorElement = acquisitionForm.elements[errorField];
 							}
 							util.changeInputNodeColor(errorElement);
@@ -73,7 +76,7 @@ webix.protoUI({
 								text: errorMessage.description,
 								expire: -1
 							});
-						})
+						});
 					}
 				}).fail(() => {
 					webix.message("Something went wrong!");

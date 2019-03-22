@@ -13,8 +13,8 @@ const signupForm = {
 		firstName: webix.rules.isNotEmpty,
 		lastName: webix.rules.isNotEmpty,
 		password(value) {
-			const vals = this.getValues();
-			return validationRules.validatePassword(value, vals.firstName, vals.lastName, vals.email, vals.login);
+			const regWhiteSpace = new RegExp(/^\s+$/);
+			return !regWhiteSpace.test(value) && value.length >= 6;
 		},
 		confirmPassword(value) {
 			const password = this.getValues().password;

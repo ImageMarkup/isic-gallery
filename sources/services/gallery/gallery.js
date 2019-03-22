@@ -825,17 +825,17 @@ class GalleryService {
 				});
 			this._updatePagerCount(imagesCount);
 			filterService.updateFiltersCounts();
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			if (appliedFiltersArray.length) {
+				webix.delay(() => {
+					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+				});
+			}
+			else {
+				this._createFilters([], true); // create filters form controls from config
+			}
+			this._reload();
 		});
-		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		if (appliedFiltersArray.length) {
-			webix.delay(() => {
-				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
-			});
-		}
-		else {
-			this._createFilters([], true); // create filters form controls from config
-		}
-		this._reload();
 	}
 
 	_reload(offsetSource, limitSource) {

@@ -15,9 +15,7 @@ const ID_FORM = "batch-upload-form";
 const WIDTH_LABEL = 150;
 
 export default class BatchUploadView extends JetView {
-
 	config() {
-
 		const leftPanel = {
 			type: "clean",
 			margin: 15,
@@ -26,6 +24,11 @@ export default class BatchUploadView extends JetView {
 					template: "<span class='main-subtitle2'>Batch Upload</span>",
 					borderless: true,
 					autoheight: true
+				},
+				{
+					template: "Zip archive should contain only <br> images with unique file names",
+					height: 34,
+					borderless: true
 				},
 				{
 					margin: 20,
@@ -137,18 +140,23 @@ export default class BatchUploadView extends JetView {
 						{
 							cols: [
 								{view: "label", css: "left-label", label: "Dataset description", width: WIDTH_LABEL},
-								{view: "template", name: "description", borderless: true, template: (obj) => {
-									let objectLength = obj.length;
-									let templateStyle;
-									if (objectLength < 120) {
-										templateStyle = "padding-top:" + "10px;";
-									} else if (objectLength > 120 && objectLength < 240) {
-										templateStyle = "";
-									} else {
-										templateStyle = "overflow:" + "scroll;" + "height:" + "55px;";
-									}
-									return `<div style=${templateStyle}>${obj}</div>`
-								}} // label will be set after form.setValue
+								{view: "template",
+									name: "description",
+									borderless: true,
+									template: (obj) => {
+										let objectLength = obj.length;
+										let templateStyle;
+										if (objectLength < 120) {
+											templateStyle = "padding-top:" + "10px;";
+										}
+										else if (objectLength > 120 && objectLength < 240) {
+											templateStyle = "";
+										}
+										else {
+											templateStyle = "overflow:" + "scroll;" + "height:" + "55px;";
+										}
+										return `<div style=${templateStyle}>${obj}</div>`;
+									}} // label will be set after form.setValue
 							]
 						}
 					]
@@ -173,6 +181,7 @@ export default class BatchUploadView extends JetView {
 											align: "absolute",
 											body: {
 												view: "scrollview",
+												css: "terms-of-use-border-color",
 												height: 250,
 												body: {
 													width: 700,
@@ -190,7 +199,6 @@ export default class BatchUploadView extends JetView {
 										termsOfUseDownloadingPanel.getDownloadingPanel()
 									]
 								}
-
 							]
 						},
 						{
@@ -207,7 +215,7 @@ export default class BatchUploadView extends JetView {
 					paddingY: 10,
 					cols: [
 						{
-							template: `<div style="padding-top: 11px;"><span style="color: red;">*</span> Indicates required field</div>`,
+							template: "<div style=\"padding-top: 11px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
 							borderless: true
 						},
 						{},
@@ -233,8 +241,8 @@ export default class BatchUploadView extends JetView {
 				signature: (value) => {
 					const lettersRegex = /^[A-Za-z\s]+$/;
 					const spacesRegex = /\s/g;
-					if (value.replace(spacesRegex,"").length >= 3 && value.match(lettersRegex)) {
-						return value
+					if (value.replace(spacesRegex, "").length >= 3 && value.match(lettersRegex)) {
+						return value;
 					}
 				}
 			},
@@ -277,7 +285,8 @@ export default class BatchUploadView extends JetView {
 	urlChange() {
 		if (!authService.canCreateDataset()) {
 			authService.showMainPage();
-		} else {
+		}
+		else {
 			this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_ARCHIVE}]);
 		}
 	}

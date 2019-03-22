@@ -156,7 +156,7 @@ export default class CreateStudyPage extends JetView {
 
 	init() {
 		this.appGuardMethod = (url, view, nav) => {
-			const studyCreatedValue = this.creatyStudyService._getStudyCreatedValue();
+			const studyCreatedValue = this.createStudyService._getStudyCreatedValue();
 			if (!studyCreatedValue) {
 				webix.confirm({
 					title: "Attention!",
@@ -177,7 +177,7 @@ export default class CreateStudyPage extends JetView {
 				nav.confirm = Promise.reject();
 			} else {
 				this.app.detachEvent("app:guard", this.appGuardMethod);
-				this.creatyStudyService._setStudyCreatedValue(false);
+				this.createStudyService._setStudyCreatedValue(false);
 			}
 		};
 
@@ -185,6 +185,7 @@ export default class CreateStudyPage extends JetView {
 	}
 
 	destroy() {
+		this.createStudyService._clearQuestionPanel();
 		this.app.detachEvent("app:guard", this.appGuardMethod);
 	}
 
@@ -202,7 +203,7 @@ export default class CreateStudyPage extends JetView {
 			headerQuestionsTemplate.$view.style.width = `${scrollViewWidth - 1}px`;
 		});
 
-		this.creatyStudyService = new CreateStudyService(
+		this.createStudyService = new CreateStudyService(
 			view,
 			studyDataview,
 			studyFeatureSet,
