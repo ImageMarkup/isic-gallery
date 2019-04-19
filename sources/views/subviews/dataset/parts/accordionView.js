@@ -16,21 +16,13 @@ function prepareAccordionItems(data) {
 	return [];
 }
 
-<<<<<<< HEAD
 function buildAccordion(dataset, accordion, template) {
-=======
-function buildAccordion(dataset, accordion, tempalte) {
->>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 	if (Array.isArray(dataset)) {
 		const items = prepareAccordionItems(dataset);
 		webix.ui(items, accordion);
 		this.rendered = true; // set the mark that accordion has been built
-<<<<<<< HEAD
 		template.parse({count: items.length});
 		template.refresh();
-=======
-		tempalte.setValues({count: items.length});
->>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 	}
 	else {
 		throw new Error("Data set is not Array");
