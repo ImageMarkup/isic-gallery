@@ -28,7 +28,6 @@ class RegisterMetadataaService {
 		this._uploader.attachEvent("onFileUploadError", (item, response) => {
 			webix.message({type: "error", text: "Uploading error"});
 		});
-
 		this._uploader.attachEvent("onAfterFileAdd", () => {
 			this._removeFileButton.enable();
 		});
@@ -37,7 +36,6 @@ class RegisterMetadataaService {
 			this._uploader.files.clearAll(); // remove all files from uploader
 			this._removeFileButton.disable();
 		});
-
 
 		this._submitButton.attachEvent("onItemClick", () => {
 			const datasetValues = this._datasetInfoTemplate.getValues();

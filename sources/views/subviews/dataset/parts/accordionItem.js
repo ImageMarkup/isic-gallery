@@ -8,15 +8,22 @@ const ACCESS_CONTROL_WINDOW_ID = "access-control-window";
 
 
 function createActionsPanel(item) {
+<<<<<<< HEAD
 	const isNeedShowButton = item._accessLevel >= 1;
 	const isNeedShowSetAccessButton = item._accessLevel >= 2;
+=======
+	const isNeedShowButton = authService.getUserInfo()._accessLevel >= 1;
+>>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 	return {
 		rows: [
 			{
 				template() {
 					return "<div class='item-content-header'>Actions</div>";
 				},
+<<<<<<< HEAD
 				hidden: !isNeedShowButton && !isNeedShowSetAccessButton,
+=======
+>>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 				autoheight: true,
 				borderless: true
 			},
@@ -57,7 +64,10 @@ function createActionsPanel(item) {
 						view: "button",
 						css: "btn",
 						value: "Set access",
+<<<<<<< HEAD
 						hidden: !isNeedShowSetAccessButton,
+=======
+>>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 						width: 110,
 						height: 32,
 						on: {
@@ -138,6 +148,13 @@ function createAccordion(item, accordionItem) {
 												<span class="item-content-label">Attribution</span>
 												<span class="item-content-value">${item.attribution ? item.attribution : ""}</span>
 											</div>
+<<<<<<< HEAD
+=======
+											<div class="item-content-row">
+												<span class="item-content-label">Signature</span>
+												<span class="item-content-value">${item.signature ? item.signature : ""}</span>
+											</div>
+>>>>>>> cd7521d525bd4ce85174aa2d47247312f65eaa07
 										</div>
 									</div>`;
 	accordionItem.getChildViews()[0].addView({
