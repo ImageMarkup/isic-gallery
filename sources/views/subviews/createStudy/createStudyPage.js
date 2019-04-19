@@ -175,7 +175,8 @@ export default class CreateStudyPage extends JetView {
 				this.app.blockEvent();
 				history.forward();
 				nav.confirm = Promise.reject();
-			} else {
+			}
+			else {
 				this.app.detachEvent("app:guard", this.appGuardMethod);
 				this.createStudyService._setStudyCreatedValue(false);
 			}

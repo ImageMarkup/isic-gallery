@@ -3,7 +3,8 @@ import state from "../../../models/state";
 import constants from "../../../constants";
 
 function calcUserMenuWidth(str) {
-	return (str && str.length ? str.length * 20 : 1) <= 150 || 150;
+	const nameWidth = str && str.length ? str.length * 20 : 1;
+	return nameWidth <= 150 ? nameWidth : 150;
 }
 
 function createConfig(firstName, lastName, imageUrl) {

@@ -411,7 +411,8 @@ export default class WizzardUploaderView extends JetView {
 				{
 					cols: [
 						{
-							template: "<span class='main-subtitle3'>Electronic <span style='color: red;'>*</span> signature</span>",
+							template: "<span> Electronic<br> signature <span style='color: red;'>*</span></span>",
+							css: {"padding-left": "5px;", "width": "130px !important"},
 							borderless: true,
 							autoheight: true,
 							width: WIDTH_LABEL
@@ -438,7 +439,7 @@ export default class WizzardUploaderView extends JetView {
 				{
 					cols: [
 						{
-							template: "<div style=\"padding-top: 11px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
+							template: "<div style=\"padding-top: 11px; padding-left: 5px;\"><span style=\"color: red;\">*</span> Indicates required field</div>",
 							borderless: true
 						},
 						{},

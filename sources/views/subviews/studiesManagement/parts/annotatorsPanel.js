@@ -15,6 +15,7 @@ function getAnnotatorsCount(obj, item) {
 }
 
 function createAnnotatorsPanel(item) {
+	item.templateId = `template-id-${webix.uid()}`;
 	const template = {
 		template(obj) {
 			let addButtomHtml = authService.isStudyAdmin() ? "<span class='site-btn add-annotator-btn'>+</span>" : "";
@@ -22,6 +23,7 @@ function createAnnotatorsPanel(item) {
 		},
 		autoheight: true,
 		borderless: true,
+		id: item.templateId,
 		onClick: {
 			"add-annotator-btn": function () {
 				const template = this;
@@ -31,10 +33,10 @@ function createAnnotatorsPanel(item) {
 					if (!existingUsers.length) {
 						ajaxActions.addAnnotatorsToStudy(item._id, [userId]).then(() => {
 							webix.message("User has been added to study");
-							updateUsersAndRequestsTables(item._id, null, item.usersDatatableId);
+							updateUsersAndRequestsTables(item._id, item.requestsDatatableId, item.usersDatatableId);
 							template.parse({
-								users: item.users.length + 1
-							})
+								users: $$(item.usersDatatableId).count() + 1
+							});
 						});
 						return true;
 					}

@@ -3,7 +3,6 @@ import ajaxActions from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import "../../components/passwordInput";
 import constants from "../../../constants";
-import validationRules from "../../../utils/validationRule";
 
 const ID_PROFILE_FORM = "user-account-profile-form";
 const ID_PASSWORD_FORM = "user-account-password-form";
@@ -13,9 +12,7 @@ const ID_TAB_PASSWORD = "password-tab";
 const ID_TABVIEW = "user-account-tabview";
 
 export default class UserAccountView extends JetView {
-
 	config() {
-
 		const profileTab = {
 			header: "<span class='webix_icon fa-info'></span> Profile",
 			width: 150,
@@ -151,9 +148,9 @@ export default class UserAccountView extends JetView {
 						margin: 15,
 						rules: {
 							old: webix.rules.isNotEmpty,
-							"new": (value) => {
-								const user = authService.getUserInfo();
-								return validationRules.validatePassword(value, user.firstName, user.lastName, user.email, user.login);
+							new: (value) => {
+								const regWhiteSpace = new RegExp(/\s/);
+								return !regWhiteSpace.test(value) && value.length >= 6;
 							},
 							confirmPassword(value) {
 								const password = this.getValues().new;

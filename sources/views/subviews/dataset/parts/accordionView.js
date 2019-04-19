@@ -16,12 +16,13 @@ function prepareAccordionItems(data) {
 	return [];
 }
 
-function buildAccordion(dataset, accordion, tempalte) {
+function buildAccordion(dataset, accordion, template) {
 	if (Array.isArray(dataset)) {
 		const items = prepareAccordionItems(dataset);
 		webix.ui(items, accordion);
 		this.rendered = true; // set the mark that accordion has been built
-		tempalte.setValues({count: items.length});
+		template.parse({count: items.length});
+		template.refresh();
 	}
 	else {
 		throw new Error("Data set is not Array");

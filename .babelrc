@@ -1,11 +1,16 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 4 versions", "IE >= 9"]
-      },
-      modules:false,
-      loose:true
-    }]
-  ]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "ie >= 11"
+          ]
+        }
+      }
+    ]
+  ],
+  "plugins": ["@babel/plugin-transform-runtime"]
 }

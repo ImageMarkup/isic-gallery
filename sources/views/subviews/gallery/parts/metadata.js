@@ -283,6 +283,7 @@ function createFormView(data) {
 function createMutliView(data, acquisitionDynamicProps) {
 	let multiview = {
 		name: "editViewsName",
+		animate: false,
 		cells: [
 			createTemplate(data, acquisitionDynamicProps),
 			createFormView(data)

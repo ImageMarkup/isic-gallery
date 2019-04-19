@@ -13,7 +13,7 @@ const signupForm = {
 		firstName: webix.rules.isNotEmpty,
 		lastName: webix.rules.isNotEmpty,
 		password(value) {
-			const regWhiteSpace = new RegExp(/^\s+$/);
+			const regWhiteSpace = new RegExp(/\s/);
 			return !regWhiteSpace.test(value) && value.length >= 6;
 		},
 		confirmPassword(value) {
@@ -63,11 +63,17 @@ const signupForm = {
 			view: "passwordInput",
 			css: "search-field",
 			name: "password",
+			attributes: {autocomplete: "off", readonly: true},
 			required: true,
 			label: "Password",
 			placeholder: "Choose a password",
 			invalidMessage: "Incorrect password",
-			tooltip: constants.TEXT_PASSWORD_REQUIREMENTS
+			tooltip: constants.TEXT_PASSWORD_REQUIREMENTS,
+			on: {
+				onFocus(currentView) {
+					currentView.getInputNode().removeAttribute("readonly");
+				}
+			}
 		},
 		{
 			view: "passwordInput",
@@ -76,7 +82,13 @@ const signupForm = {
 			required: true,
 			label: "Retype password",
 			placeholder: "Retype password",
-			invalidMessage: "Passwords are not similar"
+			invalidMessage: "Passwords are not similar",
+			attributes: {autocomplete: "off", readonly: true},
+			on: {
+				onFocus(currentView) {
+					currentView.getInputNode().removeAttribute("readonly");
+				}
+			}
 		},
 		{
 			paddingY: 10,

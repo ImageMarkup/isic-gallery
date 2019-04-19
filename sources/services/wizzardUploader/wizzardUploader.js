@@ -40,7 +40,7 @@ class WizzardUploaderService {
 			this._exportButton.enable();
 		}
 
-		ajaxActions.getDataset().then((data) => {
+		ajaxActions.getDataset({details: true}).then((data) => {
 			if (data && data.filter) {
 				const preparedData = data.filter((item) => {
 					const newItem = webix.copy(item);
@@ -94,20 +94,22 @@ class WizzardUploaderService {
 			this._removeButton.enable();
 		});
 
-		// This mark is needed for correct processing several files after drag and drop. We should show alert only once. But "onBeforeFileAdd" calls for every attempt
-		// this.isNeedShowNotOneFileAlert = false;
 		this._uploader.attachEvent("onBeforeFileAdd", (item) => {
-			if (!(item.type === "png" || item.type === "jpg" || item.type === "jpeg")) {
-				webix.alert({type: "alert-warning", text: "You can upload only one image"});
-				return false;
-			}
-			if (!item.size) {
-				webix.alert({type: "alert-warning", text: "Please, select not empty file"});
-				return false;
-			}
-			if (this._uploader.files.count()) {
-				webix.alert({type: "alert-warning", text: "You can upload only one image"});
-				return false;
+			// This mark is needed for correct processing several files after drag and drop. We should show alert only once. But "onBeforeFileAdd" calls for every attempt
+			const alertDivCollection = document.getElementsByClassName("webix_alert-warning");
+			if (!alertDivCollection.length) {
+				if (!(item.type.toLowerCase() === "png" || item.type.toLowerCase() === "jpg" || item.type.toLowerCase() === "jpeg")) {
+					webix.alert({type: "alert-warning", text: "You can upload only one image"});
+					return false;
+				}
+				if (!item.size) {
+					webix.alert({type: "alert-warning", text: "Please, select not empty file"});
+					return false;
+				}
+				if (this._uploader.files.count()) {
+					webix.alert({type: "alert-warning", text: "You can upload only one image"});
+					return false;
+				}
 			}
 		});
 

@@ -3,7 +3,7 @@ import authService from "../../../../services/auth";
 import ajaxActions from "../../../../services/ajaxActions";
 import prepareData from "../../../../services/studiesManagement/annotatorsAndParticipationData";
 
-function createUsersDatatable(item) {
+function createUsersDatatable(item, template) {
 	const usersTable = {
 		view: "activeDatatable",
 		id: item.usersDatatableId,
@@ -26,6 +26,7 @@ function createUsersDatatable(item) {
 		onClick: {
 			"fa-times": (event, id, node) => {
 				const selectedUser = $$(item.usersDatatableId).getItem(id);
+				const template = $$(item.templateId);
 				webix.confirm({
 					text: `Permanently remove <b>"${selectedUser.userName}"</b> from study?`,
 					type: "confirm-error",
@@ -34,6 +35,9 @@ function createUsersDatatable(item) {
 							ajaxActions.removeAnnotatorFromStudy(item._id, selectedUser.id).then(() => {
 								webix.message("User has been removed from study");
 								updateData.updateUsersAndRequestsTables(item._id, null, item.usersDatatableId);
+								template.parse({
+									users: $$(item.usersDatatableId).count() - 1
+								});
 							});
 						}
 					}
@@ -89,6 +93,7 @@ function createRequestsDatatable(item) {
 		onClick: {
 			"fa-check": (event, id, node) => {
 				const selectedUser = $$(item.requestsDatatableId).getItem(id);
+				const template = $$(item.templateId);
 				webix.confirm({
 					text: `Add user <b>"${selectedUser.userName}"</b> to the study?`,
 					type: "confirm-error",
@@ -98,6 +103,9 @@ function createRequestsDatatable(item) {
 							ajaxActions.addUsersToStudy(item._id, usersIds).then(() => {
 								webix.message("User has been added to study");
 								updateData.updateUsersAndRequestsTables(item._id, item.requestsDatatableId, item.usersDatatableId);
+								template.parse({
+									users: $$(item.usersDatatableId).count() + 1
+								});
 							});
 						}
 					}

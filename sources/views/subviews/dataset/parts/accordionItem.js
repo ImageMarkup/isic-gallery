@@ -16,6 +16,7 @@ function createActionsPanel(item) {
 				template() {
 					return "<div class='item-content-header'>Actions</div>";
 				},
+				hidden: !isNeedShowButton && !isNeedShowSetAccessButton,
 				autoheight: true,
 				borderless: true
 			},

@@ -112,7 +112,6 @@ class BatchUploadService {
 							};
 							s3.upload(params, (err, data) => {
 								if (err) {
-									webix.message("Something went wrong!");
 									this._view.hideProgress();
 								}
 								else {
@@ -125,7 +124,6 @@ class BatchUploadService {
 											this._view.$scope.app.show(path);
 										})
 										.fail(() => {
-											webix.message("Something went wrong!");
 											this._buttonDeleteFiles.callEvent("onItemClick");
 											this._view.hideProgress();
 										});

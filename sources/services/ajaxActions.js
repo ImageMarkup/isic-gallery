@@ -52,7 +52,8 @@ class AjaxActions {
 		if (!params) {
 			params = {};
 		}
-
+		// to prevent caching for IE 11 on Window 10
+		params.uid = webix.uid();
 		return webix.ajax().get(url, params);
 	}
 
@@ -69,11 +70,14 @@ class AjaxActions {
 		catch (e) {
 			console.log("Invalid character in password or login");
 		}
+		const webixuid = {
+			uid: webix.uid()
+		};
 		return webix.ajax()
 			.headers({
 				Authorization: `Basic ${hash}`
 			})
-			.get(`${BASE_API_URL}user/authentication`)
+			.get(`${BASE_API_URL}user/authentication`, webixuid)
 			.then(result => this._parseData(result));
 	}
 
@@ -165,7 +169,7 @@ class AjaxActions {
 	}
 
 	getFeaturesetItem(id) {
-		return webix.ajax().get(`${BASE_API_URL}featureset/${id}`)
+		return this._ajaxGet(`${BASE_API_URL}featureset/${id}`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -589,7 +593,7 @@ class AjaxActions {
 			params.filter = sourceParams.filter;
 		}
 
-		return this._ajax().get(`${BASE_API_URL}image`, params)
+		return this._ajaxGet(`${BASE_API_URL}image`, params)
 			.fail(parseError)
 			.then((result) => {
 				if (annotatedImages) {
@@ -648,7 +652,7 @@ class AjaxActions {
 	}
 
 	finalizePostBatchUpload(datasetId, batchId) {
-		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
+		return this._ajaxGet(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}

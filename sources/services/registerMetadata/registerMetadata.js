@@ -3,13 +3,14 @@ import ajaxActions from "../ajaxActions";
 const PromiseFileReader = require("promise-file-reader");
 
 class RegisterMetadataaService {
-	constructor(view, datasetInfoTemplate, form, uploader, uploaderTempalte, submitButton) {
+	constructor(view, datasetInfoTemplate, form, uploader, uploaderTempalte, submitButton, removeFileButton) {
 		this._view = view;
 		this._datasetInfoTemplate = datasetInfoTemplate;
 		this._form = form;
 		this._uploader = uploader;
 		this._uploaderTemplate = uploaderTempalte;
 		this._submitButton = submitButton;
+		this._removeFileButton = removeFileButton;
 		this._init();
 	}
 
@@ -28,6 +29,15 @@ class RegisterMetadataaService {
 			webix.message({type: "error", text: "Uploading error"});
 		});
 
+		this._uploader.attachEvent("onAfterFileAdd", () => {
+			this._removeFileButton.enable();
+		});
+
+		this._removeFileButton.attachEvent("onItemClick", () => {
+			this._uploader.files.clearAll(); // remove all files from uploader
+			this._removeFileButton.disable();
+		});
+
 
 		this._submitButton.attachEvent("onItemClick", () => {
 			const datasetValues = this._datasetInfoTemplate.getValues();
@@ -42,24 +52,27 @@ class RegisterMetadataaService {
 			}
 
 			this._uploader.files.find((obj) => {
-				let item = this._uploader.files.getItem(obj.id);
+				const item = this._uploader.files.getItem(obj.id);
 				this._view.showProgress();
 				PromiseFileReader.readAsText(item.file)
 					.then((fileData) => {
 						ajaxActions.postRegisterMetadata(datasetValues._id, fileName, fileData)
 							.then(() => {
 								webix.message("Metadata was successfully registered!");
+								this._removeFileButton.callEvent("onItemClick");
 								this._uploader.files.clearAll();
 								this._view.hideProgress();
 							})
 							.fail(() => {
 								webix.message("Something went wrong!");
+								this._removeFileButton.callEvent("onItemClick");
 								this._uploader.files.clearAll();
 								this._view.hideProgress();
 							});
 					})
 					.catch((error) => {
-						let errorObject = JSON.parse(error);
+						this._removeFileButton.callEvent("onItemClick");
+						const errorObject = JSON.parse(error);
 						webix.message(errorObject.message);
 						this._uploader.files.clearAll();
 						this._view.hideProgress();

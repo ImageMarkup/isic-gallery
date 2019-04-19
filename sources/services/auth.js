@@ -39,11 +39,12 @@ function logout() {
 		gallerySelectedImages.clearImagesForDownload();
 		gallerySelectedImages.clearImagesForStudies();
 		appliedFilters.clearAll();
+		appliedFilters.setFilterValue("");
 		wizardUploaderStorage.clearAll();
 		state.clear();
+		state.app.callEvent("logout");
 		state.app.refresh();
 	});
-	// state.app.callEvent("logout");
 }
 
 function getToken() {
@@ -62,8 +63,9 @@ function getToken() {
 }
 
 function isUserInfoChanged(newData) {
-	let currentUserInfo = getUserInfo();
-	return !util.deepCompare(currentUserInfo, newData);
+	const currentUserInfo = getUserInfo();
+	// check for the same user because of IE bug with promises
+	return newData._id === currentUserInfo._id && !util.deepCompare(currentUserInfo, newData);
 }
 
 function refreshUserInfo() {
@@ -101,11 +103,18 @@ function isTermsOfUseAccepted() {
 function acceptTermOfUse() {
 	const user = getUserInfo();
 	if (user) {
-		ajax.postUserTermsOfUse(true);
+		return ajax.postUserTermsOfUse(true).then(() => {
+			user.permissions.acceptTerms = true;
+			webix.storage.local.put("user", user);
+		});
 	}
 	else {
-		webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+		return new Promise((resolve, reject) => {
+			webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+			resolve();
+		});
 	}
+
 }
 
 function showMainPage() {

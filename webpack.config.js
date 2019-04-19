@@ -25,7 +25,12 @@ module.exports = function (env) {
 		module: {
 			rules: [
 				{
-					test: /\.js$/,
+					test: /\.js?$/,
+					exclude(modulePath) {
+						return /node_modules/.test(modulePath) &&
+							!/node_modules[\\/]webix-jet/.test(modulePath) &&
+							!/node_modules[\\/]webpack-dev-server/.test(modulePath);
+					},
 					loader: `babel-loader?${JSON.stringify(babelSettings)}`
 				},
 				{

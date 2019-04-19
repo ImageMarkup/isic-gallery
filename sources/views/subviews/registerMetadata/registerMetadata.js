@@ -102,8 +102,17 @@ export default class RegisterMetadataView extends JetView {
 										},
 										autoheight: true,
 										borderless: true
-									}
+									},
 								]
+							},
+							{height: 15},
+							{
+								view: "button",
+								css: "btn-contour",
+								name: "removeFileButton",
+								width: 136,
+								disabled: true,
+								value: "Remove File"
 							}
 						]
 					}
@@ -146,14 +155,20 @@ export default class RegisterMetadataView extends JetView {
 	}
 
 	init(view) {
+		const removeFileButton = this.getRemoveFileButton();
 		this.registerMetadataService = new RegisterMetadataService(
 			view,
 			$$(ID_TEMPLATE_DATASET_INFO),
 			$$(ID_REGISTER_METADATA_FORM),
 			$$(ID_UPLOADER),
 			$$(ID_TEMPLATE_UPLOADER_BODY),
-			$$(ID_SUBMIT_BUTTON)
+			$$(ID_SUBMIT_BUTTON),
+			removeFileButton
 		);
+	}
+
+	getRemoveFileButton() {
+		return this.getRoot().queryView({name: "removeFileButton"});
 	}
 
 	urlChange(view, url) {
