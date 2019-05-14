@@ -104,6 +104,7 @@ export default {
 	URL_CHALLENGE_2016: "http://challenge2016.isic-archive.com",
 	URL_CHALLENGE_2017: "http://challenge2017.isic-archive.com",
 	URL_CHALLENGE_2018: "http://challenge2018.isic-archive.com/",
+	URL_CHALLENGE_2019: "http://challenge2019.isic-archive.com/",
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
 	URL_FORUM: "https://forum.isic-archive.com",
 

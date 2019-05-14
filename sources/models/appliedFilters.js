@@ -80,7 +80,7 @@ function processNewFilter(filter) {
 		{
 			let checkboxId = filterService.getOptionId(filter.key, filter.value);
 			if (filter.remove) {
-					appliedFilters.remove(checkboxId);
+				appliedFilters.remove(checkboxId);
 			}
 			else {
 				filter.id = checkboxId;

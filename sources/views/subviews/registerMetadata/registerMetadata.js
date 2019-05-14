@@ -170,6 +170,7 @@ export default class RegisterMetadataView extends JetView {
 	getRemoveFileButton() {
 		return this.getRoot().queryView({name: "removeFileButton"});
 	}
+
 	urlChange(view, url) {
 		if (!authService.canCreateDataset()) {
 			authService.showMainPage();
