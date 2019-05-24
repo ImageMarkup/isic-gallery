@@ -8,13 +8,15 @@ const ACCESS_CONTROL_WINDOW_ID = "access-control-window";
 
 
 function createActionsPanel(item) {
-	const isNeedShowButton = authService.getUserInfo()._accessLevel >= 1;
+	const isNeedShowButton = item._accessLevel >= 1;
+	const isNeedShowSetAccessButton = item._accessLevel >= 2;
 	return {
 		rows: [
 			{
 				template() {
 					return "<div class='item-content-header'>Actions</div>";
 				},
+				hidden: !isNeedShowButton && !isNeedShowSetAccessButton,
 				autoheight: true,
 				borderless: true
 			},
@@ -55,6 +57,7 @@ function createActionsPanel(item) {
 						view: "button",
 						css: "btn",
 						value: "Set access",
+						hidden: !isNeedShowSetAccessButton,
 						width: 110,
 						height: 32,
 						on: {
@@ -134,10 +137,6 @@ function createAccordion(item, accordionItem) {
 											<div class="item-content-row">
 												<span class="item-content-label">Attribution</span>
 												<span class="item-content-value">${item.attribution ? item.attribution : ""}</span>
-											</div>
-											<div class="item-content-row">
-												<span class="item-content-label">Signature</span>
-												<span class="item-content-value">${item.signature ? item.signature : ""}</span>
 											</div>
 										</div>
 									</div>`;

@@ -165,11 +165,11 @@ export default class GalleryView extends JetView {
 					value: "Download as ZIP",
 					submenu: [
 						{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES_METADATA, value: "Download Selected Images and Metadata"},
-						{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES, value: "Download Selected Images only"},
+						//{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES, value: "Download Selected Images only"},
 						{id: constants.ID_MENU_DOWNLOAD_SEL_METADATA, value: "Download Selected Metadata only"},
-						{id: constants.ID_MENU_DOWNLOAD_IMAGES_METADATA, value: "Download Images and Metadata"},
-						{id: constants.ID_MENU_DOWNLOAD_IMAGES, value: "Download Images only"},
-						{id: constants.ID_MENU_DOWNLOAD_METADATA, value: "Download Metadata only"}
+						{id: constants.ID_MENU_DOWNLOAD_IMAGES_METADATA, value: "Download all images and metadata in ISIC archive"},
+						//{id: constants.ID_MENU_DOWNLOAD_IMAGES, value: "Download Images only"},
+						{id: constants.ID_MENU_DOWNLOAD_METADATA, value: "Download all metadata in ISIC archive"}
 					]
 				}
 			],

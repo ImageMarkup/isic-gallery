@@ -39,11 +39,12 @@ function logout() {
 		gallerySelectedImages.clearImagesForDownload();
 		gallerySelectedImages.clearImagesForStudies();
 		appliedFilters.clearAll();
+		appliedFilters.setFilterValue("");
 		wizardUploaderStorage.clearAll();
 		state.clear();
+		state.app.callEvent("logout");
 		state.app.refresh();
 	});
-	//state.app.callEvent("logout");
 }
 
 function getToken() {
@@ -62,18 +63,19 @@ function getToken() {
 }
 
 function isUserInfoChanged(newData) {
-	let currentUserInfo = getUserInfo();
-	return !util.deepCompare(currentUserInfo, newData);
+	const currentUserInfo = getUserInfo();
+	// check for the same user because of IE bug with promises
+	return newData._id === currentUserInfo._id && !util.deepCompare(currentUserInfo, newData);
 }
 
 function refreshUserInfo() {
 	return ajax.getUserInfo().then((data) => {
 		if (data && isUserInfoChanged(data)) {
-			logout();
 			webix.alert({
 				title: "Close",
 				text: "Your user permissions or other information have been changed",
 				callback() {
+					webix.storage.local.put("user", data);
 					state.app.refresh();
 				}
 			});
@@ -91,7 +93,8 @@ function isTermsOfUseAccepted() {
 	let termOfUse;
 	if (user) {
 		termOfUse = user.permissions.acceptTerms;
-	} else {
+	}
+	else {
 		termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
 	}
 	return termOfUse;
@@ -100,9 +103,16 @@ function isTermsOfUseAccepted() {
 function acceptTermOfUse() {
 	const user = getUserInfo();
 	if (user) {
-		ajax.postUserTermsOfUse(true);
-	} else {
-		webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+		return ajax.postUserTermsOfUse(true).then(() => {
+			user.permissions.acceptTerms = true;
+			webix.storage.local.put("user", user);
+		});
+	}
+	else {
+		return new Promise((resolve, reject) => {
+			webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+			resolve();
+		});
 	}
 
 }

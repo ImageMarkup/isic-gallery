@@ -62,6 +62,10 @@ function addAnswerName(questionName, newAnswerName) {
 	}
 }
 
+function clearAddedQuestions() {
+	addedQuestionsAndAnswersNames = [];
+}
+
 export default {
 	setTextLayoutNames,
 	getTextLayoutNames,
@@ -72,5 +76,6 @@ export default {
 	removeAddedQustions,
 	removeAnswerName,
 	addAnswerName,
-	getAddedAnswerNames
+	getAddedAnswerNames,
+	clearAddedQuestions
 };

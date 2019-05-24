@@ -1,7 +1,8 @@
 import ajaxActions from "../ajaxActions";
 import createDatasetModel from "../../models/createDatasetModel";
+import constants from "../../constants";
 
-let AWS = require('aws-sdk');
+let AWS = require("aws-sdk");
 
 class BatchUploadService {
 	constructor(view, form, uploader, buttonDeleteFile, datasetInfoPanel) {
@@ -19,12 +20,15 @@ class BatchUploadService {
 
 		ajaxActions.getDataset({detail: true})
 			.then((data) => {
-				if (data && data.map) {
-					const preparedData = data.map((item) => {
+				if (data && data.filter) {
+					const preparedData = data.filter((item) => {
 						const newItem = webix.copy(item);
 						newItem.id = item._id;
-						return newItem;
+						if (newItem._accessLevel >= 1) {
+							return newItem;
+						}
 					});
+
 					this._form.elements.dataset.getList().parse(preparedData);
 					let hasDatasetCreated = createDatasetModel.getHasDatasetCreated();
 					if (hasDatasetCreated) {
@@ -77,7 +81,9 @@ class BatchUploadService {
 				return;
 			}
 			if (this._form.validate()) {
-				let datasetId = values.dataset;
+				const datasetWebixId = values.dataset;
+				const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
+				const datasetId = datasetItem._id;
 				let signatureObject = {
 					signature: values.signature
 				};
@@ -96,7 +102,7 @@ class BatchUploadService {
 							let batchId = responseData.batchId;
 
 							let s3 = new AWS.S3({
-								apiVersion: '2006-03-01'
+								apiVersion: "2006-03-01"
 							});
 
 							let params = {
@@ -106,21 +112,21 @@ class BatchUploadService {
 							};
 							s3.upload(params, (err, data) => {
 								if (err) {
-									webix.message("Something went wrong!");
 									this._view.hideProgress();
-								} else {
+								}
+								else {
 									ajaxActions.finalizePostBatchUpload(datasetId, batchId)
 										.then(() => {
 											webix.message("You've uploaded zip archive to the server!");
 											this._buttonDeleteFiles.callEvent("onItemClick");
 											this._view.hideProgress();
-
+											const path = `${constants.PATH_REGISTER_METADATA}?datasetId=${datasetId}`;
+											this._view.$scope.app.show(path);
 										})
 										.fail(() => {
-											webix.message("Something went wrong!");
 											this._buttonDeleteFiles.callEvent("onItemClick");
 											this._view.hideProgress();
-										})
+										});
 								}
 							});
 						})
@@ -128,7 +134,7 @@ class BatchUploadService {
 							this._buttonDeleteFiles.callEvent("onItemClick");
 							this._view.hideProgress();
 						});
-				})
+				});
 			}
 		});
 	}

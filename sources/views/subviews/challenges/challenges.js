@@ -6,7 +6,6 @@ import constants from "../../../constants";
 
 export default class aboutView extends JetView {
 	config() {
-
 		const template = {
 			template: `<div class="inner-page-content">
 				<div class="main-subtitle3">Thank you for your interest in the ISIC Challenges in image analysis!</div>
@@ -31,29 +30,49 @@ export default class aboutView extends JetView {
 					margin: 15,
 					cols: [
 						{
-							view: "button",
-							css: "btn",
-							value: "ISIC Challenge 2016",
-							click() {
-								util.openInNewTab(constants.URL_CHALLENGE_2016);
-							}
+							rows: [
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer", // leave tooltip before backend fixes
+									value: "ISIC Challenge 2016",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2016);
+									}
+								},
+								{height: 15},
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer",
+									value: "ISIC Challenge 2017",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2017);
+									}
+								},
+								{height: 15},
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer",
+									value: "ISIC Challenge 2018",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2018);
+									}
+								},
+								{height: 15},
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer",
+									value: "ISIC Challenge 2019",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2019);
+									}
+								}
+							]
 						},
-						{
-							view: "button",
-							css: "btn",
-							value: "ISIC Challenge 2017",
-							click() {
-								util.openInNewTab(constants.URL_CHALLENGE_2017);
-							}
-						},
-						{
-							view: "button",
-							css: "btn",
-							value: "ISIC Challenge 2018",
-							click() {
-								util.openInNewTab(constants.URL_CHALLENGE_2018);
-							}
-						}
+						{}
 					]
 				},
 				{}

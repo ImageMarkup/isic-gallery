@@ -5,9 +5,7 @@ const NULL_OPTION_VALUE = "unknown";
 function _findCurrentCount(array, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(array)) {
-		foundItem = array.find((element, index, array) => {
-			return prepareOptionName(element.label, key) ===  prepareOptionName(valueThatLookingFor, key);
-		});
+		foundItem = array.find((element, index, array) => prepareOptionName(element.label, key) === prepareOptionName(valueThatLookingFor, key));
 	}
 	return foundItem ? foundItem.count : null;
 }
@@ -15,7 +13,7 @@ function _findCurrentCount(array, valueThatLookingFor, key) {
 function _setFilterCounts(controlView, totalCount, currentCount) {
 	const oldLabel = controlView.config.labelRight;
 	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
-	const baseLabelText = (lastBracketIndex === -1) ? oldLabel : oldLabel.substring(0, lastBracketIndex);
+	const baseLabelText = lastBracketIndex === -1 ? oldLabel : oldLabel.substring(0, lastBracketIndex);
 	let firstNumberHtml;
 	if (totalCount === currentCount) {
 		firstNumberHtml = "";
@@ -51,7 +49,7 @@ function prepareOptionName(value, key) {
 				return NULL_OPTION_VALUE;
 			}
 			else if (typeof value === "object") {
-				return value.label;
+				return value.label !== null ? value.label : NULL_OPTION_VALUE;
 			}
 		}
 	}

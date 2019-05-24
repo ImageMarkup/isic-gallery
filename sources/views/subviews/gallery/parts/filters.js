@@ -101,7 +101,7 @@ function getCheckboxUI(data) {
 				labelWidth: 0,
 				filtersChangedData,
 				on: {
-					onChange: function (status) {
+					onChange(status) {
 						if (currentOption && data.type === "rangeCheckbox") {
 							webix.extend(this.config.filtersChangedData, {
 								highBound: currentOption.highBound,

@@ -53,18 +53,17 @@
       .border-radius(0);
     }
 
+    &:focus, &:active {
+      background: transparent;
+      color: @main-color-light;
+    }
     &:hover,
     &.webix_selected {
       background: #E8EBF1;
       text-shadow: 0.6px 0 0 #6E7480;
     }
-    &:focus, &:active {
-      background: none;
-      color: @main-color-light;
-    }
   }
 }
-
 
 /* login-menu */
 .login-menu {

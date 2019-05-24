@@ -3,6 +3,7 @@ import authService from "../../services/auth";
 
 import template from "../templates/termsOfUse.html";
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
+import constants from "../../constants";
 
 const body = {
 	width: 700,
@@ -42,8 +43,9 @@ const body = {
 							if (typeof thisWindow.okCallback === "function") {
 								thisWindow.okCallback();
 							}
-							authService.acceptTermOfUse();
-							this.getTopParentView().hide();
+							authService.acceptTermOfUse().then(() => {
+								this.getTopParentView().hide();
+							});
 						}
 					}
 				},

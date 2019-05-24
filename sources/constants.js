@@ -4,7 +4,7 @@ export default {
 	KEY_TOKEN: "girderToken",
 	KEY_ACCEPT_TERMS: "acceptTerms",
 
-	TEXT_PASSWORD_REQUIREMENTS: "Password must contain at least 6 characters, must not consist of identical symbols ONLY (for ex. 1111111), must not include more than 4 consecutive characters (for ex. qwerty, 123456), must include at least 1 number or 1 special symbol !@_#$%^&?*()\"\\\/, mustn't include user's login, first name, last name and email",
+	TEXT_PASSWORD_REQUIREMENTS: "Password must contain at least 6 characters, must not include spaces.",
 
 	MAX_COUNT_IMAGES_SELECTION: 300,
 
@@ -97,12 +97,14 @@ export default {
 	URL_DERMOSCOPEDIA: "https://dermoscopedia.org/Main_Page",
 	URL_CHALLENGES: "https://challenge.kitware.com/#challenge/n/ISIC_2017%3A_Skin_Lesion_Analysis_Towards_Melanoma_Detection",
 	URL_API: `${process.env.ISIC_SITE_URL}api/v1`,
-	URL_ANNOTATIONS_TOOL: `${process.env.ISIC_SITE_URL}#tasks/annotate/`,
-	URL_ANNOTATIONS_TOOL_SEGMENT: `${process.env.ISIC_SITE_URL}/markup/segment#/`,
+	URL_ANNOTATIONS_TOOL: `${process.env.ISIC_SITE_URL}api/v1/task/me/annotation/`,
+	URL_ANNOTATIONS_TOOL_SEGMENT: `${process.env.ISIC_SITE_URL}markup/segment#/`,
+	URL_SEGMENTATION_TOOL: `${process.env.ISIC_SITE_URL}api/v1/task/me/segmentation/`,
 	URL_BATCH_UPLOAD: `${process.env.ISIC_SITE_URL}#dataset/upload/batch`,
 	URL_CHALLENGE_2016: "http://challenge2016.isic-archive.com",
 	URL_CHALLENGE_2017: "http://challenge2017.isic-archive.com",
 	URL_CHALLENGE_2018: "http://challenge2018.isic-archive.com/",
+	URL_CHALLENGE_2019: "http://challenge2019.isic-archive.com/",
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
 	URL_FORUM: "https://forum.isic-archive.com",
 

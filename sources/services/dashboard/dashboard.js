@@ -9,10 +9,11 @@ const colsElementsCount = 8;
 
 class DashboardService {
 	constructor(view, panelAdminStudies, panelAdminDataset,
-				panelPartisipantStudies, templatePartisipateStadies, listPartisipateStudies,
-				panelPartisipantTasks, templatePartisipantTasks, listPartisipateTasks,
-				buttonManagementUI, buttonInviteUser, accordionItemSegmentationTask, accordionItemParticipantStudy,
-				accordionItemAdminDataset, accordionItemAdminStudy) {
+		panelPartisipantStudies, templatePartisipateStadies, listPartisipateStudies,
+		panelPartisipantTasks, templatePartisipantTasks, listPartisipateTasks,
+		//buttonManagementUI,
+				buttonInviteUser, accordionItemSegmentationTask, accordionItemParticipantStudy,
+		accordionItemAdminDataset, accordionItemAdminStudy) {
 		this._view = view;
 		this._panelAdminStudies = panelAdminStudies;
 		this._panelAdminDataset = panelAdminDataset;
@@ -22,7 +23,7 @@ class DashboardService {
 		this._panelPartisipantSegmentationTasks = panelPartisipantTasks;
 		this._templatePartisipantSegmentationTasks = templatePartisipantTasks;
 		this._listPartisipateSegmentationTasks = listPartisipateTasks;
-		this._buttonManagementUI = buttonManagementUI;
+		//this._buttonManagementUI = buttonManagementUI;
 		this._buttonInviteUser = buttonInviteUser;
 		this._accordionItemSegmentationTask = accordionItemSegmentationTask;
 		this._accordionItemParticipantStudy = accordionItemParticipantStudy;
@@ -39,16 +40,15 @@ class DashboardService {
 
 		this._infoTemplate = this._view.$scope.getInfoTemplate();
 		if (auth.isStudyAdmin()) {
-			this._buttonManagementUI.show();
+			//this._buttonManagementUI.show();
 			this._buttonInviteUser.show();
 		}
-		this._buttonManagementUI.attachEvent("onItemClick", () => {
-			this._view.$scope.app.show(constants.PATH_MANAGEMENT_UI_ABOUT);
-		});
+		// this._buttonManagementUI.attachEvent("onItemClick", () => {
+		// 	this._view.$scope.app.show(constants.PATH_MANAGEMENT_UI_ABOUT);
+		// });
 		this._buttonInviteUser.attachEvent("onItemClick", () => {
 			this._view.$scope.app.show(constants.PATH_INVITE_USER);
 		});
-
 	}
 
 	_expandAccordionItem(item) {
@@ -89,7 +89,7 @@ class DashboardService {
 				}
 			});
 		}
-		
+
 		const dashboardStatsKeys = Object.keys(dashboardStats);
 		dashboardStatsKeys.forEach((dashboardStatKey, index) => {
 			let infoText;
@@ -142,7 +142,7 @@ class DashboardService {
 					let stringNumber = infoNumber.toString();
 					let separatedNumber = util.separateThousandsInNumber(stringNumber);
 					return `<div class="number-text">${separatedNumber}</div>
-										<p class="info-text"> ${infoText} </p>`
+										<p class="info-text"> ${infoText} </p>`;
 				}
 			};
 
@@ -151,18 +151,19 @@ class DashboardService {
 					objectOfInfoTemplateToPush,
 					{}
 				);
-			} else {
+			}
+			else {
 				secondRowOfStatsToDisplay[0].cols.push(
-					objectOfInfoTemplateToPush, 
+					objectOfInfoTemplateToPush,
 					{}
 				);
 			}
 		});
 
 		while (secondRowOfStatsToDisplay[0].cols.length < colsElementsCount) {
-			secondRowOfStatsToDisplay[0].cols.push({width: 190}, {})
+			secondRowOfStatsToDisplay[0].cols.push({width: 190}, {});
 		}
-		webix.ui([firstRowOfStatsToDisplay[0], secondRowOfStatsToDisplay[0]], this._infoTemplate)
+		webix.ui([firstRowOfStatsToDisplay[0], secondRowOfStatsToDisplay[0]], this._infoTemplate);
 	}
 
 	_attachOnAfterExpandEvent(accordionViews) {

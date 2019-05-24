@@ -13,7 +13,7 @@ let imagesCount;
 let annotatorsListItemsCount;
 let studyCreatedValue;
 
-export default class CreatyStudyService {
+export default class CreateStudyService {
 	constructor(view, studyDataview, studyFeatureSet, questionsView, studyAnnotators, createStudyButton, studyNameTextView) {
 		this._view = view;
 		this._studyDataview = studyDataview;
@@ -213,7 +213,7 @@ export default class CreatyStudyService {
 				let wasEmptyValue = false;
 				let answerValues = [];
 				let questionTextView = this._view.queryView({name: questionAndAnswerNames.questionName});
-				let questionValue = questionTextView.getValue();
+				let questionValue = questionTextView ? questionTextView.getValue() : false;
 				if (!questionValue) {
 					wasEmptyValue = true;
 					this._changeInputNodeColor(questionTextView);
@@ -386,5 +386,9 @@ export default class CreatyStudyService {
 
 	_setStudyCreatedValue(createdValue) {
 		studyCreatedValue = createdValue;
+	}
+
+	_clearQuestionPanel() {
+		createStudyModel.clearAddedQuestions();
 	}
 }

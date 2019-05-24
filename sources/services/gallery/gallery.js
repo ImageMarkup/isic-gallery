@@ -16,7 +16,6 @@ import "wheelzoom";
 
 const layoutHeightAfterHide = 1;
 const layoutHeightAfterShow = 32;
-const collapsedRowsCollection = appliedFilterModel.getCollapsedRowsCollection();
 const filtersBySearchCollection = appliedFilterModel.getAppliedFilterBySearchCollection();
 
 let modifiedObjects = new webix.DataCollection();
@@ -57,7 +56,6 @@ class GalleryService {
 		}
 		this._appliedFiltersList.clearAll();
 		appliedFilterModel.clearAll();
-		collapsedRowsCollection.clearAll();
 		const filtersInfo = [];
 		for (let key in this._filtersForm.elements) {
 			if (this._filtersForm.elements.hasOwnProperty(key)) {
@@ -107,9 +105,10 @@ class GalleryService {
 		this.studiesPromise
 			.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
 			.then((valuesArray) => {
-				let annotatedImages = valuesArray.annotatedImages;
-				let imagesArray = webix.copy(valuesArray.allImages);
-				imagesArray.forEach((imageObj) => {
+				const annotatedImages = valuesArray.annotatedImages;
+				const allImagesArray = webix.copy(valuesArray.allImages);
+				const totalCount = allImagesArray.length;
+				allImagesArray.forEach((imageObj) => {
 					if (imageObj.name.toLowerCase().indexOf(searchValue) !== -1) {
 						if (annotatedImages[imageObj._id]) {
 							imageObj.hasAnnotations = true;
@@ -124,7 +123,8 @@ class GalleryService {
 						filteredImages.push(imageObj);
 					}
 				});
-				if (filteredImages.length > 0) {
+				const currentCount = filteredImages.length;
+				if (currentCount > 0) {
 					this._imagesDataview.clearAll();
 					let page = 0;
 					this._updatePagerCount(80, page);
@@ -133,17 +133,15 @@ class GalleryService {
 					this._pager.hide();
 					this._clonedPagerForNameSearch.show();
 					this._imagesDataview.parse(filteredImages);
-					let totalCount = filteredImages.length;
-					let rangeFinish = this._pager.data.size;
-					let headerValues = {
+
+					const rangeFinish = this._pager.data.size;
+					const headerValues = {
 						rangeStart: 1,
 						rangeFinish,
+						currentCount,
+						filtered: true,
 						totalCount
 					};
-					if (totalCount < rangeFinish) {
-						headerValues.filtered = totalCount;
-						headerValues.currentCount = totalCount;
-					}
 					this._contentHeaderTemplate.setValues(headerValues);
 					this._contentHeaderTemplate.refresh();
 					appliedFilterModel.setFilterByName(true);
@@ -151,6 +149,15 @@ class GalleryService {
 				else {
 					if (afterFilterSelected) {
 						this._imagesDataview.clearAll();
+						const headerValues = {
+							rangeStart: 0,
+							rangeFinish: 0,
+							filtered: true,
+							currentCount,
+							totalCount
+						};
+						this._contentHeaderTemplate.setValues(headerValues);
+						this._contentHeaderTemplate.refresh();
 						this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
 					}
 					webix.alert(`Nothing has found with name ${searchValue}`);
@@ -173,14 +180,13 @@ class GalleryService {
 		this._buttonsLayout = $$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
 		this._leftPanelToggleButton = this._view.$scope.getLeftPanelToggleButton();
 		this._clonedPagerForNameSearch = this._view.$scope.getClonedPagerForNameSearch();
-		const removedFilterCollection = appliedFilterModel.getRemovedFiltersCollection();
 
 		this._activeCartList.attachEvent("onAfterRender", () => {
 			if (modifiedObjects.count() > 0) {
 				modifiedObjects.find((obj) => {
-					let itemNode = this._activeCartList.getItemNode(obj.id);
+					const itemNode = this._activeCartList.getItemNode(obj.id);
 					if (itemNode) {
-						let listTextNode = itemNode.firstChild.children[2];
+						const listTextNode = itemNode.firstChild.children[2];
 						itemNode.setAttribute("style", "height: 130px !important; color: #0288D1;");
 						listTextNode.setAttribute("style", "margin-left: 17px; width: 91px;");
 					}
@@ -192,13 +198,13 @@ class GalleryService {
 			if (authService.getUserInfo().permissions.adminStudy) {
 				let studyFlag = selectedImages.getStudyFlag();
 				if (!studyFlag) {
-					this._onChangeForDownload();
+					this._onChangeForDownload(true);
 					selectedImagesArray = selectedImages.getSelectedImagesForDownload();
 				}
 				else {
 					let newValue = 1;
 					this._toggleButton.setValue(newValue);
-					this._onChangeForStudy();
+					this._onChangeForStudy(true);
 					selectedImagesArray = selectedImages.getStudyImagesId();
 				}
 			}
@@ -603,17 +609,6 @@ class GalleryService {
 			appliedFilterModel.processNewFilters(data);
 			// refresh data in list
 			this._updateAppliedFiltersList(appliedFilterModel.prepareDataForList());
-			if (data.remove) {
-				removedFilterCollection.add({
-					id: data.key
-				});
-			}
-			else if (selectNone) {
-				removedFilterCollection.add({
-					id: data[0].key
-				});
-			}
-
 			webix.delay(() => {
 				// update checkboxes values
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
@@ -657,6 +652,7 @@ class GalleryService {
 				item.imageShown = true;
 				modifiedObjects.add(item);
 				this._activeCartList.parse(item);
+				this._activeCartList.showItem(item.id);
 			}
 			else {
 				itemNode.setAttribute("style", "height: 30px !important; color: rgba(0, 0, 0, 0.8);");
@@ -825,17 +821,17 @@ class GalleryService {
 				});
 			this._updatePagerCount(imagesCount);
 			filterService.updateFiltersCounts();
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			if (appliedFiltersArray.length) {
+				webix.delay(() => {
+					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+				});
+			}
+			else {
+				this._createFilters([], true); // create filters form controls from config
+			}
+			this._reload();
 		});
-		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		if (appliedFiltersArray.length) {
-			webix.delay(() => {
-				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
-			});
-		}
-		else {
-			this._createFilters([], true); // create filters form controls from config
-		}
-		this._reload();
 	}
 
 	_reload(offsetSource, limitSource) {
@@ -1078,9 +1074,9 @@ class GalleryService {
 		return initialFontSize / initialImageWidth;
 	}
 
-	_clearActiveListData() {
+	_clearActiveListData(clearModifyObjects) {
 		this._activeCartList.clearAll();
-		modifiedObjects.clearAll();
+		if (!clearModifyObjects) modifiedObjects.clearAll();
 		this._view.$scope.hideList();
 	}
 
@@ -1109,15 +1105,15 @@ class GalleryService {
 		});
 	}
 
-	_onChangeForStudy() {
-		this._clearActiveListData();
+	_onChangeForStudy(clearModifyObjects) {
+		this._clearActiveListData(clearModifyObjects);
 		this._unselectImages(constants.SELECTED_BY_ALL_ON_PAGE);
 		selectedImages.setStudyFlag(true);
 		this._toggleHeaders(true);
 	}
 
-	_onChangeForDownload() {
-		this._clearActiveListData();
+	_onChangeForDownload(clearModifyObjects) {
+		this._clearActiveListData(clearModifyObjects);
 		this._unselectImages(constants.SELECTED_BY_ON_ALL_PAGES, imagesArray);
 		selectedImages.setStudyFlag(false);
 		this._toggleHeaders(false);

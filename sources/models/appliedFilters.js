@@ -2,18 +2,17 @@ import filterService from "../services/gallery/filter";
 import state from "../models/state";
 
 const appliedFilters = new webix.DataCollection();
-const removedFilters = new webix.DataCollection();
-const collapsedRows = new webix.DataCollection();
 const appliedFilterBySearch = new webix.DataCollection();
+const showedFilters = new webix.DataCollection();
 let filterValue = "";
 let filterByName;
 
-function getCollapsedRowsCollection() {
-	return collapsedRows;
-}
-
 function getAppliedFilterBySearchCollection() {
 	return appliedFilterBySearch;
+}
+
+function getShowedFiltersCollection() {
+	return showedFilters;
 }
 
 function setAppliedFiltersToLocalStorage(appliedFiltersToStorage) {
@@ -22,10 +21,6 @@ function setAppliedFiltersToLocalStorage(appliedFiltersToStorage) {
 
 function getAppliedFiltersFromLocalStorage() {
 	return webix.storage.local.get("appliedFiltersStorage");
-}
-
-function getRemovedFiltersCollection() {
-	return removedFilters;
 }
 
 function setFilterByName(filter) {
@@ -85,7 +80,7 @@ function processNewFilter(filter) {
 		{
 			let checkboxId = filterService.getOptionId(filter.key, filter.value);
 			if (filter.remove) {
-					appliedFilters.remove(checkboxId);
+				appliedFilters.remove(checkboxId);
 			}
 			else {
 				filter.id = checkboxId;
@@ -133,9 +128,7 @@ function _groupFiltersByKey() {
 		switch (item.view) {
 			case "checkbox":
 			{
-				let itemFromResult = result.find((comparedItem) => {
-					return comparedItem.key === item.key;
-				}, true);
+				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
 				if (!itemFromResult) {
 					itemFromResult = {
 						view: item.view,
@@ -150,9 +143,7 @@ function _groupFiltersByKey() {
 			}
 			case "rangeCheckbox":
 			{
-				let itemFromResult = result.find((comparedItem) => {
-					return comparedItem.key === item.key;
-				}, true);
+				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
 				if (!itemFromResult) {
 					itemFromResult = {
 						view: item.view,
@@ -162,7 +153,7 @@ function _groupFiltersByKey() {
 					result.push(itemFromResult);
 				}
 				itemFromResult.values.push({
-					label:_prepareOptionNameForApi(item.value, item.key),
+					label: _prepareOptionNameForApi(item.value, item.key),
 					highBound: item.highBound,
 					lowBound: item.lowBound
 				});
@@ -329,13 +320,12 @@ export default {
 	count,
 	getFilterByName,
 	setFilterByName,
-	getRemovedFiltersCollection,
 	setAppliedFiltersToLocalStorage,
 	getAppliedFiltersFromLocalStorage,
-	getCollapsedRowsCollection,
 	getAppliedFilterBySearchCollection,
 	setFilterValue,
-	getFilterValue
+	getFilterValue,
+	getShowedFiltersCollection
 };
 
 /* example of conditions for API */

@@ -142,7 +142,7 @@ class DatasetViewService {
 
 			const offset = pager.data.page * pager.data.size;
 			const portion = datasetModel.getData(pager.data.size, offset);
-			accView.buildAccordion(portion, this._accordion);
+			accView.buildAccordion(portion, this._accordion, this._headerTemplate);
 
 			if (selectedDatasetIdsSet) {
 				for (let item of selectedDatasetIdsSet) {

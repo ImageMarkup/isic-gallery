@@ -58,6 +58,7 @@ export default class Header extends JetView {
 					}
 				},
 				onMenuItemClick: (id) => {
+					const headerMenu = $$(BASE_MENU_ID);
 					switch (id) {
 						case constants.ID_HEADER_MENU_ABOUT:
 						{
@@ -67,6 +68,7 @@ export default class Header extends JetView {
 						case constants.ID_HEADER_MENU_FORUM:
 						{
 							menuHandlerService.clickForum();
+							// to fix bug with css selection
 							break;
 						}
 						case constants.ID_HEADER_MENU_GALLERY:
@@ -87,6 +89,7 @@ export default class Header extends JetView {
 						case constants.ID_HEADER_MENU_DERMO:
 						{
 							menuHandlerService.clickDermoscopedia();
+							headerMenu.unselect(id);
 							break;
 						}
 						case constants.ID_HEADER_MENU_DASHBOARD:
