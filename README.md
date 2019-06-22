@@ -4,6 +4,7 @@ ISIC App
 ### Building for production
 - Set the environment variables:
   - `ISIC_BASE_API_URL` to the absolute URL of the ISIC API root
+    - this must include a trailing slash
     - e.g. this value may be `https://sandbox.isic-archive.com/api/v1/` for testing
   - `ISIC_SITE_URL` to the absolute URL of where this app will be served
     - this is similar to [Webpack's `publicPath`](https://webpack.js.org/configuration/output#outputpublicpath)
