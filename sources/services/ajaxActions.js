@@ -652,7 +652,7 @@ class AjaxActions {
 	}
 
 	finalizePostBatchUpload(datasetId, batchId) {
-		return this._ajaxGet(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
+		return webix.ajax().post(`${BASE_API_URL}dataset/${datasetId}/zip/${batchId}`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}

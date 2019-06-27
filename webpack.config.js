@@ -1,11 +1,12 @@
-let path = require("path");
-let webpack = require("webpack");
-let HtmlWebpackPlugin = require("html-webpack-plugin");
-let CopyWebpackPlugin = require("copy-webpack-plugin");
-let pack = require("./package.json");
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
-let UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-let appconfig = require("./appconfig.json");
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const pack = require("./package.json");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const appconfig = require("./appconfig.json");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = function (env) {
 	let production = !!(env && env.production === "true");
@@ -25,12 +26,7 @@ module.exports = function (env) {
 		module: {
 			rules: [
 				{
-					test: /\.js?$/,
-					exclude(modulePath) {
-						return /node_modules/.test(modulePath) &&
-							!/node_modules[\\/]webix-jet/.test(modulePath) &&
-							!/node_modules[\\/]webpack-dev-server/.test(modulePath);
-					},
+					test: /\.js$/,
 					loader: `babel-loader?${JSON.stringify(babelSettings)}`
 				},
 				{
@@ -81,20 +77,16 @@ module.exports = function (env) {
 				APPNAME: `"${pack.name}"`,
 				PRODUCTION: production
 			}),
-			new HtmlWebpackPlugin({
-				template: "index.html"
-			}),
+			new HtmlWebpackPlugin({template: "index.html"}),
 			new CopyWebpackPlugin([
 				{from: path.join(__dirname, "sources/libs"), to: "sources/libs/"},
 				{from: path.join(__dirname, "sources/images"), to: "sources/images"},
-				{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"}
+				{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"},
+				{from: "./error.html", to: "./"}
 			]),
-
-			new webpack.EnvironmentPlugin({
-				ISIC_SITE_URL: "https://isic-archive.com/",
-				ISIC_BASE_API_URL: "https://sandbox.isic-archive.com/api/v1/",
+			new Dotenv({
+				path: path.resolve(__dirname, "./.env") // Path to .env file
 			})
-
 		],
 		devServer: {
 			host: appconfig.devHost,
