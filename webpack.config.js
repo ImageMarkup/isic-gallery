@@ -85,7 +85,8 @@ module.exports = function (env) {
 				{from: "./error.html", to: "./"}
 			]),
 			new Dotenv({
-				path: path.resolve(__dirname, "./.env") // Path to .env file
+				path: path.resolve(__dirname, "./.env"), // Path to .env file
+				systemvars: true  // Load all the predefined process.env variables which will trump anything local per dotenv specs.
 			})
 		],
 		devServer: {
