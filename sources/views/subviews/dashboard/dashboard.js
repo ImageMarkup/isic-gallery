@@ -89,7 +89,7 @@ export default class DashboardView extends JetView {
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
-											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}redirect?studyId=${currentStudy._id}`);
+											util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}?studyId=${currentStudy._id}`);
 										}
 										else {
 											webix.message({
@@ -130,7 +130,7 @@ export default class DashboardView extends JetView {
 						on: {
 							onItemClick(id) {
 								const currentTask = this.getItem(id);
-								util.openInNewTab(`${constants.URL_SEGMENTATION_TOOL}redirect?datasetId=${currentTask.dataset._id}`);
+								util.openInNewTab(`${constants.URL_SEGMENTATION_TOOL}?datasetId=${currentTask.dataset._id}`);
 							}
 						}
 					}
