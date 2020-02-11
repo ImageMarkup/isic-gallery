@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pack = require("./package.json");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const appconfig = require("./appconfig.json");
 const Dotenv = require("dotenv-webpack");
 
@@ -99,7 +99,7 @@ module.exports = function (env) {
 
 	if (production) {
 		config.plugins.push(
-			new UglifyJsPlugin({
+			new TerserPlugin({
 				test: /\.js($|\?)/i
 			})
 		);
