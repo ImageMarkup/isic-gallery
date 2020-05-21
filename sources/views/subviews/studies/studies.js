@@ -69,21 +69,14 @@ export default class StudiesView extends JetView {
 			template: (obj, common) => {
 				let complitedHtml = "";
 				let buttonsHtml;
-				let isPartisipationRequested;
 				// check if user partisipates in study
 				const user = authService.getUserInfo();
-				if (obj.participationRequests && obj.participationRequests.length) {
-					isPartisipationRequested = obj.participationRequests.find((item) => {
-						return item._id === user._id;
-					});
-				}
 				if (typeof obj.userCompletion[user._id] !== "undefined") {
 					buttonsHtml = common.goToStudyButton(obj, common);
 					buttonsHtml += common.studiesProgressButton(obj, common);
 				}
 				else {
-					const infoHtml = "Participation request has been sent";
-					buttonsHtml = isPartisipationRequested ? infoHtml : common.studiesParticipateButton(obj, common);
+					buttonsHtml = common.studiesParticipateButton(obj, common);
 				}
 				if (obj.state === "complete") {
 					complitedHtml = "<span class='study-item-completed'>COMPLETED</span>";
@@ -133,14 +126,7 @@ export default class StudiesView extends JetView {
 					css: "studies-participate-btn btn",
 					label: "Participate",
 					width: 108,
-					on: {
-						onItemClick(id, e) {
-							const thisDataview = $$(DATAVIEW_ID);
-							const itemId = $$(DATAVIEW_ID).locate(e);
-							const item = thisDataview.getItem(itemId);
-							thisDataview.$scope.studiesService.participateStudy(item);
-						}
-					}
+					click: () => { window.open(constants.URL_PARTICIPATE_BUTTON); }
 				},
 				studiesProgressButton: {
 					view: "button",

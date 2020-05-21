@@ -107,6 +107,7 @@ export default {
 	URL_CHALLENGE_2019: "http://challenge2019.isic-archive.com/",
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
 	URL_FORUM: "https://forum.isic-archive.com",
+	URL_PARTICIPATE_BUTTON: "http://bit.ly/ISICpart",
 
 	NAME_VIEW_DASHBOARD: "dashboard",
 	TOOLTIP_CLASS_NAME_FOR_DATAVIEW: "tooltip-for-dataview-templates",

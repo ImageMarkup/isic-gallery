@@ -8,7 +8,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const appconfig = require("./appconfig.json");
 const Dotenv = require("dotenv-webpack");
 
-module.exports = function (env) {
+module.exports = (env) => {
 	let production = !!(env && env.production === "true");
 	let babelSettings = {
 		extends: path.join(__dirname, "/.babelrc")
@@ -86,7 +86,7 @@ module.exports = function (env) {
 			]),
 			new Dotenv({
 				path: path.resolve(__dirname, "./.env"), // Path to .env file
-				systemvars: true  // Load all the predefined process.env variables which will trump anything local per dotenv specs.
+				systemvars: true // Load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
 			})
 		],
 		devServer: {
