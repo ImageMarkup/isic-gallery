@@ -69,6 +69,16 @@ export default class aboutView extends JetView {
 									click() {
 										util.openInNewTab(constants.URL_CHALLENGE_2019);
 									}
+								},
+								{height: 15},
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer",
+									value: "ISIC Challenge 2020",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2019);
+									}
 								}
 							]
 						},
