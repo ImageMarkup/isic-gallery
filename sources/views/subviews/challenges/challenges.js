@@ -77,7 +77,7 @@ export default class aboutView extends JetView {
 									tooltip: "It may not work in Internet Explorer",
 									value: "ISIC Challenge 2020",
 									click() {
-										util.openInNewTab(constants.URL_CHALLENGE_2019);
+										util.openInNewTab(constants.URL_CHALLENGE_2020);
 									}
 								}
 							]
