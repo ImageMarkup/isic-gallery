@@ -10,6 +10,7 @@ function add(elements) {
 		elements = [elements];
 	}
 	selectedImages = selectedImages.concat(elements);
+	setSelectedImagesToLocalStorage(selectedImages);
 }
 
 function remove(element) {
@@ -17,6 +18,7 @@ function remove(element) {
 	if (index > -1) {
 		selectedImages.splice(index, 1);
 	}
+	setSelectedImagesToLocalStorage(selectedImages);
 }
 
 function isSelected(element) {
@@ -26,10 +28,12 @@ function isSelected(element) {
 
 function clearImagesForDownload() {
 	selectedImages = [];
+	setSelectedImagesToLocalStorage(selectedImages);
 }
 
 function clearImagesForStudies() {
 	studySelectedImages = [];
+	setImageObjectsToLocalStorage(studySelectedImages);
 }
 
 function count() {
@@ -37,6 +41,11 @@ function count() {
 }
 
 function getSelectedImagesForDownload() {
+	const localStorageImages = getSelectedImagesFromLocalStorage();
+	if (!selectedImages.length && localStorageImages && localStorageImages.length) {
+		selectedImages = localStorageImages;
+		return getSelectedImagesForDownload();
+	}
 	return selectedImages;
 }
 
@@ -54,6 +63,7 @@ function addForStudy(elements) {
 		elements = [elements];
 	}
 	studySelectedImages = studySelectedImages.concat(elements)
+	setImageObjectsToLocalStorage(studySelectedImages);
 }
 
 function isSelectedInStudies(element) {
@@ -66,17 +76,25 @@ function removeImageFromStudies(element) {
 	if (index > -1) {
 		studySelectedImages.splice(index, 1);
 	}
+	setImageObjectsToLocalStorage(studySelectedImages);
 }
 
 function setStudyFlag(value) {
+	webix.storage.local.put("studyFlag", value);
 	studyFlag = value;
 }
 
 function getStudyFlag() {
+	let studyFlag = webix.storage.local.get("studyFlag") || false;
 	return studyFlag;
 }
 
 function getStudyImagesId() {
+	const localStorageImages = getImageObjectsFromLocalStorage();
+	if (!studySelectedImages.length && localStorageImages && localStorageImages.length) {
+		studySelectedImages = localStorageImages;
+		return getStudyImagesId();
+	}
 	return studySelectedImages;
 }
 
@@ -123,6 +141,21 @@ function getDeletedItemsDataCollection() {
 	return deletedItemsCollection;
 }
 
+function setSelectedImagesToLocalStorage(images) {
+	webix.storage.local.put("selectedImages", images);
+}
+
+function getSelectedImagesFromLocalStorage() {
+	return webix.storage.local.get("selectedImages");
+}
+
+function clearAll() {
+	clearImagesForDownload();
+	clearImagesForStudies();
+	clearSelectedInAddNewImagePopup();
+	setStudyFlag(false);
+}
+
 
 export default {
 	add,
@@ -148,5 +181,8 @@ export default {
 	getSelectedInAddNewImagePopup,
 	isSelectedInAddNewImagePopup,
 	getSelectedImagesForDownload,
-	getDeletedItemsDataCollection
+	getDeletedItemsDataCollection,
+	setSelectedImagesToLocalStorage,
+	getSelectedImagesFromLocalStorage,
+	clearAll
 };

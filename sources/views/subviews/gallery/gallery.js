@@ -14,12 +14,13 @@ import utils from "../../../utils/util";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import ajax from "../../../services/ajaxActions";
 import appliedFiltersModel from "../../../models/appliedFilters";
+import searchButtonModel from "../../../services/gallery/searchButtonModel";
 
 
 const PAGER_ID = "gallery-pager-id";
 const DATAVIEW_ID = "gallery-dataview-id";
 const LEFT_PANEL_ID = constants.ID_GALLERY_LEFT_PANEL;
-const IMAGE_WINDOW_ID = "image-window-id";
+const IMAGE_WINDOW_ID = "gallery-image-window-id";
 const METADATA_WINDOW_ID = "metadata-window";
 const FILTERS_FORM_ID = "filters-form";
 const APPLIED_FILTERS_LIST_ID = "applied-filters-list";
@@ -96,11 +97,22 @@ export default class GalleryView extends JetView {
 				},
 				{
 					view: "search",
+					icon: "fas fa-search",
 					id: SEARCH_ID,
 					value: `${appliedFiltersModel.getFilterValue()}`,
 					css: "gallery-search-block",
 					placeholder: "Search images",
-					width: 270
+					width: 270,
+					on: {
+						onAfterRender: () => {
+							const searchInputWidth = $$(SEARCH_ID).$width;
+							const dataviewMinWidth = 800;
+							searchButtonModel.setMinCurrentTargenInnerWidth(dataviewMinWidth + searchInputWidth);
+							const inputNode = $$(SEARCH_ID).$view.getElementsByClassName("webix_el_box")[0];
+							const tooltipText = "Clear search value";
+							searchButtonModel.createTimesSearchButton($$(SEARCH_ID), inputNode, tooltipText);
+						}
+					}
 				},
 				{
 					margin: 10,
@@ -265,7 +277,7 @@ export default class GalleryView extends JetView {
 								webix.delay(() => {
 									const selectImagesForDownloadTemplateNode = this.imagesSelectionTemplate.$view.firstChild.firstChild;
 									const tooltipTextForDownload = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for download.`;
-									this._galleryService._createHintForSearchTimesButton(selectImagesForDownloadTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForDownload);
+									searchButtonModel.createHintForSearchTimesButton(selectImagesForDownloadTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForDownload);
 								});
 								const text = "<span class='gallery-select-all-images link'> Select All on the Page for Download</span>";
 								const selectedImagesCount = selectedImages.count();
@@ -297,7 +309,7 @@ export default class GalleryView extends JetView {
 										webix.delay(() => {
 											const selectImagesForStudyCreationTemplateNode = this.allPagesTemplate.$view.firstChild.firstChild;
 											const tooltipTextForStudy = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for creating a study.`;
-											this._galleryService._createHintForSearchTimesButton(selectImagesForStudyCreationTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForStudy);
+											searchButtonModel.createHintForSearchTimesButton(selectImagesForStudyCreationTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForStudy);
 										});
 										const text = `<span class='gallery-select-all-images-on-all-pages link'> Select First ${constants.MAX_COUNT_IMAGES_SELECTION} images for Study Creation</span>`;
 										const selectedImagesCount = selectedImages.countForStudies();
@@ -327,12 +339,13 @@ export default class GalleryView extends JetView {
 			css: "cart-list-view",
 			id: ID_ACTIVE_CART_LIST,
 			name: "activeGalleryCartListName",
+			scroll: "auto",
 			width: 180,
 			activeContent: {
 				deleteButton: {
 					view: "button",
 					type: "icon",
-					icon: "times",
+					icon: "fas fa-times",
 					width: 25,
 					height: 25,
 					click: (...args) => {
@@ -350,7 +363,7 @@ export default class GalleryView extends JetView {
 					});
 				}
 				return `<div>
-						<span class='webix_icon template-angle ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
+						<span class='webix_icon template-angle fas ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
 						<div style='float: right'>${common.deleteButton(obj, common)}</div>
  						<div class='card-list-name'>${obj.name}</div>
  						<img src="${galleryImagesUrls.getPreviewImageUrl(obj._id) || ""}" class="cart-image">
@@ -464,9 +477,6 @@ export default class GalleryView extends JetView {
 			const leftPanelCollapser = this.getLeftPanelWithCollapser().queryView({state: "wasOpened"});
 			leftPanelCollapser.config.onClick["collapser-btn"](leftPanelCollapser);
 		}
-	}
-
-	urlChange() {
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_GALLERY}]);
 		if (authService.isTermsOfUseAccepted()) {
 			this._galleryService.load();
