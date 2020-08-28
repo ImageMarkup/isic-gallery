@@ -6,7 +6,7 @@ function getDownloadingPanel() {
 		paddingY: 10,
 		cols: [
 			{
-				template: "<span class='webix_icon fa-file-text-o'></span><span class='download-txt-link link'>Download as text</span>",
+				template: "<span class='webix_icon far fa-file-alt'></span><span class='download-txt-link link'>Download as text</span>",
 				autoheight: true,
 				borderless: true,
 				width: 160,
@@ -17,7 +17,7 @@ function getDownloadingPanel() {
 				}
 			},
 			{
-				template: "<span class='webix_icon fa-file-pdf-o'></span><span class='download-pdf-link link'>Download as PDF</span>",
+				template: "<span class='webix_icon far fa-file-pdf'></span><span class='download-pdf-link link'>Download as PDF</span>",
 				autoheight: true,
 				borderless: true,
 				width: 160,

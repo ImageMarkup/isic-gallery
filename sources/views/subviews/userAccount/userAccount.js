@@ -14,7 +14,7 @@ const ID_TABVIEW = "user-account-tabview";
 export default class UserAccountView extends JetView {
 	config() {
 		const profileTab = {
-			header: "<span class='webix_icon fa-info'></span> Profile",
+			header: "<span class='webix_icon fas fa-info'></span> Profile",
 			width: 150,
 			body: {
 				padding: 20,
@@ -133,7 +133,7 @@ export default class UserAccountView extends JetView {
 		};
 
 		const passwordTab = {
-			header: "<span class='webix_icon fa-lock'></span> Password",
+			header: "<span class='webix_icon fas fa-lock'></span> Password",
 			width: 150,
 			body: {
 				id: ID_TAB_PASSWORD,

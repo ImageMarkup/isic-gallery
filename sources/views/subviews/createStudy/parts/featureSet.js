@@ -153,7 +153,7 @@ export default class FeatureSet extends JetView {
 					view: "button",
 					type: "icon",
 					css: "delete-icon-button",
-					icon: "times",
+					icon: "fas fa-times",
 					width: 25,
 					height: 25,
 					click: (id) => {

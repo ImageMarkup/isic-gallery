@@ -413,7 +413,7 @@ function getHiidenGalleryLeftPanel() {
 	return hiddenGalleryLeftPanel;
 }
 
-function setHiidenGalleryLeftPanel(value) {
+function setHiddenGalleryLeftPanel(value) {
 	hiddenGalleryLeftPanel = value;
 }
 
@@ -443,6 +443,6 @@ export default {
 	getHiddenGalleryCartList,
 	setHiddenGalleryCartList,
 	getHiidenGalleryLeftPanel,
-	setHiidenGalleryLeftPanel
+	setHiddenGalleryLeftPanel
 };
 

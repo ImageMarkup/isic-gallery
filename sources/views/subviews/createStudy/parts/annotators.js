@@ -22,9 +22,9 @@ export default class AnnotatorsView extends JetView {
 					},
 					template(obj) {
 						if (obj._modelType === "user") {
-							return `<span class="webix_icon fa-user"></span> ${obj.name}`;
+							return `<span class="webix_icon fas fa-user"></span> ${obj.name}`;
 						}
-						return `<span class="webix_icon fa-users"></span> ${obj.name}`;
+						return `<span class="webix_icon fas fa-users"></span> ${obj.name}`;
 					},
 					on: {
 						onItemClick: (id) => {
@@ -46,18 +46,21 @@ export default class AnnotatorsView extends JetView {
 						}
 					},
 					dataFeed(text) {
-						const params = {
-							q: text,
-							mode: "prefix",
-							types: ["user"]
-						};
-						ajax.search(params).then((data) => {
-							this.clearAll();
-							if (data.user && data.user.length) {
-								this.parse(data.user);
-								this.sort("name");
-							}
-						});
+						this.clearAll();
+						if (text) {
+							const params = {
+								q: text,
+								mode: "prefix",
+								types: ["user"]
+							};
+							ajax.search(params).then((data) => {
+								this.clearAll();
+								if (data.user && data.user.length) {
+									this.parse(data.user);
+									this.sort("name");
+								}
+							});
+						}
 					}
 				}
 			}
@@ -72,7 +75,7 @@ export default class AnnotatorsView extends JetView {
 					view: "button",
 					type: "icon",
 					css: "delete-icon-button",
-					icon: "times",
+					icon: "fas fa-times",
 					width: 25,
 					height: 25,
 					click: (id) => {

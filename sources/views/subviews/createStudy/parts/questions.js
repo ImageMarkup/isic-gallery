@@ -348,7 +348,7 @@ export default class StudyQuestions extends JetView {
 		const deleteQuestionButton = {
 			view: "button",
 			type: "icon",
-			icon: "times",
+			icon: "fas fa-times",
 			mainLayoutNamesNumber: answersCount,
 			css: "delete-icon-button",
 			width: 25,

@@ -324,7 +324,7 @@ function createAccordionRows(data) {
 								<div class="item-content-block">
 									<div class="item-content-row">
 										<div class="item-content-label">Unique ID</div>
-										<div class="item-content-value">${data.dataset._id || ""}</div>
+										<div class="item-content-value">${data._id || ""}</div>
 									</div>
 									<div class="item-content-row">
 										<div class="item-content-label">Dataset</div>
@@ -418,7 +418,7 @@ function createConfig(data) {
 						{
 							view: "button",
 							type: "icon",
-							icon: "pencil",
+							icon: "fas fa-pencil",
 							width: 70,
 							height: 30,
 							label: "Edit",
@@ -430,7 +430,7 @@ function createConfig(data) {
 							type: "icon",
 							width: 70,
 							height: 30,
-							icon: "floppy-o",
+							icon: "far fa-floppy",
 							label: "Save",
 							name: "saveButtonName",
 							hidden: true
@@ -440,7 +440,7 @@ function createConfig(data) {
 							type: "icon",
 							width: 100,
 							height: 30,
-							icon: "times",
+							icon: "fas fa-times",
 							label: "Cancel",
 							name: "cancelButtonName",
 							hidden: true

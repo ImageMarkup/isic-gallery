@@ -3,9 +3,9 @@ import authService from "../../../services/auth";
 
 const MENU_ID = "managementMenu";
 const menuData = [
-	{id: "managementCollections", value: "Collections", icon: "align-justify"},
-	{id: "managementUsers", value: "Users", icon: "user-circle-o"},
-	{id: "managementGroups", value: "Groups", icon: "users"}
+	{id: "managementCollections", value: "Collections", icon: "fas fa-align-justify"},
+	{id: "managementUsers", value: "Users", icon: "far fa-user-circle"},
+	{id: "managementGroups", value: "Groups", icon: "fas fa-users"}
 ];
 
 export default class ManagementUIView extends JetView {
@@ -18,7 +18,7 @@ export default class ManagementUIView extends JetView {
 				height: 40
 			},
 			select: true,
-			template: "<div style='padding-top:4px'><span class='webix_icon fa-#icon#'></span>#value#</div>",
+			template: "<div style='padding-top:4px'><span class='webix_icon #icon#'></span>#value#</div>",
 			data: menuData,
 			width: 200
 		};

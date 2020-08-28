@@ -20,19 +20,15 @@ const list = {
 	view: "list",
 	css: "applied-filters-list",
 	height: 100,
-	scroll: "y",
-	tooltip: {
-		template(obj) {
-			return _prepareFilterName(obj);
-		}
-	},
+	scroll: "auto",
 	template(obj) {
-		return `${_prepareFilterName(obj)}
+		const filterName = _prepareFilterName(obj);
+		return `<div class='applied-filters-item' title="${filterName}">${filterName}
 					<span class="remove-filter-icon">
 						<svg viewBox="0 0 26 26" class="close-icon-svg">
 							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use>
 						</svg>
-					</span>`;
+					</span></div>`;
 	},
 	onClick: {
 		"remove-filter-icon": function (e, id) {

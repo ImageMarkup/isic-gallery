@@ -5,7 +5,7 @@ webix.type(webix.ui.tree, {
 		let html = "";
 		for (let i = 1; i <= obj.$level; i++) {
 			if (i === obj.$level && obj.$count) {
-				let icon = `fa-caret-${(obj.open ? "down" : "right")}`;
+				let icon = `fas fa-caret-${(obj.open ? "down" : "right")}`;
 				html += `<span class='webix_sidebar_dir_icon webix_icon ${icon}'></span>`;
 			}
 		}
@@ -19,8 +19,9 @@ webix.type(webix.ui.tree, {
 	},
 	icon(obj) {
 		if (obj.icon) {
-			return `<span class='webix_icon webix_sidebar_icon fa-${obj.icon}'></span>`;
+			return `<span class='webix_icon webix_sidebar_icon fas fa-${obj.icon}'></span>`;
 		}
 		return "";
-	}
+	},
+	height: 35
 })
