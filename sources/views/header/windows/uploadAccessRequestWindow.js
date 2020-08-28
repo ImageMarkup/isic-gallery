@@ -1,5 +1,10 @@
 import windowWithHeader from "../../components/windowWithHeader";
 import ajax from "../../../services/ajaxActions";
+import auth from "../../../services/auth";
+import constants from "../../../constants";
+
+const user = auth.getUserInfo();
+let isRequestSend = webix.storage.session.get(`contribute-to-archive-request-${user ? user._id : ""}`);
 
 const body = {
 	width: 750,
@@ -19,13 +24,24 @@ const body = {
 					css: "btn",
 					value: "Request access",
 					width: 160,
+					hidden: isRequestSend,
 					on: {
 						onItemClick() {
-							ajax.createDatasetPermission().then(() => {
-								webix.message("Request has been sent");
-							});
+							requestContributeAccess();
 						}
 					}
+				},
+				{
+					name: "requestTemplate",
+					width: 600,
+					data: {
+						message: "Request has been sent"
+					},
+					template: (obj) => obj.message,
+					css: {"text-align": "center"},
+					borderless: true,
+					hidden: !isRequestSend,
+					autoheight: true
 				},
 				{}
 			]
@@ -41,6 +57,20 @@ function getConfig(id) {
 
 function getIdFromConfig() {
 	return windowWithHeader.getIdFromConfig();
+}
+
+function requestContributeAccess() {
+	ajax.createDatasetPermission().then((data) => {
+		webix.storage.session.put(`contribute-to-archive-request-${user ? user._id : ""}`, true);
+		webix.message("Request has been sent");
+		const window = webix.$$(constants.ID_WINDOW_ACCESS_REQUEST);
+		const button = window.queryView({view: "button", value: "Request access"});
+		const template = window.queryView({name: "requestTemplate"});
+		template.setValues(data);
+		window.hide();
+		template.show();
+		button.hide();
+	});
 }
 
 export default {

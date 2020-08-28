@@ -3,6 +3,7 @@ import util from "../utils/util";
 import constants from "../constants";
 import authService from "../services/auth";
 import uploadWindow from "../views/header/windows/uploadTypeWindow";
+import accessRequestWindow from "../views/header/windows/uploadAccessRequestWindow";
 import ApiWindow from "../views/header/windows/apiWindow";
 
 export default {
@@ -25,12 +26,26 @@ export default {
 	clickUpload() {
 		if (authService.isLoggedin()) {
 			if (authService.isTermsOfUseAccepted()) {
-				const win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
+				let win;
+				state.app.show(constants.PATH_MAIN);
+				if (authService.canCreateDataset()) {
+					win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
+				}
+				else {
+					win = $$(constants.ID_WINDOW_ACCESS_REQUEST) || webix.ui(accessRequestWindow.getConfig(constants.ID_WINDOW_ACCESS_REQUEST));
+				}
 				win.show();
 			}
 			else {
 				authService.showTermOfUse(() => {
-					const win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
+					let win;
+					state.app.show(constants.PATH_MAIN);
+					if (authService.canCreateDataset()) {
+						win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
+					}
+					else {
+						win = $$(constants.ID_WINDOW_ACCESS_REQUEST) || webix.ui(accessRequestWindow.getConfig(constants.ID_WINDOW_ACCESS_REQUEST));
+					}
 					win.show();
 				});
 			}
