@@ -75,7 +75,7 @@ export default class aboutView extends JetView {
 					cols: [
 						{
 							view: "icon",
-							icon: "close",
+							icon: "fas fa-times",
 							align: "left",
 							width: 38,
 							click: toggleSidebar
@@ -126,7 +126,7 @@ export default class aboutView extends JetView {
 											view: "icon",
 											id: BARS_ICON,
 											css: "bars-icon",
-											icon: "bars",
+											icon: "fas fa-bars",
 											align: "left",
 											width: 30,
 											hidden: true,

@@ -21,7 +21,7 @@ export default class ManagementUsersView extends JetView {
 		const sortAZButton = {
 			view: "button",
 			type: "icon",
-			icon: "sort-alpha-asc",
+			icon: "fas fa-sort-alpha-down",
 			name: USER_SORT_BUTTON_NAME,
 			width: 30
 		};
@@ -57,9 +57,9 @@ export default class ManagementUsersView extends JetView {
 					},
 					template(obj) {
 						if (obj._modelType === "user") {
-							return `<span class="webix_icon fa-user"></span> ${obj.name}`;
+							return `<span class="webix_icon fas fa-user"></span> ${obj.name}`;
 						}
-						return `<span class="webix_icon fa-users"></span> ${obj.name}`;
+						return `<span class="webix_icon fas fa-users"></span> ${obj.name}`;
 					},
 					on: {
 						onAfterSelect(id) {
@@ -86,8 +86,8 @@ export default class ManagementUsersView extends JetView {
 
 		const listTemplate = obj => `<div class='management-top-level-list-entry'>
 						<div class='management-user-right-column'>
-							<div class='management-space-used-user-joined'><span class='webix_icon fa-clock-o'></span>Joined on <b>${dates.formatDateStringForManagement(obj.created)}</b></div>
-							<div class='management-space-used-user-size'><span class='webix_icon fa-floppy-o'></span>Currently using <b>${obj.size || "0"} B</b></div>
+							<div class='management-space-used-user-joined'><span class='webix_icon far fa-clock'></span>Joined on <b>${dates.formatDateStringForManagement(obj.created)}</b></div>
+							<div class='management-space-used-user-size'><span class='webix_icon far fa-floppy'></span>Currently using <b>${obj.size || "0"} B</b></div>
 			            </div>
 						<div class='management-user-container'>
 							<div class='management-user-link'>

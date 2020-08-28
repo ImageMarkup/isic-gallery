@@ -11,6 +11,7 @@ import util from "../../utils/util";
 import authService from "../../services/auth";
 import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
+import searchButtonModel from "./searchButtonModel";
 import "wheelzoom";
 
 
@@ -76,18 +77,18 @@ class GalleryService {
 		}
 		if (filtersInfo.length > 0) {
 			filtersBySearchCollection.parse(filtersInfo);
-			this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
 		}
 		else {
-			webix.alert(`Nothing has found with name ${searchValue}`);
+			webix.alert(`"There are no filters which include "${searchValue}"`);
 		}
+		this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
 	}
 
 	_searchHandlerByName(afterFilterSelected) {
 		let searchValue = this._searchInput.getValue();
 		searchValue = searchValue.trim();
 		searchValue = searchValue.toLowerCase();
-		if (searchValue.length < 9) {
+		if (searchValue && searchValue.length < 9) {
 			webix.alert("You should type minimum 9 characters");
 			return;
 		}
@@ -101,6 +102,7 @@ class GalleryService {
 			detail: "false",
 			filter
 		};
+		this._view.$scope.setParam("name", searchValue, true);
 		this._view.showProgress();
 		this.studiesPromise
 			.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
@@ -228,21 +230,28 @@ class GalleryService {
 				let tooltipText;
 				let inputNode = this._searchInput.$view.getElementsByClassName("webix_el_box")[0];
 				this._searchInput.setValue("");
-				this._removeTimesSearchButton(inputNode);
+				searchButtonModel.removeTimesSearchButton(inputNode);
 				if (newValue) {
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this));
-					this._createTimesSearchButton(inputNode, tooltipText, true);
+					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText, true);
 				}
 				else {
+					this._view.$scope.setParam("name", "", true);
 					tooltipText = "Clear search value";
 					appliedFilterModel.setFilterByName(false);
 					this._clearNameFilter();
 					this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
-					this._createTimesSearchButton(inputNode, tooltipText);
+					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText);
 				}
 			}
 		});
+
+		const nameParam = this._view.$scope.getParam("name");
+		if (nameParam) {
+			this._leftPanelToggleButton.setValue(1);
+			this._searchInput.setValue(nameParam);
+		}
 
 		this._toggleButton.attachEvent("onChange", (value, oldValue) => {
 			if (value !== oldValue) {
@@ -256,12 +265,7 @@ class GalleryService {
 		});
 
 		this._searchInput.attachEvent("onAfterRender", () => {
-			const searchInputWidth = this._searchInput.$width;
-			const dataviewMinWidth = 800;
-			this._minCurrentTargenInnerWidth = dataviewMinWidth + searchInputWidth;
-			let inputNode = this._searchInput.$view.getElementsByClassName("webix_el_box")[0];
-			const tooltipText = "Clear search value";
-			this._createTimesSearchButton(inputNode, tooltipText);
+
 		});
 
 		let dataviewSelectionId = util.getDataviewSelectionId() ? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
@@ -270,7 +274,8 @@ class GalleryService {
 		this._dataviewYCountSelection.unblockEvent();
 
 		window.addEventListener("resize", (event) => {
-			if (event.currentTarget.innerWidth >= this._minCurrentTargenInnerWidth) {
+			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
+			if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
 				const dataviewSelectionId = util.getDataviewSelectionId();
 				if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
 					this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
@@ -648,7 +653,7 @@ class GalleryService {
 			if (!item.imageShown) {
 				itemNode.setAttribute("style", "height: 130px !important; color: #0288D1;");
 				listTextNode.setAttribute("style", "margin-left: 17px; width: 95px;");
-				node.setAttribute("class", "webix_icon template-angle fa-angle-down");
+				node.setAttribute("class", "webix_icon template-angle fas fa-angle-down");
 				item.imageShown = true;
 				modifiedObjects.add(item);
 				this._activeCartList.parse(item);
@@ -657,7 +662,7 @@ class GalleryService {
 			else {
 				itemNode.setAttribute("style", "height: 30px !important; color: rgba(0, 0, 0, 0.8);");
 				listTextNode.setAttribute("style", "margin-left: 12px; width: 91px;");
-				node.setAttribute("class", "webix_icon template-angle fa-angle-right");
+				node.setAttribute("class", "webix_icon template-angle fas fa-angle-right");
 				item.imageShown = false;
 				modifiedObjects.remove(item.id);
 			}
@@ -693,7 +698,9 @@ class GalleryService {
 				}
 				else {
 					items.forEach((item) => {
-						this._activeCartList.remove(item.id);
+						if (util.findItemInList(item._id, this._activeCartList)) {
+							this._activeCartList.callEvent("onDeleteButtonClick", [item]);
+						}
 					});
 					if (util.isObjectEmpty(this._activeCartList.data.pull)) {
 						this._view.$scope.hideList();
@@ -822,15 +829,29 @@ class GalleryService {
 			this._updatePagerCount(imagesCount);
 			filterService.updateFiltersCounts();
 			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			const paramFilters = this._view.$scope.getParam("filter");
 			if (appliedFiltersArray.length) {
 				webix.delay(() => {
 					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
 				});
 			}
 			else {
-				this._createFilters([], true); // create filters form controls from config
+				this._createFilters([], true)
+					.then(() => {
+						if (paramFilters) {
+							try {
+								const parsedFilters = JSON.parse(paramFilters);
+								const appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
+								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+							}
+							catch (err) {
+								this._view.$scope.setParam("filter", "[]", true);
+								this._view.$scope.app.callEvent("filtersChanged", [[]]);
+							}
+						}
+					}); // create filters form controls from config
 			}
-			this._reload();
+			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		});
 	}
 
@@ -846,6 +867,8 @@ class GalleryService {
 		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 		this._createFilters(appliedFiltersArray);
 		this._updateCounts();
+		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
+		this._view.$scope.setParam("filter", paramFilters, true);
 		this._updateImagesDataview(offset, limit); // load images first time
 	}
 
@@ -894,7 +917,7 @@ class GalleryService {
 		if (expandedFilters && expandedFilters.length) {
 			expandedFiltersKeys = expandedFilters.map(item => item.key);
 		}
-		filtersData.getFiltersData(forceRebuild).then((data) => {
+		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
 			webix.ui(elements, this._filtersForm);
 			const firstItemToScroll = filtersBySearchCollection.getItem(filtersBySearchCollection.getFirstId());
@@ -922,10 +945,11 @@ class GalleryService {
 	}
 
 	_updateImagesDataview(offset, limit) {
+		const filter = appliedFilterModel.getConditionsForApi();
 		const imagesPromise = ajax.getImages({
 			offset,
 			limit,
-			filter: appliedFilterModel.getConditionsForApi()
+			filter
 		});
 		const studyFlag = selectedImages.getStudyFlag();
 		const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
@@ -1158,64 +1182,10 @@ class GalleryService {
 		this._imageInstance.dispatchEvent(eventWheel);
 	}
 
-	_createTimesSearchButton(inputNode, tooltipText, nameFilter) {
-		inputNode.lastChild.style.paddingRight = "26px";
-		const timesSpan = document.createElement("span");
-		inputNode.appendChild(timesSpan);
-		let timesButtonNode = inputNode.lastChild;
-		timesButtonNode.setAttribute("class", "search-times-button webix_input_icon fa-times");
-		timesButtonNode.setAttribute("style", "height:26px; padding-top:6px;");
-		const tootipTextForTimesButton = `${tooltipText}`;
-		const tooltipClassNameForTimesButton = "tooltip";
-		this._createHintForSearchTimesButton(timesButtonNode, tooltipClassNameForTimesButton, tootipTextForTimesButton);
-		this._searchInput.on_click["fa-times"] = () => {
-			this._searchInput.setValue("");
-			if (nameFilter) {
-				this._clearNameFilter();
-			}
-		};
-	}
-
-	_removeTimesSearchButton(inputNode) {
-		inputNode.removeChild(inputNode.lastChild);
-		inputNode.lastChild.style.paddingRight = "0px";
-	}
-
-	_createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName, tooltipText) {
-		elementNodeForTooltip.addEventListener("mouseover", function () {
-			const title = this.title;
-			this.setAttribute("tooltip", title);
-			const tooltipWrap = document.createElement("div"); // creates div
-			tooltipWrap.className = tooltipClassName; // adds class
-			const textDiv = document.createElement("div"); // creates another div
-			textDiv.innerHTML = tooltipText;	// add the text node to the newly created span.
-			tooltipWrap.appendChild(textDiv); // add text element to the tooltip
-
-			const firstChild = document.body.firstChild;// gets the first elem after body
-			firstChild.parentNode.insertBefore(tooltipWrap, firstChild); // adds tt before elem
-			const padding = 5;
-			const linkProps = this.getBoundingClientRect();
-			const tooltipProps = tooltipWrap.getBoundingClientRect();
-			const topPos = linkProps.top - (tooltipProps.height + padding);
-			tooltipWrap.setAttribute("style", `top:${topPos}px;` + `left:${linkProps.left}px;`);
-		});
-		elementNodeForTooltip.addEventListener("mouseout", () => {
-			this._removeTootipDiv(elementNodeForTooltip, tooltipClassName);
-		});
-	}
-
-	_removeTootipDiv(elementNode, tooltipClassName) {
-		elementNode.removeAttribute("tooltip");
-		const tooltipDiv = document.querySelector(`.${tooltipClassName}`);
-		if (tooltipDiv) {
-			tooltipDiv.parentNode.removeChild(tooltipDiv);
-		}
-	}
-
 	_removeTooltipForDataview(templateView) {
 		const tooltipClassName = constants.TOOLTIP_CLASS_NAME_FOR_DATAVIEW;
 		Array.from(templateView.$view.querySelectorAll("span")).forEach((element) => {
-			this._removeTootipDiv(element, tooltipClassName);
+			searchButtonModel.removeTootipDiv(element, tooltipClassName);
 		});
 	}
 

@@ -18,7 +18,7 @@ function createUsersDatatable(item, template) {
 				id: "remove",
 				header: "",
 				width: 40,
-				template: "<span class='link webix_icon fa-times'></span>"
+				template: "<span class='link webix_icon fas fa-times'></span>"
 			},
 			{id: "completion", header: "Completion", fillspace: true}
 		],
@@ -80,13 +80,13 @@ function createRequestsDatatable(item) {
 				id: "approve",
 				header: "",
 				width: 40,
-				template: "<span class='link webix_icon fa-check'></span>"
+				template: "<span class='link webix_icon fas fa-check'></span>"
 			},
 			{
 				id: "discard",
 				header: "",
 				width: 40,
-				template: "<span class='link webix_icon fa-times'></span>"
+				template: "<span class='link webix_icon fas fa-times'></span>"
 			}
 		],
 		data: prepareData.prepareParticipationReqData(item),

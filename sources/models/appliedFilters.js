@@ -16,11 +16,12 @@ function getShowedFiltersCollection() {
 }
 
 function setAppliedFiltersToLocalStorage(appliedFiltersToStorage) {
-	webix.storage.local.put("appliedFiltersStorage", appliedFiltersToStorage);
+	if (!appliedFiltersToStorage) webix.storage.local.remove("appliedFilters");
+	else webix.storage.local.put("appliedFilters", appliedFiltersToStorage);
 }
 
 function getAppliedFiltersFromLocalStorage() {
-	return webix.storage.local.get("appliedFiltersStorage");
+	return webix.storage.local.get("appliedFilters");
 }
 
 function setFilterByName(filter) {
@@ -80,7 +81,9 @@ function processNewFilter(filter) {
 		{
 			let checkboxId = filterService.getOptionId(filter.key, filter.value);
 			if (filter.remove) {
-				appliedFilters.remove(checkboxId);
+				if (appliedFilters.exists(checkboxId)) {
+					appliedFilters.remove(checkboxId);
+				}
 			}
 			else {
 				filter.id = checkboxId;
@@ -311,6 +314,22 @@ function getFilterValue() {
 	return filterValue;
 }
 
+function getFiltersFromURL(filtersArray) {
+	return filtersArray
+		.map((filter) => {
+			const filterId = typeof filter === "object" ? filter.id : filter;
+			const control = $$(filterId);
+			const data = control.config.filtersChangedData;
+			data.id = filterService.getOptionId(data.key, data.value);
+			data.remove = false;
+			return data;
+		});
+}
+
+function convertAppliedFiltersToParams() {
+	return JSON.stringify(getFiltersArray().map(filter => filter.id));
+}
+
 export default {
 	getFiltersArray,
 	processNewFilters,
@@ -325,7 +344,9 @@ export default {
 	getAppliedFilterBySearchCollection,
 	setFilterValue,
 	getFilterValue,
-	getShowedFiltersCollection
+	getShowedFiltersCollection,
+	getFiltersFromURL,
+	convertAppliedFiltersToParams
 };
 
 /* example of conditions for API */

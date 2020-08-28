@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import template from "../../../templates/about/literature.html";
+import mdTemplate from "../../../templates/about/literature.md";
+import mdLoader from "../../../../services/mdLoader";
 
 export default class LiteratureView extends JetView {
 	config() {
@@ -10,7 +11,7 @@ export default class LiteratureView extends JetView {
 				BreadcrumbsManager.getBreadcrumbsTemplate("about:literature"),
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content literature'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				}

@@ -26,7 +26,7 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	}
 	const newLabel = `${baseLabelText}(${firstNumberHtml}${totalCount})`;
 	controlView.define("labelRight", newLabel);
-	controlView.define("tooltip", newLabel);
+	controlView.getNode().setAttribute("title", newLabel);
 	controlView.refresh();
 }
 

@@ -375,11 +375,8 @@ export default class ImagesSelectionWindow extends JetView {
 			return false;
 		} else {
 			let selectedImagesInPopup = selectedImages.getSelectedInAddNewImagePopup();
-			selectedImages.setImageObjectsToLocalStorage(selectedImagesInPopup);
 			selectedImages.clearImagesForStudies();
-			selectedImagesInPopup.forEach((selectedImage) => {
-				selectedImages.addForStudy(selectedImage)
-			});
+			selectedImages.addForStudy(selectedImagesInPopup)
 			this.studyImagesDataview.loadDataToDataview();
 			webix.message("Study images were successfully updated!");
 			this.close();

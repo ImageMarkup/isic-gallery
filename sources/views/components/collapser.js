@@ -24,8 +24,8 @@ function getConfig(collapsedViewId, config) {
 			{
 				view: "template",
 				template: config && config.type === "left" ?
-					"<span class='webix_icon fa-angle-left'></span>" :
-					"<span class='webix_icon fa-angle-right'></span>",
+					"<span class='webix_icon fas fa-angle-left'></span>" :
+					"<span class='webix_icon fas fa-angle-right'></span>",
 				css: "collapser-btn",
 				id: BTN_OPENED_STATE_ID,
 				state: "wasOpened",
@@ -41,7 +41,7 @@ function getConfig(collapsedViewId, config) {
 						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
 							util.setHiddenGalleryCartList(true);
 						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-							util.setHiidenGalleryLeftPanel(true);
+							util.setHiddenGalleryLeftPanel(true);
 						}
 						changeDataviewItemDimensions(collapsedView);
 					}
@@ -50,8 +50,8 @@ function getConfig(collapsedViewId, config) {
 			{
 				view: "template",
 				template: config && config.type === "left" ?
-				"<span class='webix_icon fa-angle-right'></span>" :
-				"<span class='webix_icon fa-angle-left'></span>",
+				"<span class='webix_icon fas fa-angle-right'></span>" :
+				"<span class='webix_icon fas fa-angle-left'></span>",
 				css: "collapser-btn",
 				id: BTN_CLOSED_STATE_ID,
 				state: "wasClosed",
@@ -67,7 +67,7 @@ function getConfig(collapsedViewId, config) {
 						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
 							util.setHiddenGalleryCartList(false);
 						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-							util.setHiidenGalleryLeftPanel(false);
+							util.setHiddenGalleryLeftPanel(false);
 						}
 						changeDataviewItemDimensions(collapsedView);
 					}

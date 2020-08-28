@@ -35,7 +35,8 @@ export default class DatasetView extends JetView {
 
 		// we need all the same properties for cloned pager. we will clone it in init method
 		const clonePager = webix.extend({
-			id: CLONE_PAGER_ID
+			id: CLONE_PAGER_ID,
+			css: {"margin-top": "0 !important"}
 		}, pager, false);
 
 		const headerTemplate = {
@@ -57,12 +58,10 @@ export default class DatasetView extends JetView {
 				pager,
 				accordion,
 				{
-					css: {"margin-top": "0px !important;"}
-				},
-				{
-					css: {"margin-top": "0px !important;"},
 					rows: [
-						clonePager
+						{},
+						clonePager,
+						{height: 5},
 					]
 				}
 			]

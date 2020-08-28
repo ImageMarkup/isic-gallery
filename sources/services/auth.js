@@ -4,6 +4,7 @@ import constants from "../constants";
 import termOfUseWindow from "../views/authWindows/termOfUse";
 import gallerySelectedImages from "../models/selectedGalleryImages";
 import appliedFilters from "../models/appliedFilters";
+import selectedImages from "../models/selectedGalleryImages";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
 import util from "../utils/util";
 
@@ -40,9 +41,10 @@ function logout() {
 		gallerySelectedImages.clearImagesForStudies();
 		appliedFilters.clearAll();
 		appliedFilters.setFilterValue("");
+		selectedImages.clearAll();
 		wizardUploaderStorage.clearAll();
 		state.clear();
-		state.app.callEvent("logout");
+		// state.app.callEvent("logout");
 		state.app.refresh();
 	});
 }

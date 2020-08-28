@@ -28,9 +28,9 @@ function createConfig(firstName, lastName, imageUrl) {
 							id: "name",
 							value: `<span style="margin-left: -10px; width: ${calcUserMenuWidth(name)}px;" title="${firstName} ${lastName}"}>${name}</span>`,
 							submenu: [
-								{id: "account", value: "<span class='webix_icon fa-cog'></span> My account"},
+								{id: "account", value: "<span class='webix_icon fas fa-cog'></span> My account"},
 								{$template: "Separator"},
-								{id: "logout", value: "<span class='webix_icon fa-arrow-right'></span> Logout"}
+								{id: "logout", value: "<span class='webix_icon fas fa-arrow-right'></span> Logout"}
 							]
 						}
 					],

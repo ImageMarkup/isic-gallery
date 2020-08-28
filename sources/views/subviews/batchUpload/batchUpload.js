@@ -2,7 +2,8 @@ import {JetView} from "webix-jet";
 import authService from "../../../services/auth";
 import Breadcrumbs from "../../../services/breadcrumbs";
 import BatchUploadService from "../../../services/batchUpload/batchUpload";
-import termsOfUseHTML from "../../templates/termsOfUse.html";
+import termsOfUseMD from "../../templates/termsOfUse.md";
+import mdLoader from "../../../services/mdLoader";
 import termsOfUseDownloadingPanel from "../../parts/termsOfUseLinks";
 import constants from "../../../constants";
 import createDatasetModel from "../../../models/createDatasetModel";
@@ -188,7 +189,7 @@ export default class BatchUploadView extends JetView {
 													rows: [
 														{
 															view: "template",
-															template: termsOfUseHTML,
+															template: () => `<div class='inner-page-content terms-of-use'>${mdLoader.render(termsOfUseMD)}</div>`,
 															autoheight: true,
 															borderless: true
 														}

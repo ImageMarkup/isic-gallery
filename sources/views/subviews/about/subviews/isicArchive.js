@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import template from "../../../templates/about/isicArchive.html";
+import mdTemplate from "../../../templates/about/isicArchive.md";
+import mdLoader from "../../../../services/mdLoader";
 
 export default class IsicArchiveView extends JetView {
 	config() {
@@ -10,7 +11,7 @@ export default class IsicArchiveView extends JetView {
 				BreadcrumbsManager.getBreadcrumbsTemplate("about:isicArchive"),
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				}

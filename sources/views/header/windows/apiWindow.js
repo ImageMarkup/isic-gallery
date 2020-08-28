@@ -17,7 +17,6 @@ export default class ApiWindowClass extends JetView {
 						height: 550,
 						body: {
 							view: "template",
-							id: "test",
 							template: () => template,
 							autoheight: true,
 							borderless: true

@@ -6,7 +6,8 @@ import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
 import constants from "../../../constants";
 import "../../components/templateWithImages";
 import termsOfUseDownloadingPanel from "jet-views/parts/termsOfUseLinks";
-import termsOfUseHTML from "../../templates/termsOfUse.html";
+import termsOfUseMD from "../../templates/termsOfUse.md";
+import mdLoader from "../../../services/mdLoader";
 
 const MARGIN_FORM = 15;
 
@@ -396,7 +397,7 @@ export default class WizzardUploaderView extends JetView {
 											rows: [
 												{
 													view: "template",
-													template: termsOfUseHTML,
+													template: () => `<div class='inner-page-content terms-of-use'>${mdLoader.render(termsOfUseMD)}</div>`,
 													autoheight: true
 												}
 											]

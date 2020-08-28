@@ -97,7 +97,9 @@ function getCheckboxUI(data) {
 				value: 0,
 				name: id,
 				height: 28,
-				tooltip: `${optionName} (0)`,
+				attributes: {
+					title: `${optionName} (0)`
+				},
 				labelWidth: 0,
 				filtersChangedData,
 				on: {

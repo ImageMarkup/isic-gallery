@@ -43,7 +43,7 @@ const list = {
 		let iconNameHtml = "";
 		if (obj._modelType === "user") {
 			iconNameHtml = `<div class="access-row-icon">
-							<span class="webix_icon fa-user"></span>
+							<span class="webix_icon fas fa-user"></span>
 						</div>
 						<div class="access-row-user">
 							<div class="access-row-user-top">${obj.name}</div>
@@ -52,7 +52,7 @@ const list = {
 		}
 		else if (obj._modelType === "group") {
 			iconNameHtml = `<div class="access-row-icon">
-							<span class="webix_icon fa-users"></span>
+							<span class="webix_icon fas fa-users"></span>
 						</div>
 						<div class="access-row-user">
 							<div class="access-row-user-top">${obj.name}</div>
@@ -61,7 +61,7 @@ const list = {
 		}
 		return `<div class="access-row">
 						<div class="access-row-btn">
-							<span class="webix_icon fa-times remove-user"></span>
+							<span class="webix_icon fas fa-times remove-user"></span>
 						</div>
 						<div class="access-row-select">${common.level(obj, common)}</div>
 				        ${iconNameHtml}
@@ -155,9 +155,9 @@ const searchFieldset = {
 						},
 						template(obj) {
 							if (obj._modelType === "user") {
-								return `<span class="webix_icon fa-user"></span> ${obj.name}`;
+								return `<span class="webix_icon fas fa-user"></span> ${obj.name}`;
 							}
-							return `<span class="webix_icon fa-users"></span> ${obj.name}`;
+							return `<span class="webix_icon fas fa-users"></span> ${obj.name}`;
 						},
 						on: {
 							onItemClick(id) {
@@ -217,11 +217,11 @@ const form = {
 			options: [
 				{
 					id: "false",
-					value: "<span class='webix_icon fa-lock'></span><b>Private</b> — Access is required to view this Dataset"
+					value: "<span class='webix_icon fas fa-lock'></span><b>Private</b> — Access is required to view this Dataset"
 				}, // the initially selected item
 				{
 					id: "true",
-					value: "<span class='webix_icon fa-globe'></span><b>Public</b> — Anyone can view this Dataset"
+					value: "<span class='webix_icon fas fa-globe'></span><b>Public</b> — Anyone can view this Dataset"
 				}
 			]
 		},

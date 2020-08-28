@@ -17,8 +17,8 @@ const templateViewer = {
 
 		return `<div class="image-zoom-container">
   					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
-  					<button class="btn-plus">+</button>
-  					<button class="btn-minus">-</button>
+  					<button class="zoom-btn btn-plus"><span class="zoom-btn-icon">+</span></button>
+  					<button class="zoom-btn btn-minus"><span class="zoom-btn-icon">-</span></button>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>

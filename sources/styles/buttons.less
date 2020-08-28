@@ -306,3 +306,48 @@ input.cmn-toggle-round:checked + label {
 .prev:hover, .next:hover {
     background-color: rgba(0,0,0,0.8);
 }
+
+.webix_popup_button {
+    border: none;
+    div {
+        outline: none;
+        text-align: center;
+        border: 1px solid @btn !important;
+        .border-radius(2px);
+        cursor: pointer;
+        font-family: @main-font;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: capitalize;
+        .transition(all 0.2s ease);
+        color: @btn;
+        background: @btn-contour;
+
+        &:hover {
+          background: @btn;
+          color: rgba(255,255,255,.90);
+        }
+
+        &:focus {
+          .box-shadow(inset 0 0 4px 3px rgba(255, 255, 255, 0.25));
+        }
+    }
+
+    &.confirm {
+      border: none;
+      div {
+        color: rgba(255,255,255,.90);
+        background: @btn;
+
+        &:hover {
+          color: rgba(255,255,255,.90);
+          background: @btn-hover;
+          border-color: @btn !important;
+        }
+
+        &:focus {
+          .box-shadow(inset 0 0 4px 3px rgba(255, 255, 255, 0.25));
+        }
+      }
+    }
+  }

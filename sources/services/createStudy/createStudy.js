@@ -6,7 +6,7 @@ import ajaxActions from "../ajaxActions";
 import "wheelzoom";
 import constants from "../../constants";
 
-const IMAGE_WINDOW_ID = "image-window-id";
+const IMAGE_WINDOW_ID = "study-creation-image-window-id";
 let featureSetListItemsCount;
 let questionsCount;
 let imagesCount;
@@ -94,10 +94,6 @@ export default class CreateStudyService {
 				callback: (result) => {
 					if (!result) {
 						selectedGalleryImages.removeImageFromStudies(currentItem._id);
-						let localStorageArray = selectedGalleryImages.getImageObjectsFromLocalStorage();
-						const objectIndex = localStorageArray.findIndex(imageObject => imageObject.id === currentItem._id);
-						localStorageArray.splice(objectIndex, 1);
-						selectedGalleryImages.setImageObjectsToLocalStorage(localStorageArray);
 						this._imageDataView.remove(currentItem.id);
 						this._imageDataView.callEvent("onAfterImagesUpdated");
 					}

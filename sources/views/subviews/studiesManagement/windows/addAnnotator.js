@@ -55,7 +55,7 @@ const form = {
 										obj.name = `${obj.lastName} ${obj.firstName} (${obj.login})`;
 									}
 								},
-								template: "<span class='webix_icon fa-user'></span> #name#",
+								template: "<span class='webix_icon fas fa-user'></span> #name#",
 								dataFeed(text) {
 									const thisForm = $$(form.id);
 									const params = thisForm.getValues();

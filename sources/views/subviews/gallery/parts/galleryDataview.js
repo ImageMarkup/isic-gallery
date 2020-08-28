@@ -102,7 +102,7 @@ const dataview = {
 				</span>
 				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 			</div>` : "";
-		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fa-star gallery-images-star-icon'></span>" : "";
+		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj._id) === "undefined") {
 			galleryImageUrl.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
 			ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
