@@ -9,12 +9,12 @@ const appconfig = require("./appconfig.json");
 const Dotenv = require("dotenv-webpack");
 
 module.exports = (env) => {
-	let production = !!(env && env.production === "true");
-	let babelSettings = {
+	const production = !!(env && env.production === "true");
+	const babelSettings = {
 		extends: path.join(__dirname, "/.babelrc")
 	};
 
-	let config = {
+	const config = {
 		entry: ["babel-polyfill", "./sources/app.js"],
 		output: {
 			path: path.join(__dirname, "codebase"),
@@ -55,7 +55,8 @@ module.exports = (env) => {
 					test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
 					loader: "url-loader?limit=10000&mimetype=application/octet-stream&name=[path][name].[ext]"
 				},
-				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?name=[path][name].[ext]"}
+				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?name=[path][name].[ext]"},
+				{test: /\.md$/i, use: 'raw-loader',}
 			]
 		},
 		resolve: {
@@ -78,12 +79,14 @@ module.exports = (env) => {
 				PRODUCTION: production
 			}),
 			new HtmlWebpackPlugin({template: "index.html"}),
-			new CopyWebpackPlugin([
-				{from: path.join(__dirname, "sources/libs"), to: "sources/libs/"},
-				{from: path.join(__dirname, "sources/images"), to: "sources/images"},
-				{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"},
-				{from: "./error.html", to: "./"}
-			]),
+			new CopyWebpackPlugin({
+				patterns: [
+					{from: path.join(__dirname, "sources/images"), to: "sources/images"},
+					{from: path.join(__dirname, "sources/filesForDownload"), to: "sources/filesForDownload"},
+					{from: path.join(__dirname, "node_modules/webix"), to: "sources/libs/webix"},
+					{from: "./error.html", to: "./"}
+				]
+			}),
 			new Dotenv({
 				path: path.resolve(__dirname, "./.env"), // Path to .env file
 				systemvars: true // Load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
@@ -92,7 +95,7 @@ module.exports = (env) => {
 		devServer: {
 			host: appconfig.devHost,
 			port: appconfig.devPort,
-			contentBase: path.join(__dirname, "codebase"),
+			contentBase: [path.join(__dirname, "codebase"), path.join(__dirname, "node_modules")],
 			inline: true
 		}
 	};
