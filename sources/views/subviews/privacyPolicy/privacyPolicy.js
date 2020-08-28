@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
 import "../../components/templateWithImages";
-import template from "../../templates/privacyPolicy.html";
+import mdTemplate from "../../templates/privacyPolicy.md";
+import mdLoader from "../../../services/mdLoader";
 
 export default class PrivacyPolicyView extends JetView {
 	config() {
@@ -8,7 +9,7 @@ export default class PrivacyPolicyView extends JetView {
 			rows: [
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content privacy-policy'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				},

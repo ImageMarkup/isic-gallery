@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
 import "../../components/templateWithImages";
-import template from "../../templates/termsOfUse.html";
+import mdTemplate from "../../templates/termsOfUse.md";
+import mdLoader from "../../../services/mdLoader";
 
 export default class TermsOfUseView extends JetView {
 	config() {
@@ -8,7 +9,7 @@ export default class TermsOfUseView extends JetView {
 			rows: [
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content terms-of-use'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				},

@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
 import "../../components/templateWithImages";
-import template from "../../templates/medicalDisclaimer.html";
+import mdTemplate from "../../templates/medicalDisclaimer.md";
+import mdLoader from "../../../services/mdLoader";
 
 export default class MedicalDisclaimerView extends JetView {
 	config() {
@@ -8,7 +9,7 @@ export default class MedicalDisclaimerView extends JetView {
 			rows: [
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				},

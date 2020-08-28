@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import template from "../../../templates/about/contact.html";
+import mdTemplate from "../../../templates/about/contact.md";
+import mdLoader from "../../../../services/mdLoader";
 
 export default class ContactInfoView extends JetView {
 	config() {
@@ -10,7 +11,7 @@ export default class ContactInfoView extends JetView {
 				BreadcrumbsManager.getBreadcrumbsTemplate("about:contactInfo"),
 				{
 					view: "templateWithImages",
-					template,
+					template: () => `<div class='inner-page-content'>${mdLoader.render(mdTemplate)}</div>`,
 					autoheight: true,
 					borderless: true
 				}

@@ -1,0 +1,5 @@
+## Medical Disclaimer {.main-subtitle2}
+
+IF YOU THINK YOU MAY HAVE A MEDICAL EMERGENCY, PLEASE CALL YOUR DOCTOR OR EMERGENCY SERVICES NUMBER IMMEDIATELY. MSKCC DOES NOT RECOMMEND OR ENDORSE ANY TESTS, PRODUCTS, PROCEDURES, OPINIONS, OR OTHER INFORMATION THAT MAY BE MENTIONED ON THE SITE. RELIANCE ON ANY CONTENT ON THE SITE IS SOLELY AT YOUR OWN RISK.
+
+The contents of this website (the __"Site"__) are intended to provide useful information to the general public. All materials, including texts, graphics, images, and audio, on the Site are for informational purposes only and are not a substitute for medical diagnosis, advice, or treatment for specific medical conditions. All visitors to the Site should seek expert medical care and consult their own physicians for any specific health issues. Memorial Sloan Kettering Cancer Center (__“MSKCC”__) and its affiliates specifically disclaim all responsibility for any liability, loss, or risk, personal or otherwise, which is incurred as a consequence, directly or indirectly, of the use or application of any of the material on this Site.

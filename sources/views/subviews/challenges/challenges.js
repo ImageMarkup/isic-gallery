@@ -3,18 +3,13 @@ import "../../components/templateWithImages";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
 import util from "../../../utils/util";
 import constants from "../../../constants";
+import mdTemplate from "../../templates/challenges.md";
+import mdLoader from "../../../services/mdLoader";
 
 export default class aboutView extends JetView {
 	config() {
 		const template = {
-			template: `<div class="inner-page-content">
-				<div class="main-subtitle3">Thank you for your interest in the ISIC Challenges in image analysis!</div>
-				<p>For the past two years, we have organized the “ISIC: Skin Lesion Analysis Towards Melanoma Detection“ grand challenges, presenting problems in lesion segmentation, detection of clinical diagnostic patterns, and lesion
-	classification, along with a high-quality human-validated training and test set of nearly 3000 CC-0-licensed images and metadata.
-				<p>These challenges have attracted global participation, with hundreds of registrations dozens of finalized submissions (including a four page manuscript with each final submission), making them the largest standardized and comparative study in this field to date. </p>
-				<p>These challenges have yielded novel findings and numerous publications, and have been accepted as a de-facto reference standard in efforts by other research groups. </p>
-				<p>Use the buttons below to review past challenges or to get involved!</p>
-			</p>`,
+			template: () => `<div class='inner-page-content'>${mdLoader.render(mdTemplate)}</div>`,
 			autoheight: true,
 			borderless: true
 		};
@@ -68,6 +63,16 @@ export default class aboutView extends JetView {
 									value: "ISIC Challenge 2019",
 									click() {
 										util.openInNewTab(constants.URL_CHALLENGE_2019);
+									}
+								},
+								{height: 15},
+								{
+									view: "button",
+									css: "btn",
+									tooltip: "It may not work in Internet Explorer",
+									value: "ISIC Challenge 2020",
+									click() {
+										util.openInNewTab(constants.URL_CHALLENGE_2020);
 									}
 								}
 							]

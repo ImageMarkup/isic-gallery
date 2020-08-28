@@ -1,9 +1,10 @@
 import windowWithHeader from "../components/windowWithHeader";
 import authService from "../../services/auth";
 
-import template from "../templates/termsOfUse.html";
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
 import constants from "../../constants";
+import mdTemplate from "../templates/termsOfUse.md";
+import mdLoader from "../../services/mdLoader";
 
 const body = {
 	width: 700,
@@ -19,7 +20,7 @@ const body = {
 					rows: [
 						{
 							view: "template",
-							template,
+							template: () => `<div class='inner-page-content terms-of-use'>${mdLoader.render(mdTemplate)}</div>`,
 							autoheight: true,
 							borderless: true
 						}
