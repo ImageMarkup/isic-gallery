@@ -23,7 +23,10 @@ function parseError(xhr) {
 				console.log(`Not JSON response for request to ${xhr.responseURL}`);
 			}
 			const regexForId = /".*?" /;
-			const messageToShow = message.replace(regexForId, "");
+			let messageToShow = message.replace(regexForId, "");
+			if (messageToShow.length > 500) {
+				messageToShow = messageToShow.slice(0, 497).concat("...");
+			}
 			webix.message({text: messageToShow, expire: 5000});
 			break;
 		}
