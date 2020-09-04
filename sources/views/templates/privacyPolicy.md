@@ -72,11 +72,10 @@ steps to remove that information and Image from the Site.
   Creative Commons license. With the exception of this specific circumstance, you should retain control of any Personally Identifiable Information and not disclose it to MSKCC or upload it to the Site.
 * [CONTACTS]{.main-subtitle3}
 To contact us or provide any written notification, submit your information to the following:<br>
-Kristen Ahearn<br>
-ahearnk@mskcc.org<br>
-1275 York Ave., New York, NY 10065<br>
-(646) 227-2034 (T)<br>
-(212) 557-1236 (F)<br><br>
+Melissa Paz<br>
+support@isic-archive.com<br>
+530 E 74th St, 9th floor, New York, NY 10021<br>
+(646) 888-6013 (T)<br><br>
 To ensure that your request is handled in an effective manner, please provide your exact e-mail address, name, physical address, and/or telephone number(s).
 
 __END OF PRIVACY POLICY__

@@ -158,10 +158,9 @@ Links neither endorse nor are affiliated with MSKCC.
     * A statement that the complaining party has a good faith belief that use of the material in the manner complained of is not authorized by the copyright owner, by its agent, or by law; and
     * A statement that the information in the notification is accurate, and under penalty of perjury, that the complaining party is authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.
   + The above information must be submitted as a written notification to the following Designated Agent: <br>
-  Kristen Ahearn <br>
-  ahearnk@mskcc.org<br>
-  1275 York Ave., New York, NY 10065 <br>
-  (646) 227-2034 (T) <br>
-  (212) 557-1236 (F)
+  Melissa Paz<br>
+  support@isic-archive.com<br>
+  530 E 74th St, 9th floor, New York, NY 10021<br>
+  (646) 888-6013 (T)<br><br>
 
 Questions or comments regarding MSKCC should be submitted to the email address identified in the “Contacts” section of the Site. Thank you for your cooperation.
