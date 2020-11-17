@@ -51,7 +51,7 @@
 | David Mann |
 | Dirk Holler |
 | Artificial Intelligence Working Group: {colspan=2 .main-subtitle2} |  |
-| **Veronica Rotemberg, MD PhD** | Memorial Sloan Kettering Cancer Center, New York |
+| **Veronica Rotemberg, MD PhD (Leader)** | Memorial Sloan Kettering Cancer Center, New York |
 | Catarina Barata | Institute for Systems and Robotics, Instituto Superio Técnico, Lisboa, Portugal |
 | Noel Codella, PhD | IBM T.J. Watson Research Center, Yorktown Heights, New York |
 | M. Emre Celebi | University of Central Arkansas, Arkansas |
