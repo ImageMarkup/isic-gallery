@@ -1,8 +1,8 @@
 | | |
 | - | - |
 | Technique Working Group: {colspan=2 .main-subtitle2} | |
-| Clara Curiel, MD (Co-leader) | University of Arizona Cancer Center, Tucson, AZ |
-| H. Peter Soyer, MD (Co-leader) | The University of Queensland, Brisbane, Australia. |
+| **Clara Curiel, MD (Co-leader)** | University of Arizona Cancer Center, Tucson, AZ |
+| **H. Peter Soyer, MD (Co-leader)** | The University of Queensland, Brisbane, Australia. |
 | Ivo Abraham, PhD, RN | The University of Arizona College of Pharmacy |
 | Liam Caffery, PhD | The University of Queensland, Brisbane, Australia |
 | Dennis DaSilva, BS | Canfield Scientific Inc., Fairfield, New Jersey, US |
@@ -11,7 +11,7 @@
 | Chinmayee Katragadda, PhD | The University of Arizona College of Pharmacy |
 | Lynne Morrison, MD | Oregon Health and Science University, Portland, Oregon, USA |
 | Terminology Working Group: {colspan=2 .main-subtitle2} |  |
-| Harald Kittler, MD (Leader) | Department of Dermatology, Medical University of Vienna, Austria |
+| **Harald Kittler, MD (Leader)** | Department of Dermatology, Medical University of Vienna, Austria |
 | Giuseppe Argenziano, MD | Arcispedale S. Maria Nuova, Reggio Emilia, Italy |
 | Ralph P. Braun, MD | University Hospital of Zurich, Switzerland |
 | Rainer Hofmann Wellenhof, MD | Medical University of Graz, Austria |
@@ -25,10 +25,10 @@
 | Wilhelm Stolz, MD | Munich Municipal Hospital Group, Germany |
 | Luc Thomas, MD, PhD | University Claude Bernard Lyon and Cancer Research Center of Lyon, France |
 | Shannon Trotter, DO | Ohio State University |
-| Philip Tschandl, MD | Department of Dermatology, Medical University of Vienna |
+| Philipp Tschandl, MD | Department of Dermatology, Medical University of Vienna |
 | Iris Zalaudek, MD | Medical University of Graz, Austria |
 | Jennifer Stein, MD | New York University, New York, NY |
-| Konstantinos Liopyris, MD <br><br> | Memorial Sloan Kettering Cancer Center, New York and Andreas Sygros Hospital of Skin and <br> Venereological Disease, Athens, Greece |
+| Konstantinos Liopyris, MD <br><br> | Andreas Sygros Hospital of Skin and <br> Venereological Disease, Athens, Greece |
 | Technology Working Group: {colspan=2 .main-subtitle2} |  |
 | Liam Caffery, PhD | University of Queensland, Brisbane, Australia |
 | Doug Canfield, BS | Canfield Scientific Inc., Fairfield, New Jersey, USA |
@@ -50,8 +50,25 @@
 | Emre Celebi, PhD | University of Central Arkansas |
 | David Mann |
 | Dirk Holler |
+| Artificial Intelligence Working Group: {colspan=2 .main-subtitle2} |  |
+| **Veronica Rotemberg, MD PhD** | Memorial Sloan Kettering Cancer Center, New York |
+| Catarina Barata | Institute for Systems and Robotics, Instituto Superio Técnico, Lisboa, Potrugal |
+| Noel Codella, PhD | IBM T.J. Watson Research Center, Yorktown Heights, New York |
+| M. Emre Celebi | University of Central Arkansas, Arkansas |
+| Marc Combalia, PhD | Fundació Clínic per a la Recerca Biomèdica, Barcelona, Spain |
+| Pascale Guitera, MD | Royal Prince Alfred Hospital, Sydney, Australia |
+| David Gutman, PhD | Emory University, Georgia |
+| Brian Helba | Kitware, New York |
+| Allan Halpern, MD PhD | Memorial Sloan Kettering Cancer Center, New York |
+| Harald Kittler, MD | Department of Dermatology, Medical University of Vienna, Austria |
+| Konstantinos Liopyris, MD <br><br> | Andreas Sygros Hospital of Skin and <br> Venereological Disease, Athens, Greece |
+| Josep Malvehy, MD | Hospital Clinic of Barcelona |
+| Han Seung Seog | Seoul National Univerity, Seoul, South Korea |
+| H. Peter Soyer, MD PhD | University of Queensland, Brisbane, Australia |
+| Brigid Betz-Stablein | University of Queensland, Brisbane, Australia |
+| Philipp Tschandl, MD | Department of Dermatology, Medical University of Vienna |
 | DICOM Working Group: {colspan=2 .main-subtitle2} |  |
-| Liam Caffery, PhD (Co-leader) | University of Queensland, Brisbane, Australia |
-| Josep Malvehy, MD (Co-leader) | Hospital Clinic of Barcelona |
+| **Liam Caffery, PhD (Co-leader)** | University of Queensland, Brisbane, Australia |
+| **Josep Malvehy, MD (Co-leader)** | Hospital Clinic of Barcelona |
 | Veronica Rotemberg, MD PhD | Memorial Sloan Kettering Cancer Center, New York |
 | Kelly Nelson, MD | MD Anderson Cancer Center, University of Texas |
