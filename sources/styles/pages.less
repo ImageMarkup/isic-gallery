@@ -233,6 +233,70 @@
       padding: 0 10px;
     }
   }
+  // Initially for Partners & Sponsors page
+  .cards-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    height: auto;
+  }
+  .label {
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 500;
+    color: @main-color;
+  }
+  .card {
+    box-sizing: border-box;
+    min-height: 170px;
+    padding: 5px;
+    margin: 5px;
+    flex: 0 1 32%;
+    box-shadow: 0px 0px 3px 0px @lines-color;
+    p {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      > * {
+        flex-grow: 1;
+        margin: 5px 0;
+      }
+    }
+  }
+  .card-label {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: @main-color;
+    &.centered {
+      display: flex;
+      flex-grow: 0;
+      align-items: center;
+    }
+  }
+
+  .logo {
+    text-align: center;
+    &._1x1 img, &._1x1 {
+      width: 100px;
+      height: 100px;
+    }
+    &._4x1 img, &._4x1 {
+      width: 200px;
+      height: 50px;
+    }
+    &._2x1 img, &._2x1 {
+      width: 200px;
+      height: 100px;
+    }
+    &._3x4 img, &._3x4 {
+      width: 100px;
+      height: 150px;
+    }
+  }
 
   .cf();
 

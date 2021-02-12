@@ -33,6 +33,7 @@ import IsicArchive from "./views/subviews/about/subviews/isicArchive";
 import IsicStandards from "./views/subviews/about/subviews/isicStandards";
 import Literature from "./views/subviews/about/subviews/literature";
 import WorkingGroups from "./views/subviews/about/subviews/workingGroups";
+import PartnersAndSponsors from "./views/subviews/about/subviews/partnersAndSponsors";
 import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
 import BatchUpload from "./views/subviews/batchUpload/batchUpload";
 import ChallengesVIew from "./views/subviews/challenges/challenges";
@@ -78,6 +79,7 @@ webix.ready(() => {
 			isicStandards: IsicStandards,
 			literature: Literature,
 			workingGroups: WorkingGroups,
+			partnersAndSponsors: PartnersAndSponsors,
 			wizardUploader: WizzardUploader,
 			batchUploader: BatchUpload,
 			challenges: ChallengesVIew,

@@ -63,6 +63,11 @@ const map = new Map([
 		text: "Contact Info",
 		parent: "home"
 	}],
+	["about:partnersAndSponsors", {
+		path: constants.PATH_ABOUT_WORKING_GROUPS,
+		text: "Partners & Sponsors",
+		parent: "home"
+	}],
 	["wizzardUploader", {
 		path: constants.PATH_WIZZARD_UPLOADER,
 		text: "Wizard tool",
