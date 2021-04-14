@@ -4,15 +4,6 @@ import util from "../../utils/util";
  config: closed = true/false, type = left/right
  */
 
-function changeDataviewItemDimensions(collapsedView) {
-	if (collapsedView.config.id === "gallery-left-panel" || collapsedView.config.id === "active-cart-list-id") {
-		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
-		let dataviewSelectionId = util.getDataviewSelectionId();
-		if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-			galleryRichselect.callEvent("onChange", [dataviewSelectionId])
-		}
-	}
-}
 
 function getConfig(collapsedViewId, config) {
 	const BTN_CLOSED_STATE_ID = `collapser-btn-closed-${webix.uid()}`;
@@ -38,12 +29,12 @@ function getConfig(collapsedViewId, config) {
 						thisCollapsedButton.hide();
 						$$(BTN_CLOSED_STATE_ID).show();
 						webix.ui.resize();
+						collapsedView.callEvent("onViewHide");
 						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
 							util.setHiddenGalleryCartList(true);
 						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
 							util.setHiddenGalleryLeftPanel(true);
 						}
-						changeDataviewItemDimensions(collapsedView);
 					}
 				}
 			},
@@ -69,7 +60,6 @@ function getConfig(collapsedViewId, config) {
 						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
 							util.setHiddenGalleryLeftPanel(false);
 						}
-						changeDataviewItemDimensions(collapsedView);
 					}
 				}
 			}
