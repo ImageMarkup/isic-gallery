@@ -2,6 +2,9 @@ import ajax from "../services/ajaxActions";
 import state from "../models/state";
 
 let filtersData;
+let preloadedDataset;
+
+const DB_ATTRIBUTE_LABEL = "Database Attributes";
 
 const filtersIds = {
 	benignMelignant: "meta.clinical.benign_malignant",
@@ -198,7 +201,9 @@ function prepareDatasetFilterData(dataset) {
 	dataset.forEach((item) => {
 		if (isNeedShow(item._id)) {
 			state.datasetMapForFilters[item._id] = item.name;
-			options.push(item._id); // we set id as options value. we will replace it with "name" from state.datasetForFilters before rendering checkboxes
+			// we set id as options value. we will replace it with
+			// "name" from state.datasetForFilters before rendering checkboxes
+			options.push(item._id);
 		}
 	});
 	result.push({
@@ -211,6 +216,21 @@ function prepareDatasetFilterData(dataset) {
 	return result;
 }
 
+function setDatasetForFilters(dataset) {
+	preloadedDataset = dataset;
+}
+
+
+function getDatasetForFilters(forceUpdate) {
+	if (preloadedDataset && !forceUpdate) {
+		return Promise.resolve(preloadedDataset);
+	}
+	return ajax.getDataset().then((dataset) => {
+		setDatasetForFilters(dataset);
+		return dataset;
+	});
+}
+
 function getFiltersData(forceRebuild) {
 	return new Promise((resolve) => {
 		// we should rewrite the last item in filtersData (it is place for Database Attributes)
@@ -218,11 +238,11 @@ function getFiltersData(forceRebuild) {
 			filtersData = getFiltersDataValues();
 		}
 		const DATASET_POSITION = filtersData.length - 1;
-		const DB_ATTRIBUTE_LABEL = "Database Attributes";
 		// if we have no datasets  we should get them with ajax and add to 'filtersData'
-		if ((forceRebuild || filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL) && filtersData[DATASET_POSITION].data.length === 1) {
-			ajax.getDataset().then((dataset) => {
-				if (filtersData[DATASET_POSITION].data.length === 1) {
+		getDatasetForFilters(forceRebuild)
+			.then((dataset) => {
+				filtersData = filtersData || getFiltersDataValues();
+				if (forceRebuild || filtersData[DATASET_POSITION].data.length === 1) {
 					filtersData[DATASET_POSITION] = {
 						label: DB_ATTRIBUTE_LABEL,
 						data: filtersData[DATASET_POSITION].data.concat(prepareDatasetFilterData(dataset))
@@ -230,13 +250,11 @@ function getFiltersData(forceRebuild) {
 				}
 				resolve(filtersData);
 			});
-		}
-		else {
-			resolve(filtersData);
-		}
 	});
 }
 
 export default {
-	getFiltersData
+	getFiltersData,
+	setDatasetForFilters,
+	getDatasetForFilters
 };

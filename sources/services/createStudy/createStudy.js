@@ -278,7 +278,7 @@ export default class CreateStudyService {
 					this._setStudyCreatedValue(true);
 					this._view.$scope.app.show(constants.PATH_GALLERY);
 				})
-				.fail((error) => {
+				.catch((error) => {
 					let errorObject = JSON.parse(error.responseText);
 					webix.alert({
 						title: "Error!",

@@ -15,10 +15,10 @@ module.exports = (env) => {
 	};
 
 	const config = {
-		entry: ["babel-polyfill", "./sources/app.js"],
+		entry: "./sources/app.js",
 		output: {
 			path: path.join(__dirname, "codebase"),
-			publicPath: "/",
+			publicPath: production ? "./" : "/",
 			filename: "app.js"
 		},
 		mode: "production",
@@ -27,7 +27,10 @@ module.exports = (env) => {
 			rules: [
 				{
 					test: /\.js$/,
-					loader: `babel-loader?${JSON.stringify(babelSettings)}`
+					loader: `babel-loader`,
+					options: {
+						...babelSettings
+					}
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
@@ -56,7 +59,10 @@ module.exports = (env) => {
 					loader: "url-loader?limit=10000&mimetype=application/octet-stream&name=[path][name].[ext]"
 				},
 				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?name=[path][name].[ext]"},
-				{test: /\.md$/i, use: 'raw-loader',}
+				{
+					test: /\.md$/i,
+					use: 'raw-loader',
+				}
 			]
 		},
 		resolve: {

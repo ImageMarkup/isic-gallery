@@ -1,11 +1,16 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/preset-env", {
       "targets": {
         "browsers": ["last 4 versions", "IE >= 9"]
       },
-      modules:false,
-      loose:true
+      "modules":false,
+      "loose":true
     }]
-  ]
+  ],
+  "env": {
+		"test": {
+			"plugins": ["@babel/plugin-transform-modules-commonjs"]
+		}
+	}
 }
