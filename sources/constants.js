@@ -52,11 +52,12 @@ export default {
 	PYTHON_MENU_ID: "Python",
 	R_MENU_ID: "R",
 
-	DATAVIEW_IMAGE_MULTIPLIERS: new Map([
-		["Small images", 1],
-		["Normal images", 2],
-		["Big images", 3]
-	]),
+	TWO_DATAVIEW_COLUMNS: "Display two columns",
+	THREE_DATAVIEW_COLUMNS: "Display three columns",
+	FOUR_DATAVIEW_COLUMNS: "Display four columns",
+	FIVE_DATAVIEW_COLUMNS: "Display five columns",
+	SIX_DATAVIEW_COLUMNS: "Display six columns",
+	DEFAULT_DATAVIEW_COLUMNS: "Automatic width compilation",
 
 	PATH_MULTIRATER: "/topWithHeader/onlyHeaderTop/multirater",
 	PATH_ABOUT: "/topWithHeader/tightContentTop/about",
@@ -143,4 +144,5 @@ export default {
 	DEFAULT_GALLERY_IMAGE_NAME_FONT_SIZE: 14,
 	DEFAULT_GALLERY_IMAGE_WIDTH: 180,
 	DEFAULT_GALLERY_IMAGE_HEIGHT: 123
+
 };

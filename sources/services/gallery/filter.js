@@ -31,7 +31,7 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 }
 
 function getOptionId(filterId, optionValue) {
-	return `${filterId || ""}|${optionValue || ""}`;
+	return `${filterId || ""}|${optionValue}`;
 }
 
 function prepareOptionName(value, key) {

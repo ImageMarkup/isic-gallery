@@ -4,7 +4,6 @@
 const state = {
 	app: {}, // init in app.js
 	datasetMapForFilters: {}, // init in models/imagesFilters
-	imagesTotalCounts: {},
 	dashboard: { // state of dashboard page
 		selectedDatasetIdsSet: new Set(),
 		datasetPage: 0,

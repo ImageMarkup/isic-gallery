@@ -29,7 +29,7 @@ export default class AnnotatorsView extends JetView {
 					on: {
 						onItemClick: (id) => {
 							let selectedUser = this.searchUser.getList().getItem(id);
-							const userIsInList = this.annotatorsList.find(obj => obj._id === selectedUser._id);
+							const userIsInList = this.annotatorsList.find(obj => obj._id === selectedUser._id, true);
 							if (userIsInList.length === 0) {
 								this.annotatorsList.parse({
 									data: selectedUser

@@ -40,6 +40,10 @@ webix.attachEvent("onBeforeAjax", (mode, url, data, request, headers, files, pro
 
 
 class AjaxActions {
+	getBaseApiUrl() {
+		return BASE_API_URL;
+	}
+
 	_ajax() {
 		return webix.ajax();
 	}
@@ -52,10 +56,7 @@ class AjaxActions {
 			params = {};
 		}
 		// to prevent caching for IE 11 on Window 10
-		if (navigator.userAgent.indexOf('MSIE')!==-1
-			|| navigator.appVersion.indexOf('Trident/') > -1) {
-			params.uid = webix.uid();
-		}
+		params.uid = webix.uid();
 		return webix.ajax().get(url, params);
 	}
 
@@ -180,8 +181,8 @@ class AjaxActions {
 		const params = sourceParams ? {
 			limit: sourceParams.limit || 0,
 			offset: sourceParams.offset || 0,
-			sort: sourceParams.sort || "created",
-			sortdir: sourceParams.sortdir || "-1",
+			sort: sourceParams.sort || "name",
+			sortdir: sourceParams.sortdir || "1",
 			detail: sourceParams.detail || false
 		} : {};
 		if (sourceParams && sourceParams.datasetId) {
@@ -291,8 +292,7 @@ class AjaxActions {
 	}
 
 	getSegmentationMask(id) {
-		return webix.ajax()
-			.response("blob").get(`${BASE_API_URL}segmentation/${id}/mask`)
+		return webix.ajax().response("blob").get(`${BASE_API_URL}segmentation/${id}/mask`)
 			.fail(parseError);
 	}
 
@@ -465,6 +465,7 @@ class AjaxActions {
 	}
 	// batchUpload zip (dataset)
 	// addZipMetadata(zipId, sourceParams) {
+	// 	debugger
 	// 	if (!(sourceParams && imageId)) {
 	// 		return;
 	// 	}
@@ -543,13 +544,12 @@ class AjaxActions {
 
 	addUsersToStudy(studyId, userIds) {
 		if (!studyId || !userIds || !userIds.length) {
-			return Promise.reject();
+			return;
 		}
 		const params = {
 			userIds
 		};
-		return webix.ajax()
-			.post(`${BASE_API_URL}study/${studyId}/users`, params)
+		return webix.ajax().post(`${BASE_API_URL}study/${studyId}/users`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -577,7 +577,7 @@ class AjaxActions {
 		}
 
 		return webix.ajax()
-			.headers({
+			.header({
 				"Content-Type": "application/json"
 			})
 			.post(`${BASE_API_URL}image/${imageId}/metadata?save=true`, params)
@@ -588,16 +588,12 @@ class AjaxActions {
 	getAllImages(sourceParams, annotatedImages) {
 		const params = sourceParams ? {
 			limit: sourceParams.limit || 0,
-			sort: sourceParams.sort || "created",
-			sortdir: sourceParams.sortdir ||-1,
+			sort: sourceParams.sort || "name",
 			detail: sourceParams.detail || "true"
 		} : {};
 
 		if (sourceParams && sourceParams.filter) {
 			params.filter = sourceParams.filter;
-		}
-		else if (sourceParams && sourceParams.name) {
-			params.name = sourceParams.name;
 		}
 
 		return this._ajaxGet(`${BASE_API_URL}image`, params)
@@ -622,7 +618,7 @@ class AjaxActions {
 			questions: studyParams.questions,
 			features: studyParams.features
 		} : {};
-		return this._ajax().headers({
+		return this._ajax().header({
 			"Content-Type": "application/json"
 		}).post(`${BASE_API_URL}study`, newStudyParams);
 	}

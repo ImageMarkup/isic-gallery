@@ -136,23 +136,7 @@ function createEditForm(itemData, name) {
 			label: key,
 			name: key,
 			value: itemData[key],
-			labelWidth: 190,
-			on: {
-				// To fix image switching by arrow buttons, when editting metadata
-				onAfterRender() {
-					function keyPressHandler(e) {
-						webix.html.stopEvent(e);
-					}
-					const textNode = this.getNode();
-					// remove old listeners if we have ones
-					textNode.removeEventListener("keyup", keyPressHandler);
-					textNode.removeEventListener("keydown", keyPressHandler);
-					textNode.addEventListener("keyup", keyPressHandler);
-					textNode.addEventListener("keydown", keyPressHandler);
-
-					
-				}
-			},
+			labelWidth: 190
 		};
 		dataForElements.push(element);
 	});
@@ -434,7 +418,7 @@ function createConfig(data) {
 						{
 							view: "button",
 							type: "icon",
-							icon: "fas fa-pencil-alt",
+							icon: "fas fa-pencil",
 							width: 70,
 							height: 30,
 							label: "Edit",
@@ -446,7 +430,7 @@ function createConfig(data) {
 							type: "icon",
 							width: 70,
 							height: 30,
-							icon: "far fa-save",
+							icon: "far fa-floppy",
 							label: "Save",
 							name: "saveButtonName",
 							hidden: true

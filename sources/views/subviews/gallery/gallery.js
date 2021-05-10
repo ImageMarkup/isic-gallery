@@ -35,6 +35,40 @@ const tooltipForDataviewTemplatesClassName = constants.TOOLTIP_CLASS_NAME_FOR_DA
 
 export default class GalleryView extends JetView {
 	config() {
+		const clonePagerForNameFilter = {
+			view: "pager",
+			name: "clonedPagerForNameSearch",
+			size: 80,
+			hidden: true,
+			height: 36,
+			width: 250,
+			template(obj, common) {
+				return `${common.first()} ${common.prev()}
+					<input type='text' class='pager-input' value='${common.page(obj, common)}'>	<span class="pager-amount">of ${obj.limit}</span>
+				${common.next()} ${common.last()}`;
+			},
+			on: {
+				onAfterRender() {
+					const currentPager = this;
+					const node = this.getNode();
+					const inputNode = node.getElementsByClassName("pager-input")[0];
+					inputNode.addEventListener("focus", function () {
+						this.prev = this.value;
+					});
+					inputNode.addEventListener("keyup", function (e) {
+						if (e.keyCode === 13) { // enter
+							let value = parseInt(this.value);
+							if (value && value > 0 && value <= currentPager.data.limit) {
+								currentPager.select(value - 1); // because in pager first page is 0
+							}
+							else {
+								this.value = this.prev;
+							}
+						}
+					});
+				}
+			}
+		};
 
 		const leftPanelSwitchButton = {
 			view: "switch",
@@ -177,7 +211,14 @@ export default class GalleryView extends JetView {
 			id: constants.ID_GALLERY_RICHSELECT,
 			width: 225,
 			height: 36,
-			options: Array.from(constants.DATAVIEW_IMAGE_MULTIPLIERS.keys())
+			options: [
+				constants.TWO_DATAVIEW_COLUMNS,
+				constants.THREE_DATAVIEW_COLUMNS,
+				constants.FOUR_DATAVIEW_COLUMNS,
+				constants.FIVE_DATAVIEW_COLUMNS,
+				constants.SIX_DATAVIEW_COLUMNS,
+				constants.DEFAULT_DATAVIEW_COLUMNS
+			]
 		};
 
 		const switchView = {
@@ -285,7 +326,8 @@ export default class GalleryView extends JetView {
 						{width: 13},
 						dataviewYCountSelction,
 						{width: 15},
-						pager.getConfig(PAGER_ID),
+						pager.getConfig(PAGER_ID, DATAVIEW_ID),
+						clonePagerForNameFilter,
 						{width: 10}
 					]
 				}
@@ -342,7 +384,7 @@ export default class GalleryView extends JetView {
 				{height: 5},
 				{
 					cols: [
-						dataview.getConfig(DATAVIEW_ID, PAGER_ID),
+						dataview.getConfig(DATAVIEW_ID),
 						{
 							name: "cartListViewCollapsed",
 							hidden: true,
@@ -486,6 +528,10 @@ export default class GalleryView extends JetView {
 		return this.getRoot().queryView({name: "leftPanelSwitchButtonName"});
 	}
 
+	getClonedPagerForNameSearch() {
+		return this.getRoot().queryView({name: "clonedPagerForNameSearch"});
+	}
+
 	getCartListCollapsedView() {
 		return this.getRoot().queryView({name: "cartListViewCollapsed"});
 	}
@@ -506,13 +552,19 @@ export default class GalleryView extends JetView {
 		this.listCollapsedView.show();
 		const listCollapser = this.listCollapsedView.queryView({state: collapserState});
 		listCollapser.config.onClick["collapser-btn"](listCollapser);
+		this.changeDataviewYCount();
 	}
 
 	hideList() {
 		this.listCollapsedView.hide();
+		this.changeDataviewYCount();
 	}
 
-	getLeftPanel() {
-		return this.$$(LEFT_PANEL_ID);
+	changeDataviewYCount() {
+		let gallerySelectionId = utils.getDataviewSelectionId();
+		if (gallerySelectionId && gallerySelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
+			const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
+			galleryRichselect.callEvent("onChange", [gallerySelectionId]);
+		}
 	}
 }

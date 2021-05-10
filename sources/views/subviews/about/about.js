@@ -12,7 +12,7 @@ const SIDEBAR_MENU_ITEMS = [
 		value: "About ISIC",
 		data: [
 			{
-				id: "isicArchive",
+				id: "isicArchive", 
 				value: "ISIC Archive"
 			},
 			{
@@ -40,7 +40,7 @@ const SIDEBAR_MENU_ITEMS = [
 	{
 		id: "partnersAndSponsors",
 		value: "Partners & Sponsors"
-	}
+	},
 ];
 
 function toggleSidebar() {
@@ -58,6 +58,7 @@ function toggleSidebar() {
 
 export default class aboutView extends JetView {
 	config() {
+
 		const sidebar = {
 			view: "sidebar",
 			type: "sideBar",
@@ -185,7 +186,7 @@ export default class aboutView extends JetView {
 		const menuHeaderNode = sidebarContainerNode.querySelector(".about-sidebar-header");
 		const menuItemsContainterNode = sidebarContainerNode.querySelector(".about-sidebar");
 		const menuItemsScrollContainer = menuItemsContainterNode.querySelector(".webix_scroll_cont");
-		const countedHeight = menuHeaderNode.offsetHeight + menuItemsScrollContainer.offsetHeight;
+		const countedHeight = menuHeaderNode.offsetHeight + menuItemsScrollContainer.offsetHeight; 
 		sidebarContainer.define("height", countedHeight);
 		sidebarContainer.resize();
 	}
