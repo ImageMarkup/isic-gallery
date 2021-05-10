@@ -9,12 +9,10 @@ import selectedImages from "../../models/selectedGalleryImages";
 import constants from "../../constants";
 import util from "../../utils/util";
 import authService from "../../services/auth";
-import imageWindowConfigs from "../../views/subviews/gallery/windows/imageWindow";
+import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import searchButtonModel from "./searchButtonModel";
-import AsyncQueue from "../asyncQueue";
 import "wheelzoom";
-import DataviewService from "./dataview";
 
 
 const layoutHeightAfterHide = 1;
@@ -47,9 +45,6 @@ class GalleryService {
 		this._clearAllFiltersTemplate = clearAllFiltersTemplate;
 		this._allPagesTemplate = allPagesTemplate;
 		this._filterScrollView = filterScrollView;
-
-		this._annotatedImages = new Map();
-
 		this._init();
 	}
 
@@ -86,49 +81,72 @@ class GalleryService {
 		else {
 			webix.alert(`"There are no filters which include "${searchValue}"`);
 		}
-		this._reloadViewByFilters(filtersInfo);
+		this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
 	}
 
 	_searchHandlerByName(afterFilterSelected) {
 		let searchValue = this._searchInput.getValue();
 		searchValue = searchValue.trim();
+		searchValue = searchValue.toLowerCase();
 		if (searchValue && searchValue.length < 9) {
 			webix.alert("You should type minimum 9 characters");
 			return;
 		}
-
-		appliedFilterModel.setFilterByName(searchValue);
-
-		if (!searchValue) {
-			this._reload();
-			return;
-		}
-
-		this._view.$scope.setParam("name", searchValue, true);
-		this._view.$scope.setParam("filter", "[]", true);
-
+		const valueOfMarkedCheckbox = 1;
+		let filteredImages = [];
+		let studyFlag = selectedImages.getStudyFlag();
+		let filter = appliedFilterModel.getConditionsForApi();
 		const sourceParams = {
-			limit: this._pager.data.size,
+			limit: 0,
 			sort: "name",
 			detail: "false",
-			name: searchValue
+			filter
 		};
-
+		this._view.$scope.setParam("name", searchValue, true);
 		this._view.showProgress();
-		ajax.getImages(sourceParams)
-			.then((images) => {
-				this._parseImages(images, 0, images.length);
-
-				const currentCount = images.length;
+		this.studiesPromise
+			.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
+			.then((valuesArray) => {
+				const annotatedImages = valuesArray.annotatedImages;
+				const allImagesArray = webix.copy(valuesArray.allImages);
+				const totalCount = allImagesArray.length;
+				allImagesArray.forEach((imageObj) => {
+					if (imageObj.name.toLowerCase().indexOf(searchValue) !== -1) {
+						if (annotatedImages[imageObj._id]) {
+							imageObj.hasAnnotations = true;
+							imageObj.studyId = annotatedImages[imageObj._id].studyId;
+						}
+						if (studyFlag && selectedImages.isSelectedInStudies(imageObj._id)) {
+							imageObj.markCheckbox = valueOfMarkedCheckbox;
+						}
+						else if (!studyFlag && selectedImages.isSelected(imageObj._id)) {
+							imageObj.markCheckbox = valueOfMarkedCheckbox;
+						}
+						filteredImages.push(imageObj);
+					}
+				});
+				const currentCount = filteredImages.length;
 				if (currentCount > 0) {
+					this._imagesDataview.clearAll();
+					let page = 0;
+					this._updatePagerCount(80, page);
+					// connecting pager to data view
+					this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
+					this._pager.hide();
+					this._clonedPagerForNameSearch.show();
+					this._imagesDataview.parse(filteredImages);
+
 					const rangeFinish = this._pager.data.size;
 					const headerValues = {
 						rangeStart: 1,
 						rangeFinish,
 						currentCount,
-						filtered: true
+						filtered: true,
+						totalCount
 					};
-					this._contentHeaderTemplate.setValues(headerValues, true);
+					this._contentHeaderTemplate.setValues(headerValues);
+					this._contentHeaderTemplate.refresh();
+					appliedFilterModel.setFilterByName(true);
 				}
 				else {
 					if (afterFilterSelected) {
@@ -137,16 +155,18 @@ class GalleryService {
 							rangeStart: 0,
 							rangeFinish: 0,
 							filtered: true,
-							currentCount
+							currentCount,
+							totalCount
 						};
-						this._contentHeaderTemplate.setValues(headerValues, true);
+						this._contentHeaderTemplate.setValues(headerValues);
+						this._contentHeaderTemplate.refresh();
 						this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
 					}
 					webix.alert(`Nothing has found with name ${searchValue}`);
 				}
 				this._view.hideProgress();
 			})
-			.catch(() => {
+			.fail(() => {
 				webix.message("Something went wrong");
 				this._view.hideProgress();
 			});
@@ -156,16 +176,12 @@ class GalleryService {
 		webix.extend(this._imagesDataview, webix.OverlayBox);
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
-		this._imageTemplate = $$(imageWindowConfigs.getViewerId());
+		this._imageTemplate = $$(imageWindow.getViewerId());
 		this._activeCartList = this._view.$scope.getActiveGalleryCartList();
 		this._toggleButton = this._view.$scope.getToggleButton();
 		this._buttonsLayout = $$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
 		this._leftPanelToggleButton = this._view.$scope.getLeftPanelToggleButton();
-		this._leftPanel = this._view.$scope.getLeftPanel();
-
-		this._getImagesQueue = new AsyncQueue(this._getImagesByPageChange, this);
-		this._dataviewService = new DataviewService(this._imagesDataview, this._pager);
-		this._resizeDataviewGrid();
+		this._clonedPagerForNameSearch = this._view.$scope.getClonedPagerForNameSearch();
 
 		this._activeCartList.attachEvent("onAfterRender", () => {
 			if (modifiedObjects.count() > 0) {
@@ -178,20 +194,6 @@ class GalleryService {
 					}
 				});
 			}
-		});
-
-		this._activeCartList.attachEvent("onViewShow", () => {
-			this._resizeDataviewGrid();
-		});
-
-		this._activeCartList.attachEvent("onViewHide", () => {
-			this._resizeDataviewGrid();
-		});
-		this._leftPanel.attachEvent("onViewShow", () => {
-			this._resizeDataviewGrid();
-		});
-		this._leftPanel.attachEvent("onViewHide", () => {
-			this._resizeDataviewGrid();
 		});
 
 		if (authService.isLoggedin()) {
@@ -216,7 +218,6 @@ class GalleryService {
 			this._activeCartList.parse(selectedImagesArray);
 			webix.delay(() => {
 				this._view.$scope.showList(true);
-				this._view.$scope.app.callEvent("changedSelectedImagesCount");
 			});
 			let studyFlag = selectedImages.getStudyFlag();
 			this._resizeButtonsLayout(layoutHeightAfterShow, studyFlag, true);
@@ -224,35 +225,22 @@ class GalleryService {
 
 		this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
 
-		this._leftPanelToggleButton.attachEvent("onChange", (searchByNameCondition, oldValue) => {
-			if (searchByNameCondition !== oldValue) {
+		this._leftPanelToggleButton.attachEvent("onChange", (newValue, oldValue) => {
+			if (newValue !== oldValue) {
 				let tooltipText;
 				let inputNode = this._searchInput.$view.getElementsByClassName("webix_el_box")[0];
 				this._searchInput.setValue("");
 				searchButtonModel.removeTimesSearchButton(inputNode);
-				if (searchByNameCondition) { // filter by name
-					this._filtersForm.disable();
-					this._appliedFiltersList.disable();
-					if (appliedFilterModel.count()) {
-						this._appliedFiltersList.clearAll();
-						appliedFilterModel.clearAll();
-						this._reload();
-					}
-
+				if (newValue) {
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this));
 					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText, true);
 				}
-				else { // filter by hardcoded filter values
-					this._filtersForm.enable();
-					this._appliedFiltersList.enable();
-
+				else {
 					this._view.$scope.setParam("name", "", true);
 					tooltipText = "Clear search value";
-					if (appliedFilterModel.getFilterByName()) {
-						appliedFilterModel.setFilterByName();
-						this._clearNameFilter();
-					}
+					appliedFilterModel.setFilterByName(false);
+					this._clearNameFilter();
 					this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
 					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText);
 				}
@@ -280,8 +268,7 @@ class GalleryService {
 
 		});
 
-		let dataviewSelectionId = util.getDataviewSelectionId() ?
-			util.getDataviewSelectionId() : constants.DATAVIEW_IMAGE_MULTIPLIERS.keys().next();
+		let dataviewSelectionId = util.getDataviewSelectionId() ? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
 		this._dataviewYCountSelection.blockEvent();
 		this._dataviewYCountSelection.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection.unblockEvent();
@@ -289,19 +276,63 @@ class GalleryService {
 		window.addEventListener("resize", (event) => {
 			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
 			if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
-				this._dataviewService.onResizeDataview();
+				const dataviewSelectionId = util.getDataviewSelectionId();
+				if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
+					this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
+				}
 			}
 		});
 
 		this._dataviewYCountSelection.attachEvent("onChange", (id) => {
-			this._dataviewService.setImageSizeByMultiplier(id);
-			this._resizeDataviewGrid();
+			let newitemWidth;
+			let newItemHeight;
+			let newInnerImageNameSize;
+			const previousItemWidth = this._imagesDataview.type.width;
+			const previousItemHeight = this._imagesDataview.type.height;
+			let multiplier = previousItemHeight / previousItemWidth;
+			let dataviewWidth = this._imagesDataview.$width;
+			let fontSizeMultiplier = this._getInitialFontSizeMultiplier();
+
+			switch (id) {
+				case constants.TWO_DATAVIEW_COLUMNS: {
+					newitemWidth = Math.round(dataviewWidth / 2) - 5;
+					break;
+				}
+				case constants.THREE_DATAVIEW_COLUMNS: {
+					newitemWidth = Math.round(dataviewWidth / 3) - 5;
+					break;
+				}
+				case constants.FOUR_DATAVIEW_COLUMNS: {
+					newitemWidth = Math.round(dataviewWidth / 4) - 5;
+					break;
+				}
+				case constants.FIVE_DATAVIEW_COLUMNS: {
+					newitemWidth = Math.round(dataviewWidth / 5) - 5;
+					break;
+				}
+				case constants.SIX_DATAVIEW_COLUMNS: {
+					newitemWidth = Math.round(dataviewWidth / 6) - 5;
+					break;
+				}
+				case constants.DEFAULT_DATAVIEW_COLUMNS: {
+					newitemWidth = 180;
+					newItemHeight = 123;
+					newInnerImageNameSize = 14;
+					break;
+				}
+			}
+			if (id !== constants.DEFAULT_DATAVIEW_COLUMNS) {
+				newItemHeight = Math.round(newitemWidth * multiplier);
+				newInnerImageNameSize = Math.round(newItemHeight * fontSizeMultiplier);
+			}
+			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
+			this._setDataviewColumns(newitemWidth, newItemHeight);
 		});
 
 		this._imagesDataview.attachEvent("onAfterLoad", () => {
 			let dataviewSelectionId = util.getDataviewSelectionId();
-			if (dataviewSelectionId) {
+			if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
 				this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
 			}
 			this._imagesDataview.hideOverlay();
@@ -333,17 +364,15 @@ class GalleryService {
 					this.downloadZip("metadata");
 					break;
 				}
-				default: {
-					break;
-				}
 			}
 		});
 		this._imagesDataview.attachEvent("onDataRequest", (offset, limit) => {
-			this._getImagesQueue.addJobToQueue();
-		});
-
-		this._pager.attachEvent("onAfterPageChange", (page) => {
-			this._updatePageCounts();
+			this._updateImagesDataview(offset, limit);
+			const totalCount = state.imagesTotalCounts.__passedFilters__[0].count;
+			this._updateContentHeaderTemplate({
+				rangeStart: offset + 1,
+				rangeFinish: offset + limit >= totalCount ? totalCount : offset + limit
+			});
 		});
 
 		this._imageWindow.getNode().addEventListener("keyup", (e) => {
@@ -415,15 +444,19 @@ class GalleryService {
 				let isNeedShowAlert = true;
 				let limit;
 				let page;
-
-				limit = this._pager.config.size;
-				page = this._pager.config.page;
-
+				const filterByName = appliedFilterModel.getFilterByName();
+				if (filterByName) {
+					limit = this._clonedPagerForNameSearch.config.size;
+					page = this._clonedPagerForNameSearch.config.page;
+				}
+				else {
+					limit = this._pager.config.size;
+					page = this._pager.config.page;
+				}
 				const offset = limit * page;
 				this._view.showProgress();
 				webix.delay(() => {
-					const pageImages = this._imagesDataview.data.getRange();
-					pageImages.forEach((item, index) => {
+					this._imagesDataview.data.each((item, index) => {
 						if (item.markCheckbox) {
 							return;
 						}
@@ -476,6 +509,7 @@ class GalleryService {
 				let arrayOfImagesLength = selectedImages.countForStudies();
 				const sourceParams = {
 					limit: imagesLimit,
+					sort: "name",
 					detail: "false",
 					filter
 				};
@@ -485,54 +519,81 @@ class GalleryService {
 					});
 					return;
 				}
-
-				this._view.showProgress();
-				ajax.getImages(sourceParams)
-					.catch(() => {
-						this._view.hideProgress();
-						webix.message("Unable to select images");
-					})
-					.then((images) => {
-						images.forEach((imageObj) => {
-							if (selectedImages.isSelectedInStudies(imageObj._id)) {
-								countSelectedFiltredImages++;
+				const filterByName = appliedFilterModel.getFilterByName();
+				if (filterByName && this._clonedPagerForNameSearch.isVisible()) {
+					this._view.showProgress();
+					webix.delay(() => {
+						this._imagesDataview.data.each((item) => {
+							if (item.markCheckbox || selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION) {
 								return;
 							}
-							if (selectedImages.countForStudies() < constants.MAX_COUNT_IMAGES_SELECTION) {
-								if (selectedImages.countForStudies() === 0) {
-									this._resizeButtonsLayout(layoutHeightAfterShow, true, true);
-								}
-								selectedImages.addForStudy({
-									_id: imageObj._id,
-									name: imageObj.name
-								});
-								imageObj.markCheckbox = 1;
-								imagesArray.push(imageObj);
+							if (selectedImages.countForStudies() === 0) {
+								this._resizeButtonsLayout(layoutHeightAfterShow, true, true);
 							}
-							else if (isNeedShowAlert) {
-								isNeedShowAlert = false;
-								webix.alert({
-									text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
-								});
-							}
-						});
-						this._parseImages(images, 0);
-						if (countSelectedFiltredImages === imagesLimit) {
-							webix.alert({
-								text: "All filtered images have been selected"
+							selectedImages.addForStudy({
+								_id: item._id,
+								name: item.name
 							});
-							this._view.hideProgress();
-							return;
-						}
+							item.markCheckbox = 1;
+							imagesArray.push(item);
+						});
 						if (imagesArray.length > 0) {
 							this._imagesDataview.callEvent("onCheckboxItemClick", [imagesArray, 1]);
 							this._imagesDataview.refresh();
-							this._imagesDataview.callEvent("onAfterSelectAllChanged", [1]);
 							this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
-							this._removeTooltipForDataview(this._allPagesTemplate);
 						}
+						this._removeTooltipForDataview(this._allPagesTemplate);
 						this._view.hideProgress();
 					});
+				}
+				else {
+					this._view.showProgress();
+					ajax.getAllImages(sourceParams)
+						.fail(() => {
+							this._view.hideProgress();
+							webix.message("Unable to select images");
+						})
+						.then((allImagesData) => {
+							allImagesData.forEach((imageObj) => {
+								if (selectedImages.isSelectedInStudies(imageObj._id)) {
+									countSelectedFiltredImages++;
+									return;
+								}
+								if (selectedImages.countForStudies() < constants.MAX_COUNT_IMAGES_SELECTION) {
+									if (selectedImages.countForStudies() === 0) {
+										this._resizeButtonsLayout(layoutHeightAfterShow, true, true);
+									}
+									selectedImages.addForStudy({
+										_id: imageObj._id,
+										name: imageObj.name
+									});
+									imageObj.markCheckbox = 1;
+									imagesArray.push(imageObj);
+								}
+								else if (isNeedShowAlert) {
+									isNeedShowAlert = false;
+									webix.alert({
+										text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
+									});
+								}
+							});
+							if (countSelectedFiltredImages === imagesLimit) {
+								webix.alert({
+									text: "All filtered images have been selected"
+								});
+								this._view.hideProgress();
+								return;
+							}
+							if (imagesArray.length > 0) {
+								this._imagesDataview.callEvent("onCheckboxItemClick", [imagesArray, 1]);
+								this._imagesDataview.refresh();
+								this._imagesDataview.callEvent("onAfterSelectAllChanged", [1]);
+								this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
+								this._removeTooltipForDataview(this._allPagesTemplate);
+							}
+							this._view.hideProgress();
+						});
+				}
 			},
 			"unselect-images-on-all-pages": () => {
 				this._resizeButtonsLayout(layoutHeightAfterHide, true, false);
@@ -549,7 +610,16 @@ class GalleryService {
 			this._allPagesTemplate.refresh();
 		});
 		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data, selectNone) => {
-			this._reloadViewByFilters(data);
+			// add (or remove) filters data to model
+			appliedFilterModel.processNewFilters(data);
+			// refresh data in list
+			this._updateAppliedFiltersList(appliedFilterModel.prepareDataForList());
+			webix.delay(() => {
+				// update checkboxes values
+				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+				this._updateFiltersFormControls(appliedFiltersArray);
+			});
+			this._reload(0, this._pager.data.size);
 		});
 
 		this._clearAllFiltersTemplate.define("onClick", {
@@ -746,119 +816,60 @@ class GalleryService {
 	}
 
 	load() {
-		let appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		let parsedURLFilters = [];
-		let nameURLFilter = "";
-
-		try {
+		// we should get maximum count of images once
+		ajax.getHistogram().then((data) => {
+			state.imagesTotalCounts = data;
+			const imagesCount = state.imagesTotalCounts.__passedFilters__[0].count;
+			this._updateContentHeaderTemplate(
+				{
+					rangeStart: 1,
+					rangeFinish: this._pager.data.size,
+					totalCount: imagesCount
+				});
+			this._updatePagerCount(imagesCount);
+			filterService.updateFiltersCounts();
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
-			parsedURLFilters = JSON.parse(paramFilters || "[]");
-			nameURLFilter = this._view.$scope.getParam("name");
-		}
-		catch (e) {
-			this._view.$scope.setParam("filter", "[]", true);
-		}
-
-		const loadByParamFilters = nameURLFilter || (parsedURLFilters.length && !appliedFiltersArray.length);
-		if (loadByParamFilters) {
-			this._loadByURLParams(nameURLFilter, parsedURLFilters);
-			return;
-		}
-
-		this._view.showProgress();
-		const filter = appliedFilterModel.getConditionsForApi();
-		const imagesParams = {
-			offset: 0,
-			limit: this._pager.data.size,
-			filter
-		};
-
-		const getDataPromises = [
-			ajax.getHistogram(),
-			this._getAnnotatedImages(),
-			filtersData.getDatasetForFilters(true),
-			ajax.getImages(imagesParams)
-		];
-
-		if (appliedFiltersArray.length) {
-			getDataPromises.push(ajax.getHistogram(filter));
-		}
-
-		Promise.all(getDataPromises)
-			.then(([histogram, annotatedImages, dataset, images, filteredHistogram]) => {
-				this._annotatedImages = new Map(Object.entries(annotatedImages));
-				state.imagesTotalCounts = histogram;
-				this._createFilters(appliedFiltersArray).then(() => {
-					this._updateFiltersFormControls(appliedFiltersArray);
-					this._updateImagesCounts(histogram, true); // update filters, images, pager counts
-
-					if (filteredHistogram) {
-						this._updateImagesCounts(filteredHistogram);
-						const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
-						this._view.$scope.setParam("filter", paramFilters, true);
-					}
+			if (appliedFiltersArray.length) {
+				webix.delay(() => {
+					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
 				});
-
-				const totalCount = filteredHistogram ?
-					filteredHistogram.__passedFilters__[0].count : histogram.__passedFilters__[0].count;
-
-				this._parseImages(images, 0, totalCount);
-				this._view.hideProgress();
-			})
-			.catch(() => {
-				webix.message("Something went wrong");
-				this._view.hideProgress();
-			});
-	}
-
-	_loadByURLParams(nameURLFilter, parsedURLFilters) {
-		this._view.showProgress();
-		Promise.all([
-			ajax.getHistogram(),
-			this._getAnnotatedImages(),
-			filtersData.getDatasetForFilters(true)
-		]).then(([histogram, annotatedImages]) => {
-			this._annotatedImages = new Map(Object.entries(annotatedImages));
-			state.imagesTotalCounts = histogram;
-			this._createFilters()
-				.then(() => {
-					this._updateImagesCounts(histogram, true); // update filters, images, pager counts
-					if (nameURLFilter) {
-						this._searchHandlerByName();
-					}
-					else {
-						const appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedURLFilters);
-						this._reloadViewByFilters(appliedFiltersArray);
-					}
-				});
-			this._view.hideProgress();
+			}
+			else {
+				this._createFilters([], true)
+					.then(() => {
+						if (paramFilters) {
+							try {
+								const parsedFilters = JSON.parse(paramFilters);
+								const appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
+								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+							}
+							catch (err) {
+								this._view.$scope.setParam("filter", "[]", true);
+								this._view.$scope.app.callEvent("filtersChanged", [[]]);
+							}
+						}
+					}); // create filters form controls from config
+			}
+			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		});
 	}
 
-	_reload() {
+	_reload(offsetSource, limitSource) {
+		let limit = limitSource || this._pager.data.size;
+		let offset = offsetSource || 0;
 		// save promise to object. we need wait for its result before rendering images dataview
+		this.studiesPromise = ajax.getStudies({
+			sort: "lowerName",
+			sortdir: "1",
+			detail: true
+		}).then(data => this._prepareAnnotatedImagesList(data));
 		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		this._createFilters(appliedFiltersArray)
-			.then(() => {
-				this._updateFiltersFormControls(appliedFiltersArray);
-			});
-
+		this._createFilters(appliedFiltersArray);
+		this._updateCounts();
 		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
 		this._view.$scope.setParam("filter", paramFilters, true);
-		this._view.$scope.setParam("name", "", true);
-
-		this._view.showProgress();
-		this._getAndUpdateCounts()
-			.then((imagesCount) => {
-				this._imagesDataview.clearAll();
-				this._parseImages([], 0, imagesCount);
-				if (!imagesCount) {
-					this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing Has Found</div>");
-				}
-			})
-			.finally(() => {
-				this._view.hideProgress();
-			});
+		this._updateImagesDataview(offset, limit); // load images first time
 	}
 
 	_updateContentHeaderTemplate(ranges) {
@@ -867,9 +878,9 @@ class GalleryService {
 		this._contentHeaderTemplate.setValues(values, true); // true -> unchange existing values
 	}
 
-	_getAndUpdateCounts() {
+	_updateCounts() {
 		const filter = appliedFilterModel.getConditionsForApi();
-		return ajax.getHistogram(filter).then((data) => {
+		ajax.getHistogram(filter).then((data) => {
 			if (data) {
 				const imagesCount = data.__passedFilters__[0].count;
 				this._updateContentHeaderTemplate({
@@ -877,8 +888,8 @@ class GalleryService {
 					rangeFinish: this._pager.data.size,
 					currentCount: imagesCount
 				});
+				this._updatePagerCount(imagesCount, 0);
 				filterService.updateFiltersCounts(data);
-				return imagesCount;
 			}
 		});
 	}
@@ -922,6 +933,64 @@ class GalleryService {
 		});
 	}
 
+	_updatePagerCount(count, page) {
+		count = count || 1;
+		if (page !== undefined) {
+			this._pager.select(page);
+		}
+		if (count) {
+			this._pager.define("count", count);
+			this._pager.refresh();
+		}
+	}
+
+	_updateImagesDataview(offset, limit) {
+		const filter = appliedFilterModel.getConditionsForApi();
+		const imagesPromise = ajax.getImages({
+			offset,
+			limit,
+			filter
+		});
+		const studyFlag = selectedImages.getStudyFlag();
+		const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
+		const searchValue = this._searchInput.getValue();
+		if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8) {
+			this._searchHandlerByName(true);
+			return;
+		}
+		else if (searchValue > 0 && searchValue < 9) {
+			webix.alert("You should type minimum 9 characters for name search");
+		}
+		this._view.showProgress();
+		webix.promise.all([
+			this.studiesPromise,
+			imagesPromise
+		]).then((results) => {
+			const [annotatedImages, images] = results;
+			this._imagesDataview.clearAll();
+			if (images && images.length > 0) {
+				images.forEach((item) => {
+					// markCheckbox - active content in dataview.
+					if (studyFlag) {
+						item.markCheckbox = selectedImages.isSelectedInStudies(item._id);
+					}
+					else {
+						item.markCheckbox = selectedImages.isSelected(item._id);
+					}
+					if (annotatedImages[item._id]) {
+						item.hasAnnotations = true;
+						item.studyId = annotatedImages[item._id].studyId;
+					}
+				});
+				this._imagesDataview.parse(images);
+			}
+			else {
+				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing Has Found</div>");
+			}
+			this._view.hideProgress();
+		});
+	}
+
 	_unselectImages(selectedBy, allImagesArray) {
 		if (selectedBy === constants.SELECTED_BY_ALL_ON_PAGE) {
 			// clear checkbox state in dataview for current page
@@ -942,7 +1011,6 @@ class GalleryService {
 			this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 			this._imagesDataview.refresh();
 		}
-		this._resizeDataviewGrid();
 	}
 
 	_toggleHeaders(forStudies) {
@@ -1014,6 +1082,22 @@ class GalleryService {
 		}
 	}
 
+	_setDataviewColumns(width, height) {
+		this._imagesDataview.customize({
+			width,
+			height
+		});
+		galleryImagesUrls.clearPreviewUrls();
+		util.setDataviewItemDimensions(width, height);
+		this._imagesDataview.refresh();
+	}
+
+	_getInitialFontSizeMultiplier() {
+		const initialFontSize = constants.DEFAULT_GALLERY_IMAGE_NAME_FONT_SIZE;
+		const initialImageWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
+		return initialFontSize / initialImageWidth;
+	}
+
 	_clearActiveListData(clearModifyObjects) {
 		this._activeCartList.clearAll();
 		if (!clearModifyObjects) modifiedObjects.clearAll();
@@ -1029,7 +1113,6 @@ class GalleryService {
 		else {
 			toShow ? this._downloadingMenu.show() : this._downloadingMenu.hide();
 		}
-		this._resizeDataviewGrid();
 	}
 
 	_disableTemplateByCss(templateToDisable) {
@@ -1067,12 +1150,14 @@ class GalleryService {
 	}
 
 	_clearNameFilter() {
+		this._clonedPagerForNameSearch.hide();
+		this._pager.show();
 		let filtersInfo = appliedFilterModel.getFiltersArray();
 		if (filtersInfo.length > 0) {
-			this._reloadViewByFilters(filtersInfo);
+			this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
 		}
 		else {
-			this._reload();
+			this.load();
 		}
 	}
 
@@ -1117,114 +1202,6 @@ class GalleryService {
 		const filterScrollViewOffsetTop = this._filterScrollView.$view.offsetTop;
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
 		this._filterScrollView.scrollTo(0, positionToScroll);
-	}
-
-	_getImagesByPageChange() {
-		const {index, pageIndex, limit} = this._getNotLoadedItemIndex();
-		if (pageIndex > -1) {
-			return this._getImages(index, limit)
-				.then((images) => {
-					this._parseImages(images, index);
-					this._view.hideProgress();
-				});
-		}
-		return Promise.resolve(false);
-	}
-
-	_getNotLoadedItemIndex() {
-		const pData = this._pager.data;
-		const offset = pData.size * pData.page;
-		const last = offset + pData.size;
-		const items = this._imagesDataview.data.serialize();
-		const pageItems = items.slice(offset, last);
-		const pageIndex = pageItems.findIndex(item => !item);
-		const index = pageIndex + offset;
-		const limit = pData.size - pageIndex;
-
-		return {index, pageIndex, limit};
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	_getImages(offset, limit) {
-		const filter = appliedFilterModel.getConditionsForApi();
-		const params = {
-			offset,
-			limit,
-			filter
-		};
-		return ajax.getImages(params);
-	}
-
-	_getAnnotatedImages() {
-		return ajax.getStudies({
-			sort: "lowerName",
-			sortdir: "1",
-			detail: true
-		}).then(data => this._prepareAnnotatedImagesList(data));
-	}
-
-	_updateImagesCounts(histogram, isInitial) {
-		if (!histogram) {
-			return;
-		}
-		const imagesCount = histogram.__passedFilters__[0].count;
-
-		const imageCountsTemplateData = {
-			rangeStart: 1,
-			rangeFinish: this._pager.data.size,
-			currentCount: imagesCount
-		};
-
-		if (isInitial) {
-			imageCountsTemplateData.totalCount = imagesCount;
-		}
-		this._updateContentHeaderTemplate(imageCountsTemplateData);
-
-		filterService.updateFiltersCounts(isInitial ? null : histogram);
-	}
-
-	_parseImages(images = [], pos = 0, totalCount) {
-		let studyFlag = selectedImages.getStudyFlag();
-		images.forEach((item) => {
-			// markCheckbox - active content in dataview.
-			if (studyFlag) {
-				item.markCheckbox = selectedImages.isSelectedInStudies(item._id);
-			}
-			else {
-				item.markCheckbox = selectedImages.isSelected(item._id);
-			}
-			const annotatedImage = this._annotatedImages.get(item._id);
-			if (annotatedImage) {
-				item.hasAnnotations = true;
-				item.studyId = annotatedImage.studyId;
-			}
-		});
-		this._imagesDataview.parse({
-			data: images,
-			pos,
-			total_count: totalCount || this._pager.data.count
-		});
-	}
-
-	_reloadViewByFilters(filters = []) {
-		// add (or remove) filters data to model
-		appliedFilterModel.processNewFilters(filters);
-		// refresh data in list
-		this._updateAppliedFiltersList(appliedFilterModel.prepareDataForList());
-		this._reload();
-	}
-
-	_resizeDataviewGrid() {
-		this._dataviewService.onResizeDataview();
-		this._updatePageCounts();
-	}
-
-	_updatePageCounts() {
-		const pData = this._pager.data;
-		this._updateContentHeaderTemplate({
-			rangeStart: (pData.page * pData.size) + 1,
-			rangeFinish: Math.min((pData.page + 1) * pData.size, pData.count)
-		});
 	}
 }
 

@@ -1,9 +1,10 @@
+let dataviewId;
+
 const pager = {
 	view: "pager",
-	css: "dataview-pager",
 	size: 80,
 	height: 36,
-	width: 280,
+	width: 250,
 	master: false,
 	template(obj, common) {
 		return `${common.first()} ${common.prev()}
@@ -15,39 +16,57 @@ const pager = {
 			const currentPager = this;
 			const node = this.getNode();
 			const inputNode = node.getElementsByClassName("pager-input")[0];
-			inputNode.addEventListener("focus", () => {
-				inputNode.prev = inputNode.value;
+			inputNode.addEventListener("focus", function () {
+				this.prev = this.value;
 			});
-			inputNode.addEventListener("blur", () => {
-				const currentPage = currentPager.data.page + 1; // because in pager first page is 0
-				if (inputNode.value !== currentPage) {
-					inputNode.value = currentPage;
-				}
-			});
-			inputNode.addEventListener("keydown", (e) => {
+			inputNode.addEventListener("keyup", function (e) {
 				if (e.keyCode === 13) { // enter
-					let value = parseInt(inputNode.value);
+					let value = parseInt(this.value);
 					if (value && value > 0 && value <= currentPager.data.limit) {
+						let offset = currentPager.data.size * (value - 1); // because in pager first page is 0
+						$$(dataviewId).loadNext(currentPager.data.size, offset);
 						currentPager.select(value - 1); // because in pager first page is 0
 					}
 					else {
-						inputNode.value = inputNode.prev;
+						this.value = this.prev;
 					}
 				}
 			});
-
-			inputNode.addEventListener("input", () => {
-				const regexp = /[0-9]+/g;
-				const value = inputNode.value;
-				const validValue = value.match(regexp) ? value.match(regexp).join("") : "";
-				inputNode.value = validValue;
-			});
+		},
+		onItemClick(id, e, node) {
+			let offset;
+			switch (id) {
+				case "prev": {
+					const nextPage = this.data.page > 0 ? this.data.page - 1 : 0;
+					offset = nextPage * this.data.size;
+					break;
+				}
+				case "next": {
+					const nextPage = this.data.page < this.data.limit - 1 ? this.data.page + 1 : this.data.limit - 1;
+					offset = nextPage * this.data.size;
+					break;
+				}
+				case "first": {
+					offset = 0;
+					break;
+				}
+				case "last": {
+					offset = (this.data.limit - 1) * this.data.size;
+					break;
+				}
+				default: {
+					offset = 0;
+					break;
+				}
+			}
+			$$(dataviewId).loadNext(this.data.size, offset);
 		}
 	}
 };
 
-function getConfig(id) {
+function getConfig(id, sourceDataviewId) {
 	pager.id = id || `pager-${webix.uid()}`;
+	dataviewId = sourceDataviewId;
 	return pager;
 }
 

@@ -78,7 +78,7 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 const dataview = {
 	view: "activeDataview",
 	css: "gallery-images-dataview",
-	datathrottle: 100,
+	datathrottle: 500,
 	template(obj, common) {
 		const IMAGE_HEIGHT = util.getDataviewItemHeight() - 10;
 		const IMAGE_WIDTH = util.getDataviewItemWidth();
@@ -103,22 +103,14 @@ const dataview = {
 				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 			</div>` : "";
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
-
-		const previewUrl = galleryImageUrl.getPreviewImageUrl(obj._id);
-
-		const loadingStateClass = (previewUrl || previewUrl === false) ? "" : "dataview-item-loading-overlay";
-		if (typeof previewUrl === "undefined") {
+		if (typeof galleryImageUrl.getPreviewImageUrl(obj._id) === "undefined") {
 			galleryImageUrl.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
 			ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
 				galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-				$$(dataview.id).updateItem(obj.id, obj);
-			})
-				.catch(() => {
-					galleryImageUrl.setPreviewImageUrl(obj._id, false);
-					$$(dataview.id).updateItem(obj.id, obj);
-				});
+				$$(dataview.id).refresh(obj.id);
+			});
 		}
-		return `<div class="gallery-images-container ${checkedClass} ${loadingStateClass}">
+		return `<div class="gallery-images-container ${checkedClass}">
 					<div class='gallery-images-info'>
 						<div class="gallery-images-header">
 							<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
@@ -145,14 +137,13 @@ const dataview = {
 						</div>
 					</div>
 					${starHtml}
-					<img src="${previewUrl || ""}" class="gallery-image" />
+					<img src="${galleryImageUrl.getPreviewImageUrl(obj._id) || ""}" class="gallery-image" />
 				</div>`;
 	},
 	borderless: true,
 	type: {
 		width: util.getDataviewItemWidth(),
-		height: util.getDataviewItemHeight(),
-		templateLoading: () => "<div class='dataview-item-loading-overlay'></div>"
+		height: util.getDataviewItemHeight()
 	},
 	activeContent: {
 		markCheckbox: {
@@ -179,9 +170,8 @@ const dataview = {
 	}
 };
 
-function getConfig(id, pagerId = `pager-${webix.uid()}`) {
+function getConfig(id) {
 	dataview.id = id || `dataview-${webix.uid()}`;
-	dataview.pager = pagerId;
 	return dataview;
 }
 

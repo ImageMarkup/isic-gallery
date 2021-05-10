@@ -87,7 +87,7 @@ export default class ManagementUsersView extends JetView {
 		const listTemplate = obj => `<div class='management-top-level-list-entry'>
 						<div class='management-user-right-column'>
 							<div class='management-space-used-user-joined'><span class='webix_icon far fa-clock'></span>Joined on <b>${dates.formatDateStringForManagement(obj.created)}</b></div>
-							<div class='management-space-used-user-size'><span class='webix_icon far fa-save'></span>Currently using <b>${obj.size || "0"} B</b></div>
+							<div class='management-space-used-user-size'><span class='webix_icon far fa-floppy'></span>Currently using <b>${obj.size || "0"} B</b></div>
 			            </div>
 						<div class='management-user-container'>
 							<div class='management-user-link'>

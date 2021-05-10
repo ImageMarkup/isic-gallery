@@ -174,6 +174,11 @@ function getUserId() {
 	return userInfo ? userInfo._id : "";
 }
 
+function setDataviewItemDimensions(imageWidth, imageHeight) {
+	webix.storage.local.put(`dataviewItemWidth-${getUserId()}`, imageWidth);
+	webix.storage.local.put(`dataviewItemHeight-${getUserId()}`, imageHeight);
+}
+
 function getDataviewItemWidth() {
 	let localWidth = webix.storage.local.get(`dataviewItemWidth-${getUserId()}`);
 	return localWidth ? localWidth : DEFAULT_WIDTH;
@@ -419,6 +424,7 @@ export default {
 	exportCsv,
 	downloadBlob,
 	deepCompare,
+	setDataviewItemDimensions,
 	getDataviewItemWidth,
 	getDataviewItemHeight,
 	setDataviewSelectionId,
