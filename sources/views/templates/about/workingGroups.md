@@ -57,7 +57,7 @@
 | M. Emre Celebi, PhD | University of Central Arkansas, Arkansas |
 | Noel Codella, PhD | IBM T.J. Watson Research Center, Yorktown Heights, New York |
 | Marc Combalia | Fundació Clínic per a la Recerca Biomèdica, Barcelona, Spain |
-| Roxana Daneshjou, MD, PhD | Department of Dermatology, Stanford University Medical Center, Stanford, California |
+| Roxana Daneshjou, MD, PhD | Department of Dermatology, Stanford University Medical Center, California |
 | Pascale Guitera, MD | Royal Prince Alfred Hospital, Sydney, Australia |
 | David Gutman, MD, PhD | Emory University, Georgia |
 | Allan Halpern, MD | Memorial Sloan Kettering Cancer Center, New York |
@@ -68,7 +68,7 @@
 | Josep Malvehy, MD | Hospital Clinic of Barcelona, Spain |
 | Han Seung Seog, MD | Seoul National Univerity, Seoul, South Korea |
 | H. Peter Soyer, MD, PhD | The University of Queensland, Brisbane, Australia |
-| Eric Tkaczyk, PhD | Department of Dermatology, Vanderbilt University Medical Center, Nashville, Tennessee |
+| Eric Tkaczyk, PhD | Department of Dermatology, Vanderbilt University Medical Center, Tennessee |
 | Philipp Tschandl, MD, PhD | Department of Dermatology, Medical University of Vienna, Austria |
 | DICOM Working Group: {colspan=2 .main-subtitle2} |  |
 | **Liam Caffery, PhD (Co-leader)** | The University of Queensland, Brisbane, Australia |
