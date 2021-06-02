@@ -111,5 +111,24 @@
         fill: #0288D1;
       }
     }
+
+    &.disabled, &.disabled:hover {
+      cursor: not-allowed;
+      border-top-color: tint(#E8EBF1, 20%);
+      .box-shadow(none);
+      .transform(translate(0, 0));
+  
+      .cards-block-icon-svg-use {
+        fill: tint(#BDC4D4, 20%);
+      }
+
+      .cards-block-title {
+        color: tint(@main-color, 40%);
+      }
+
+      .cards-block-descr {
+        color: tint(@main-color-light, 40%);
+      }
+    }
   }
 }

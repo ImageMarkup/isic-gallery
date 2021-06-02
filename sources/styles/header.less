@@ -62,6 +62,18 @@
       background: #E8EBF1;
       text-shadow: 0.6px 0 0 #6E7480;
     }
+
+    &.webix_disabled {
+      cursor: not-allowed;
+      background: transparent;
+      text-shadow: none;
+      color: tint(@main-color-light, 40%);
+    }
+  }
+
+  .menu-with-sub .webix_submenu_icon {
+    top: 45%;
+    right: 0;
   }
 }
 

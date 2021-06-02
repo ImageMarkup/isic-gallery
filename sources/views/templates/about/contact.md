@@ -1,10 +1,10 @@
-` `  
-` `  
+## CONTACT INFORMATION: {.main-subtitle2} 
+
 __Angel Cummings__  
 _ISDIS Treasurer_  
 University Dermatology Center  
 Muncie, IN  
-[(800) 450-4548](tel:8004504548) x259
+[(800) 450-4548](tel:8004504548) x259  
 ` `  
 ` `  
 __Nick Kurtansky__  

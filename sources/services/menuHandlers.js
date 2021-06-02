@@ -8,7 +8,7 @@ import ApiWindow from "../views/header/windows/apiWindow";
 
 export default {
 	clickAbout() {
-		state.app.show(constants.PATH_ABOUT_ISIC_ARCHIVE);
+		state.app.show(constants.PATH_ABOUT_ISIC_OVERVIEW);
 	},
 
 	clickForum() {
@@ -20,33 +20,21 @@ export default {
 	},
 
 	clickChallenges() {
-		state.app.show(constants.PATH_CHALLENGES);
+		window.open(constants.URL_CHALLENGES, "_blank");
+	},
+
+	clickChallengesStats() {
+		window.open(constants.URL_CHALLENGES_STATS, "_blank");
 	},
 
 	clickUpload() {
 		if (authService.isLoggedin()) {
 			if (authService.isTermsOfUseAccepted()) {
-				let win;
-				state.app.show(constants.PATH_MAIN);
-				if (authService.canCreateDataset()) {
-					win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
-				}
-				else {
-					win = $$(constants.ID_WINDOW_ACCESS_REQUEST) || webix.ui(accessRequestWindow.getConfig(constants.ID_WINDOW_ACCESS_REQUEST));
-				}
-				win.show();
+				state.app.show(constants.PATH_UPLOAD_DATA);
 			}
 			else {
 				authService.showTermOfUse(() => {
-					let win;
-					state.app.show(constants.PATH_MAIN);
-					if (authService.canCreateDataset()) {
-						win = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
-					}
-					else {
-						win = $$(constants.ID_WINDOW_ACCESS_REQUEST) || webix.ui(accessRequestWindow.getConfig(constants.ID_WINDOW_ACCESS_REQUEST));
-					}
-					win.show();
+					state.app.show(constants.PATH_UPLOAD_DATA);
 				});
 			}
 		}
@@ -55,17 +43,7 @@ export default {
 		}
 	},
 
-	clickStudies() {
-		if (authService.isLoggedin()) {
-			state.app.show(constants.PATH_STUDIES);
-		}
-		else {
-			const win = $$(constants.ID_WINDOW_LOGIN);
-			// this is for possibility to use path in login window object
-			win.showAfterLoginPage = constants.PATH_STUDIES;
-			win.show();
-		}
-	},
+	clickStudies() {},
 
 	clickDermoscopedia() {
 		util.openInNewTab(constants.URL_DERMOSCOPEDIA);

@@ -175,6 +175,7 @@ export default {
 	loginByIdToken,
 	canCreateDataset,
 	hasSegmentationSkill,
-	canReviewDataset
+	canReviewDataset,
+	isUserInfoChanged
 };
 

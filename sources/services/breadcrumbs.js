@@ -1,4 +1,5 @@
 import constants from "../constants";
+
 const DATASET_PATH = "tightContentTop/dataset";
 const FEATURESET_PATH = "tightContentTop/featureset";
 const CLASS_NAME = "breadcrumbs";
@@ -33,41 +34,6 @@ const map = new Map([
 		text: "Dashboard",
 		parent: "home"
 	}],
-	["about:isicArchive", {
-		path: constants.PATH_ABOUT_ISIC_ARCHIVE,
-		text: "ISIC Archive",
-		parent: "home"
-	}],
-	["about:isicStandards", {
-		path: constants.PATH_ABOUT_ISIC_STANDARDS,
-		text: "ISIC Standards for Skin Imaging",
-		parent: "home"
-	}],
-	["about:history", {
-		path: constants.PATH_ABOUT_HISTORY,
-		text: "History",
-		parent: "home"
-	}],
-	["about:workingGroups", {
-		path: constants.PATH_ABOUT_WORKING_GROUPS,
-		text: "Working Groups",
-		parent: "home"
-	}],
-	["about:literature", {
-		path: constants.PATH_ABOUT_LITERATURE,
-		text: "Literature",
-		parent: "home"
-	}],
-	["about:contactInfo", {
-		path: constants.PATH_ABOUT_CONTACT_INFO,
-		text: "Contact Info",
-		parent: "home"
-	}],
-	["about:partnersAndSponsors", {
-		path: constants.PATH_ABOUT_WORKING_GROUPS,
-		text: "Partners & Sponsors",
-		parent: "home"
-	}],
 	["wizzardUploader", {
 		path: constants.PATH_WIZZARD_UPLOADER,
 		text: "Wizard tool",
@@ -92,6 +58,159 @@ const map = new Map([
 		path: constants.PATH_CREATE_STUDY,
 		text: "Create New Study",
 		parent: "gallery"
+	}],
+	// about section
+	["about:isicStandards", {
+		path: constants.PATH_ABOUT_ISIC_STANDARDS,
+		text: "ISIC Standards for Skin Imaging",
+		parent: "home"
+	}],
+	["about:history", {
+		path: constants.PATH_ABOUT_HISTORY,
+		text: "History",
+		parent: "home"
+	}],
+	["about:workingGroups", {
+		path: constants.PATH_ABOUT_WORKING_GROUPS,
+		text: "Working Groups",
+		parent: "home"
+	}],
+	["about:literature", {
+		path: constants.PATH_ABOUT_LITERATURE,
+		text: "Literature",
+		parent: "home"
+	}],
+	// ["about:contactInfo", {
+	// 	path: constants.PATH_ABOUT_CONTACT_INFO,
+	// 	text: "Contact Info",
+	// 	parent: "home"
+	// }],
+	["about:partnersAndSponsors", {
+		path: constants.PATH_ABOUT_PARTNERS_AND_SPONSORS,
+		text: "Partners & Sponsors",
+		parent: "home"
+	}],
+
+	["about:aboutIsicOverview", {
+		path: constants.PATH_ABOUT_ISIC_OVERVIEW,
+		text: "About ISIC: Overview",
+		parent: "home"
+	}],
+	["about:aboutIsicBackground", {
+		path: constants.PATH_ABOUT_ISIC_BACKGROUND,
+		text: "About ISIC: Background",
+		parent: "home"
+	}],
+	["about:aboutIsicGoals", {
+		path: constants.PATH_ABOUT_ISIC_GOALS,
+		text: "About ISIC: Goals",
+		parent: "home"
+	}],
+	["about:aboutIsicOrganization", {
+		path: constants.PATH_ABOUT_ISIC_ORGANIZATION,
+		text: "About ISIC: Organization",
+		parent: "home"
+	}],
+	["about:aboutIsicSponsorsAndPartners", {
+		path: constants.PATH_ABOUT_ISIC_SPONSORS_AND_PARTNERS,
+		text: "About ISIC: Sponsors and Partners",
+		parent: "home"
+	}],
+	["about:workingGroupsTechnology", {
+		path: constants.PATH_ABOUT_WG_TECHNOLOGY,
+		text: "Working Groups: Technology",
+		parent: "home"
+	}],
+	["about:workingGroupsTechnique", {
+		path: constants.PATH_ABOUT_WG_TECHNIQUE,
+		text: "Working Groups: Technique",
+		parent: "home"
+	}],
+	["about:workingGroupsTerminology", {
+		path: constants.PATH_ABOUT_WG_TERMINOLOGY,
+		text: "Working Groups: Terminology",
+		parent: "home"
+	}],
+	["about:workingGroupsPrivacy", {
+		path: constants.PATH_ABOUT_WG_PRIVACY,
+		text: "Working Groups: Privacy",
+		parent: "home"
+	}],
+	["about:workingGroupsMetadata", {
+		path: constants.PATH_ABOUT_WG_METADATA,
+		text: "Working Groups: Metadata/DICOM",
+		parent: "home"
+	}],
+	["about:workingGroupsAI", {
+		path: constants.PATH_ABOUT_WG_AI,
+		text: "Working Groups: Artificial Intelligence",
+		parent: "home"
+	}],
+	["about:workingGroupsEducation", {
+		path: constants.PATH_ABOUT_WG_EDUCATION,
+		text: "Working Groups: Education",
+		parent: "home"
+	}],
+	["about:isicArchiveGoals", {
+		path: constants.PATH_ABOUT_ARCHIVE_GOALS,
+		text: "ISIC Archive: Goals",
+		parent: "home"
+	}],
+	["about:isicArchiveContent", {
+		path: constants.PATH_ABOUT_ARCHIVE_CONTENT,
+		text: "ISIC Archive: Content and Layout",
+		parent: "home"
+	}],
+	["about:isicArchiveInfrastructure", {
+		path: constants.PATH_ABOUT_ARCHIVE_INFRASTRUCTURE,
+		text: "ISIC Archive: Infrastructure",
+		parent: "home"
+	}],
+	["about:isicArchiveDataDictionary", {
+		path: constants.PATH_ABOUT_ARCHIVE_DATA_DICTIONARY,
+		text: "ISIC Archive: Data Dictionary",
+		parent: "home"
+	}],
+	["about:isicChallengesGoals", {
+		path: constants.PATH_ABOUT_CHALLENGES_GOALS,
+		text: "ISIC Challenges: Goals",
+		parent: "home"
+	}],
+	["about:isicChallengesGrandVLive", {
+		path: constants.PATH_ABOUT_CHALLENGES_GRAND_V_LIVE,
+		text: "ISIC Challenges: Grand v. Live",
+		parent: "home"
+	}],
+	["about:isicChallengesHistory", {
+		path: constants.PATH_ABOUT_CHALLENGES_HISTORY,
+		text: "ISIC Challenges: History",
+		parent: "home"
+	}],
+	["about:isicChallengesPlanned", {
+		path: constants.PATH_ABOUT_CHALLENGES_PLANNED,
+		text: "ISIC Challenges: Planned",
+		parent: "home"
+	}],
+
+	["about:isicMeetingsGroups", {
+		path: constants.PATH_ABOUT_MEETINGS_GROUPS,
+		text: "ISIC Meetings: Working Groups",
+		parent: "home"
+	}],
+	["about:isicMeetingsWorkshops", {
+		path: constants.PATH_ABOUT_MEETINGS_WORKSHOPS,
+		text: "ISIC Meetings: Workshops and Conferences",
+		parent: "home"
+	}],
+	["about:isicPublications", {
+		path: constants.PATH_ABOUT_PUBLICATIONS,
+		text: "ISIC Publications",
+		parent: "home"
+	}],
+	["about:contactInfo", {
+		path: constants.PATH_ABOUT_CONTACT_INFORMATION,
+		text: "Contact Info",
+		parent: "home"
 	}]
 ]);
 

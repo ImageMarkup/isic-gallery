@@ -87,7 +87,6 @@ class GalleryService {
 	_searchHandlerByName(afterFilterSelected) {
 		let searchValue = this._searchInput.getValue();
 		searchValue = searchValue.trim();
-		searchValue = searchValue.toLowerCase();
 		if (searchValue && searchValue.length < 9) {
 			webix.alert("You should type minimum 9 characters");
 			return;
@@ -95,13 +94,13 @@ class GalleryService {
 		const valueOfMarkedCheckbox = 1;
 		let filteredImages = [];
 		let studyFlag = selectedImages.getStudyFlag();
-		let filter = appliedFilterModel.getConditionsForApi();
 		const sourceParams = {
 			limit: 0,
 			sort: "name",
-			detail: "false",
-			filter
+			detail: "false"
 		};
+		if (searchValue) sourceParams.name = searchValue;
+
 		this._view.$scope.setParam("name", searchValue, true);
 		this._view.showProgress();
 		this.studiesPromise
@@ -111,19 +110,17 @@ class GalleryService {
 				const allImagesArray = webix.copy(valuesArray.allImages);
 				const totalCount = allImagesArray.length;
 				allImagesArray.forEach((imageObj) => {
-					if (imageObj.name.toLowerCase().indexOf(searchValue) !== -1) {
-						if (annotatedImages[imageObj._id]) {
-							imageObj.hasAnnotations = true;
-							imageObj.studyId = annotatedImages[imageObj._id].studyId;
-						}
-						if (studyFlag && selectedImages.isSelectedInStudies(imageObj._id)) {
-							imageObj.markCheckbox = valueOfMarkedCheckbox;
-						}
-						else if (!studyFlag && selectedImages.isSelected(imageObj._id)) {
-							imageObj.markCheckbox = valueOfMarkedCheckbox;
-						}
-						filteredImages.push(imageObj);
+					if (annotatedImages[imageObj._id]) {
+						imageObj.hasAnnotations = true;
+						imageObj.studyId = annotatedImages[imageObj._id].studyId;
 					}
+					if (studyFlag && selectedImages.isSelectedInStudies(imageObj._id)) {
+						imageObj.markCheckbox = valueOfMarkedCheckbox;
+					}
+					else if (!studyFlag && selectedImages.isSelected(imageObj._id)) {
+						imageObj.markCheckbox = valueOfMarkedCheckbox;
+					}
+					filteredImages.push(imageObj);
 				});
 				const currentCount = filteredImages.length;
 				if (currentCount > 0) {
@@ -232,15 +229,28 @@ class GalleryService {
 				this._searchInput.setValue("");
 				searchButtonModel.removeTimesSearchButton(inputNode);
 				if (newValue) {
+					this._filtersForm.disable();
+					this._appliedFiltersList.disable();
+					if (appliedFilterModel.count()) {
+						this._appliedFiltersList.clearAll();
+						appliedFilterModel.clearAll();
+						this._reload();
+					}
+
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this));
 					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText, true);
 				}
 				else {
+					this._filtersForm.enable();
+					this._appliedFiltersList.enable();
+
 					this._view.$scope.setParam("name", "", true);
 					tooltipText = "Clear search value";
-					appliedFilterModel.setFilterByName(false);
-					this._clearNameFilter();
+					if (appliedFilterModel.getFilterByName()) {
+						appliedFilterModel.setFilterByName(false);
+						this._clearNameFilter();
+					}
 					this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
 					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText);
 				}

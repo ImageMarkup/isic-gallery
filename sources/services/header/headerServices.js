@@ -1,5 +1,6 @@
 import logoutPanelCols from "../../views/header/parts/logoutPanelCols";
 import authService from "../auth";
+import constants from "../../constants";
 
 class HeaderService {
 	constructor(view, loginPanel, logoutPanel, baseMenu) {
@@ -35,6 +36,9 @@ class HeaderService {
 				this._baseMenu.select(data.itemName);
 			}
 		});
+		const challengesSubMenu = this._baseMenu.getSubMenu(constants.ID_HEADER_MENU_CHALLENGES);
+		challengesSubMenu.define("width", 135);
+		challengesSubMenu.resize();
 	}
 
 	showLogoutPanel() {

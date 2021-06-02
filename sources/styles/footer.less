@@ -55,5 +55,11 @@
     &:hover, &:focus {
       color: @main-color;
     }
+
+    &.disabled, &.disabled:hover {
+      cursor: not-allowed;
+      color: tint(@main-color-light, 40%);
+      .transition(none);
+    }
   }
 }

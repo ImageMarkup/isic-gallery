@@ -3,7 +3,7 @@ import createStudyModel from "../../../../models/createStudyModel";
 import "../../../components/activeList";
 
 const oneLineHeight = 41;
-let initialView ;
+let initialView;
 let textViewNameNumber;
 let questionLabelNumber;
 let answersCount;
@@ -19,27 +19,24 @@ export default class StudyQuestions extends JetView {
 			width: 110,
 			height: 32,
 			click: () => {
-				let answersToAddCount = this.layoutOfAnswersToAdd.getChildViews().length;
-				if (answersToAddCount > 1) {
-					let questionValue = this.getQuestionValue();
-					let answerValues = this.getAnswerValuesToAdd();
-					let createdAddedQuestionLayout = this.createAddedQuestionsLayout(answerValues, questionValue);
-					this.layoutOfAddedQuestions.addView(createdAddedQuestionLayout);
-					this.setQuestionLabel();
-					this.layoutOfQuestionToAdd.callEvent("onBeforeRefresh");
-					this.layoutOfQuestionToAdd.setValue("");
-					this.layoutOfQuestionToAdd.refresh();
-					this.removeViewsAndClearValues();
-					this.refreshLabelAndPlaceholderValues(true);
-					createStudyModel.clearTextLayoutNames();
-					this.layoutOfAnswersToAdd.callEvent("onAfterLayoutRender");
-					this.layoutOfAddedQuestions.callEvent("onAfterQuestionsUpdated");
-				} else {
-					webix.alert({
-						title: "Attention!",
-						text: "You have to add at least 2 answers."
-					})
+				const answersToAddCount = this.layoutOfAnswersToAdd.getChildViews().length;
+				if (answersToAddCount <= 1) {
+					return this.showClientValidationError("You have to add at least 2 answers.");
 				}
+				const answerValues = this.getAnswerValuesToAdd().map(answer => (answer || "").trim());
+				const questionValue = this.getQuestionValue();
+				const createdAddedQuestionLayout = this
+					.createAddedQuestionsLayout(answerValues, questionValue);
+				this.layoutOfAddedQuestions.addView(createdAddedQuestionLayout);
+				this.setQuestionLabel();
+				this.layoutOfQuestionToAdd.callEvent("onBeforeRefresh");
+				this.layoutOfQuestionToAdd.setValue("");
+				this.layoutOfQuestionToAdd.refresh();
+				this.removeViewsAndClearValues();
+				this.refreshLabelAndPlaceholderValues(true);
+				createStudyModel.clearTextLayoutNames();
+				this.layoutOfAnswersToAdd.callEvent("onAfterLayoutRender");
+				this.layoutOfAddedQuestions.callEvent("onAfterQuestionsUpdated");
 			}
 		};
 
@@ -53,7 +50,7 @@ export default class StudyQuestions extends JetView {
 			labelAlign: "right",
 			labelWidth: 30,
 			on: {
-				"onBeforeRefresh": () => {
+				onBeforeRefresh: () => {
 					this.layoutOfQuestionToAdd.config.label = `${this.getQuestionLabel()}`;
 				}
 			}
@@ -63,7 +60,7 @@ export default class StudyQuestions extends JetView {
 			name: "layoutOfAnswersToAddName",
 			scroll: true,
 			rows: [
-				this.getLayoutModel(),
+				this.getLayoutModel()
 			]
 		};
 
@@ -92,7 +89,7 @@ export default class StudyQuestions extends JetView {
 							{
 								cols: [
 									{width: 20},
-									addQuestionButton,
+									addQuestionButton
 								]
 							},
 							{height: 15}
@@ -117,7 +114,7 @@ export default class StudyQuestions extends JetView {
 	ready() {
 		this.layoutOfAnswersToAdd = this.getLayoutAnswersToAdd();
 		this.layoutOfAnswersToAdd.attachEvent("onAfterLayoutRender", () => {
-			createStudyModel.setTextLayoutNames(`textViewName-${questionLabelNumber}-${textViewNameNumber}`)
+			createStudyModel.setTextLayoutNames(`textViewName-${questionLabelNumber}-${textViewNameNumber}`);
 		});
 		this.layoutOfQuestionToAdd = this.getQuestionToAdd();
 		this.layoutOfAnswersToAdd.callEvent("onAfterLayoutRender");
@@ -144,7 +141,7 @@ export default class StudyQuestions extends JetView {
 	getQuestionLabel() {
 		return questionLabelNumber;
 	}
-	
+
 	getLayoutModel() {
 		return {
 			rows: [
@@ -195,10 +192,10 @@ export default class StudyQuestions extends JetView {
 									height: 16,
 									click:(id) => {
 										const minusButton = this.$$(id);
-										let textNameNumber = minusButton.config.siblingTextNumber;
-										let siblingTextView = this.getTextView(textNameNumber);
-										let textViewName = siblingTextView.config.name;
-										let layoutOfAnswersId = siblingTextView.getParentView().getParentView().config.id;
+										const textNameNumber = minusButton.config.siblingTextNumber;
+										const siblingTextView = this.getTextView(textNameNumber);
+										const textViewName = siblingTextView.config.name;
+										const layoutOfAnswersId = siblingTextView.getParentView().getParentView().config.id;
 										createStudyModel.removeTextLayoutName(textViewName);
 										this.layoutOfAnswersToAdd.removeView(layoutOfAnswersId);
 										this.refreshLabelAndPlaceholderValues();
@@ -210,15 +207,14 @@ export default class StudyQuestions extends JetView {
 				},
 				{height: 7}
 			]
-		}
+		};
 	}
 
 	hideMinusInitButton(index) {
 		if (index <= 1) {
 			return true;
-		} else {
-			return initialView;
 		}
+		return initialView;
 	}
 
 	getLayoutAnswersToAdd() {
@@ -232,23 +228,24 @@ export default class StudyQuestions extends JetView {
 	getAnswerLabel(index) {
 		let letterIndex;
 		if (initialView || index === 0) {
-			return "a."; 
-		} else if (!index) {
+			return "a.";
+		}
+		else if (!index) {
 			let linesHeight = this.layoutOfAnswersToAdd.$getSize()[2];
-			letterIndex = Math.floor(linesHeight/(oneLineHeight - 1));
-		} else if (index) {
+			letterIndex = Math.floor(linesHeight / (oneLineHeight - 1));
+		}
+		else if (index) {
 			letterIndex = index;
 		}
 		let letter = String.fromCharCode(97 + letterIndex);
-		return letter + ".";
+		return `${letter}.`;
 	}
 
 	getPlusButtonTopSpacerHeight(index) {
 		if (index <= 1) {
 			return 10;
-		} else {
-			return initialView ? 10 : 0;
 		}
+		return initialView ? 10 : 0;
 	}
 
 	setTextViewNameNumber() {
@@ -283,7 +280,8 @@ export default class StudyQuestions extends JetView {
 		if (namesArray && questionLabel) {
 			textViewNamesArray = namesArray;
 			textQuestionLabel = questionLabel;
-		} else {
+		}
+		else {
 			textViewNamesArray = createStudyModel.getTextLayoutNames();
 			textQuestionLabel = this.getQuestionLabel();
 		}
@@ -306,7 +304,8 @@ export default class StudyQuestions extends JetView {
 			let textView = this.getTextView(false, textViewName);
 			if (textView && index !== 0) {
 				this.layoutOfAnswersToAdd.removeView(textView.getParentView().getParentView().config.id);
-			} else if (textView && index === 0) {
+			}
+			else if (textView && index === 0) {
 				textView.setValue("");
 			}
 		});
@@ -373,7 +372,7 @@ export default class StudyQuestions extends JetView {
 							if (addedQuestionName.questionName === questionTextView.config.name) {
 								this.refreshLabelAndPlaceholderValues(false, addedQuestionName.answerNames, questionLabel);
 							}
-						})
+						});
 					}
 				});
 
@@ -447,7 +446,6 @@ export default class StudyQuestions extends JetView {
 									{
 										view: "button",
 										css: "btn",
-										//siblingTextNumber: `${this.getTextViewNameNumber()}`,
 										label: "-",
 										hidden: this.hideMinusInitButton(index),
 										width: 16,
@@ -472,7 +470,7 @@ export default class StudyQuestions extends JetView {
 			};
 			answersNames.push(newAnswerName);
 			answersLayoutRows.push(answersLayout);
-			answersLayoutRows.push()
+			answersLayoutRows.push();
 		});
 
 		layoutModelArray.push({
@@ -505,7 +503,7 @@ export default class StudyQuestions extends JetView {
 					rows: answersLayoutRows
 				}
 			]
-		}
+		};
 	}
 
 	scrollToAddedQuestion(id) {
@@ -514,7 +512,8 @@ export default class StudyQuestions extends JetView {
 		let topPos;
 		if (textViewOffsetTop === parentNodeOffsetTop) {
 			topPos = textViewOffsetTop - webix.$$(id).$view.parentNode.parentNode.parentNode.parentNode.offsetTop;
-		} else {
+		}
+		else {
 			topPos = textViewOffsetTop - parentNodeOffsetTop;
 		}
 		this.questionsScrollView.scrollTo(0, topPos);
@@ -526,5 +525,12 @@ export default class StudyQuestions extends JetView {
 		questionLabelNumber = 1;
 		answersCount = 0;
 		createStudyModel.clearTextLayoutNames();
+	}
+
+	showClientValidationError(message) {
+		webix.alert({
+			title: "Attention!",
+			text: message
+		});
 	}
 }
