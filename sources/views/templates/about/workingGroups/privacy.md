@@ -1,6 +1,6 @@
 ## Privacy Working Group {.main-subtitle2}
 
-**Members:** TBD
+**Members:**
 
 | | |
 | - | - |
