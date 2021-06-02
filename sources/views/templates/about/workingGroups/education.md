@@ -1,6 +1,14 @@
 ## Education Working Group {.main-subtitle2}
 
-**Members:** TBD
+**Members:**
+
+| | |
+| - | - |
+| **Members:** {colspan=2} | |
+| Kelly Nelson, MD | MD Anderson Cancer Center, Houston, TX, USA |
+| Ralph Braun, MD, PhD | University Hospital Zürich, Zürich, Switzerland |
+| Ashfaq Marghoob, MD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
+
 
 **Goals:** The images being amassed by ISIC are a rich resource for education and review of the images during the educational process poses an opportunity for ‘active learning’ to scale annotation of the archive. The goal of the working group is to create educational resources that use the archive, build a self-testing process that supports active learning, and help disseminate the standards derived by the other working groups. 
 
