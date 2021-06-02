@@ -15,7 +15,7 @@
 | Harald Kittler, MD | Medical University of Vienna, Vienna, Austria |
 | Konstantinos Liopyris, MD | Andreas Sygros Hospital, Athens, Greece |
 | Josep Malvehy, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
-| Han Seung Seog, MD | Seoul National Univerity, Seoul, South Korea |
+| Han Seung Seog, MD | 1 Dermatology Clinic, Seoul, South Korea |
 | H. Peter Soyer, MD, PhD | The University of Queensland, Brisbane, Australia |
 | Eric Tkaczyk, MD, PhD | Vanderbilt University, Nashville, TN, USA |
 | Philipp Tschandl, MD, PhD | Medical University of Vienna, Vienna, Austria |
