@@ -13,7 +13,7 @@
 | Matt Molenda, MD | ProMedica, Molenda Consulting, LLC, Columbus, OH, USA |
 | Susanna Puig, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
 | Alon Scope, MD | Sheba Medical Center, Tel Aviv, Israel |
-| Peter Soyer, MD | University of Queensland, Brisbane, Australia |
+| H. Peter Soyer, MD | University of Queensland, Brisbane, Australia |
 | Jennifer Stein, MD | New York University, New York, NY, USA |
 | William V. Stoecker, MD, MS | University of Missouri, Rolla, MO, USA |
 | Wilhelm Stolz, MD | Munich Municipal Hospital Group, Germany |
