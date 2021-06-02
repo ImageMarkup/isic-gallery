@@ -3,10 +3,10 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const pack = require("./package.json");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const appconfig = require("./appconfig.json");
 const Dotenv = require("dotenv-webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env) => {
 	const production = !!(env && env.production === "true");
@@ -15,19 +15,22 @@ module.exports = (env) => {
 	};
 
 	const config = {
-		entry: ["babel-polyfill", "./sources/app.js"],
+		entry: "./sources/app.js",
 		output: {
 			path: path.join(__dirname, "codebase"),
-			publicPath: "/",
+			publicPath: production ? "./" : "/",
 			filename: "app.js"
 		},
-		mode: "production",
+		mode: "development",
 		devtool: "inline-source-map",
 		module: {
 			rules: [
 				{
 					test: /\.js$/,
-					loader: `babel-loader?${JSON.stringify(babelSettings)}`
+					loader: "babel-loader",
+					options: {
+						...babelSettings
+					}
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
@@ -40,7 +43,7 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.(less|css)$/,
-					loader: ExtractTextPlugin.extract("css-loader!less-loader")
+					loader: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
 				},
 				{
 					test: /\.html$/,
@@ -56,7 +59,10 @@ module.exports = (env) => {
 					loader: "url-loader?limit=10000&mimetype=application/octet-stream&name=[path][name].[ext]"
 				},
 				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?name=[path][name].[ext]"},
-				{test: /\.md$/i, use: 'raw-loader',}
+				{
+					test: /\.md$/i,
+					use: "raw-loader"
+				}
 			]
 		},
 		resolve: {
@@ -64,7 +70,10 @@ module.exports = (env) => {
 			modules: ["./sources", "node_modules"],
 			alias: {
 				"jet-views": path.resolve(__dirname, "sources/views"),
-				"jet-locales": path.resolve(__dirname, "sources/locales")
+				"jet-locales": path.resolve(__dirname, "sources/locales"),
+				"app-templates": path.resolve(__dirname, "sources/views/templates"),
+				"app-services": path.resolve(__dirname, "sources/services"),
+				"app-components": path.resolve(__dirname, "sources/views/components")
 			}
 		},
 		performance: {
@@ -72,7 +81,9 @@ module.exports = (env) => {
 			maxEntrypointSize: 400000000
 		},
 		plugins: [
-			new ExtractTextPlugin("app.css"),
+			new MiniCssExtractPlugin({
+				filename: "app.css"
+			}),
 			new webpack.DefinePlugin({
 				VERSION: `"${pack.version}"`,
 				APPNAME: `"${pack.name}"`,
@@ -89,7 +100,9 @@ module.exports = (env) => {
 			}),
 			new Dotenv({
 				path: path.resolve(__dirname, "./.env"), // Path to .env file
-				systemvars: true // Load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
+				// Load all the predefined 'process.env' variables
+				// which will trump anything local per dotenv specs.
+				systemvars: true
 			})
 		],
 		devServer: {

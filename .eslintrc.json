@@ -1,7 +1,8 @@
 {
 	"env": {
 		"browser": true,
-		"es6": true
+		"es6": true,
+		"node": true
 	},
 	"globals": {
 		"webix": true,
@@ -10,12 +11,25 @@
 		"PRODUCTION": true,
 		"$$": true
 	},
-	"extends": "./node_modules/eslint-xbsoftware/1__double_quotes_and_tabs/.eslintrc",
+	"extends": "./node_modules/eslint-config-xbsoftware/1__double_quotes_and_tabs.js",
 	"parserOptions": {
 		"sourceType": "module"
 	},
 	"rules": {
 		"no-extra-parens": "warn",
 		"valid-jsdoc": "warn"
+	},
+	"settings": {
+		"import/resolver": {
+			"alias": {
+			  	"map": [
+					["jet-views", "./sources/views"],
+					["jet-locales", "./sources/locales"],
+					["app-templates", "./sources/views/templates"],
+					["app-services", "./sources/services"],
+					["app-components", "./sources/views/components"]
+			  	]
+			}
+		}
 	}
 }
