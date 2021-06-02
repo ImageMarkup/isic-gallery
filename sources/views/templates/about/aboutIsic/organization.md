@@ -8,10 +8,10 @@ Individual facets of the project are addressed by Working Groups comprised of Ke
 | | |
 | - | - |
 | ISIC Oversight Panel: {colspan=2 .main-subtitle2} | |
-| Allan C. Halpern MD, MSc (Leader) | Memorial Sloan Kettering Cancer Center, New York, USA |
+| Allan C. Halpern MD, MSc (Leader) | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 | Liam Caffery, PhD | The University of Queensland, Brisbane, Australia |
-| Clara Curiel, MD | University of Arizona Cancer, Tucson, Arizona. USA |
+| Clara Curiel, MD | University of Arizona Cancer, Tucson, AZ, USA |
 | Harald Kittler, MD | Medical University of Vienna, Austria |
 | Josep Malvehy, MD | Hospital Clinic of Barcelona, Spain |
-| Veronica Rotemberg, MD, PhD | Memorial Sloan Kettering Cancer Center, New York, USA |
+| Veronica Rotemberg, MD, PhD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 | H. Peter Soyer, MD | The University of Queensland, Brisbane, Australia |
