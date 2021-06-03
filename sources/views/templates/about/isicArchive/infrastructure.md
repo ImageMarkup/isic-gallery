@@ -24,16 +24,3 @@ A novel feature, collections, allows the user to create a set of images for a sp
 Studies describe tasks that users can perform with sets of images. Traditionally, this meant collecting image-level annotations (i.e. users answering questions such as, "do you perceive feature X being present in this lesion?"). Next to these image-level annotations, the archive already supports users selecting specific parts of an image and storing them as annotation masks, which would answer a question such as, "where in the image do you perceive feature X?"
 
 In addition to the Gallery, which uses the API and backend, we envision that the user community can create their own applications, which can utilize the API. To allow any such application access to images that haven't been made (fully) public yet, we already support an OAuth2 login workflow. Please email us at support@isic-archive.com to inquire about how we can help you integrate your application with the ISIC Archive API.
-
-| | | |
-| - | - | - |
-| **Collection** | **Contributors** | **Images** |
-| Challenge 2016: Test | Memorial Sloan Kettering Cancer Center | 379 |
-| Challenge 2016: Training | Memorial Sloan Kettering Cancer Center | 900 |
-| Challenge 2017: Test | Memorial Sloan Kettering Cancer Center | 600 |
-| Challenge 2017: Training | Memorial Sloan Kettering Cancer Center | 2000 |
-| Challenge 2017: Validation | Memorial Sloan Kettering Cancer Center | 150 |
-| Challenge 2018: Task 1-2: Training | Memorial Sloan Kettering Cancer Center | 2594 |
-| Challenge 2018: Task 3: Training | Medical University of Vienna | 10015 |
-| Challenge 2019: Training | Hospital Clinic de Barcelona <br /> Medical University of Vienna <br /> Memorial Sloan Kettering Cancer Center | 25331 |
-| Challenge 2020: Training | Hospital Clinic de Barcelona <br /> Medical University of Vienna <br /> Melanoma Institute Australia <br /> Memorial Sloan Kettering Cancer Center <br /> Sydney Melanoma Diagnostic Center <br /> University of Queensland | 33126 |
