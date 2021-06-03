@@ -6,16 +6,17 @@ members. In addition, individual projects within the collaboration are supported
 <u>Primary sponsorship for ISIC comes from:</u>  
 **The Shore Family Fund**
 
-<u>Partners of ISIC:</u>  
-International Dermoscopy Society  
-International Society for Digital Imaging of the Skin  
-Society for Imaging Informatics in Medicine  
-
+| | |
+| - | - |
+| Society Partners: {colspan=2 .main-subtitle2} |
+| International Dermoscopy Society | |
+| International Society for Digital Imaging of the Skin | |
+| Society for Imaging Informatics in Medicine | |
 
 
 | | |
 | - | - |
-| Partners of ISIC: {colspan=2 .main-subtitle2} | |
+| Industry/Academia Partners: {colspan=2 .main-subtitle2} | |
 | 3GEN LLC and TransLite LLC | USA |
 | AIMEDICS Pty Ltd. |  |
 | Andreas Sygros Hospital | Athens, Greece |
@@ -27,8 +28,6 @@ Society for Imaging Informatics in Medicine
 | Fundació Clínic per a la Recerca Biomèdica | Barcelona, Spain |
 | Hospital Clinic of Barcelona | Barcelona, Spain |
 | Instituto Superio Técnico | Lisbon, Portugal |
-| International Dermoscopy Society |  |
-| International Society for Digital Imaging of the Skin |  |
 | Kitware | Clifton Park, NY, USA |
 | La Sapienza University | Rome, Italy |
 | MD Anderson Cancer Center | Houston, TX, USA |
@@ -43,7 +42,6 @@ Society for Imaging Informatics in Medicine
 | Royal Prince Alfred Hospital | Sydney, Australia |
 | Seoul National University | Seoul, South Korea |
 | Sheba Medical Center | Tel Aviv, Israel |
-| Society for Imaging Informatics in Medicine |  |
 | The University of Queensland | Brisbane, Australia |
 | University Claude Bernard | Lyon, France |
 | University Hospital of Zurich | Zurich, Switzerland |
