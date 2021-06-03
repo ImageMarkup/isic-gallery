@@ -69,6 +69,12 @@ export default class Header extends JetView {
 							value: "Challenge 2020",
 							href: constants.URL_CHALLENGE_2020,
 							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGES_LIVE,
+							value: "Live Challenges",
+							href: constants.URL_CHALLENGES_LIVE,
+							target: "_blank"
 						}
 					]
 				},

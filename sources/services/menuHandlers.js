@@ -25,6 +25,10 @@ export default {
 		window.open(constants.URL_CHALLENGES_STATS, "_blank");
 	},
 
+	clickChallengesLive() {
+		window.open(constants.URL_CHALLENGES_LIVE, "_blank");
+	},
+
 	clickUpload() {
 		state.app.show(constants.PATH_UPLOAD_DATA);
 	},
