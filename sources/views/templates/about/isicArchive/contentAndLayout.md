@@ -1,6 +1,20 @@
 ## Content and Layout of the Archive {.main-subtitle2}
 
-The ISIC Archive contains over 150,000 total images, of which approximately 70,000 have been made public. Images are associated with metadata describing additional attributes on an image level. Several of these attributes are what we call structured, meaning that images can be filtered and queried using faceted search in the [Image Gallery](#!/topWithHeader/onlyHeaderTop/gallery).
+The ISIC Archive contains over 150,000 total images, of which approximately 70,000 have been made public. Images are associated with metadata describing additional attributes on an image level. Several of these attributes are what we call structured, meaning that images can be filtered and queried using faceted search in the [Image Gallery](#!/topWithHeader/onlyHeaderTop/gallery). 
+
+**The current major publically available dataset are:**
+| | | |
+| - | - | - |
+| **Collection** | **Contributors** | **Images** |
+| Challenge 2016: Test | Memorial Sloan Kettering Cancer Center | 379 |
+| Challenge 2016: Training | Memorial Sloan Kettering Cancer Center | 900 |
+| Challenge 2017: Test | Memorial Sloan Kettering Cancer Center | 600 |
+| Challenge 2017: Training | Memorial Sloan Kettering Cancer Center | 2000 |
+| Challenge 2017: Validation | Memorial Sloan Kettering Cancer Center | 150 |
+| Challenge 2018: Task 1-2: Training | Memorial Sloan Kettering Cancer Center | 2594 |
+| Challenge 2018: Task 3: Training | Medical University of Vienna | 10015 |
+| Challenge 2019: Training | Hospital Clinic de Barcelona <br /> Medical University of Vienna <br /> Memorial Sloan Kettering Cancer Center | 25331 |
+| Challenge 2020: Training | Hospital Clinic de Barcelona <br /> Medical University of Vienna <br /> Melanoma Institute Australia <br /> Memorial Sloan Kettering Cancer Center <br /> Sydney Melanoma Diagnostic Center <br /> University of Queensland | 33126 |
 
 When you open the [gallery](#!/topWithHeader/onlyHeaderTop/gallery), you will see on the left hand side of the grid view of images the search and various filtering mechanisms. By default, the search is applied to all indexed metadata fields. E.g. searching for "melanoma" will select (check) all filters in which melanoma appears. From there, you can refine the filters by either checking additional items (e.g. by including all unknown "melanoma class" items).
 
