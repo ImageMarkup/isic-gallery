@@ -1,7 +1,5 @@
 ## Privacy Working Group {.main-subtitle2}
 
-**Members:**
-
 | | |
 | - | - |
 | **Members:** {colspan=2} | |
