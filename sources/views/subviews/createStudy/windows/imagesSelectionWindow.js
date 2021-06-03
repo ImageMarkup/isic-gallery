@@ -373,7 +373,8 @@ export default class ImagesSelectionWindow extends JetView {
 				type: "confirm-warning",
 			});
 			return false;
-		} else {
+		}
+		else {
 			let selectedImagesInPopup = selectedImages.getSelectedInAddNewImagePopup();
 			selectedImages.clearImagesForStudies();
 			selectedImages.addForStudy(selectedImagesInPopup)

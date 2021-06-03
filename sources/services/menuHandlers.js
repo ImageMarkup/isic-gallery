@@ -1,9 +1,7 @@
 import state from "../models/state";
 import util from "../utils/util";
 import constants from "../constants";
-import authService from "../services/auth";
-import uploadWindow from "../views/header/windows/uploadTypeWindow";
-import accessRequestWindow from "../views/header/windows/uploadAccessRequestWindow";
+import authService from "./auth";
 import ApiWindow from "../views/header/windows/apiWindow";
 
 export default {
@@ -28,19 +26,7 @@ export default {
 	},
 
 	clickUpload() {
-		if (authService.isLoggedin()) {
-			if (authService.isTermsOfUseAccepted()) {
-				state.app.show(constants.PATH_UPLOAD_DATA);
-			}
-			else {
-				authService.showTermOfUse(() => {
-					state.app.show(constants.PATH_UPLOAD_DATA);
-				});
-			}
-		}
-		else {
-			$$(constants.ID_WINDOW_LOGIN).show();
-		}
+		state.app.show(constants.PATH_UPLOAD_DATA);
 	},
 
 	clickStudies() {},
@@ -79,7 +65,7 @@ export default {
 
 	clickAPI(thisView) {
 		let apiWindow = thisView.$scope.ui(ApiWindow);
-		apiWindow.showWindow()
+		apiWindow.showWindow();
 	},
 
 	clickTermsOfUse() {
