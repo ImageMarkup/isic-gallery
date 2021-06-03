@@ -3,7 +3,7 @@
 The ISIC Archive consists of two (broad) components. The main component you, the user, typically interact with is the [Image Gallery]. It provides a convenient and visually interactive way of browsing the data made available by the second component, the API and backend.
 Here, we want to give you a brief overview over how the data within the backend (directly available via an API) is structured, in case you want to create new applications. Please also feel free to reach out to our support team at support@isic-archive.com.
 
-The following classes of objects are stored in the backend (and available via the API):
+The following classes of objects are stored in the backend:
 *	contributors
 *	cohorts
 *	accessions (images)
