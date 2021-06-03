@@ -18,11 +18,9 @@ export default class mainView extends JetView {
 			onClick: {
 				"about-card-block": () => menuHandlerService.clickAbout(),
 				"gallery-card-block": () => menuHandlerService.clickGallery(),
-				"learning-challenges-card-block": () => menuHandlerService.clickChallenges(),
+				"learning-challenges-card-block": () => menuHandlerService.clickChallengesStats(),
 				"upload-card-block": () => menuHandlerService.clickUpload(),
-				"studies-card-block": () => menuHandlerService.clickStudies(),
 				"dermoscopedia-card-block": () => menuHandlerService.clickDermoscopedia(),
-				"multirater-card-block": () => menuHandlerService.clickMultirater(),
 				"download-card-block": () => menuHandlerService.clickAPI(this.getRoot()),
 				"sign-up-btn": () => $$(constants.ID_WINDOW_SIGNUP).show()
 			},

@@ -222,15 +222,20 @@
   table {
     width: 100%;
   }
-  &.literature {
+  &.literature, &.history-page {
     thead {
       border-bottom: 2px solid @lines-color;
     }
     tr {
       border-bottom: 1px solid @lines-color;
+      vertical-align: baseline;
     }
     th, td {
+      text-align: start;
       padding: 0 10px;
+    }
+    td {
+      width: 12%;
     }
   }
   // Initially for Partners & Sponsors page
@@ -494,6 +499,11 @@
         }
       }
     }
+  }
+
+  a {
+    text-decoration: underline;
+    font-weight: 500;
   }
 }
 

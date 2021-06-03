@@ -1,9 +1,12 @@
+import "@babel/polyfill";
+import {JetApp} from "webix-jet";
 import "./styles/app.less";
 import "./utils/polifills";
-import {JetApp} from "webix-jet";
 import state from "./models/state";
 import constants from "./constants";
 import auth from "./services/auth";
+import manageLocalStorageByAppVersion from "./services/localStorageManager";
+
 import MainView from "./views/subviews/main";
 import WideContentTop from "./views/wideContentTop";
 import TightContentTop from "./views/tightContentTop";
@@ -11,7 +14,6 @@ import TightDarkContentTop from "./views/tightDarkContentTop";
 import TopWithHeader from "./views/topWithHeader";
 import OnlyHeaderTop from "./views/onlyHeaderTop";
 import AboutView from "./views/subviews/about/about";
-import StudiesView from "./views/subviews/studies/studies";
 import DatasetView from "./views/subviews/dataset/dataset";
 import FeaturesetView from "./views/subviews/featureset/featureset";
 import GalleryView from "./views/subviews/gallery/gallery";
@@ -21,29 +23,43 @@ import PrivacyPolicy from "./views/subviews/privacyPolicy/privacyPolicy";
 import Dashboard from "./views/subviews/dashboard/dashboard";
 import UserAccount from "./views/subviews/userAccount/userAccount";
 import InviteUser from "./views/subviews/inviteUser/inviteUser";
-// import ManagementUI from "./views/subviews/managementUI/managementTop";
-// import ManagementUIAbout from "./views/subviews/managementUI/subviews/aboutManagement";
-// import ManagementCollections from "./views/subviews/managementUI/subviews/managementCollections";
-// import ManagementGroups from "./views/subviews/managementUI/subviews/managementGroups";
-// import ManagementUsers from "./views/subviews/managementUI/subviews/managementUsers";
 import CreateDataset from "./views/subviews/createDataset/createDataset";
-import ContactInfo from "./views/subviews/about/subviews/contactInfo";
-import History from "./views/subviews/about/subviews/history";
-import IsicArchive from "./views/subviews/about/subviews/isicArchive";
-import IsicStandards from "./views/subviews/about/subviews/isicStandards";
-import Literature from "./views/subviews/about/subviews/literature";
-import WorkingGroups from "./views/subviews/about/subviews/workingGroups";
-import PartnersAndSponsors from "./views/subviews/about/subviews/partnersAndSponsors";
+import UploadData from "./views/subviews/uploadData/uploadData";
 import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
 import BatchUpload from "./views/subviews/batchUpload/batchUpload";
-import ChallengesVIew from "./views/subviews/challenges/challenges";
 import ApplyMetadata from "./views/subviews/applyMetadata/applyMetadata";
 import RegisterMetadata from "./views/subviews/registerMetadata/registerMetadata";
 import CreateStudy from "./views/subviews/createStudy/createStudyPage";
 import ErrorPage from "./views/subviews/errorPage/errorPage";
 import APIDocumentation from "./views/subviews/apiDocumentation/apiDocumentation";
+// about pages
+import AboutIsicOverview from "./views/subviews/about/subviews/aboutIsic/overview";
+import AboutIsicBackground from "./views/subviews/about/subviews/aboutIsic/background";
+import AboutIsicGoals from "./views/subviews/about/subviews/aboutIsic/goals";
+import AboutIsicOrganization from "./views/subviews/about/subviews/aboutIsic/organization";
+import AboutIsicSponsorsAndPartners from "./views/subviews/about/subviews/aboutIsic/sponsorsAndPartners";
+import WorkingGroupsTechnology from "./views/subviews/about/subviews/workingGroups/technology";
+import WorkingGroupsTechnique from "./views/subviews/about/subviews/workingGroups/technique";
+import WorkingGroupsTerminology from "./views/subviews/about/subviews/workingGroups/terminology";
+import WorkingGroupsPrivacy from "./views/subviews/about/subviews/workingGroups/privacy";
+import WorkingGroupsMetadata from "./views/subviews/about/subviews/workingGroups/metadata";
+import WorkingGroupsAI from "./views/subviews/about/subviews/workingGroups/artificialIntelligence";
+import WorkingGroupsEducation from "./views/subviews/about/subviews/workingGroups/education";
+import IsicArchiveGoals from "./views/subviews/about/subviews/isicArchive/goals";
+import IsicArchiveContent from "./views/subviews/about/subviews/isicArchive/contentAndLayout";
+import IsicArchiveInfrastructure from "./views/subviews/about/subviews/isicArchive/infrastructure";
+import IsicArchiveDataDictionary from "./views/subviews/about/subviews/isicArchive/dataDictionary";
+import IsicChallengesGoals from "./views/subviews/about/subviews/isicChallenges/goals";
+import IsicChallengesGrandVLive from "./views/subviews/about/subviews/isicChallenges/grandVLive";
+import IsicChallengesHistory from "./views/subviews/about/subviews/isicChallenges/historyOfChallenges";
+import IsicChallengesPlanned from "./views/subviews/about/subviews/isicChallenges/planned";
+import IsicMeetingsGroups from "./views/subviews/about/subviews/isicMeetings/groups";
+import IsicMeetingsWorkshops from "./views/subviews/about/subviews/isicMeetings/workshops";
+import IsicPublications from "./views/subviews/about/subviews/isicPublications";
+import ContactInfo from "./views/subviews/about/subviews/contactInfo";
 
 webix.ready(() => {
+	manageLocalStorageByAppVersion();
 	const app = new JetApp({
 		id: APPNAME,
 		version: VERSION,
@@ -57,7 +73,6 @@ webix.ready(() => {
 			onlyHeaderTop: OnlyHeaderTop,
 			topWithHeader: TopWithHeader,
 			about: AboutView,
-			studies: StudiesView,
 			dataset: DatasetView,
 			featureset: FeaturesetView,
 			gallery: GalleryView,
@@ -66,40 +81,53 @@ webix.ready(() => {
 			privacyPolicy: PrivacyPolicy,
 			[constants.NAME_VIEW_DASHBOARD]: Dashboard,
 			userAccount: UserAccount,
-			// managementUI: ManagementUI,
-			// aboutManagement: ManagementUIAbout,
-			// managementCollections: ManagementCollections,
-			// managementGroups: ManagementGroups,
-			// managementUsers: ManagementUsers,
 			inviteUser: InviteUser,
 			createDataset: CreateDataset,
-			contactInfo: ContactInfo,
-			isicHistory: History,
-			isicArchive: IsicArchive,
-			isicStandards: IsicStandards,
-			literature: Literature,
-			workingGroups: WorkingGroups,
-			partnersAndSponsors: PartnersAndSponsors,
 			wizardUploader: WizzardUploader,
 			batchUploader: BatchUpload,
-			challenges: ChallengesVIew,
 			applyMetadata: ApplyMetadata,
 			registerMetadata: RegisterMetadata,
 			createStudy: CreateStudy,
-			apiDocumentation: APIDocumentation
+			apiDocumentation: APIDocumentation,
+			uploadData: UploadData,
+			// about pages
+			aboutIsicOverview: AboutIsicOverview,
+			aboutIsicBackground: AboutIsicBackground,
+			aboutIsicGoals: AboutIsicGoals,
+			aboutIsicOrganization: AboutIsicOrganization,
+			aboutIsicSponsorsAndPartners: AboutIsicSponsorsAndPartners,
+			workingGroupsTechnology: WorkingGroupsTechnology,
+			workingGroupsTechnique: WorkingGroupsTechnique,
+			workingGroupsTerminology: WorkingGroupsTerminology,
+			workingGroupsPrivacy: WorkingGroupsPrivacy,
+			workingGroupsMetadata: WorkingGroupsMetadata,
+			workingGroupsAI: WorkingGroupsAI,
+			workingGroupsEducation: WorkingGroupsEducation,
+			isicArchiveGoals: IsicArchiveGoals,
+			isicArchiveContent: IsicArchiveContent,
+			isicArchiveInfrastructure: IsicArchiveInfrastructure,
+			isicArchiveDataDictionary: IsicArchiveDataDictionary,
+			isicChallengesGoals: IsicChallengesGoals,
+			isicChallengesGrandVLive: IsicChallengesGrandVLive,
+			isicChallengesHistory: IsicChallengesHistory,
+			isicChallengesPlanned: IsicChallengesPlanned,
+			isicMeetingsGroups: IsicMeetingsGroups,
+			isicMeetingsWorkshops: IsicMeetingsWorkshops,
+			isicPublications: IsicPublications,
+			contactInfo: ContactInfo
 		}
 	});
 
 	app.render();
 
-	app.attachEvent("app:error:resolve", (error, url) => {
+	app.attachEvent("app:error:resolve", () => {
 		const regex = /\/(?!.*\/).*/;
 		const startUrl = app.$router.config.start;
 		let replacedUrl = startUrl.replace(regex, "/error");
 		webix.delay(() => app.show(replacedUrl));
 	});
 
-	app.attachEvent("app:route", (url) => {
+	app.attachEvent("app:route", () => {
 		let user = auth.getUserInfo();
 		if (user) {
 			auth.refreshUserInfo();

@@ -56,7 +56,10 @@ class AjaxActions {
 			params = {};
 		}
 		// to prevent caching for IE 11 on Window 10
-		params.uid = webix.uid();
+		if (navigator.userAgent.indexOf('MSIE')!==-1
+			|| navigator.appVersion.indexOf('Trident/') > -1) {
+			params.uid = webix.uid();
+		}
 		return webix.ajax().get(url, params);
 	}
 
@@ -181,8 +184,8 @@ class AjaxActions {
 		const params = sourceParams ? {
 			limit: sourceParams.limit || 0,
 			offset: sourceParams.offset || 0,
-			sort: sourceParams.sort || "name",
-			sortdir: sourceParams.sortdir || "1",
+			sort: sourceParams.sort || "created",
+			sortdir: sourceParams.sortdir || "-1",
 			detail: sourceParams.detail || false
 		} : {};
 		if (sourceParams && sourceParams.datasetId) {
@@ -577,7 +580,7 @@ class AjaxActions {
 		}
 
 		return webix.ajax()
-			.header({
+			.headers({
 				"Content-Type": "application/json"
 			})
 			.post(`${BASE_API_URL}image/${imageId}/metadata?save=true`, params)
@@ -594,6 +597,9 @@ class AjaxActions {
 
 		if (sourceParams && sourceParams.filter) {
 			params.filter = sourceParams.filter;
+		}
+		else if (sourceParams && sourceParams.name) {
+			params.name = sourceParams.name;
 		}
 
 		return this._ajaxGet(`${BASE_API_URL}image`, params)
@@ -618,7 +624,7 @@ class AjaxActions {
 			questions: studyParams.questions,
 			features: studyParams.features
 		} : {};
-		return this._ajax().header({
+		return this._ajax().headers({
 			"Content-Type": "application/json"
 		}).post(`${BASE_API_URL}study`, newStudyParams);
 	}

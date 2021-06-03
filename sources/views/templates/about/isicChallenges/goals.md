@@ -1,0 +1,3 @@
+## Goals of the Challenges: {.main-subtitle2}
+
+ISIC hosts challenges to engage the computer science community to improve dermatologic diagnostic accuracy with the aid of AI. While the initial focus of the ISIC challenges has been on melanoma, the differential diagnosis of melanoma requires recognition of the full spectrum of dermatologic neoplasms. The challenges hosted by ISIC to date have focused primarily on dermoscopy images from single time points, but the goals are to include temporal data and a greater diversity of imaging modalities and diagnoses in future [ISIC Challenges](https://challenge.isic-archive.com/).

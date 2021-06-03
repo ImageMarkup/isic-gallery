@@ -6,41 +6,134 @@ const SIDEBAR_ID = "about-sidebar";
 const SIDEBAR_CONTAINER_ID = "about-sidebar-container";
 const SIDEBAR_MENU_CONTAINER_ID = "about-sidebar-menu-container";
 const BARS_ICON = "bars-icon";
+const DEFAULT_MENU_ITEM_ID = "aboutIsicOverview";
 const SIDEBAR_MENU_ITEMS = [
 	{
 		id: "about-isic",
 		value: "About ISIC",
 		data: [
 			{
-				id: "isicArchive", 
-				value: "ISIC Archive"
+				id: "aboutIsicOverview",
+				value: "Overview"
 			},
 			{
-				id: "isicStandards",
-				value: "ISIC Standards for Skin Imaging"
+				id: "aboutIsicBackground",
+				value: "Background"
 			},
 			{
-				id: "isicHistory",
-				value: "History"
+				id: "aboutIsicGoals",
+				value: "Goals of ISIC"
+			},
+			{
+				id: "aboutIsicOrganization",
+				value: "Organization of ISIC"
+			},
+			{
+				id: "aboutIsicSponsorsAndPartners",
+				value: "Sponsors and Partners"
 			}
 		]
 	},
 	{
-		id: "workingGroups",
-		value: "Working Groups"
+		id: "working-groups",
+		value: "Working Groups",
+		data: [
+			{
+				id: "workingGroupsTechnology",
+				value: "Technology Working Group"
+			},
+			{
+				id: "workingGroupsTechnique",
+				value: "Technique Working Group"
+			},
+			{
+				id: "workingGroupsTerminology",
+				value: "Terminology Working Group"
+			},
+			{
+				id: "workingGroupsPrivacy",
+				value: "Privacy Working Group"
+			},
+			{
+				id: "workingGroupsMetadata",
+				value: "Metadata/DICOM Working Group"
+			},
+			{
+				id: "workingGroupsAI",
+				value: "Artificial Intelligence Working Group"
+			},
+			{
+				id: "workingGroupsEducation",
+				value: "Education Working Group"
+			}
+		]
 	},
 	{
-		id: "literature",
-		value: "Literature"
+		id: "isic-archive",
+		value: "ISIC Archive",
+		data: [
+			{
+				id: "isicArchiveGoals",
+				value: "Goals of the Archive"
+			},
+			{
+				id: "isicArchiveContent",
+				value: "Content and Layout of the Archive"
+			},
+			{
+				id: "isicArchiveInfrastructure",
+				value: "Infrastructure of the Archive"
+			},
+			{
+				id: "isicArchiveDataDictionary",
+				value: "Data Dictionary for the Archive"
+			}
+		]
+	},
+	{
+		id: "isic-challenges",
+		value: "ISIC Challenges",
+		data: [
+			{
+				id: "isicChallengesGoals",
+				value: "Goals of the Challenges"
+			},
+			{
+				id: "isicChallengesGrandVLive",
+				value: "Grand Challenges v. Live Challenges"
+			},
+			{
+				id: "isicChallengesHistory",
+				value: "History of the Challenges"
+			},
+			{
+				id: "isicChallengesPlanned",
+				value: "Planned Challenges"
+			}
+		]
+	},
+	{
+		id: "isic-meetings",
+		value: "ISIC Meetings",
+		data: [
+			{
+				id: "isicMeetingsGroups",
+				value: "ISIC Working Group Meetings"
+			},
+			{
+				id: "isicMeetingsWorkshops",
+				value: "ISIC Workshops and Conferences"
+			}
+		]
+	},
+	{
+		id: "isicPublications",
+		value: "ISIC Publications"
 	},
 	{
 		id: "contactInfo",
-		value: "Contact Info"
-	},
-	{
-		id: "partnersAndSponsors",
-		value: "Partners & Sponsors"
-	},
+		value: "Contact Information"
+	}
 ];
 
 function toggleSidebar() {
@@ -58,7 +151,6 @@ function toggleSidebar() {
 
 export default class aboutView extends JetView {
 	config() {
-
 		const sidebar = {
 			view: "sidebar",
 			type: "sideBar",
@@ -81,7 +173,8 @@ export default class aboutView extends JetView {
 		const sidebarContainer = {
 			type: "clean",
 			localId: SIDEBAR_MENU_CONTAINER_ID,
-			height: 300,
+			height: 320,
+			width: 270,
 			css: "sidebar-container",
 			rows: [
 				{
@@ -164,13 +257,9 @@ export default class aboutView extends JetView {
 		return ui;
 	}
 
-	ready() {
-		this.setMenuHeight();
-	}
-
 	urlChange(view, url) {
 		view.$scope.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_ABOUT}]);
-		let selectedId = "isicArchive";
+		let selectedId = DEFAULT_MENU_ITEM_ID;
 		if (url[1]) {
 			selectedId = url[1].page;
 		}
@@ -186,7 +275,7 @@ export default class aboutView extends JetView {
 		const menuHeaderNode = sidebarContainerNode.querySelector(".about-sidebar-header");
 		const menuItemsContainterNode = sidebarContainerNode.querySelector(".about-sidebar");
 		const menuItemsScrollContainer = menuItemsContainterNode.querySelector(".webix_scroll_cont");
-		const countedHeight = menuHeaderNode.offsetHeight + menuItemsScrollContainer.offsetHeight; 
+		const countedHeight = menuHeaderNode.offsetHeight + menuItemsScrollContainer.offsetHeight;
 		sidebarContainer.define("height", countedHeight);
 		sidebarContainer.resize();
 	}

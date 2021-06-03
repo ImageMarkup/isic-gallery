@@ -35,7 +35,49 @@ export default class Header extends JetView {
 				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
 				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
 				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
-				{id: constants.ID_HEADER_MENU_CHALLENGES, value: "Challenges"},
+				{
+					id: constants.ID_HEADER_MENU_CHALLENGES,
+					value: "Challenges",
+					$css: "menu-with-sub",
+					submenu: [
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGE2016,
+							value: "Challenge 2016",
+							href: constants.URL_CHALLENGE_2016,
+							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGE2017,
+							value: "Challenge 2017",
+							href: constants.URL_CHALLENGE_2017,
+							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGE2018,
+							value: "Challenge 2018",
+							href: constants.URL_CHALLENGE_2018,
+							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGE2019,
+							value: "Challenge 2019",
+							href: constants.URL_CHALLENGE_2019,
+							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGE2020,
+							value: "Challenge 2020",
+							href: constants.URL_CHALLENGE_2020,
+							target: "_blank"
+						},
+						{
+							id: constants.ID_HEADER_SUB_MENU_CHALLENGES_LIVE,
+							value: "Live Challenges",
+							href: constants.URL_CHALLENGES_LIVE,
+							target: "_blank"
+						}
+					]
+				},
 				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
 				{id: constants.ID_HEADER_MENU_DERMO, value: "Dermoscopedia"},
 				{id: constants.ID_HEADER_MENU_ARCHIVE, value: "Contribute to Archive"},
@@ -48,6 +90,7 @@ export default class Header extends JetView {
 			},
 			on: {
 				onBeforeRender() {
+					const headerMenu = $$(BASE_MENU_ID);
 					if (authService.isLoggedin()) {
 						this.showItem("dashboard");
 						this.showItem("forum");
@@ -56,6 +99,8 @@ export default class Header extends JetView {
 						this.hideItem("dashboard");
 						this.hideItem("forum");
 					}
+					headerMenu.disableItem(constants.ID_HEADER_MENU_STUDIES);
+					headerMenu.disableItem(constants.ID_HEADER_MENU_DASHBOARD);
 				},
 				onMenuItemClick: (id) => {
 					const headerMenu = $$(BASE_MENU_ID);
@@ -78,7 +123,7 @@ export default class Header extends JetView {
 						}
 						case constants.ID_HEADER_MENU_CHALLENGES:
 						{
-							menuHandlerService.clickChallenges();
+							menuHandlerService.clickChallenges(id);
 							break;
 						}
 						case constants.ID_HEADER_MENU_STUDIES:
@@ -105,6 +150,9 @@ export default class Header extends JetView {
 						case constants.ID_HEADER_MENU_DOWNLOAD:
 						{
 							menuHandlerService.clickAPI(this.view);
+							break;
+						}
+						default: {
 							break;
 						}
 					}
