@@ -9,7 +9,7 @@
 | M. Emre Celebi, PhD | University of Central Arkansas, Conway, AR, USA |
 | Noel C. F. Codella, PhD | Microsoft Corporation, USA |
 | Marc Combalia | Fundació Clínic per a la Recerca Biomèdica, Barcelona, Spain |
-| Roxana Daneshjou, MD, PhD | Standord University, Stanford, California, USA |
+| Roxana Daneshjou, MD, PhD | Stanford University, Stanford, California, USA |
 | Pascale Guitera, MD | Royal Prince Alfred Hospital, Sydney, Australia |
 | David Gutman, MD, PhD | Emory University, Atlanta, GA, USA |
 | Allan Halpern, MD, MSc | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
