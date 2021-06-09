@@ -4,21 +4,26 @@
 | - | - |
 | **Members:** {colspan=2} | |
 | Veronica Rotemberg, MD, PhD (Leader) | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
-| Catarina Barata, PhD | Instituto Superio Técnico, Lisbon, Portugal |
+| Catarina Barata, PhD | Institute for Systems and Robotics, Instituto Superio Técnico, Lisbon, Portugal |
 | Brigid Betz-Stablein, PhD | The University of Queensland, Brisbane, Australia |
 | M. Emre Celebi, PhD | University of Central Arkansas, Conway, AR, USA |
-| Noel Codella, PhD | Microsoft Corporation, USA |
+| Noel C. F. Codella, PhD | Microsoft Corporation, USA |
 | Marc Combalia | Fundació Clínic per a la Recerca Biomèdica, Barcelona, Spain |
+| Roxana Daneshjou, MD, PhD | Stanford University, Stanford, California, USA |
 | Pascale Guitera, MD | Royal Prince Alfred Hospital, Sydney, Australia |
 | David Gutman, MD, PhD | Emory University, Atlanta, GA, USA |
+| Allan Halpern, MD, MSc | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 | Brian Helba | Kitware, Clifton Park, NY, USA |
 | Harald Kittler, MD | Medical University of Vienna, Vienna, Austria |
-| Konstantinos Liopyris, MD | Andreas Sygros Hospital, Athens, Greece |
+| Kivanc Kose, PhD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
+| Nicholas R. Kurtansky | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
+| Konstantinos Liopyris, MD | Andreas Sygros Hospital of Skin and Venereological Disease, Athens, Greece |
 | Josep Malvehy, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
-| Han Seung Seog, MD | 1 Dermatology Clinic, Seoul, South Korea |
+| Han Seung Seog, MD | I Dermatology Clinic, Seoul, South Korea |
 | H. Peter Soyer, MD, PhD | The University of Queensland, Brisbane, Australia |
-| Eric Tkaczyk, MD, PhD | Vanderbilt University, Nashville, TN, USA |
+| Eric Tkaczyk, MD, PhD | Vanderbilt University Medical Center, Nashville, TN, USA |
 | Philipp Tschandl, MD, PhD | Medical University of Vienna, Vienna, Austria |
+| Jochen Weber | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 
 
 **Goals:** The goal of the Artificial Intelligence Working Group is to promote the development of accurate and effective computerized systems to aid  melanoma diagnosis and clinical decision support by creating resources for and engaging the dermatology and computer science communities. The primary resource being created is a large and expanding open source public access archive of annotated skin images \([Goals of the Archive](#!/topWithHeader/tightContentTop/about/isicArchiveGoals)\). The Working Group is engaging the stakeholder communities through meetings, publications, conferences, and the hosting of artificial intelligence Grand Challenges and Live Challenges.  
