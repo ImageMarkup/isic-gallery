@@ -13,7 +13,7 @@
     "webix",
     "jet"
   ],
-  "license": "GPL-3.0-only",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/plugin-transform-modules-commonjs": "^7.14.0",
