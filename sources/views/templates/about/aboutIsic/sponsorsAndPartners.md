@@ -38,6 +38,7 @@ members. In addition, individual projects within the collaboration are supported
 | Munich Municipal Hospital Group | Germany |
 | New York University | New York, NY, USA |
 | Ohio State University | Columbus, OH, USA |
+| Pontificia Universidad Católica | Santiago, Chile |
 | ProMedica, Molenda Consulting, LLC | Columbus, OH, USA |
 | Royal Prince Alfred Hospital | Sydney, Australia |
 | Seoul National University | Seoul, South Korea |
