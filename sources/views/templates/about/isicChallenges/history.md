@@ -4,10 +4,10 @@ Beginning in 2016, ISIC has sponsored annual challenges for the computer science
 
 The following table is a brief synopsis of the ISIC Grand Challenges. The individual challenge pages and associated leaderboards can be found at [https://challenge.isic-archive.com/](https://challenge.isic-archive.com/)  
 <br />
-| | 2016| 2017 | 2018 | 2019 | 2020 |
+| | [2016](https://challenge.isic-archive.com/landing/2016) | [2017](https://challenge.isic-archive.com/landing/2017) | [2018](https://challenge.isic-archive.com/landing/2018) | [2019](https://challenge.isic-archive.com/landing/2019) | [2020](https://www.kaggle.com/c/siim-isic-melanoma-classification/overview) |
 | - | - | - | - | - | - |
 | <u>Conference/Host:</u> | ISBI / MSKCC | ISBI / MSKCC | MICCAI / Univ. of Vienna | MICCAI / Univ. of Barcelona | MICCAI / CVPR |
-| <u>Diagnoses:</u> | 2 Melanoma<br /> nevus | 3 melanoma<br /> nevus<br /> Seb keratosis | 7 Melanoma<br /> Nevus<br /> seb keratosis<br /> basal cell<br /> carcinoma<br /> squamous cell<br /> carcinoma<br /> angioma<br /> dermatofibroma  | 9 Melanoma<br /> Nevus<br /> seb keratosis<br /> basal cell<br /> carcinoma<br /> squamous cell<br /> carcinoma<br /> angioma<br /> Dermatofibroma<br /> Actinic keratosis UNKNOWN | 2 benign Melanoma (+ Patient-level contextual images and Patient ID) |
+| <u>Diagnoses:</u> | (2) melanoma,<br />nevus | (3) melanoma,<br />nevus,<br />seb.&nbsp;keratosis | (7) melanoma,<br />nevus,<br />seb.&nbsp;keratosis,<br />basal cell<br />carcinoma,<br />squamous cell<br />carcinoma,<br />angioma,<br />dermatofibroma,  | (9) melanoma,<br />nevus,<br />seb.&nbsp;keratosis,<br />basal cell<br />carcinoma,<br />squamous cell<br />carcinoma,<br />angioma,<br />dermatofibroma,<br />actinic keratosis,<br />UNKNOWN | (2) benign,<br />melanoma<br />(+ patient-level contextual images and patient ID) |
 | <u>Training: (N  Images)</u> | 1,000 | 2,000 | 10,000 | 25,331 | 33,126 |
 | <u>Testing:  (N Images)</u> | 400 | 600 | 1,500 | 8,239 | 10,982 |
 | <u>Readers:</u> | 8 expert | 16 expert | 511 varied | 20 expert | 60+ varied |
