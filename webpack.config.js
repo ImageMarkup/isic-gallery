@@ -109,7 +109,8 @@ module.exports = (env) => {
 			host: appconfig.devHost,
 			port: appconfig.devPort,
 			contentBase: [path.join(__dirname, "codebase"), path.join(__dirname, "node_modules")],
-			inline: true
+			inline: true,
+			https: true
 		}
 	};
 

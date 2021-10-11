@@ -77,6 +77,7 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 
 const dataview = {
 	view: "activeDataview",
+	name: "galleryImagesDataviewName",
 	css: "gallery-images-dataview",
 	datathrottle: 500,
 	template(obj, common) {

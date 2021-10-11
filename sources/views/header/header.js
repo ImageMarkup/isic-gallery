@@ -7,6 +7,7 @@ import HeaderService from "../../services/header/headerServices";
 import menuHandlerService from "../../services/menuHandlers";
 import authService from "../../services/auth";
 import uploadWindow from "./windows/uploadTypeWindow";
+import state from "../../models/state";
 
 const LOGIN_MENU_ID = "login-menu";
 const LOGOUT_PANEL_ID = "logout-panel";
@@ -162,17 +163,19 @@ export default class Header extends JetView {
 
 
 		const loginMenu = {
-			template: "<span class='menu-sign-up login-menu-item'>Sign Up Free</span> <span class='menu-login login-menu-item'>Login</span> ",
+			template: "<span class='menu-login login-menu-item'>Login</span> ",
 			id: LOGIN_MENU_ID,
 			css: "login-menu",
 			borderless: true,
-			width: 180,
+			width: 90,
 			onClick: {
 				"menu-login": (e, id) => {
-					$$(constants.ID_WINDOW_LOGIN).show();
-				},
-				"menu-sign-up": (e, id) => {
-					$$(constants.ID_WINDOW_SIGNUP).show();
+					if (state.authorization_mode === "OAuth2") {
+						authService.login();
+					}
+					else {
+						$$(constants.ID_WINDOW_LOGIN).show();
+					}
 				}
 			}
 		};
