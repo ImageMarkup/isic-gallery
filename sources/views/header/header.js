@@ -170,11 +170,11 @@ export default class Header extends JetView {
 			width: 90,
 			onClick: {
 				"menu-login": (e, id) => {
-					if (state.authorization_mode === "OAuth2") {
-						authService.login();
+					if (state.authorization_mode === "Legacy") {
+						$$(constants.ID_WINDOW_LOGIN).show();
 					}
 					else {
-						$$(constants.ID_WINDOW_LOGIN).show();
+						authService.login();
 					}
 				}
 			}

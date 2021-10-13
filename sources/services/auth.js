@@ -9,10 +9,10 @@ import selectedImages from "../models/selectedGalleryImages";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
 import util from "../utils/util";
 
-const CLIENT_ID = process.env.CLIENT_ID;
+const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
 const client = new IsicClient(
-	CLIENT_ID,
+	ISIC_CLIENT_ID,
 	AUTHORIZATION_SERVER
 );
 
@@ -70,10 +70,10 @@ class Auth {
 			logout();
 			return null;
 		} */
-		if (state.authorization_mode === "OAuth2") {
-			return authToken;
+		if (state.authorization_mode === "Legacy") {
+			return authToken.token;
 		}
-		return authToken.token;
+		return authToken;
 	}
 
 	isUserInfoChanged(newData) {
@@ -227,6 +227,6 @@ class OAuthISIC extends Auth {
 	}
 }
 
-const instance = state.authorization_mode === "OAuth2" ? new OAuthISIC() : new Auth();
+const instance = state.authorization_mode === "Legacy" ? new Auth() : new OAuthISIC();
 
 export default instance;

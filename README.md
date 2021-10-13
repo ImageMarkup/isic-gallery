@@ -11,9 +11,9 @@ ISIC App
     - e.g. this value may be `https://beta.isic-archive.com/` for testing
   - `ISIC_AUTHORIZATION_SERVER` to the absolute URL of authorization server
     - e.g. this value may be `https://api-sandbox.isic-archive.com`
-  - `CLIENT_ID` to the client identifier
+  - `ISIC_CLIENT_ID` to the client identifier
   - `AUTHORIZATION_MODE` to the authorization mode
-    - if OAuth2 authorization is used set value `OAuth2`
+    - application uses OAuth2 as default authorization mode. If you need to use the old authorization method set value `Legacy`
 - Run `npm ci`
 - Run `npm run build`
 - Deploy all files from the `codebase/` directory to be served directly beneath the HTTP root path (`/`)
