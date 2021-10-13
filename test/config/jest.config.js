@@ -11,5 +11,6 @@ module.exports = {
 	testMatch: ["**/?(*.)+(spec|test).[jt]s?(x)"], // for all js/ts files with test/spec prefix
 	transform: {
 		"^.+\\.jsx?$": "babel-jest"
-	}
+	},
+	testEnvironment: "jsdom"
 };
