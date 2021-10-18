@@ -31,7 +31,7 @@ function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName,
 	});
 }
 
-function createTimesSearchButton(searchInput, inputNode, tooltipText, nameFilter) {
+function createTimesSearchButton(searchInput, appliedFilterModel, inputNode, tooltipText, nameFilter) {
 	inputNode.lastChild.style.paddingRight = "26px";
 	const timesSpan = document.createElement("span");
 	inputNode.appendChild(timesSpan);
@@ -43,6 +43,7 @@ function createTimesSearchButton(searchInput, inputNode, tooltipText, nameFilter
 	createHintForSearchTimesButton(timesButtonNode, tooltipClassNameForTimesButton, tootipTextForTimesButton);
 	searchInput.on_click["fa-times"] = () => {
 		searchInput.setValue("");
+		appliedFilterModel.setFilterValue("");
 		if (nameFilter) {
 			searchInput.callEvent("onEnter");
 		}

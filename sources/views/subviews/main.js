@@ -3,6 +3,7 @@ import constants from "../../constants";
 import menuHandlerService from "../../services/menuHandlers";
 import authService from "../../services/auth";
 import mainTemplate from "../templates/main.html";
+import state from "../../models/state";
 
 const ID_TEMPLATE = "main-content-template";
 
@@ -21,22 +22,7 @@ export default class mainView extends JetView {
 				"learning-challenges-card-block": () => menuHandlerService.clickChallengesStats(),
 				"upload-card-block": () => menuHandlerService.clickUpload(),
 				"dermoscopedia-card-block": () => menuHandlerService.clickDermoscopedia(),
-				"download-card-block": () => menuHandlerService.clickAPI(this.getRoot()),
-				"sign-up-btn": () => $$(constants.ID_WINDOW_SIGNUP).show()
-			},
-			on: {
-				onAfterRender() {
-					const signUpBtn = document.getElementsByClassName("sign-up-btn")[0];
-					if (!authService.isLoggedin()) {
-						webix.html.removeCss(signUpBtn, "hidden-block");
-					}
-					this.$scope.on(this.$scope.app, "login", () => {
-						webix.html.addCss(signUpBtn, "hidden-block");
-					});
-					this.$scope.on(this.$scope.app, "logout", () => {
-						webix.html.removeCss(signUpBtn, "hidden-block");
-					});
-				}
+				"download-card-block": () => menuHandlerService.clickAPI(this.getRoot())
 			}
 		};
 		return {

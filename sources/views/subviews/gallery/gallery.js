@@ -110,7 +110,13 @@ export default class GalleryView extends JetView {
 							searchButtonModel.setMinCurrentTargenInnerWidth(dataviewMinWidth + searchInputWidth);
 							const inputNode = $$(SEARCH_ID).$view.getElementsByClassName("webix_el_box")[0];
 							const tooltipText = "Clear search value";
-							searchButtonModel.createTimesSearchButton($$(SEARCH_ID), inputNode, tooltipText);
+							searchButtonModel.createTimesSearchButton($$(SEARCH_ID), appliedFiltersModel, inputNode, tooltipText);
+						},
+						onChange: function () {
+							let searchValue = this.getValue();
+							searchValue = searchValue.trim();
+							searchValue = searchValue.replace(/\s+/g, " ");
+							this.setValue(searchValue);
 						}
 					}
 				},
@@ -179,9 +185,9 @@ export default class GalleryView extends JetView {
 						{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES_METADATA, value: "Download Selected Images and Metadata"},
 						//{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES, value: "Download Selected Images only"},
 						{id: constants.ID_MENU_DOWNLOAD_SEL_METADATA, value: "Download Selected Metadata only"},
-						{id: constants.ID_MENU_DOWNLOAD_IMAGES_METADATA, value: "Download all images and metadata in ISIC archive"},
+						{id: constants.ID_MENU_DOWNLOAD_IMAGES_METADATA, value: "Download all Images and Metadata in ISIC Archive"},
 						//{id: constants.ID_MENU_DOWNLOAD_IMAGES, value: "Download Images only"},
-						{id: constants.ID_MENU_DOWNLOAD_METADATA, value: "Download all metadata in ISIC archive"}
+						{id: constants.ID_MENU_DOWNLOAD_METADATA, value: "Download all Metadata in ISIC Archive"}
 					]
 				}
 			],
@@ -383,6 +389,7 @@ export default class GalleryView extends JetView {
 				galleryHeader,
 				{height: 5},
 				{
+					name: "galleryBodyName",
 					cols: [
 						dataview.getConfig(DATAVIEW_ID),
 						{
@@ -392,7 +399,8 @@ export default class GalleryView extends JetView {
 								cartListCollapser,
 								cartList
 							]
-						}
+						},
+						{name: "content-empty-space", gravity: 0}
 					]
 				},
 				{height: 10},
@@ -494,6 +502,32 @@ export default class GalleryView extends JetView {
 				this.toggleButton.show();
 			}
 		}
+
+		const that = this;
+		this.windowResizeEvent = webix.event(window, "resize", () => {
+			const galleryBodyWidth = that.getGalleryBody().$width;
+			const dataWindowView = that.getGalleryDataview();
+			const leftPanelWithCollapser = that.getLeftPanelWithCollapser();
+			const galleryEmptySpace = that.getGalleryEmptySpace();
+			if (window.innerWidth < leftPanelWithCollapser.$width + galleryBodyWidth) {
+				galleryEmptySpace.config.gravity = 1;
+				dataWindowView.config.width = window.innerWidth - leftPanelWithCollapser.$width - 40;
+				galleryEmptySpace.config.width = galleryBodyWidth - dataWindowView.config.width;
+				dataWindowView.resize();
+				galleryEmptySpace.resize();
+			}
+			else {
+				galleryEmptySpace.config.gravity = 0;
+				dataWindowView.config.width = 0;
+				galleryEmptySpace.config.width = 0;
+				dataWindowView.resize();
+				galleryEmptySpace.resize();
+			}
+		});
+	}
+
+	destroy() {
+		webix.eventRemove(this.windowResizeEvent);
 	}
 
 	getSelectAllImagesOnAllPagesTemplate() {
@@ -538,6 +572,18 @@ export default class GalleryView extends JetView {
 
 	getLeftPanelWithCollapser() {
 		return this.getRoot().queryView({name: "leftPanelWithCollapser"});
+	}
+
+	getGalleryBody() {
+		return this.getRoot().queryView({name: "galleryBodyName"});
+	}
+
+	getGalleryDataview() {
+		return this.getRoot().queryView({name: "galleryImagesDataviewName"});
+	}
+
+	getGalleryEmptySpace() {
+		return this.getRoot().queryView({name: "content-empty-space"});
 	}
 
 	showList(afterInit) {

@@ -1,5 +1,6 @@
-import authService from "../../sources/services/auth";
+jest.mock("../../sources/services/auth");
 import constants from "../../sources/constants";
+import authService from "../../sources/services/auth";
 
 const permittedUser = {
     "_accessLevel": 2,

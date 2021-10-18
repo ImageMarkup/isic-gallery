@@ -51,6 +51,8 @@ class GalleryService {
 	_searchHandlerByFilter() {
 		let searchValue = this._searchInput.getValue();
 		searchValue = searchValue.trim();
+		searchValue = searchValue.replace(/\s+/g, " ");
+		this._searchInput.setValue(searchValue);
 		if (searchValue.length < 3) {
 			webix.alert("You should type minimum 3 characters");
 			return;
@@ -87,6 +89,8 @@ class GalleryService {
 	_searchHandlerByName(afterFilterSelected) {
 		let searchValue = this._searchInput.getValue();
 		searchValue = searchValue.trim();
+		searchValue = searchValue.replace(/\s+/g, " ");
+		this._searchInput.setValue(searchValue);
 		if (searchValue && searchValue.length < 9) {
 			webix.alert("You should type minimum 9 characters");
 			return;
@@ -159,7 +163,7 @@ class GalleryService {
 						this._contentHeaderTemplate.refresh();
 						this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
 					}
-					webix.alert(`Nothing has found with name ${searchValue}`);
+					webix.alert(`Nothing has found with name "${searchValue}"`);
 				}
 				this._view.hideProgress();
 			})
@@ -239,7 +243,7 @@ class GalleryService {
 
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this));
-					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText, true);
+					searchButtonModel.createTimesSearchButton(this._searchInput, appliedFilterModel, inputNode, tooltipText, true);
 				}
 				else {
 					this._filtersForm.enable();
@@ -252,7 +256,7 @@ class GalleryService {
 						this._clearNameFilter();
 					}
 					this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
-					searchButtonModel.createTimesSearchButton(this._searchInput, inputNode, tooltipText);
+					searchButtonModel.createTimesSearchButton(this._searchInput, appliedFilterModel, inputNode, tooltipText);
 				}
 			}
 		});

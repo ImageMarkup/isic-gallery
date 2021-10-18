@@ -9,6 +9,11 @@ ISIC App
   - `ISIC_SITE_URL` to the absolute URL of where this app will be served
     - this is similar to [Webpack's `publicPath`](https://webpack.js.org/configuration/output#outputpublicpath)
     - e.g. this value may be `https://beta.isic-archive.com/` for testing
+  - `ISIC_AUTHORIZATION_SERVER` to the absolute URL of authorization server
+    - e.g. this value may be `https://api-sandbox.isic-archive.com`
+  - `ISIC_CLIENT_ID` to the client identifier
+  - `AUTHORIZATION_MODE` to the authorization mode
+    - application uses OAuth2 as default authorization mode. If you need to use the old authorization method set value `Legacy`
 - Run `npm ci`
 - Run `npm run build`
 - Deploy all files from the `codebase/` directory to be served directly beneath the HTTP root path (`/`)
@@ -25,6 +30,7 @@ ISIC App
 ### How to run for development
 
 - set ```devHost``` and ```devPort``` in ```appconfig.json```.
+- set the environment variables.
 - if you start first time you should run ```npm run build```. This command moves static files(images, libs, fonts) to ```codebase``` folder.
-- run ```npm start```
-- open ```devHost``` in browser
+- run ```npm start```.
+- open ```devHost``` in browser.

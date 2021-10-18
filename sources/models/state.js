@@ -15,6 +15,7 @@ const state = {
 	studies: {
 		toolbarValues: {}
 	},
+	authorization_mode: process.env.AUTHORIZATION_MODE,
 	clear() {
 		this.dashboard = { // state of dashboard page
 			selectedDatasetIdsSet: new Set(),
