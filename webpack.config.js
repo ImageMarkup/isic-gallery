@@ -19,7 +19,8 @@ module.exports = (env) => {
 		output: {
 			path: path.join(__dirname, "codebase"),
 			publicPath: production ? "./" : "/",
-			filename: "app.js"
+			filename: "app.js",
+			assetModuleFilename: "[path][name].[ext]"
 		},
 		mode: "development",
 		devtool: "inline-source-map",
@@ -34,16 +35,15 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
-					use: {
-						loader: "file-loader",
-						options: {
-							name: "[path][name].[ext]"
-						}
-					}
+					type: 'asset/resource'
 				},
 				{
 					test: /\.(less|css)$/,
-					loader: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
+					use: [
+						{ loader: MiniCssExtractPlugin.loader},
+						{ loader: "css-loader" },
+						{ loader: "less-loader" }
+					]
 				},
 				{
 					test: /\.html$/,
@@ -52,16 +52,19 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-					loader: "url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]"
+					type: "asset/inline"
 				},
 				{
 					test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-					loader: "url-loader?limit=10000&mimetype=application/octet-stream&name=[path][name].[ext]"
+					type: "asset/inline"
 				},
-				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?name=[path][name].[ext]"},
+				{
+					test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, 
+					type: 'asset/resource'
+				},
 				{
 					test: /\.md$/i,
-					use: "raw-loader"
+					type: "asset/source"
 				}
 			]
 		},
@@ -74,6 +77,9 @@ module.exports = (env) => {
 				"app-templates": path.resolve(__dirname, "sources/views/templates"),
 				"app-services": path.resolve(__dirname, "sources/services"),
 				"app-components": path.resolve(__dirname, "sources/views/components")
+			},
+			fallback: {
+				"util": require.resolve("util/"),
 			}
 		},
 		performance: {
@@ -108,8 +114,14 @@ module.exports = (env) => {
 		devServer: {
 			host: appconfig.devHost,
 			port: appconfig.devPort,
-			contentBase: [path.join(__dirname, "codebase"), path.join(__dirname, "node_modules")],
-			inline: true,
+			static: [
+				{
+					directory: path.join(__dirname, "codebase")
+				},
+				{
+					directory: path.join(__dirname, "node_modules")
+				}
+			],
 			https: true
 		}
 	};
