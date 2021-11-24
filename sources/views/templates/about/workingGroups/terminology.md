@@ -10,7 +10,7 @@
 | Konstantinos Liopyris, MD | Andreas Sygros Hospital, Athens, Greece |
 | Ashfaq Marghoob, MD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 | Scott W. Menzies, MD | University of Sydney at the Sydney Cancer Centre, Sydney, Australia |
-| Matt Molenda, MD | ProMedica, Molenda Consulting, LLC, Columbus, OH, USA |
+| Matt Molenda, MD | Anatomy Mapper, Bravia Dermatology, Molenda Consulting; Toledo, OH, USA |
 | Cristian Navarrete, MD | Pontificia Universidad Católica, Santiago, Chile
 | Susanna Puig, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
 | Alon Scope, MD | Sheba Medical Center, Tel Aviv, Israel |
