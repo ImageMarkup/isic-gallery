@@ -174,6 +174,9 @@ export default class GalleryView extends JetView {
 			css: "downloading-menu",
 			width: 150,
 			openAction: "click",
+			// TODO: enable when download will be implemented
+			// TODO: uncomment in galleryDataview and galaryService when download will be implemented
+			disabled: true,
 			submenuConfig: {
 				width: 300
 			},
@@ -360,19 +363,14 @@ export default class GalleryView extends JetView {
 				}
 			},
 			template: (obj, common) => {
-				const IMAGE_HEIGHT = utils.getDataviewItemHeight() - 10;
-				const IMAGE_WIDTH = utils.getDataviewItemWidth();
-				if (typeof galleryImagesUrls.getPreviewImageUrl(obj._id) === "undefined") {
-					galleryImagesUrls.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
-					ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
-						galleryImagesUrls.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-					});
+				if (typeof galleryImagesUrls.getPreviewImageUrl(obj.isic_id) === "undefined") {
+					galleryImagesUrls.setPreviewImageUrl(obj.isic_id, obj.urls.thumbnail_256);
 				}
 				return `<div>
 						<span class='webix_icon template-angle fas ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
 						<div style='float: right'>${common.deleteButton(obj, common)}</div>
- 						<div class='card-list-name'>${obj.name}</div>
- 						<img src="${galleryImagesUrls.getPreviewImageUrl(obj._id) || ""}" class="cart-image">
+ 						<div class='card-list-name'>${obj.isic_id}</div>
+ 						<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="cart-image">
 					</div>`;
 			}
 		};

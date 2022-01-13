@@ -23,76 +23,80 @@ webix.protoUI({
 		const cancelButton = scrollView.queryView({name: "cancelButtonName"});
 		const editForm = scrollView.queryView({name: "editFormName"});
 		const editViews = scrollView.queryView({name: "editViewsName"});
-		const clinicalForm = scrollView.queryView({name: "clinical-editFormName"});
-		const acquisitionForm = scrollView.queryView({name: "acquisition-editFormName"});
-		const clinicalInitialValues = clinicalForm.getValues();
-		const acquisitInitialionValues = acquisitionForm.getValues();
+		// TODO: does not work with new API
+		// const clinicalForm = scrollView.queryView({name: "clinical-editFormName"});
+		// const acquisitionForm = scrollView.queryView({name: "acquisition-editFormName"});
+		// const clinicalInitialValues = clinicalForm.getValues();
+		// const acquisitInitialionValues = acquisitionForm.getValues();
 		const window = scrollView.getTopParentView();
 
 		// show button for study admin
 		if (auth.isStudyAdmin()) {
-			editButton.show();
+			// TODO: uncomment when put method will be implemented on images endpoint
+			// editButton.show();
 		}
 
-		editButton.attachEvent("onItemClick", () => {
-			editButton.hide();
-			saveButton.show();
-			cancelButton.show();
-			editForm.show();
-		});
-		saveButton.attachEvent("onItemClick", function () {
-			const clinicalValues = clinicalForm.getValues();
-			const acquisitionValues = acquisitionForm.getValues();
-			const valuesToUpload = Object.assign(clinicalValues, acquisitionValues);
-			ajax.postImageMetadata(imageObj._id, valuesToUpload)
-				.then((data) => {
-					const errorsArray = data.errors;
-					if (errorsArray.length === 0) {
-						this.hide();
-						cancelButton.hide();
-						editButton.show();
-						editViews.back();
-						window.hide();
-						webix.message("Metadata has been edited successfully!");
-					}
-					else {
-						const regexForTextName = /'.*?'/;
-						const regexToReplace = /'/g;
-						errorsArray.forEach((errorMessage) => {
-							let errorField = errorMessage.description.match(regexForTextName)[0];
-							errorField = errorField.replace(regexToReplace, "");
-							let errorElement;
-							if (errorField === "age") {
-								errorElement = clinicalForm.elements.age_approx;
-							}
-							else if (errorField !== "image_type") {
-								errorElement = clinicalForm.elements[errorField];
-							}
-							else {
-								errorElement = acquisitionForm.elements[errorField];
-							}
-							util.changeInputNodeColor(errorElement);
-							webix.message({
-								text: errorMessage.description,
-								expire: -1
-							});
-						});
-					}
-				}).fail(() => {
-					webix.message("Something went wrong!");
-				});
-		});
-		cancelButton.attachEvent("onItemClick", function () {
-			clinicalForm.clear();
-			acquisitionForm.clear();
-			clinicalForm.setValues(clinicalInitialValues);
-			acquisitionForm.setValues(acquisitInitialionValues);
-			this.hide();
-			saveButton.hide();
-			editButton.show();
-			editViews.back();
-			webix.message.hideAll();
-		});
+		// TODO: uncomment when put method will be implemented on images endpoint
+		// editButton.attachEvent("onItemClick", () => {
+		// 	editButton.hide();
+		// 	saveButton.show();
+		// 	cancelButton.show();
+		// 	editForm.show();
+		// });
+
+		// saveButton.attachEvent("onItemClick", function () {
+		// 	const clinicalValues = clinicalForm.getValues();
+		// 	const acquisitionValues = acquisitionForm.getValues();
+		// 	const valuesToUpload = Object.assign(clinicalValues, acquisitionValues);
+		// 	ajax.postImageMetadata(imageObj._id, valuesToUpload)
+		// 		.then((data) => {
+		// 			const errorsArray = data.errors;
+		// 			if (errorsArray.length === 0) {
+		// 				this.hide();
+		// 				cancelButton.hide();
+		// 				editButton.show();
+		// 				editViews.back();
+		// 				window.hide();
+		// 				webix.message("Metadata has been edited successfully!");
+		// 			}
+		// 			else {
+		// 				const regexForTextName = /'.*?'/;
+		// 				const regexToReplace = /'/g;
+		// 				errorsArray.forEach((errorMessage) => {
+		// 					let errorField = errorMessage.description.match(regexForTextName)[0];
+		// 					errorField = errorField.replace(regexToReplace, "");
+		// 					let errorElement;
+		// 					if (errorField === "age") {
+		// 						errorElement = clinicalForm.elements.age_approx;
+		// 					}
+		// 					else if (errorField !== "image_type") {
+		// 						errorElement = clinicalForm.elements[errorField];
+		// 					}
+		// 					else {
+		// 						errorElement = acquisitionForm.elements[errorField];
+		// 					}
+		// 					util.changeInputNodeColor(errorElement);
+		// 					webix.message({
+		// 						text: errorMessage.description,
+		// 						expire: -1
+		// 					});
+		// 				});
+		// 			}
+		// 		}).fail(() => {
+		// 			webix.message("Something went wrong!");
+		// 		});
+		// });
+		// cancelButton.attachEvent("onItemClick", function () {
+		// 	clinicalForm.clear();
+		// 	acquisitionForm.clear();
+		// 	clinicalForm.setValues(clinicalInitialValues);
+		// 	acquisitionForm.setValues(acquisitInitialionValues);
+		// 	this.hide();
+		// 	saveButton.hide();
+		// 	editButton.show();
+		// 	editViews.back();
+		// 	webix.message.hideAll();
+		// });
 	}
 
 }, webix.ui.scrollview);
@@ -149,10 +153,8 @@ function createEditForm(itemData, name) {
 					textNode.removeEventListener("keydown", keyPressHandler);
 					textNode.addEventListener("keyup", keyPressHandler);
 					textNode.addEventListener("keydown", keyPressHandler);
-
-					
 				}
-			},
+			}
 		};
 		dataForElements.push(element);
 	});
@@ -226,7 +228,7 @@ function createTemplate(data, acquisitionDynamicProps) {
 
 					template: `<div class="accordion-item-template">
 								<div class="item-content-block">
-									${createTemplateRows(data.meta.clinical)}
+									${createTemplateRows(data.metadata.clinical)}
 								</div>
 							</div>`,
 					autoheight: true,
@@ -244,7 +246,11 @@ function createTemplate(data, acquisitionDynamicProps) {
 								<div class="item-content-block">
 									<div class="item-content-row">
 										<div class="item-content-label">Dimentions (pixels)</div>
-										<div class="item-content-value">${data.meta.acquisition.pixelsX || ""} &#9747 ${data.meta.acquisition.pixelsY || ""}</div>
+										<div class="item-content-value">
+											${data.metadata.acquisition ? data.metadata.acquisition.pixelsX : ""} 
+											&#9747 
+											${data.metadata.acquisition ? data.metadata.acquisition.pixelsY : ""}
+										</div>
 									</div>
 									${createTemplateRows(acquisitionDynamicProps)}
 								</div>
@@ -261,9 +267,14 @@ function createTemplate(data, acquisitionDynamicProps) {
 				body: {
 					view: "template",
 					name: "editTemplateName",
+					// template: `	<div class="accordion-item-template">
+					// 			<div class="item-content-block">
+					// 				${createTemplateRows(data.metadata.unstructured)}
+					// 			</div>
+					// 		</div>`,
 					template: `	<div class="accordion-item-template">
 								<div class="item-content-block">
-									${createTemplateRows(data.meta.unstructured)}
+									${createTemplateRows(data.metadata)}
 								</div>
 							</div>`,
 					autoheight: true,
@@ -283,14 +294,14 @@ function createFormView(data) {
 				css: "accordion-item-pale",
 				headerAltHeight: HEADER_HEIGHT,
 				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.meta.clinical, "clinical")
+				body: createEditForm(data.metadata.clinical, "clinical")
 			},
 			{
 				header: "ACQUISITION METADATA",
 				css: "accordion-item-pale",
 				headerAltHeight: HEADER_HEIGHT,
 				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.meta.acquisition, "acquisition")
+				body: createEditForm(data.metadata.acquisition, "acquisition")
 			}
 		]
 	};
@@ -301,8 +312,8 @@ function createMutliView(data, acquisitionDynamicProps) {
 		name: "editViewsName",
 		animate: false,
 		cells: [
-			createTemplate(data, acquisitionDynamicProps),
-			createFormView(data)
+			createTemplate(data, acquisitionDynamicProps)
+			// createFormView(data)
 		]
 	};
 	return multiview;
@@ -315,8 +326,9 @@ function createAccordionRows(data) {
 		delete acquisitionDynamicProps.pixelsX;
 		delete acquisitionDynamicProps.pixelsY;
 	}
+	const multiView = createMutliView(data, acquisitionDynamicProps);
 	return [
-		createMutliView(data, acquisitionDynamicProps),
+		multiView,
 		{
 			header: "TAGS",
 			css: "accordion-item-pale",
@@ -324,7 +336,7 @@ function createAccordionRows(data) {
 			headerHeight: HEADER_HEIGHT,
 			body: {
 				view: "template",
-				template: createTagsTemplate(data.notes.tags),
+				template: data.notes ? createTagsTemplate(data.notes.tags) : "",
 				autoheight: true,
 				borderless: true
 			}
@@ -340,19 +352,7 @@ function createAccordionRows(data) {
 								<div class="item-content-block">
 									<div class="item-content-row">
 										<div class="item-content-label">Unique ID</div>
-										<div class="item-content-value">${data._id || ""}</div>
-									</div>
-									<div class="item-content-row">
-										<div class="item-content-label">Dataset</div>
-										<div class="item-content-value">${data.dataset.name || ""}</div>
-									</div>
-									<div class="item-content-row">
-										<div class="item-content-label">Created</div>
-										<div class="item-content-value">${data.dataset.updated || ""}</div>
-									</div>
-									<div class="item-content-row">
-										<div class="item-content-label">License</div>
-										<div class="item-content-value">${data.dataset.license || ""}</div>
+										<div class="item-content-value">${data.isic_id || ""}</div>
 									</div>
 								</div>
 							</div>`,
@@ -371,44 +371,43 @@ function createAccordionRows(data) {
 						paddingY: 8,
 						paddingX: 35,
 						rows: [
-							segmentationSelect
+							// segmentationSelect
 						]
-					},
-					{
-						view: "templateWithImages",
-						id: SEGMENTATION_TEMPLATE_ID,
-						hidden: true,
-						template(obj) {
-							return `	<div class="accordion-item-template">
-								<div class="item-content-block">
-									<div class="item-content-row">
-										<div class="item-content-label">Created</div>
-										<div class="item-content-value">${obj.created ? datesHelper.formatDateString(obj.created) : ""}</div>
-									</div>
-									<div class="item-content-row">
-										<div class="item-content-label">Creator</div>
-										<div class="item-content-value">${obj.creator.name || ""}</div>
-									</div>
-									<div class="item-content-row">
-										<div class="item-content-label">Review Skill</div>
-										<div class="item-content-value">${prepareReviewSkill(obj.reviews)}</div>
-									</div>
-								</div>
-								<div class="item-content-img"><img src="${ajax.getBaseApiUrl()}segmentation/${obj._id}/thumbnail?width=256"/></div>
-								<div class="item-content-block"><div class="link segmentation-download">Download segmentation image</div></div>
-							</div>`;
-						},
-						onClick: {
-							"segmentation-download": function () {
-								ajax.getSegmentationMask(this.data._id).then((blob) => {
-									util.downloadBlob(blob, `${data.name}_segmentation.png`);
-								});
-							}
-						},
-						borderless: true,
-						autoheight: true
 					}
-
+					// {
+					// 	view: "templateWithImages",
+					// 	id: SEGMENTATION_TEMPLATE_ID,
+					// 	hidden: true,
+					// 	template(obj) {
+					// 		return `	<div class="accordion-item-template">
+					// 			<div class="item-content-block">
+					// 				<div class="item-content-row">
+					// 					<div class="item-content-label">Created</div>
+					// 					<div class="item-content-value">${obj.created ? datesHelper.formatDateString(obj.created) : ""}</div>
+					// 				</div>
+					// 				<div class="item-content-row">
+					// 					<div class="item-content-label">Creator</div>
+					// 					<div class="item-content-value">${obj.creator.name || ""}</div>
+					// 				</div>
+					// 				<div class="item-content-row">
+					// 					<div class="item-content-label">Review Skill</div>
+					// 					<div class="item-content-value">${prepareReviewSkill(obj.reviews)}</div>
+					// 				</div>
+					// 			</div>
+					// 			<div class="item-content-img"><img src="${ajax.getBaseApiUrl()}segmentation/${obj._id}/thumbnail?width=256"/></div>
+					// 			<div class="item-content-block"><div class="link segmentation-download">Download segmentation image</div></div>
+					// 		</div>`;
+					// 	},
+					// 	onClick: {
+					// 		"segmentation-download": function () {
+					// 			ajax.getSegmentationMask(this.data._id).then((blob) => {
+					// 				util.downloadBlob(blob, `${data.name}_segmentation.png`);
+					// 			});
+					// 		}
+					// 	},
+					// 	borderless: true,
+					// 	autoheight: true
+					// }
 				]
 			}
 		}
@@ -416,7 +415,7 @@ function createAccordionRows(data) {
 }
 
 function createConfig(data) {
-	segmentationSelect.options.body.data = webix.copy(data.segmentation);
+	// segmentationSelect.options.body.data = webix.copy(data.segmentation);
 	return {
 		css: "metadata-scrollview",
 		view: "metadataEditView",
@@ -427,7 +426,7 @@ function createConfig(data) {
 					cols: [
 						{
 							css: "metadata-layout-image-name main-subtitle3",
-							template: data.name,
+							template: data.isic_id,
 							autoheight: true,
 							borderless: true
 						},

@@ -3,26 +3,27 @@ import state from "../models/state";
 
 let filtersData;
 
+
 const filtersIds = {
-	benignMelignant: "meta.clinical.benign_malignant",
-	lesionDiagnosis: "meta.clinical.diagnosis",
-	approximateAge: "meta.clinical.age_approx",
-	generalAnatomicSite: "meta.clinical.anatom_site_general",
-	clinicalSize: "meta.clinical.clin_size_long_diam_mm",
-	typeDiagnosis: "meta.clinical.diagnosis_confirm_type",
-	familyHistoryMelanoma: "meta.clinical.family_hx_mm",
-	melanomaClass: "meta.clinical.mel_class",
-	melanomaMitoticIndex: "meta.clinical.mel_mitotic_index",
-	melanomaThickness: "meta.clinical.mel_thick_mm",
-	melanomaType: "meta.clinical.mel_type",
-	melanomaUlceration: "meta.clinical.mel_ulcer",
-	melanocytic: "meta.clinical.melanocytic",
-	nevusType: "meta.clinical.nevus_type",
-	personalHistoryMelanoma: "meta.clinical.personal_hx_mm",
-	sex: "meta.clinical.sex",
-	dermoscopicType: "meta.acquisition.dermoscopic_type",
-	imageType: "meta.acquisition.image_type",
-	datasetTags: "meta.tags"
+	benignMelignant: "benign_malignant",
+	lesionDiagnosis: "diagnosis",
+	approximateAge: "age_approx",
+	generalAnatomicSite: "anatom_site_general",
+	clinicalSize: "clin_size_long_diam_mm",
+	typeDiagnosis: "diagnosis_confirm_type",
+	familyHistoryMelanoma: "family_hx_mm",
+	melanomaClass: "mel_class",
+	melanomaMitoticIndex: "mel_mitotic_index",
+	melanomaThickness: "mel_thick_mm",
+	melanomaType: "mel_type",
+	melanomaUlceration: "mel_ulcer",
+	melanocytic: "melanocytic",
+	nevusType: "nevus_type",
+	personalHistoryMelanoma: "personal_hx_mm",
+	sex: "sex",
+	dermoscopicType: "dermoscopic_type",
+	imageType: "image_type",
+	colorTint: "color_tint"
 };
 
 function getFiltersDataValues() {
@@ -165,20 +166,21 @@ function getFiltersDataValues() {
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.imageType]
 				}]
-		},
-		// this block must be in the end of array
-		{
-			label: "Database Attributes",
-			data: [
-				{
-					id: filtersIds.datasetTags,
-					name: "Tags",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.datasetTags]
-				}
-			]
 		}
+		// TODO: uncomment when collection endpoint will be implemented
+		// this block must be in the end of array
+		// {
+		// 	label: "Database Attributes",
+		// 	data: [
+		// 		{
+		// 			id: filtersIds.datasetTags,
+		// 			name: "Tags",
+		// 			type: "checkbox",
+		// 			datatype: "string",
+		// 			options: state.imagesTotalCounts[filtersIds.datasetTags]
+		// 		}
+		// 	]
+		// }
 	];
 	return filtersDataValues;
 }
@@ -217,23 +219,25 @@ function getFiltersData(forceRebuild) {
 		if (forceRebuild || !filtersData) {
 			filtersData = getFiltersDataValues();
 		}
-		const DATASET_POSITION = filtersData.length - 1;
-		const DB_ATTRIBUTE_LABEL = "Database Attributes";
+		// TODO: uncomment after dataset will be implemented on new API
+		// const DATASET_POSITION = filtersData.length - 1;
+		// const DB_ATTRIBUTE_LABEL = "Database Attributes";
 		// if we have no datasets  we should get them with ajax and add to 'filtersData'
-		if ((forceRebuild || filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL) && filtersData[DATASET_POSITION].data.length === 1) {
-			ajax.getDataset().then((dataset) => {
-				if (filtersData[DATASET_POSITION].data.length === 1) {
-					filtersData[DATASET_POSITION] = {
-						label: DB_ATTRIBUTE_LABEL,
-						data: filtersData[DATASET_POSITION].data.concat(prepareDatasetFilterData(dataset))
-					};
-				}
-				resolve(filtersData);
-			});
-		}
-		else {
-			resolve(filtersData);
-		}
+		// if ((forceRebuild || filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL) && filtersData[DATASET_POSITION].data.length === 1) {
+		// 	ajax.getDataset().then((dataset) => {
+		// 		if (filtersData[DATASET_POSITION].data.length === 1) {
+		// 			filtersData[DATASET_POSITION] = {
+		// 				label: DB_ATTRIBUTE_LABEL,
+		// 				data: filtersData[DATASET_POSITION].data.concat(prepareDatasetFilterData(dataset))
+		// 			};
+		// 		}
+		// 		resolve(filtersData);
+		// 	});
+		// }
+		// else {
+		// 	resolve(filtersData);
+		// }
+		resolve(filtersData);
 	});
 }
 

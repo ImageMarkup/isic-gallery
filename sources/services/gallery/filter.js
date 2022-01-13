@@ -2,12 +2,12 @@ import state from "../../models/state";
 
 const NULL_OPTION_VALUE = "unknown";
 
-function _findCurrentCount(array, valueThatLookingFor, key) {
+function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
-	if (Array.isArray(array)) {
-		foundItem = array.find((element, index, array) => prepareOptionName(element.label, key) === prepareOptionName(valueThatLookingFor, key));
+	if (Array.isArray(facets.buckets)) {
+		foundItem = facets.buckets.find((element, index, array) => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
 	}
-	return foundItem ? foundItem.count : null;
+	return foundItem ? foundItem.doc_count : null;
 }
 
 function _setFilterCounts(controlView, totalCount, currentCount) {
@@ -49,7 +49,7 @@ function prepareOptionName(value, key) {
 				return NULL_OPTION_VALUE;
 			}
 			else if (typeof value === "object") {
-				return value.label !== null ? value.label : NULL_OPTION_VALUE;
+				return value.key !== null ? value.key : NULL_OPTION_VALUE;
 			}
 		}
 	}
@@ -88,26 +88,27 @@ function updateFiltersFormControl(data) {
 // if countsAfterFiltration == undefined that we have all applied filters
 // and current counts are the same as counts without filtration
 function updateFiltersCounts(countsAfterFiltration) {
-	//  state.imagesTotalCounts has been init after gettting histogram(data with counts) response
-	for (let filterKey in state.imagesTotalCounts) {
-		if (state.imagesTotalCounts.hasOwnProperty(filterKey)) {
+	//  state.imagesTotalCounts has been init after gettting facets(data with counts) response
+	const filterKeys = Object.keys(state.imagesTotalCounts);
+	filterKeys.forEach((filterKey) => {
+		if (filterKey !== "passedFilters") {
 			let values = state.imagesTotalCounts[filterKey];
 			values.forEach((value) => {
 				let currentCount;
 				if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
-					currentCount = _findCurrentCount(countsAfterFiltration[filterKey], value.label, filterKey);
+					currentCount = _findCurrentCount(countsAfterFiltration[filterKey], value.key, filterKey);
 				}
 				else {
-					currentCount = value.count;
+					currentCount = value.doc_count;
 				}
-				const controlId = getOptionId(filterKey, prepareOptionName(value.label, filterKey));
+				const controlId = getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
-					_setFilterCounts(controlView, value.count, currentCount);
+					_setFilterCounts(controlView, value.doc_count, currentCount);
 				}
 			});
 		}
-	}
+	});
 }
 
 export default {

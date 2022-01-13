@@ -100,7 +100,7 @@
     box-shadow: none;
     text-align: center;
     color: @main-color-light;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 240%;
   }
 
@@ -456,12 +456,12 @@
       counter-reset: item;
       margin-top: 20px;
       padding: 0;
-  
+
       li {
         margin-top: 10px;
         position: relative;
         padding-left: 25px;
-  
+
         &:before {
           content: counters(item,".") ". ";
           counter-increment: item;
@@ -475,23 +475,23 @@
           left: 0;
         }
       }
-  
+
       ul {
         margin-top: 10px;
-  
+
         li {
           padding-left: 35px;
-  
+
           &:before {
             font-size: 14px;
             line-height: 18px;
           }
         }
-  
+
         ul {
           li {
             padding-left: 45px;
-  
+
             &:before {
               font-weight: 400;
             }
@@ -547,7 +547,7 @@
 .study-item-content {
   height: 115%;
   overflow: hidden;
-  
+
   .study-item-title {
     padding-bottom: 6px;
   }
@@ -913,6 +913,7 @@
     vertical-align: middle;
     line-height: 120%;
     height: auto;
+    font-size: 13px;
   }
 }
 
@@ -926,6 +927,10 @@
     left: 0;
     right: 0;
     bottom: 0;
+    max-width:100%;
+    max-height:100%;
+    height: auto;
+    width:auto;
   }
 }
 
@@ -1854,24 +1859,24 @@
 }
 
 /* Style the button and place it in the middle of the container/image */
-.image-zoom-container .zoom-btn {
+.zoom-btn {
   vertical-align: middle;
   position: absolute;
-  top: 90px;
+  font-size: 18px;
   background-color: white;
   color: #6E7480;
-  width: 20px;
-  height: 20px;
-  border: none;
+  width: 30px;
+  height: 30px;
+  border: solid;
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
-  box-shadow: 0 2px #999;
+  //box-shadow: 0 2px #999;
   &.btn-plus {
-    left: 155px;
+    left: 100px;
   }
   &.btn-minus {
-    left: 186px;
+    left: 133px;
   }
   span {
     font-size: 14px;

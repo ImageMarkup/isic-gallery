@@ -3,13 +3,13 @@ import state from "../../sources/models/state";
 
 describe("Gallery filters", () => {
 	const emptyValue = null;
-	const emptyLabelValue = {
-		label: null
+	const emptyKeyValue = {
+		key: null
 	}
 	const validValue = "Valid value";
 	it("Get option names", () => {
 		expect(filters.prepareOptionName(emptyValue, "emptyValue")).toBe("unknown");		
-		expect(filters.prepareOptionName(emptyLabelValue, "emptyLabelValue")).toBe("unknown");
+		expect(filters.prepareOptionName(emptyKeyValue, "emptyLabelValue")).toBe("unknown");
 		expect(filters.prepareOptionName(validValue, "validValue")).toBe(validValue);
 
 		expect(filters.prepareOptionName(validValue, "meta.datasetId")).toBeFalsy();

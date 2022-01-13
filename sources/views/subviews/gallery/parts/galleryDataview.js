@@ -30,9 +30,10 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 			selectedImages.addForStudy(imagesArray);
 		} else {
 			if (selectedImages.count() === 0) {
-				let downloadMenu = $$(constants.DOWNLOAD_MENU_ID);
-				resizeButtonsLayout(galleryButtonsLayout, 32);
-				downloadMenu.show();
+				// TODO: uncomment after download will be implemented
+				// let downloadMenu = $$(constants.DOWNLOAD_MENU_ID);
+				// resizeButtonsLayout(galleryButtonsLayout, 32);
+				// downloadMenu.show();
 			}
 			selectedImages.add(imagesArray);
 		}
@@ -41,24 +42,27 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 		const deletedItemsDataCollection = selectedImages.getDeletedItemsDataCollection();
 		if (state.toSelectByShift) {
 			imagesArray = util.getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, value);
-		} else {
+		}
+		else {
 			deletedItemsDataCollection.clearAll();
 			deletedItemsDataCollection.add(item);
 			imagesArray = [item];
 		}
 		if (!studyFlag) {
-			imagesArray.forEach((item) => {
-				selectedImages.remove(item._id);
+			imagesArray.forEach((imageItem) => {
+				selectedImages.remove(imageItem.isic_id);
 			});
 
 			if (selectedImages.count() === 0) {
-				let downloadMenu = $$(constants.DOWNLOAD_MENU_ID);
-				resizeButtonsLayout(galleryButtonsLayout, 1);
-				downloadMenu.hide();
+				// TODO: uncomment after download will be implemented
+				// let downloadMenu = $$(constants.DOWNLOAD_MENU_ID);
+				// resizeButtonsLayout(galleryButtonsLayout, 1);
+				// downloadMenu.hide();
 			}
-		} else {
-			imagesArray.forEach((item) => {
-				selectedImages.removeImageFromStudies(item._id);
+		}
+		else {
+			imagesArray.forEach((imageItem) => {
+				selectedImages.removeImageFromStudies(imageItem.isic_id);
 			});
 			if (selectedImages.countForStudies() === 0) {
 				let newStudyButton = $$(constants.NEW_STUDY_BUTTON_ID);
@@ -81,15 +85,14 @@ const dataview = {
 	css: "gallery-images-dataview",
 	datathrottle: 500,
 	template(obj, common) {
-		const IMAGE_HEIGHT = util.getDataviewItemHeight() - 10;
-		const IMAGE_WIDTH = util.getDataviewItemWidth();
 		const imageIconDimensions = util.getImageIconDimensions();
 		let flagForStudies = selectedImages.getStudyFlag();
 		if (flagForStudies) {
-			let dataview = $$(getIdFromConfig());
-			dataview.find((obj) => {
-				if (selectedImages.isSelectedInStudies(obj._id)){
-					obj.markCheckbox = 1;
+			let dataviewConfig = $$(getIdFromConfig());
+			// TODO: find out why we use find
+			dataviewConfig.find((config) => {
+				if (selectedImages.isSelectedInStudies(config.isic_id)) {
+					config.markCheckbox = 1;
 				}
 			});
 		}
@@ -104,18 +107,14 @@ const dataview = {
 				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 			</div>` : "";
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
-		if (typeof galleryImageUrl.getPreviewImageUrl(obj._id) === "undefined") {
-			galleryImageUrl.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
-			ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
-				galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-				$$(dataview.id).refresh(obj.id);
-			});
+		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
+			galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.urls.full); // to prevent sending query more than 1 time
 		}
 		return `<div class="gallery-images-container ${checkedClass}">
 					<div class='gallery-images-info'>
 						<div class="gallery-images-header">
 							<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
-			                <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.name}</div>
+			                <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
 						</div>
 						<div class="gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
 							<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
@@ -138,7 +137,7 @@ const dataview = {
 						</div>
 					</div>
 					${starHtml}
-					<img src="${galleryImageUrl.getPreviewImageUrl(obj._id) || ""}" class="gallery-image" />
+					<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height=${util.getDataviewItemHeight() - 10}/>
 				</div>`;
 	},
 	borderless: true,

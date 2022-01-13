@@ -2,7 +2,6 @@ import windowWithHeader from "../components/windowWithHeader";
 import authService from "../../services/auth";
 
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
-import constants from "../../constants";
 import mdTemplate from "../templates/termsOfUse.md";
 import mdLoader from "../../services/mdLoader";
 

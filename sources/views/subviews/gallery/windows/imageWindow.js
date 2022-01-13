@@ -9,16 +9,14 @@ const templateViewer = {
 	css: "absolute-centered-image-template",
 	template(obj) {
 		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
-			ajax.getImage(obj.imageId, 553, 1000).then((data) => {
-				galleryImageUrl.setNormalImageUrl(obj.imageId, URL.createObjectURL(data));
+			ajax.getImageItem(obj.imageId).then((item) => {
+				galleryImageUrl.setNormalImageUrl(obj.imageId, item.urls.full);
 				$$(templateViewer.id).refresh();
 			});
 		}
 
 		return `<div class="image-zoom-container">
   					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
-  					<button class="zoom-btn btn-plus"><span class="zoom-btn-icon">+</span></button>
-  					<button class="zoom-btn btn-minus"><span class="zoom-btn-icon">-</span></button>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>
@@ -42,6 +40,12 @@ const metadataContainer = {// this container is needed to draw external borders
 	body: layoutForMetadata
 };
 
+const zoomButtonsTemplate = {
+	view: "template",
+	template: `<button class="zoom-btn btn-plus fas fa-search-plus"></button>
+  				<button class="zoom-btn btn-minus fas fa-search-minus"></button>`
+};
+
 const slideButton = {
 	view: "slidebutton",
 	css: "slidebutton",
@@ -53,6 +57,7 @@ const slideButton = {
 	value: false,
 	on: {
 		onChange(newv) {
+			const [imageWindowZoomPlusButtons, imageZoomMunusButtons] = $$(getViewerId()).$view.getElementsByClassName("zoom-btn");
 			if (newv) {
 				$$(metadataContainer.id).show();
 				refreshTemplate();
@@ -84,6 +89,7 @@ const windowBody = {
 		{
 			type: "clean",
 			cols: [
+				zoomButtonsTemplate,
 				{},
 				slideButton
 			]
@@ -103,6 +109,7 @@ function getConfig(id, studyImage) {
 	slideButton.id = `slidebutton-${webix.uid()}`;
 	layoutForMetadata.id = `layout-for-metadata-${webix.uid()}`;
 	metadataContainer.id = `metadata-container-${webix.uid()}`;
+	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
 	if (!studyImage) {
 		windowTitle = "Metadata";
 	} else {
@@ -127,10 +134,15 @@ function getMetadataLayoutId() {
 	return layoutForMetadata.id;
 }
 
+function getZoomButtonTemplateId() {
+	return zoomButtonsTemplate.id;
+}
+
 export default {
 	getConfig,
 	getIdFromConfig,
 	getViewerId,
 	getSliderButtonId,
-	getMetadataLayoutId
+	getMetadataLayoutId,
+	getZoomButtonTemplateId
 };

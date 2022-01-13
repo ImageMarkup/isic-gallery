@@ -8,12 +8,10 @@ import appliedFilterModel from "../../models/appliedFilters";
 import selectedImages from "../../models/selectedGalleryImages";
 import constants from "../../constants";
 import util from "../../utils/util";
-import authService from "../../services/auth";
+import authService from "../auth";
 import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import searchButtonModel from "./searchButtonModel";
-import "wheelzoom";
-
 
 const layoutHeightAfterHide = 1;
 const layoutHeightAfterShow = 32;
@@ -100,34 +98,93 @@ class GalleryService {
 		let studyFlag = selectedImages.getStudyFlag();
 		const sourceParams = {
 			limit: 0,
-			sort: "name",
-			detail: "false"
+			offset: 0,
+			conditions: ""
 		};
-		if (searchValue) sourceParams.name = searchValue;
+		if (searchValue) {
+			sourceParams.conditions += `isic_id:${searchValue}`;
+		}
 
 		this._view.$scope.setParam("name", searchValue, true);
+		// TODO: delete setFilterByName after study endpoint will be implemented
+		// begin setFilterByName
+		appliedFilterModel.setFilterByName(true);
+		// end setFilterByName
 		this._view.showProgress();
-		this.studiesPromise
-			.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
-			.then((valuesArray) => {
-				const annotatedImages = valuesArray.annotatedImages;
-				const allImagesArray = webix.copy(valuesArray.allImages);
-				const totalCount = allImagesArray.length;
+		// TODO: will be uncomment after study endpoint will be implemented in new API
+		// this.studiesPromise
+		// 	.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
+		// 	.then((valuesArray) => {
+		// 		const annotatedImages = valuesArray.annotatedImages;
+		// 		const allImagesArray = webix.copy(valuesArray.allImages);
+		// 		const totalCount = allImagesArray.length;
+		// 		allImagesArray.forEach((imageObj) => {
+		// 			if (annotatedImages[imageObj.isic_id]) {
+		// 				imageObj.hasAnnotations = true;
+		// 				imageObj.studyId = annotatedImages[imageObj.isic_id].studyId;
+		// 			}
+		// 			if (studyFlag && selectedImages.isSelectedInStudies(imageObj.isic_id)) {
+		// 				imageObj.markCheckbox = valueOfMarkedCheckbox;
+		// 			}
+		// 			else if (!studyFlag && selectedImages.isSelected(imageObj.isic_id)) {
+		// 				imageObj.markCheckbox = valueOfMarkedCheckbox;
+		// 			}
+		// 			filteredImages.push(imageObj);
+		// 		});
+		// 		const currentCount = filteredImages.length;
+		// 		if (currentCount > 0) {
+		// 			this._imagesDataview.clearAll();
+		// 			let page = 0;
+		// 			this._updatePagerCount(80, page);
+		// 			// connecting pager to data view
+		// 			this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
+		// 			this._pager.hide();
+		// 			this._clonedPagerForNameSearch.show();
+		// 			this._imagesDataview.parse(filteredImages);
+		//
+		// 			const rangeFinish = this._pager.data.size;
+		// 			const headerValues = {
+		// 				rangeStart: 1,
+		// 				rangeFinish,
+		// 				currentCount,
+		// 				filtered: true,
+		// 				totalCount
+		// 			};
+		// 			this._contentHeaderTemplate.setValues(headerValues);
+		// 			this._contentHeaderTemplate.refresh();
+		// 			appliedFilterModel.setFilterByName(true);
+		// 		}
+		// 		else {
+		// 			if (afterFilterSelected) {
+		// 				this._imagesDataview.clearAll();
+		// 				const headerValues = {
+		// 					rangeStart: 0,
+		// 					rangeFinish: 0,
+		// 					filtered: true,
+		// 					currentCount,
+		// 					totalCount
+		// 				};
+		// 				this._contentHeaderTemplate.setValues(headerValues);
+		// 				this._contentHeaderTemplate.refresh();
+		// 				this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
+		// 			}
+		// 			webix.alert(`Nothing has found with name "${searchValue}"`);
+		// 		}
+		// 		this._view.hideProgress();
+		// 	})
+		// 	.fail(() => {
+		// 		webix.message("Something went wrong");
+		// 		this._view.hideProgress();
+		// 	});
+
+		ajax.searchImages(sourceParams)
+			.then((foundImages) => {
+				const allImagesArray = webix.copy(foundImages.results);
+				const totalCount = foundImages.count;
 				allImagesArray.forEach((imageObj) => {
-					if (annotatedImages[imageObj._id]) {
-						imageObj.hasAnnotations = true;
-						imageObj.studyId = annotatedImages[imageObj._id].studyId;
-					}
-					if (studyFlag && selectedImages.isSelectedInStudies(imageObj._id)) {
-						imageObj.markCheckbox = valueOfMarkedCheckbox;
-					}
-					else if (!studyFlag && selectedImages.isSelected(imageObj._id)) {
-						imageObj.markCheckbox = valueOfMarkedCheckbox;
-					}
 					filteredImages.push(imageObj);
 				});
-				const currentCount = filteredImages.length;
-				if (currentCount > 0) {
+				if (totalCount > 0) {
 					this._imagesDataview.clearAll();
 					let page = 0;
 					this._updatePagerCount(80, page);
@@ -136,34 +193,9 @@ class GalleryService {
 					this._pager.hide();
 					this._clonedPagerForNameSearch.show();
 					this._imagesDataview.parse(filteredImages);
-
-					const rangeFinish = this._pager.data.size;
-					const headerValues = {
-						rangeStart: 1,
-						rangeFinish,
-						currentCount,
-						filtered: true,
-						totalCount
-					};
-					this._contentHeaderTemplate.setValues(headerValues);
-					this._contentHeaderTemplate.refresh();
-					appliedFilterModel.setFilterByName(true);
 				}
 				else {
-					if (afterFilterSelected) {
-						this._imagesDataview.clearAll();
-						const headerValues = {
-							rangeStart: 0,
-							rangeFinish: 0,
-							filtered: true,
-							currentCount,
-							totalCount
-						};
-						this._contentHeaderTemplate.setValues(headerValues);
-						this._contentHeaderTemplate.refresh();
-						this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
-					}
-					webix.alert(`Nothing has found with name "${searchValue}"`);
+					webix.alert(`Image with name "${searchValue}" was not found`);
 				}
 				this._view.hideProgress();
 			})
@@ -178,6 +210,9 @@ class GalleryService {
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
 		this._imageTemplate = $$(imageWindow.getViewerId());
+		this._imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
+		[this._imageWindowZoomPlusButtons, this._imageZoomMunusButtons] = this._imageWindow.$view.getElementsByClassName("zoom-btn");
+		this._imageWindowMetadataLayout = this._imageWindow.$view.getElementsByClassName("metadata-layout");
 		this._activeCartList = this._view.$scope.getActiveGalleryCartList();
 		this._toggleButton = this._view.$scope.getToggleButton();
 		this._buttonsLayout = $$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
@@ -282,7 +317,8 @@ class GalleryService {
 
 		});
 
-		let dataviewSelectionId = util.getDataviewSelectionId() ? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
+		let dataviewSelectionId = util.getDataviewSelectionId()
+			? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
 		this._dataviewYCountSelection.blockEvent();
 		this._dataviewYCountSelection.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection.unblockEvent();
@@ -290,7 +326,7 @@ class GalleryService {
 		window.addEventListener("resize", (event) => {
 			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
 			if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
-				const dataviewSelectionId = util.getDataviewSelectionId();
+				dataviewSelectionId = util.getDataviewSelectionId();
 				if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
 					this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
 				}
@@ -332,6 +368,9 @@ class GalleryService {
 					newitemWidth = 180;
 					newItemHeight = 123;
 					newInnerImageNameSize = 14;
+					break;
+				}
+				default: {
 					break;
 				}
 			}
@@ -378,15 +417,21 @@ class GalleryService {
 					this.downloadZip("metadata");
 					break;
 				}
+				default: {
+					break;
+				}
 			}
 		});
-		this._imagesDataview.attachEvent("onDataRequest", (offset, limit) => {
-			this._updateImagesDataview(offset, limit);
-			const totalCount = state.imagesTotalCounts.__passedFilters__[0].count;
-			this._updateContentHeaderTemplate({
-				rangeStart: offset + 1,
-				rangeFinish: offset + limit >= totalCount ? totalCount : offset + limit
-			});
+		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit) => {
+			try {
+				await this._updateImagesDataview(offset, limit);
+				const totalCount = state.imagesTotalCounts.passedFilters.count;
+				this._updateContentHeaderTemplate({
+					rangeStart: offset + 1,
+					rangeFinish: offset + limit >= totalCount ? totalCount : offset + limit
+				});
+			}
+			catch (error) {}
 		});
 
 		this._imageWindow.getNode().addEventListener("keyup", (e) => {
@@ -417,7 +462,10 @@ class GalleryService {
 			},
 			prev: () => {
 				this._showPrevImage();
-			},
+			}
+		});
+
+		this._imageWindowZoomButtons.define("onClick", {
 			"btn-plus": () => {
 				this._zoomImage("plus");
 			},
@@ -426,22 +474,20 @@ class GalleryService {
 			}
 		});
 
-		this._imagesDataview.on_click["info-icon"] = (e, id) => {
-			const currentItem = this._imagesDataview.getItem(id);
-			webix.promise.all([
-				ajax.getImageItem(currentItem._id),
-				ajax.getSegmentation({imageId: currentItem._id})
-			]).then((results) => {
-				const data = webix.copy(results[0]);
-				data.segmentation = webix.copy(results[1]);
-				webix.ui([metadataPart.getConfig("metadata-window-metadata", data, currentItem)], this._metadataWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
-			});
-			this._eventForHideMessages(this._metadataWindow);
-			this._metadataWindow.show();
+		this._imagesDataview.on_click["info-icon"] = async (e, id) => {
+			try {
+				const currentItem = this._imagesDataview.getItem(id);
+				const image = await ajax.getImageItem(currentItem.isic_id);
+				webix.ui([metadataPart.getConfig("metadata-window-metadata", image, currentItem)], this._metadataWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
+				this._eventForHideMessages(this._metadataWindow);
+				this._metadataWindow.show();
+			}
+			catch (error) {}
 		};
+
 		this._imagesDataview.on_click["diagnosis-icon"] = (e, id) => {
 			const currentItem = this._imagesDataview.getItem(id);
-			const url = `${constants.URL_MULTIRATER}?id=${currentItem._id}&sid=${currentItem.studyId}&uid=${authService.getToken()}`;
+			const url = `${constants.URL_MULTIRATER}?id=${currentItem.isic_id}&sid=${currentItem.studyId}&uid=${authService.getToken()}`;
 			util.openInNewTab(url);
 		};
 		webix.extend(this._view, webix.ProgressBar);
@@ -454,7 +500,7 @@ class GalleryService {
 				this._unselectImages(constants.SELECTED_BY_ALL_ON_PAGE);
 			},
 			"gallery-select-all-images": () => {
-				let imagesArray = [];
+				imagesArray = [];
 				let isNeedShowAlert = true;
 				let limit;
 				let page;
@@ -481,10 +527,7 @@ class GalleryService {
 							if (selectedImages.count() === 0) {
 								this._resizeButtonsLayout(layoutHeightAfterShow, false, true);
 							}
-							selectedImages.add({
-								_id: item._id,
-								name: item.name
-							});
+							selectedImages.add(item);
 							item.markCheckbox = 1;
 							imagesArray.push(item);
 						}
@@ -508,7 +551,7 @@ class GalleryService {
 
 		this._imagesDataview.attachEvent("onAfterSelectAllChanged", (checkboxValue) => {
 			this._imagesDataview.find((obj) => {
-				if (selectedImages.isSelectedInStudies(obj._id)) {
+				if (selectedImages.isSelectedInStudies(obj.isic_id)) {
 					obj.markCheckbox = checkboxValue;
 				}
 			});
@@ -545,8 +588,8 @@ class GalleryService {
 								this._resizeButtonsLayout(layoutHeightAfterShow, true, true);
 							}
 							selectedImages.addForStudy({
-								_id: item._id,
-								name: item.name
+								_id: item.isic_id,
+								name: item.isic_id
 							});
 							item.markCheckbox = 1;
 							imagesArray.push(item);
@@ -569,7 +612,7 @@ class GalleryService {
 						})
 						.then((allImagesData) => {
 							allImagesData.forEach((imageObj) => {
-								if (selectedImages.isSelectedInStudies(imageObj._id)) {
+								if (selectedImages.isSelectedInStudies(imageObj.isic_id)) {
 									countSelectedFiltredImages++;
 									return;
 								}
@@ -578,8 +621,8 @@ class GalleryService {
 										this._resizeButtonsLayout(layoutHeightAfterShow, true, true);
 									}
 									selectedImages.addForStudy({
-										_id: imageObj._id,
-										name: imageObj.name
+										_id: imageObj.isic_id,
+										name: imageObj.isic_id
 									});
 									imageObj.markCheckbox = 1;
 									imagesArray.push(imageObj);
@@ -688,7 +731,7 @@ class GalleryService {
 			}
 			items.forEach((item) => {
 				this._imagesDataview.find((obj) => {
-					if (obj._id === item._id) {
+					if (obj.isic_id === item.isic_id) {
 						item.id = obj.id;
 						this._imagesDataview.updateItem(item.id, item);
 					}
@@ -702,7 +745,7 @@ class GalleryService {
 				if (items[0].markCheckbox) {
 					this._activeCartList.add(items[0]);
 				}
-				else if (!items[0].markCheckbox && util.findItemInList(items[0]._id, this._activeCartList)) {
+				else if (!items[0].markCheckbox && util.findItemInList(items[0].isic_id, this._activeCartList)) {
 					this._activeCartList.callEvent("onDeleteButtonClick", [items[0]]);
 				}
 			}
@@ -712,7 +755,7 @@ class GalleryService {
 				}
 				else {
 					items.forEach((item) => {
-						if (util.findItemInList(item._id, this._activeCartList)) {
+						if (util.findItemInList(item.isic_id, this._activeCartList)) {
 							this._activeCartList.callEvent("onDeleteButtonClick", [item]);
 						}
 					});
@@ -726,7 +769,7 @@ class GalleryService {
 		this._activeCartList.attachEvent("onDeleteButtonClick", (params) => {
 			let item;
 			let itemId;
-			if (params.name) {
+			if (params.isic_id) {
 				item = params;
 				itemId = params.id;
 			}
@@ -755,7 +798,7 @@ class GalleryService {
 				item.markCheckbox = value;
 				item.id = id;
 				if (studyFlag) {
-					selectedImages.removeImageFromStudies(item._id);
+					selectedImages.removeImageFromStudies(item.isic_id);
 					this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 					wasRemovedFromStudies = true;
 				}
@@ -764,10 +807,10 @@ class GalleryService {
 			else {
 				item = listItem;
 				this._imagesDataview.find((obj) => {
-					if (obj && obj._id === item._id && !wasUpdated) {
+					if (obj && obj.isic_id === item.isic_id && !wasUpdated) {
 						obj.markCheckbox = value;
 						if (studyFlag) {
-							selectedImages.removeImageFromStudies(item._id);
+							selectedImages.removeImageFromStudies(item.isic_id);
 							this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 							wasRemovedFromStudies = true;
 						}
@@ -777,15 +820,15 @@ class GalleryService {
 				});
 			}
 			if (!studyFlag) {
-				selectedImages.remove(item._id);
+				selectedImages.remove(item.isic_id);
 				this._view.$scope.app.callEvent("changedSelectedImagesCount");
 			}
 			else if (studyFlag && !wasRemovedFromStudies) {
-				selectedImages.removeImageFromStudies(item._id);
+				selectedImages.removeImageFromStudies(item.isic_id);
 				this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 			}
 			this._activeCartList.find((obj) => {
-				if (obj._id === item._id) {
+				if (obj.isic_id === item.isic_id) {
 					this._activeCartList.remove(obj.id);
 				}
 			});
@@ -801,7 +844,7 @@ class GalleryService {
 		if (studies) {
 			studies.forEach((study) => {
 				study.images.forEach((image) => {
-					result[image._id] = {
+					result[image.isic_id] = {
 						studyId: study._id
 					};
 				});
@@ -829,55 +872,61 @@ class GalleryService {
 		util.downloadByLink(url, `${type}.zip`);
 	}
 
-	load() {
-		// we should get maximum count of images once
-		ajax.getHistogram().then((data) => {
-			state.imagesTotalCounts = data;
-			const imagesCount = state.imagesTotalCounts.__passedFilters__[0].count;
-			this._updateContentHeaderTemplate(
-				{
-					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
-					totalCount: imagesCount
-				});
-			this._updatePagerCount(imagesCount);
-			filterService.updateFiltersCounts();
-			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-			const paramFilters = this._view.$scope.getParam("filter");
-			if (appliedFiltersArray.length) {
-				webix.delay(() => {
-					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
-				});
+	async load() {
+		state.imagesTotalCounts = {};
+		state.imagesTotalCounts.passedFilters = {};
+		const images = await ajax.getImages();
+		state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
+		this._updateContentHeaderTemplate(
+			{
+				rangeStart: 1,
+				rangeFinish: this._pager.data.size,
+				totalCount: state.imagesTotalCounts.passedFilters.count
 			}
-			else {
-				this._createFilters([], true)
-					.then(() => {
-						if (paramFilters) {
-							try {
-								const parsedFilters = JSON.parse(paramFilters);
-								const appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
-								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
-							}
-							catch (err) {
-								this._view.$scope.setParam("filter", "[]", true);
-								this._view.$scope.app.callEvent("filtersChanged", [[]]);
-							}
-						}
-					}); // create filters form controls from config
-			}
-			if (!paramFilters && !appliedFiltersArray.length) this._reload();
+		);
+		this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
+		const facets = await ajax.getFacets();
+		const ids = Object.keys(facets);
+		ids.forEach((id) => {
+			state.imagesTotalCounts[id] = facets[id].buckets;
 		});
+		let appliedFiltersArray = appliedFilterModel.getFiltersArray();
+		const paramFilters = this._view.$scope.getParam("filter");
+		if (appliedFiltersArray.length) {
+			webix.delay(() => {
+				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+			});
+		}
+		else {
+			this._createFilters([], true)
+				.then(() => {
+					if (paramFilters) {
+						try {
+							const parsedFilters = JSON.parse(paramFilters);
+							appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
+							this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+						}
+						catch (err) {
+							this._view.$scope.setParam("filter", "[]", true);
+							this._view.$scope.app.callEvent("filtersChanged", [[]]);
+						}
+					}
+				}); // create filters form controls from config
+		}
+		filterService.updateFiltersCounts();
+		if (!paramFilters && !appliedFiltersArray.length) this._reload();
 	}
 
 	_reload(offsetSource, limitSource) {
 		let limit = limitSource || this._pager.data.size;
 		let offset = offsetSource || 0;
 		// save promise to object. we need wait for its result before rendering images dataview
-		this.studiesPromise = ajax.getStudies({
-			sort: "lowerName",
-			sortdir: "1",
-			detail: true
-		}).then(data => this._prepareAnnotatedImagesList(data));
+		// TODO: uncomment when study endpoint will be implemented
+		// this.studiesPromise = ajax.getStudies({
+		// 	sort: "lowerName",
+		// 	sortdir: "1",
+		// 	detail: true
+		// }).then(data => this._prepareAnnotatedImagesList(data));
 		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 		this._createFilters(appliedFiltersArray);
 		this._updateCounts();
@@ -890,22 +939,19 @@ class GalleryService {
 		const values = webix.copy(ranges);
 		values.filtered = appliedFilterModel.count();
 		this._contentHeaderTemplate.setValues(values, true); // true -> unchange existing values
+		this._contentHeaderTemplate.refresh();
 	}
 
-	_updateCounts() {
-		const filter = appliedFilterModel.getConditionsForApi();
-		ajax.getHistogram(filter).then((data) => {
-			if (data) {
-				const imagesCount = data.__passedFilters__[0].count;
-				this._updateContentHeaderTemplate({
-					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
-					currentCount: imagesCount
-				});
-				this._updatePagerCount(imagesCount, 0);
-				filterService.updateFiltersCounts(data);
-			}
-		});
+	async _updateCounts() {
+		try {
+			const filterQuery = appliedFilterModel.getConditionsForApi();
+			const params = {};
+			params.conditions = filterQuery;
+			const facets = await ajax.getFacets(params);
+			filterService.updateFiltersCounts(facets);
+			this._updatePagerCount(null, 0);
+		}
+		catch (error) {}
 	}
 
 	// update form controls values(true/false for checkboxes, etc)
@@ -958,14 +1004,9 @@ class GalleryService {
 		}
 	}
 
-	_updateImagesDataview(offset, limit) {
+	async _updateImagesDataview(offset, limit) {
+		this._imagesDataview.clearAll();
 		const filter = appliedFilterModel.getConditionsForApi();
-		const imagesPromise = ajax.getImages({
-			offset,
-			limit,
-			filter
-		});
-		const studyFlag = selectedImages.getStudyFlag();
 		const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
 		const searchValue = this._searchInput.getValue();
 		if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8) {
@@ -976,33 +1017,38 @@ class GalleryService {
 			webix.alert("You should type minimum 9 characters for name search");
 		}
 		this._view.showProgress();
-		webix.promise.all([
-			this.studiesPromise,
-			imagesPromise
-		]).then((results) => {
-			const [annotatedImages, images] = results;
-			this._imagesDataview.clearAll();
-			if (images && images.length > 0) {
-				images.forEach((item) => {
-					// markCheckbox - active content in dataview.
-					if (studyFlag) {
-						item.markCheckbox = selectedImages.isSelectedInStudies(item._id);
-					}
-					else {
-						item.markCheckbox = selectedImages.isSelected(item._id);
-					}
-					if (annotatedImages[item._id]) {
-						item.hasAnnotations = true;
-						item.studyId = annotatedImages[item._id].studyId;
-					}
+		try {
+			const images = await ajax.getImages({
+				offset,
+				limit,
+				filter
+			});
+			if (images.count < state.imagesTotalCounts.passedFilters.count) {
+				this._updateContentHeaderTemplate({
+					rangeStart: 1,
+					rangeFinish: this._pager.data.size,
+					currentCount: images.count
 				});
-				this._imagesDataview.parse(images);
+			}
+			else {
+				this._updateContentHeaderTemplate({
+					rangeStart: 1,
+					rangeFinish: this._pager.data.size,
+					totalCount: state.imagesTotalCounts.passedFilters.count
+				});
+			}
+			this._updatePagerCount(images.count);
+			if (images && images.results.length > 0) {
+				this._imagesDataview.parse(images.results);
 			}
 			else {
 				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing Has Found</div>");
 			}
 			this._view.hideProgress();
-		});
+		}
+		catch (error) {
+			this._view.hideProgress();
+		}
 	}
 
 	_unselectImages(selectedBy, allImagesArray) {
@@ -1039,17 +1085,11 @@ class GalleryService {
 		}
 	}
 
-	_setImageWindowValues(currentItem) {
+	async _setImageWindowValues(currentItem) {
 		this._currentItem = currentItem;
-		this._imageWindowViewer.setValues({imageId: currentItem._id});
-		webix.promise.all([
-			ajax.getImageItem(currentItem._id),
-			ajax.getSegmentation({imageId: currentItem._id})
-		]).then((results) => {
-			let data;
-			[data, data.segmentation] = results;
-			webix.ui([metadataPart.getConfig("image-window-metadata", data, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
-		});
+		this._imageWindowViewer.setValues({imageId: currentItem.isic_id});
+		const image = await ajax.getImageItem(currentItem.isic_id);
+		webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
 	}
 
 	_showNextImage() {
@@ -1124,9 +1164,10 @@ class GalleryService {
 		if (studyFlag) {
 			toShow ? this._createStudyButton.show() : this._createStudyButton.hide();
 		}
-		else {
-			toShow ? this._downloadingMenu.show() : this._downloadingMenu.hide();
-		}
+		// TODO: uncomment when donwload will be implemented
+		// else {
+		// 	toShow ? this._downloadingMenu.show() : this._downloadingMenu.hide();
+		// }
 	}
 
 	_disableTemplateByCss(templateToDisable) {

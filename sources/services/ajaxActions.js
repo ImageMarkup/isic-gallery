@@ -1,7 +1,9 @@
-import authService from "../services/auth";
+import authService from "./auth";
 import axios from "../../node_modules/axios/dist/axios.min";
+import state from "../models/state";
 
 const BASE_API_URL = process.env.ISIC_BASE_API_URL;
+const NEW_API_URL = process.env.ISIC_NEW_API_URL;
 
 function parseError(xhr) {
 	let message;
@@ -16,7 +18,15 @@ function parseError(xhr) {
 		{
 			try {
 				let response = JSON.parse(xhr.response);
-				message = response.message;
+				if (response.message) {
+					message = response.message;
+				}
+				else if (response.query) {
+					message = response.query[0];
+				}
+				else {
+					message = "Something went wrong";
+				}
 			}
 			catch (e) {
 				message = xhr.response;
@@ -34,14 +44,31 @@ function parseError(xhr) {
 	return Promise.reject(xhr);
 }
 
-webix.attachEvent("onBeforeAjax", (mode, url, data, request, headers, files, promise) => {
-	headers["Girder-Token"] = authService.getToken();
+webix.attachEvent("onBeforeAjax", async (mode, url, data, request, headers, files, promise) => {
+	if (url.includes(BASE_API_URL)) {
+		headers["Girder-Token"] = authService.getToken();
+	}
+	else if (url.includes(NEW_API_URL)) {
+		const isicClient = authService.getClient();
+		isicClient.maybeRestoreLogin()
+			.then(() => {
+				const authHeaders = isicClient.authHeaders;
+				const authHeadersKeys = Object.keys(authHeaders);
+				authHeadersKeys.forEach((key) => {
+					headers[key] = authHeaders[key];
+				});
+			});
+	}
 });
 
 
 class AjaxActions {
 	getBaseApiUrl() {
 		return BASE_API_URL;
+	}
+
+	getNewApiUrl() {
+		return NEW_API_URL;
 	}
 
 	_ajax() {
@@ -56,8 +83,8 @@ class AjaxActions {
 			params = {};
 		}
 		// to prevent caching for IE 11 on Window 10
-		if (navigator.userAgent.indexOf('MSIE')!==-1
-			|| navigator.appVersion.indexOf('Trident/') > -1) {
+		if (navigator.userAgent.indexOf("MSIE") !== -1
+			|| navigator.appVersion.indexOf("Trident/") > -1) {
 			params.uid = webix.uid();
 		}
 		return webix.ajax().get(url, params);
@@ -180,72 +207,101 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
+	// New API
 	getImages(sourceParams) {
+		if (sourceParams
+			&& sourceParams.filter
+) {
+			sourceParams.conditions = sourceParams.filter;
+			return this.searchImages(sourceParams);
+		}
 		const params = sourceParams ? {
 			limit: sourceParams.limit || 0,
-			offset: sourceParams.offset || 0,
-			sort: sourceParams.sort || "created",
-			sortdir: sourceParams.sortdir || "-1",
-			detail: sourceParams.detail || false
+			offset: sourceParams.offset || 0
 		} : {};
-		if (sourceParams && sourceParams.datasetId) {
-			params.datasetId = sourceParams.datasetId;
-		}
-		if (sourceParams && sourceParams.name) {
-			params.name = sourceParams.name;
-		}
-		if (sourceParams && sourceParams.filter) {
-			params.filter = sourceParams.filter;
-		}
-		return this._ajaxGet(`${BASE_API_URL}image`, params)
+		return this._ajaxGet(`${NEW_API_URL}images`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
-	getImageItem(id) {
-		return this._ajaxGet(`${BASE_API_URL}image/${id}`)
+	// New API
+	getImageItem(isicId) {
+		return this._ajaxGet(`${NEW_API_URL}images/${isicId}`)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
-	/* getResource(name) {
-		let BASE_API_URL = "http://dermannotator.org:8080/api/v1"; // TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
-		const url = `${BASE_API_URL}/resource/search?mode=prefix&types=%5B%22item%22%5D&q=${name}`;
-		return this._ajaxGet(url)
+	// New API
+	searchImages(sourceParams) {
+		const conditions = sourceParams.conditions;
+		const params = {
+			limit: sourceParams.limit || 0,
+			offset: sourceParams.offset || 0,
+			query: conditions
+		};
+		return this._ajaxGet(`${NEW_API_URL}images/search`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
 
-	getFolder(folderId) {
-		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
-		const folderUrl = `${BASE_API_URL}/folder/${folderId}`;
-		return this._ajaxGet(folderUrl)
+	// instead of getHistogram
+	// New API
+	getFacets(sourceParams) {
+		const conditions = sourceParams && sourceParams.conditions ? sourceParams.conditions : null;
+		const collection = sourceParams && sourceParams.collection ? sourceParams.collection : "";
+		const params = {
+			query: conditions,
+			collection
+		};
+		return this._ajaxGet(`${NEW_API_URL}images/facets`, params)
 			.fail(parseError)
-			.then(result => this._parseData(result));
+			.then((result) => {
+				const facets = this._parseData(result);
+				const ids = Object.keys(facets);
+				ids.forEach((id) => {
+					facets[id].buckets = facets[id].buckets.map((bucket) => {
+						if (bucket.key_as_string) {
+							return {
+								...bucket,
+								key: bucket.key_as_string
+							};
+						}
+						return bucket;
+					});
+					if (id === "clin_size_long_diam_mm"
+						|| id === "age_approx") {
+						let interval;
+						switch (id) {
+							case "clin_size_long_diam_mm": {
+								interval = 10;
+								break;
+							}
+							case "age_approx": {
+								interval = 5;
+								break;
+							}
+							case "mel_thick_mm": {
+								interval = 0.5;
+								break;
+							}
+							default: {
+								break;
+							}
+						}
+						facets[id].buckets = facets[id].buckets.map((bucket) => {
+							const newBucket = {
+								...bucket,
+								key: `[${bucket.key}-${bucket.key + interval})`,
+								from: bucket.key,
+								to: `${bucket.key + interval}`
+							};
+							return newBucket;
+						});
+					}
+				});
+				return facets;
+			});
 	}
-
-	getTiles(itemId) {
-		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
-		const url = `${BASE_API_URL}/item/${itemId}/tiles`;
-		return this._ajaxGet(url)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}
-
-	getFiles(itemId) {
-		let BASE_API_URL = "http://dermannotator.org:8080/api/v1";// TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
-		const filesUrl = `${BASE_API_URL}/item/${itemId}/files`;
-		return this._ajaxGet(filesUrl)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}
-	downloadFile(fileId) {
-		let BASE_API_URL = "http://dermannotator.org:8080/api/v1"; // TODO: remove after api will be moved to isic "https://isic-archive.com/api/v1/";
-		const downloadUrl = `${BASE_API_URL}/file/${fileId}/download`;
-		return this._ajaxGet(downloadUrl)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}*/
 
 	getSegmentation(sourceParams) {
 		const params = sourceParams ? {
@@ -262,16 +318,6 @@ class AjaxActions {
 
 	getSegmentationItem(id) {
 		return this._ajaxGet(`${BASE_API_URL}segmentation/${id}`)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}
-
-	getHistogram(filter) {
-		const params = {};
-		if (filter) {
-			params.filter = filter;
-		}
-		return this._ajaxGet(`${BASE_API_URL}image/histogram`, params)
 			.fail(parseError)
 			.then(result => this._parseData(result));
 	}
@@ -451,21 +497,23 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
-	addImageMetadata(imageId, sourceParams) {
-		if (!(sourceParams && imageId)) {
-			return;
-		}
-		const params = {
-			id: imageId,
-			metadata: sourceParams.metadata
-		};
-		if (sourceParams.validityPeriod) {
-			params.save = sourceParams.save;
-		}
-		return webix.ajax().post(`${BASE_API_URL}image/${imageId}/metadata`, params)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}
+	// TODO: probably will be deleted
+	addImageMetadata(imageId, sourceParams) {return}
+	// addImageMetadata(imageId, sourceParams) {
+	// 	if (!(sourceParams && imageId)) {
+	// 		return;
+	// 	}
+	// 	const params = {
+	// 		id: imageId,
+	// 		metadata: sourceParams.metadata
+	// 	};
+	// 	if (sourceParams.validityPeriod) {
+	// 		params.save = sourceParams.save;
+	// 	}
+	// 	return webix.ajax().post(`${BASE_API_URL}image/${imageId}/metadata`, params)
+	// 		.fail(parseError)
+	// 		.then(result => this._parseData(result));
+	// }
 	// batchUpload zip (dataset)
 	// addZipMetadata(zipId, sourceParams) {
 	// 	debugger
@@ -524,18 +572,6 @@ class AjaxActions {
 		});
 	}
 
-	getImage(id, height, width) {
-		const params = {};
-		if (height) {
-			params.height = height;
-		}
-		if (width) {
-			params.width = width;
-		}
-		return webix.ajax().response("blob").get(`${BASE_API_URL}image/${id}/thumbnail`, params)
-			.fail(parseError);
-	}
-
 	removeParticipationRequest(studyId, userId) {
 		if (!studyId || !userId) {
 			return;
@@ -557,52 +593,13 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
-	postImageMetadata(imageId, metadata) {
-		let params = {};
-		if (metadata) {
-			/*
-			 Age approx rules
-				value will be automatically clipped at 85, where any value greater than this will be stored as 85.
-				value will automatically rounded to 5-year intervals, to ensure data de-identification.
-				the original value will continue to be stored internally as private metadata.
-			 */
-			let ageApprox = parseInt(metadata.age_approx) >= 85
-				? 85
-				: Math.round(parseInt(metadata.age_approx) / 5) * 5;
-			params.age_approx = ageApprox;
-			params.benign_malignant = metadata.benign_malignant;
-			params.diagnosis = metadata.diagnosis;
-			params.anatom_site_general = metadata.anatom_site_general;
-			params.diagnosis_confirm_type = metadata.diagnosis_confirm_type;
-			params.melanocytic = metadata.melanocytic;
-			params.sex = metadata.sex;
-			params.image_type = metadata.image_type;
-		}
-
-		return webix.ajax()
-			.headers({
-				"Content-Type": "application/json"
-			})
-			.post(`${BASE_API_URL}image/${imageId}/metadata?save=true`, params)
-			.fail(parseError)
-			.then(result => this._parseData(result));
-	}
-
 	getAllImages(sourceParams, annotatedImages) {
 		const params = sourceParams ? {
 			limit: sourceParams.limit || 0,
-			sort: sourceParams.sort || "name",
-			detail: sourceParams.detail || "true"
-		} : {};
+			offset: sourceParams.offset || 0
+		} : {limit: 0, offset: 0};
 
-		if (sourceParams && sourceParams.filter) {
-			params.filter = sourceParams.filter;
-		}
-		else if (sourceParams && sourceParams.name) {
-			params.name = sourceParams.name;
-		}
-
-		return this._ajaxGet(`${BASE_API_URL}image`, params)
+		return this._ajaxGet(`${NEW_API_URL}images`, params)
 			.fail(parseError)
 			.then((result) => {
 				if (annotatedImages) {
@@ -612,9 +609,10 @@ class AjaxActions {
 					};
 				}
 
-				return this._parseData(result);
+				return {allImages: this._parseData(result)};
 			});
 	}
+
 
 	createNewStudy(studyParams) {
 		const newStudyParams = studyParams ? {

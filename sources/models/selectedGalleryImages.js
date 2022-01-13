@@ -14,7 +14,7 @@ function add(elements) {
 }
 
 function remove(element) {
-	const index = selectedImages.findIndex((item) => item._id === element);
+	const index = selectedImages.findIndex(item => item.isic_id === element);
 	if (index > -1) {
 		selectedImages.splice(index, 1);
 	}
@@ -22,8 +22,8 @@ function remove(element) {
 }
 
 function isSelected(element) {
-	const index = selectedImages.findIndex((item) => item._id === element);
-	return index > -1 ? true : false;
+	const index = selectedImages.findIndex(item => item.isic_id === element);
+	return index > -1;
 }
 
 function clearImagesForDownload() {
@@ -54,7 +54,7 @@ function countForStudies() {
 }
 
 function getURIEncoded() {
-	const selectedImagesIds = Array.from(selectedImages, selectedImage => selectedImage._id);
+	const selectedImagesIds = Array.from(selectedImages, selectedImage => selectedImage.isic_id);
 	return encodeURI(JSON.stringify(selectedImagesIds));
 }
 
@@ -62,17 +62,17 @@ function addForStudy(elements) {
 	if (!Array.isArray(elements)) {
 		elements = [elements];
 	}
-	studySelectedImages = studySelectedImages.concat(elements)
+	studySelectedImages = studySelectedImages.concat(elements);
 	setImageObjectsToLocalStorage(studySelectedImages);
 }
 
 function isSelectedInStudies(element) {
-	const index = studySelectedImages.findIndex((item) => item._id === element);
-	return index > -1 ? true : false;
+	const index = studySelectedImages.findIndex(item => item.isic_id === element);
+	return index > -1;
 }
 
 function removeImageFromStudies(element) {
-	const index = studySelectedImages.findIndex((item) => item._id === element);
+	const index = studySelectedImages.findIndex(item => item.isic_id === element);
 	if (index > -1) {
 		studySelectedImages.splice(index, 1);
 	}
@@ -85,7 +85,7 @@ function setStudyFlag(value) {
 }
 
 function getStudyFlag() {
-	let studyFlag = webix.storage.local.get("studyFlag") || false;
+	studyFlag = webix.storage.local.get("studyFlag") || false;
 	return studyFlag;
 }
 
@@ -114,7 +114,7 @@ function addToSelectedInAddNewImagePopup(elements) {
 }
 
 function removeFromSelectedInAddNewImagePopup(element) {
-	const index = selectedInAddNewImagePopup.findIndex((item) => item._id === element);
+	const index = selectedInAddNewImagePopup.findIndex(item => item.isic_id === element);
 	if (index > -1) {
 		selectedInAddNewImagePopup.splice(index, 1);
 	}
@@ -133,8 +133,8 @@ function getSelectedInAddNewImagePopup() {
 }
 
 function isSelectedInAddNewImagePopup(element) {
-	const index = selectedInAddNewImagePopup.findIndex((item) => item._id === element);
-	return index > -1 ? true : false;
+	const index = selectedInAddNewImagePopup.findIndex(item => item.isic_id === element);
+	return index > -1;
 }
 
 function getDeletedItemsDataCollection() {

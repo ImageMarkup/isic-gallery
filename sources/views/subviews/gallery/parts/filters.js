@@ -84,8 +84,8 @@ function getCheckboxUI(data) {
 			status: "equals"
 		};
 		if (currentOption && data.type === "rangeCheckbox") {
-			filtersChangedData.highBound = currentOption.highBound;
-			filtersChangedData.lowBound = currentOption.lowBound;
+			filtersChangedData.to = currentOption.to;
+			filtersChangedData.from = currentOption.from;
 		}
 		view.rows[1].rows.push(
 			{
@@ -106,8 +106,8 @@ function getCheckboxUI(data) {
 					onChange(status) {
 						if (currentOption && data.type === "rangeCheckbox") {
 							webix.extend(this.config.filtersChangedData, {
-								highBound: currentOption.highBound,
-								lowBound: currentOption.lowBound
+								to: currentOption.to,
+								from: currentOption.from
 							});
 						}
 						let params = webix.copy(this.config.filtersChangedData);
