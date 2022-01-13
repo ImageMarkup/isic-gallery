@@ -6,6 +6,9 @@ ISIC App
   - `ISIC_BASE_API_URL` to the absolute URL of the ISIC API root
     - this must include a trailing slash
     - e.g. this value may be `https://sandbox.isic-archive.com/api/v1/` for testing
+  - `ISIC_NEW_API_URL` to the absolute URL of the NEW ISIC API root
+    - this must include a trailing slash
+	- e.g. this value may be `https://api-sandbox.isic-archive.com/api/v2/` for testing
   - `ISIC_SITE_URL` to the absolute URL of where this app will be served
     - this is similar to [Webpack's `publicPath`](https://webpack.js.org/configuration/output#outputpublicpath)
     - e.g. this value may be `https://beta.isic-archive.com/` for testing
