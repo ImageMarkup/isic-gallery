@@ -83,6 +83,7 @@ const dataview = {
 	view: "activeDataview",
 	name: "galleryImagesDataviewName",
 	css: "gallery-images-dataview",
+	scroll: false,
 	datathrottle: 500,
 	template(obj, common) {
 		const imageIconDimensions = util.getImageIconDimensions();

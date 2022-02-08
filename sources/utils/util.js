@@ -408,7 +408,7 @@ function setHiddenGalleryCartList(value) {
 	hiddenGalleryCartList = value;
 }
 
-function getHiidenGalleryLeftPanel() {
+function getHiddenGalleryLeftPanel() {
 	return hiddenGalleryLeftPanel;
 }
 
@@ -441,7 +441,7 @@ export default {
 	scrollToLast,
 	getHiddenGalleryCartList,
 	setHiddenGalleryCartList,
-	getHiidenGalleryLeftPanel,
+	getHiddenGalleryLeftPanel,
 	setHiddenGalleryLeftPanel
 };
 

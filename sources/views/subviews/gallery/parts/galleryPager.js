@@ -1,8 +1,10 @@
+import state from "../../../../models/state";
+
 let dataviewId;
 
 const pager = {
 	view: "pager",
-	size: 80,
+	// size: 80, define in gallery service
 	height: 36,
 	width: 250,
 	master: false,

@@ -5,7 +5,9 @@ const NULL_OPTION_VALUE = "unknown";
 function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
-		foundItem = facets.buckets.find((element, index, array) => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		foundItem = facets.buckets.find((element, index, array) =>
+			prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key)
+		);
 	}
 	return foundItem ? foundItem.doc_count : null;
 }
@@ -13,7 +15,9 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 function _setFilterCounts(controlView, totalCount, currentCount) {
 	const oldLabel = controlView.config.labelRight;
 	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
-	const baseLabelText = lastBracketIndex === -1 ? oldLabel : oldLabel.substring(0, lastBracketIndex);
+	const baseLabelText = lastBracketIndex === -1
+		? oldLabel
+		: oldLabel.substring(0, lastBracketIndex);
 	let firstNumberHtml;
 	if (totalCount === currentCount) {
 		firstNumberHtml = "";

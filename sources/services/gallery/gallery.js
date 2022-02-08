@@ -135,7 +135,8 @@ class GalleryService {
 		// 		if (currentCount > 0) {
 		// 			this._imagesDataview.clearAll();
 		// 			let page = 0;
-		// 			this._updatePagerCount(80, page);
+		//			let pagerCount = this._pager.data.size;
+		// 			this._updatePagerCount(pagerCount, page);
 		// 			// connecting pager to data view
 		// 			this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
 		// 			this._pager.hide();
@@ -187,7 +188,8 @@ class GalleryService {
 				if (totalCount > 0) {
 					this._imagesDataview.clearAll();
 					let page = 0;
-					this._updatePagerCount(80, page);
+					let pagerCount = this._pager.data.size;
+					this._updatePagerCount(pagerCount, page);
 					// connecting pager to data view
 					this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
 					this._pager.hide();
@@ -323,14 +325,16 @@ class GalleryService {
 		this._dataviewYCountSelection.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection.unblockEvent();
 
+		let resizerTimer;
 		window.addEventListener("resize", (event) => {
-			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
-			if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
-				dataviewSelectionId = util.getDataviewSelectionId();
-				if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
+			clearTimeout(resizerTimer);
+			resizerTimer = setTimeout(() => {
+				const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
+				if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
+					dataviewSelectionId = util.getDataviewSelectionId();
 					this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
 				}
-			}
+			}, 200);
 		});
 
 		this._dataviewYCountSelection.attachEvent("onChange", (id) => {
@@ -371,6 +375,8 @@ class GalleryService {
 					break;
 				}
 				default: {
+					newitemWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
+					newItemHeight = constants.DEFAULT_GALLERY_IMAGE_HEIGHT;
 					break;
 				}
 			}
@@ -381,15 +387,16 @@ class GalleryService {
 			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newitemWidth, newItemHeight);
+			this._imagesDataview.$scope.updatePagerSize();
 		});
 
 		this._imagesDataview.attachEvent("onAfterLoad", () => {
-			let dataviewSelectionId = util.getDataviewSelectionId();
-			if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-				this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
-			}
 			this._imagesDataview.hideOverlay();
 		});
+
+		this._imagesDataview.attachEvent("onAfterLoad", webix.once(() => {
+			this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
+		}));
 
 		this._downloadingMenu.attachEvent("onMenuItemClick", (id) => {
 			switch (id) {
@@ -1039,6 +1046,9 @@ class GalleryService {
 			}
 			this._updatePagerCount(images.count);
 			if (images && images.results.length > 0) {
+				images.results.forEach((item) => {
+					item.markCheckbox = selectedImages.isSelected(item.isic_id);
+				});
 				this._imagesDataview.parse(images.results);
 			}
 			else {
