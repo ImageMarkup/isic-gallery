@@ -93,11 +93,16 @@ class GalleryService {
 			webix.alert("You should type minimum 9 characters");
 			return;
 		}
+		else if (searchValue === "") {
+			this._clearNameFilter();
+			this._reload();
+			return;
+		}
 		const valueOfMarkedCheckbox = 1;
 		let filteredImages = [];
 		let studyFlag = selectedImages.getStudyFlag();
 		const sourceParams = {
-			limit: 0,
+			limit: this._pager.data.size,
 			offset: 0,
 			conditions: ""
 		};
@@ -181,11 +186,11 @@ class GalleryService {
 		ajax.searchImages(sourceParams)
 			.then((foundImages) => {
 				const allImagesArray = webix.copy(foundImages.results);
-				const totalCount = foundImages.count;
+				const foundImagesCount = foundImages.count;
 				allImagesArray.forEach((imageObj) => {
 					filteredImages.push(imageObj);
 				});
-				if (totalCount > 0) {
+				if (foundImagesCount > 0) {
 					this._imagesDataview.clearAll();
 					let page = 0;
 					let pagerCount = this._pager.data.size;
@@ -194,6 +199,14 @@ class GalleryService {
 					this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
 					this._pager.hide();
 					this._clonedPagerForNameSearch.show();
+					this._updateContentHeaderTemplate({
+						rangeStart: 1,
+						rangeFinish: this._pager.data.size,
+						totalCount: foundImagesCount
+					});
+					filteredImages.forEach((item) => {
+						item.markCheckbox = selectedImages.isSelected(item.isic_id);
+					});
 					this._imagesDataview.parse(filteredImages);
 				}
 				else {
@@ -248,6 +261,9 @@ class GalleryService {
 					selectedImagesArray = selectedImages.getStudyImagesId();
 				}
 			}
+			else {
+				selectedImagesArray = selectedImages.getSelectedImagesForDownload();
+			}
 		}
 		else {
 			selectedImagesArray = selectedImages.getSelectedImagesForDownload();
@@ -259,6 +275,7 @@ class GalleryService {
 			});
 			let studyFlag = selectedImages.getStudyFlag();
 			this._resizeButtonsLayout(layoutHeightAfterShow, studyFlag, true);
+			this._imagesSelectionTemplate.refresh();
 		}
 
 		this._searchEventsMethods(this._searchHandlerByFilter.bind(this));

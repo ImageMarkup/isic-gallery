@@ -42,10 +42,12 @@ function createTimesSearchButton(searchInput, appliedFilterModel, inputNode, too
 	const tooltipClassNameForTimesButton = "tooltip";
 	createHintForSearchTimesButton(timesButtonNode, tooltipClassNameForTimesButton, tootipTextForTimesButton);
 	searchInput.on_click["fa-times"] = () => {
-		searchInput.setValue("");
-		appliedFilterModel.setFilterValue("");
-		if (nameFilter) {
-			searchInput.callEvent("onEnter");
+		if (searchInput.getValue() !== "") {
+			searchInput.setValue("");
+			appliedFilterModel.setFilterValue("");
+			if (nameFilter) {
+				searchInput.callEvent("onEnter");
+			}
 		}
 	};
 }

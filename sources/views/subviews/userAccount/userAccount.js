@@ -2,7 +2,6 @@ import {JetView} from "webix-jet";
 import ajaxActions from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import "../../components/passwordInput";
-import constants from "../../../constants";
 
 const ID_PROFILE_FORM = "user-account-profile-form";
 const ID_PASSWORD_FORM = "user-account-password-form";
@@ -132,90 +131,6 @@ export default class UserAccountView extends JetView {
 			}
 		};
 
-		const passwordTab = {
-			header: "<span class='webix_icon fas fa-lock'></span> Password",
-			width: 150,
-			body: {
-				id: ID_TAB_PASSWORD,
-				css: "tabview-content",
-				padding: 20,
-				rows: [
-					{
-						view: "form",
-						id: ID_PASSWORD_FORM,
-						type: "clean",
-						borderless: true,
-						margin: 15,
-						rules: {
-							old: webix.rules.isNotEmpty,
-							new: (value) => {
-								const regWhiteSpace = new RegExp(/\s/);
-								return !regWhiteSpace.test(value) && value.length >= 6;
-							},
-							confirmPassword(value) {
-								const password = this.getValues().new;
-								return password === value;
-							}
-						},
-						elementsConfig: {
-							labelWidth: 150
-						},
-						elements: [
-							{
-								view: "passwordInput",
-								css: "search-field",
-								name: "old",
-								label: "Current password",
-								placeholder: "Enter current password",
-								invalidMessage: "Enter your current password"
-							},
-							{
-								view: "passwordInput",
-								css: "search-field",
-								name: "new",
-								label: "New password",
-								placeholder: "Enter new password",
-								invalidMessage: "Incorrect password",
-								tooltip: constants.TEXT_PASSWORD_REQUIREMENTS
-							},
-							{
-								view: "passwordInput",
-								css: "search-field",
-								name: "confirmPassword",
-								label: "Retype new password",
-								placeholder: "Retype new password",
-								invalidMessage: "Passwords are not similar"
-							},
-							{
-								cols: [
-									{},
-									{
-										view: "button",
-										css: "btn",
-										width: 80,
-										name: "saveButton",
-										value: "Change",
-										on: {
-											onItemClick() {
-												const form = this.getFormView();
-												if (form.validate()) {
-													const values = form.getValues();
-													ajaxActions.putPassword(values).then(() => {
-														webix.message("Password has been changed");
-													});
-												}
-											}
-										}
-									}
-								]
-							}
-
-						]
-					}
-				]
-			}
-		};
-
 		const ui = {
 			margin: 20,
 			rows: [
@@ -231,8 +146,7 @@ export default class UserAccountView extends JetView {
 					id: ID_TABVIEW,
 					css: "tabview-block",
 					cells: [
-						profileTab,
-						passwordTab
+						profileTab
 					]
 				},
 				{}
