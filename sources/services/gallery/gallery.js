@@ -342,17 +342,17 @@ class GalleryService {
 		this._dataviewYCountSelection.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection.unblockEvent();
 
-		let resizerTimer;
-		window.addEventListener("resize", (event) => {
-			clearTimeout(resizerTimer);
-			resizerTimer = setTimeout(() => {
-				const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
-				if (event.currentTarget.innerWidth >= minCurrentTargenInnerWidth) {
-					dataviewSelectionId = util.getDataviewSelectionId();
-					this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
-				}
-			}, 200);
+		const resizeHandler = util.debounce((event) => {
+			const contentWidth = event[0].contentRect.width;
+			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
+			if (contentWidth >= minCurrentTargenInnerWidth) {
+				dataviewSelectionId = util.getDataviewSelectionId();
+				this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
+			}
 		});
+		const resizeObserver = new ResizeObserver(resizeHandler);
+		const galleryNode = this._view.getNode();
+		resizeObserver.observe(galleryNode);
 
 		this._dataviewYCountSelection.attachEvent("onChange", (id) => {
 			let newitemWidth;
@@ -1047,17 +1047,18 @@ class GalleryService {
 				limit,
 				filter
 			});
+			const start = offset !== 0 ? offset : 1;
 			if (images.count < state.imagesTotalCounts.passedFilters.count) {
 				this._updateContentHeaderTemplate({
-					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
+					rangeStart: start,
+					rangeFinish: start + this._pager.data.size - 1,
 					currentCount: images.count
 				});
 			}
 			else {
 				this._updateContentHeaderTemplate({
-					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
+					rangeStart: start,
+					rangeFinish: start + this._pager.data.size - 1,
 					totalCount: state.imagesTotalCounts.passedFilters.count
 				});
 			}

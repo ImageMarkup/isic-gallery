@@ -416,6 +416,14 @@ function setHiddenGalleryLeftPanel(value) {
 	hiddenGalleryLeftPanel = value;
 }
 
+function debounce(func, timeout = 300) {
+	let timer;
+	return (...args) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => { func.apply(this, args); }, timeout);
+	};
+}
+
 export default {
 	openInNewTab,
 	downloadByLink,
@@ -442,6 +450,7 @@ export default {
 	getHiddenGalleryCartList,
 	setHiddenGalleryCartList,
 	getHiddenGalleryLeftPanel,
-	setHiddenGalleryLeftPanel
+	setHiddenGalleryLeftPanel,
+	debounce
 };
 

@@ -300,9 +300,7 @@ export default class GalleryView extends JetView {
 						},
 						{
 							rows: [
-								{},
-								switchView,
-								{}
+								switchView
 							]
 						},
 						{
@@ -502,8 +500,7 @@ export default class GalleryView extends JetView {
 		}
 
 		const that = this;
-		let resizerTimer;
-		const resizeHandler = debounce(() => {
+		const resizeHandler = utils.debounce(() => {
 			const galleryBodyWidth = that.getGalleryBody().$width;
 			const dataWindowView = that.getGalleryDataview();
 			const leftPanelWithCollapser = that.getLeftPanelWithCollapser();
@@ -522,7 +519,7 @@ export default class GalleryView extends JetView {
 				dataWindowView.resize();
 				galleryEmptySpace.resize();
 			}
-		}, 200);
+		});
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 	}
 
