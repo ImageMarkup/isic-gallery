@@ -216,9 +216,7 @@ export default class Header extends JetView {
 		return {
 			css: "global-header",
 			cols: [
-				{},
-				header,
-				{}
+				header
 			]
 		};
 	}

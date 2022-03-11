@@ -12,12 +12,13 @@ export default class StudyDataview extends JetView {
 				if (obj.name === "addImage") {
 					return this.getFirstDataviewItemTemplate()
 				}
-				if (typeof galleryImageUrl.getPreviewImageUrl(obj._id) === "undefined") {
-					galleryImageUrl.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
-					ajax.getImage(obj._id, 107).then((data) => {
-						galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-						this.dataview.refresh();
-					});
+				if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
+					galleryImageUrl.setPreviewImageUrl(obj.isic_id, ""); // to prevent sending query more than 1 time
+					// TODO: uncomment this after start working with study
+					// ajax.getImage(obj._id, 107).then((data) => {
+					// 	galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
+					// 	this.dataview.refresh();
+					// });
 				}
 
 				return `<div class="study-images-container">
@@ -44,7 +45,7 @@ export default class StudyDataview extends JetView {
 							</div>
 						</div>
 					</div>
-					<img src="${galleryImageUrl.getPreviewImageUrl(obj._id) || ""}" class="study-image" />
+					<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="study-image" />
 				</div>`;
 			},
 			height: 120,
@@ -101,7 +102,7 @@ export default class StudyDataview extends JetView {
 		selectedGalleryImages.setImageObjectsToLocalStorage(imagesForDataview);
 		imagesForDataview.forEach((imageObj) => {
 			this.dataview.parse({
-				_id: imageObj._id,
+				_id: imageObj.isic_id,
 				name: imageObj.name
 			});
 		});

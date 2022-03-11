@@ -174,6 +174,9 @@ export default class GalleryView extends JetView {
 			css: "downloading-menu",
 			width: 150,
 			openAction: "click",
+			// TODO: enable when download will be implemented
+			// TODO: uncomment in galleryDataview and galaryService when download will be implemented
+			disabled: true,
 			submenuConfig: {
 				width: 300
 			},
@@ -297,9 +300,7 @@ export default class GalleryView extends JetView {
 						},
 						{
 							rows: [
-								{},
-								switchView,
-								{}
+								switchView
 							]
 						},
 						{
@@ -360,19 +361,14 @@ export default class GalleryView extends JetView {
 				}
 			},
 			template: (obj, common) => {
-				const IMAGE_HEIGHT = utils.getDataviewItemHeight() - 10;
-				const IMAGE_WIDTH = utils.getDataviewItemWidth();
-				if (typeof galleryImagesUrls.getPreviewImageUrl(obj._id) === "undefined") {
-					galleryImagesUrls.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
-					ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
-						galleryImagesUrls.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-					});
+				if (typeof galleryImagesUrls.getPreviewImageUrl(obj.isic_id) === "undefined") {
+					galleryImagesUrls.setPreviewImageUrl(obj.isic_id, obj.urls.thumbnail_256);
 				}
 				return `<div>
 						<span class='webix_icon template-angle fas ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
 						<div style='float: right'>${common.deleteButton(obj, common)}</div>
- 						<div class='card-list-name'>${obj.name}</div>
- 						<img src="${galleryImagesUrls.getPreviewImageUrl(obj._id) || ""}" class="cart-image">
+ 						<div class='card-list-name'>${obj.isic_id}</div>
+ 						<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="cart-image">
 					</div>`;
 			}
 		};
@@ -480,7 +476,7 @@ export default class GalleryView extends JetView {
 	}
 
 	ready() {
-		const hiddenLeftPanel = utils.getHiidenGalleryLeftPanel();
+		const hiddenLeftPanel = utils.getHiddenGalleryLeftPanel();
 		if (hiddenLeftPanel) {
 			const leftPanelCollapser = this.getLeftPanelWithCollapser().queryView({state: "wasOpened"});
 			leftPanelCollapser.config.onClick["collapser-btn"](leftPanelCollapser);
@@ -504,7 +500,7 @@ export default class GalleryView extends JetView {
 		}
 
 		const that = this;
-		this.windowResizeEvent = webix.event(window, "resize", () => {
+		const resizeHandler = utils.debounce(() => {
 			const galleryBodyWidth = that.getGalleryBody().$width;
 			const dataWindowView = that.getGalleryDataview();
 			const leftPanelWithCollapser = that.getLeftPanelWithCollapser();
@@ -524,6 +520,7 @@ export default class GalleryView extends JetView {
 				galleryEmptySpace.resize();
 			}
 		});
+		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 	}
 
 	destroy() {
@@ -598,7 +595,6 @@ export default class GalleryView extends JetView {
 		this.listCollapsedView.show();
 		const listCollapser = this.listCollapsedView.queryView({state: collapserState});
 		listCollapser.config.onClick["collapser-btn"](listCollapser);
-		this.changeDataviewYCount();
 	}
 
 	hideList() {
@@ -608,9 +604,46 @@ export default class GalleryView extends JetView {
 
 	changeDataviewYCount() {
 		let gallerySelectionId = utils.getDataviewSelectionId();
-		if (gallerySelectionId && gallerySelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-			const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
-			galleryRichselect.callEvent("onChange", [gallerySelectionId]);
+		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
+		galleryRichselect.callEvent("onChange", [gallerySelectionId]);
+	}
+
+	updatePagerSize() {
+		const currentPager = this.$$(PAGER_ID);
+		const dataWindowView = this.getGalleryDataview();
+		const galleryDataviewWidth = dataWindowView.$width;
+		const galleryDataviewHeight = dataWindowView.$height;
+		const oldPage = currentPager.data.page;
+		const newSize = Math.floor(
+			Math.floor(galleryDataviewHeight / dataWindowView.type.height)
+			* Math.floor(galleryDataviewWidth / dataWindowView.type.width)
+		);
+		if (newSize !== currentPager.data.size) {
+			let oldSize;
+			let newOffset;
+			let newPage;
+			if (oldPage === 0) {
+				newPage = 0;
+				newOffset = 0;
+				currentPager.data.size = newSize;
+			}
+			else {
+				oldSize = currentPager.data.size;
+				const oldOffset = oldPage * oldSize + 1;
+				newPage = Math.floor(oldOffset / newSize);
+				newOffset = newSize * newPage + 1;
+				currentPager.data.size = newSize;
+				// TODO fix pager's master refresh
+				if (newSize > oldSize) {
+					currentPager.select(newPage);
+					currentPager.refresh();
+				}
+				else {
+					currentPager.refresh();
+					currentPager.select(newPage);
+				}
+			}
+			this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
 		}
 	}
 }

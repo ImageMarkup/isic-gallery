@@ -93,7 +93,7 @@ export default class CreateStudyService {
 				ok: "No",
 				callback: (result) => {
 					if (!result) {
-						selectedGalleryImages.removeImageFromStudies(currentItem._id);
+						selectedGalleryImages.removeImageFromStudies(currentItem.isic_id);
 						this._imageDataView.remove(currentItem.id);
 						this._imageDataView.callEvent("onAfterImagesUpdated");
 					}
@@ -254,11 +254,11 @@ export default class CreateStudyService {
 			let annotatorsItemsIdsArray = this._annotatorsList.data.order;
 			annotatorsItemsIdsArray.forEach((annotatorItemId) => {
 				let annotatorItem = this._annotatorsList.getItem(annotatorItemId);
-				annotatorsIds.push(annotatorItem._id);
+				annotatorsIds.push(annotatorItem.isic_id);
 			});
 			this._imageDataView.find((obj) => {
-				if (obj._id) {
-					imageIds.push(obj._id);
+				if (obj.isic_id) {
+					imageIds.push(obj.isic_id);
 				}
 			});
 
@@ -292,7 +292,7 @@ export default class CreateStudyService {
 
 	_setImageWindowValues(currentItem) {
 		this._currentItem = currentItem;
-		this._imageWindowViewer.setValues({imageId: currentItem._id});
+		this._imageWindowViewer.setValues({imageId: currentItem.isic_id});
 	}
 
 	_showNextImage() {

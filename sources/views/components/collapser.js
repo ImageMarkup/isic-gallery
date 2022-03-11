@@ -8,15 +8,14 @@ function changeDataviewItemDimensions(collapsedView) {
 	if (collapsedView.config.id === "gallery-left-panel" || collapsedView.config.id === "active-cart-list-id") {
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
 		let dataviewSelectionId = util.getDataviewSelectionId();
-		if (dataviewSelectionId && dataviewSelectionId !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-			galleryRichselect.callEvent("onChange", [dataviewSelectionId])
-		}
+		galleryRichselect.callEvent("onChange", [dataviewSelectionId]);
 	}
 }
 
 function getConfig(collapsedViewId, config) {
 	const BTN_CLOSED_STATE_ID = `collapser-btn-closed-${webix.uid()}`;
 	const BTN_OPENED_STATE_ID = `collapser-btn-opened-${webix.uid()}`;
+
 	return {
 		css: "collapser",
 		width: 23,
@@ -32,7 +31,7 @@ function getConfig(collapsedViewId, config) {
 				hidden: config && config.closed,
 				onClick: {
 					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this.config ? this : thisButton;
+						const thisCollapsedButton = this && this.config ? this : thisButton;
 						const collapsedView = $$(collapsedViewId);
 						collapsedView.hide();
 						thisCollapsedButton.hide();
@@ -50,8 +49,8 @@ function getConfig(collapsedViewId, config) {
 			{
 				view: "template",
 				template: config && config.type === "left" ?
-				"<span class='webix_icon fas fa-angle-right'></span>" :
-				"<span class='webix_icon fas fa-angle-left'></span>",
+					"<span class='webix_icon fas fa-angle-right'></span>" :
+					"<span class='webix_icon fas fa-angle-left'></span>",
 				css: "collapser-btn",
 				id: BTN_CLOSED_STATE_ID,
 				state: "wasClosed",
@@ -79,4 +78,4 @@ function getConfig(collapsedViewId, config) {
 
 export default {
 	getConfig
-}
+};

@@ -132,6 +132,8 @@ webix.ready(() => {
 		if (user) {
 			auth.refreshUserInfo();
 		}
+		const root = app.getRoot();
+		root.scrollTo(0, 0);
 	});
 
 	// selection by shift in dataviews

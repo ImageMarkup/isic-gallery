@@ -1,5 +1,5 @@
 import filterService from "../services/gallery/filter";
-import state from "../models/state";
+import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
 const appliedFilterBySearch = new webix.DataCollection();
@@ -157,8 +157,8 @@ function _groupFiltersByKey() {
 				}
 				itemFromResult.values.push({
 					label: _prepareOptionNameForApi(item.value, item.key),
-					highBound: item.highBound,
-					lowBound: item.lowBound
+					to: item.to,
+					from: item.from
 				});
 				break;
 			}
@@ -172,49 +172,16 @@ function _groupFiltersByKey() {
 }
 
 function _prepareCondition(filter) {
-	let result;
+	let result = [];
 	switch (filter.view) {
 		case "checkbox":
 		{
-			result = {
-				operator: "in",
-				operands: [
-					{
-						identifier: filter.key,
-						type: filter.datatype
-					},
-					filter.values
-				]
-			};
+			_prepareValuesCondition(filter, result);
 			break;
 		}
 		case "rangeCheckbox":
 		{
-			if (filter.values.length === 1) {
-				result = _prepareRangeCondition(filter.key, filter.values[0], filter.datatype);
-			}
-			else if (filter.values.length !== 0) {
-				result = {
-					operator: "or",
-					operands: [
-						_prepareRangeCondition(filter.key, filter.values[0], filter.datatype)
-					]
-				};
-				for (let i = 1; i < filter.values.length; i++) {
-					if (i === 1) {
-						result.operands[i] = _prepareRangeCondition(filter.key, filter.values[i], filter.datatype);
-					}
-					else {
-						result = {
-							operator: "or",
-							operands: [
-								_prepareRangeCondition(filter.key, filter.values[i], filter.datatype),
-								result
-							]
-						};
-					}
-				}
-			}
+			_prepareRangeCondition(filter, result);
 			break;
 		}
 		default:
@@ -225,73 +192,134 @@ function _prepareCondition(filter) {
 	return result;
 }
 
-function _prepareRangeCondition(key, value, datatype) {
-	if (value.label === "__null__") {
-		return {
-			operator: "in",
-			operands: [
-				{
-					identifier: key,
-					type: datatype
-				},
-				[value.label]
-			]
-		};
+function _prepareValuesCondition(filter, result) {
+	if (filter.values.length > 1) {
+		const valuesLastIndex = filter.values.length - 1;
+		filter.values.forEach((currentFilterValue, valueIndex) => {
+			if (valueIndex === 0) {
+				result.push({
+					key: filter.key,
+					value: currentFilterValue,
+					operator: "",
+					openingBracket: "(",
+					closingBracket: "",
+					type: filter.datatype
+				});
+			}
+			else if (valueIndex === valuesLastIndex) {
+				result.push({
+					key: filter.key,
+					value: currentFilterValue,
+					operator: "OR",
+					openingBracket: "",
+					closingBracket: ")",
+					type: filter.datatype
+				});
+			}
+			else {
+				result.push({
+					key: filter.key,
+					value: currentFilterValue,
+					operator: "OR",
+					openingBracket: "",
+					closingBracket: "",
+					type: filter.datatype
+				});
+			}
+		});
 	}
-	return {
-		operator: "and",
-		operands: [{
-			operator: ">=",
-			operands: [
-				{
-					identifier: key,
-					type: datatype
-				},
-				value.lowBound
-			]
-		}, {
-			operator: "<",
-			operands: [
-				{
-					identifier: key,
-					type: datatype
-				},
-				value.highBound
-			]
-		}]
-	};
+	else {
+		result.push({
+			key: filter.key,
+			value: filter.values[0],
+			operator: "",
+			openingBracket: "",
+			closingBracket: "",
+			type: filter.datatype
+		});
+	}
+}
+
+function _prepareRangeCondition(filter, result) {
+	if (filter.values.length > 1) {
+		const valuesLastIndex = filter.values.length - 1;
+		filter.values.forEach((currentFilterValue, valueIndex) => {
+			if (valueIndex === 0) {
+				result.push({
+					key: filter.key,
+					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+					operator: "",
+					openingBracket: "(",
+					closingBracket: "",
+					type: filter.datatype
+				});
+			}
+			else if (valueIndex === valuesLastIndex) {
+				result.push({
+					key: filter.key,
+					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+					operator: "OR",
+					openingBracket: "",
+					closingBracket: ")",
+					type: filter.datatype
+				});
+			}
+			else {
+				result.push({
+					key: filter.key,
+					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+					operator: "OR",
+					openingBracket: "",
+					closingBracket: ")",
+					type: filter.datatype
+				});
+			}
+		});
+	}
+	else {
+		result.push({
+			key: filter.key,
+			value: `[${filter.values[0].from} TO ${filter.values[0].to}}`,
+			operator: "",
+			openingBracket: "",
+			closingBracket: "",
+			type: filter.datatype
+		});
+	}
 }
 
 // see conditions example in the bottom of this file
 function getConditionsForApi() {
-	let conditions;
+	const conditions = {};
+	conditions.operands = [];
 	const groupedFilters = _groupFiltersByKey();
-	if (groupedFilters.length === 1) {
-		conditions = _prepareCondition(groupedFilters[0]);
+	if (groupedFilters.length !== 0) {
+		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
+		groupedFilters.forEach((groupedFilter) => {
+			conditions.operands.push(...(_prepareCondition(groupedFilter)));
+		});
 	}
-	else if (groupedFilters.length !== 0) {
-		conditions = {
-			operator: "and",
-			operands: [
-				_prepareCondition(groupedFilters[0])
-			]
-		};
-		for (let i = 1; i < groupedFilters.length; i++) {
-			if (i === 1) {
-				conditions.operands[i] = _prepareCondition(groupedFilters[i]);
+	let query = "";
+	conditions.operands.forEach((itemOfConditions, paramIndex) => {
+		if (paramIndex > 0) {
+			if (itemOfConditions.operator.toUpperCase() === "OR") {
+				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
+					? ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
+					: ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
 			}
 			else {
-				conditions = {
-					operator: "and",
-					operands: [
-						_prepareCondition(groupedFilters[i]),
-						conditions
-					]
-				};
+				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
+					? ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}`
+					: ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"`;
 			}
 		}
-	}
-	return JSON.stringify(conditions);
+		else {
+			query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
+				? `${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
+				: `${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
+		}
+	});
+	return query;
 }
 
 function count() {

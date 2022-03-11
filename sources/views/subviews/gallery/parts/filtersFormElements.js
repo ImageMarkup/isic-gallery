@@ -61,7 +61,9 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 				webix.html.removeCss(labelObject.getNode(), "showed-filter");
 				webix.html.addCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = false;
-				showedFiltersCollection.remove(dataForCreatingControl.id);
+				if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
+					showedFiltersCollection.remove(dataForCreatingControl.id);
+				}
 				controls.hide();
 			}
 		}
@@ -73,6 +75,11 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	else {
 		template.css += " collapssible-filter showed-filter";
 		collapsibleFilter.rows[1].hidden = false;
+		if (!showedFiltersCollection.exists(dataForCreatingControl.id)) {
+			showedFiltersCollection.add({
+				id: dataForCreatingControl.id
+			});
+		}
 	}
 
 	return collapsibleFilter;

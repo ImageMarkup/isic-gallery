@@ -25,7 +25,6 @@ function downloadByLink(url, name) {
 }
 
 function downloadBlob(blob, name) {
-
 	FileSaver.saveAs(blob, name);
 	/*if (window.navigator.msSaveBlob) {
 		window.navigator.msSaveBlob(blob, name);
@@ -292,7 +291,7 @@ function angleIconChange(obj) {
 function findItemInList(id, list) {
 	let returnParam;
 	list.find((obj) => {
-		if (obj._id === id) {
+		if (obj.isic_id === id) {
 			returnParam = true;
 		}
 	});
@@ -340,7 +339,7 @@ function getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, val
 			indexOfLastItemToAction = dataview.getIndexById(item.id);
 		}
 		dataview.data.each((image, index) => {
-			if (image._id === lastActionItem._id) {
+			if (image.isic_id === lastActionItem.isic_id) {
 				indexOfLastActionItem = index;
 				return true;
 			}
@@ -409,12 +408,20 @@ function setHiddenGalleryCartList(value) {
 	hiddenGalleryCartList = value;
 }
 
-function getHiidenGalleryLeftPanel() {
+function getHiddenGalleryLeftPanel() {
 	return hiddenGalleryLeftPanel;
 }
 
 function setHiddenGalleryLeftPanel(value) {
 	hiddenGalleryLeftPanel = value;
+}
+
+function debounce(func, timeout = 300) {
+	let timer;
+	return (...args) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => { func.apply(this, args); }, timeout);
+	};
 }
 
 export default {
@@ -442,7 +449,8 @@ export default {
 	scrollToLast,
 	getHiddenGalleryCartList,
 	setHiddenGalleryCartList,
-	getHiidenGalleryLeftPanel,
-	setHiddenGalleryLeftPanel
+	getHiddenGalleryLeftPanel,
+	setHiddenGalleryLeftPanel,
+	debounce
 };
 

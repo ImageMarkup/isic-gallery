@@ -75,7 +75,7 @@ export default class ImagesSelectionWindow extends JetView {
 				}
 			}
 		};
-		const dataview = {
+		const dataviewConfig = {
 			view: "activeDataview",
 			css: "gallery-images-dataview",
 			datathrottle: 500,
@@ -87,18 +87,18 @@ export default class ImagesSelectionWindow extends JetView {
 				let flagForStudies = selectedImages.getStudyFlag();
 				if (flagForStudies) {
 					$$(DATAVIEW_ID).find((obj) => {
-						if (selectedImages.isSelectedInAddNewImagePopup(obj._id)){
+						if (selectedImages.isSelectedInAddNewImagePopup(obj.isic_id)){
 							obj.markCheckbox = 1;
 						}
 					});
 				}
 				let checkedClass = obj.markCheckbox ? "is-checked" : "";
-				if (typeof galleryImageUrl.getPreviewImageUrl(obj._id) === "undefined") {
-					galleryImageUrl.setPreviewImageUrl(obj._id, ""); // to prevent sending query more than 1 time
-					ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
-						galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
-						$$(dataview.id).refresh(obj.id);
-					});
+				if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
+					galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.urls.thumbnail_256); // to prevent sending query more than 1 time
+					// ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
+					// 	galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
+					// 	$$(dataview.id).refresh(obj.id);
+					// });
 				}
 				return `<div class="gallery-images-container ${checkedClass}">
 					<div class='gallery-images-info'>
@@ -110,7 +110,7 @@ export default class ImagesSelectionWindow extends JetView {
 						</div>
 					</div>
 
-					<img src="${galleryImageUrl.getPreviewImageUrl(obj._id) || ""}" class="gallery-image" />
+					<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" />
 				</div>`;
 			},
 			borderless: true,
@@ -152,7 +152,7 @@ export default class ImagesSelectionWindow extends JetView {
 								selectedImages.addToSelectedInAddNewImagePopup(imagesArray);
 							} else {
 								imagesArray.forEach((item) => {
-									selectedImages.removeFromSelectedInAddNewImagePopup(item._id);
+									selectedImages.removeFromSelectedInAddNewImagePopup(item.isic_id);
 								});
 							}
 							dataview.parse(imagesArray);
@@ -231,7 +231,7 @@ export default class ImagesSelectionWindow extends JetView {
 					{
 						cols: [
 							{width: 6},
-							dataview
+							dataviewConfig
 						]
 					},
 					{height: 10},
