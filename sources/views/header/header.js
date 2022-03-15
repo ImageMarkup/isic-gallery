@@ -150,7 +150,7 @@ export default class Header extends JetView {
 						}
 						case constants.ID_HEADER_MENU_DOWNLOAD:
 						{
-							menuHandlerService.clickAPI(this.view);
+							menuHandlerService.clickAPI();
 							break;
 						}
 						default: {

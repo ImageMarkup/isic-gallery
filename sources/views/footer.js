@@ -19,7 +19,7 @@ export default class Footer extends JetView {
 				"menu-learning-competitions": () => menuHandlerService.clickChallengesStats(),
 				"menu-upload": () => menuHandlerService.clickUpload(),
 				"menu-dermoscopedia": () => menuHandlerService.clickDermoscopedia(),
-				"menu-api": () => menuHandlerService.clickAPI(this.view),
+				"menu-api": () => menuHandlerService.clickAPI(),
 				"menu-terms-of-use": () => menuHandlerService.clickTermsOfUse(),
 				"menu-privacy-policy": () => menuHandlerService.clickPrivacyPolicy(),
 				"menu-medical-disclaimer": () => menuHandlerService.clickMedicalDisclaimer(),

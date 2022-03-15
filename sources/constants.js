@@ -145,6 +145,7 @@ export default {
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
 	URL_FORUM: "https://forum.isic-archive.com",
 	URL_PARTICIPATE_BUTTON: "http://bit.ly/ISICpart",
+	URL_NEW_API_DOCS: `${process.env.ISIC_NEW_API_DOCS_URL}`,
 
 	NAME_VIEW_DASHBOARD: "dashboard",
 	TOOLTIP_CLASS_NAME_FOR_DATAVIEW: "tooltip-for-dataview-templates",
