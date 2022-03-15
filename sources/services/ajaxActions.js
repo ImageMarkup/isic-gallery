@@ -1,4 +1,3 @@
-import authService from "./auth";
 import axios from "../../node_modules/axios/dist/axios.min";
 import state from "../models/state";
 
@@ -44,24 +43,20 @@ function parseError(xhr) {
 	return Promise.reject(xhr);
 }
 
-webix.attachEvent("onBeforeAjax", async (mode, url, data, request, headers, files, promise) => {
+webix.attachEvent("onBeforeAjax", (mode, url, data, request, headers, files, promise) => {
 	if (url.includes(BASE_API_URL)) {
-		headers["Girder-Token"] = authService.getToken();
-	}
-	else if (url.includes(NEW_API_URL)) {
-		const isicClient = authService.getClient();
-		isicClient.maybeRestoreLogin()
-			.then(() => {
-				const authHeaders = isicClient.authHeaders;
-				const authHeadersKeys = Object.keys(authHeaders);
-				authHeadersKeys.forEach((key) => {
-					headers[key] = authHeaders[key];
-				});
-			});
+		headers["Girder-Token"] = state.auth.getToken();
 	}
 });
 
-
+async function getAuthHeaders(url) {
+	if (url.includes(NEW_API_URL)) {
+		const isicClient = state.auth.getClient();
+		await isicClient.maybeRestoreLogin();
+		return isicClient.authHeaders;
+	}
+	return {};
+}
 class AjaxActions {
 	getBaseApiUrl() {
 		return BASE_API_URL;
@@ -74,6 +69,7 @@ class AjaxActions {
 	_ajax() {
 		return webix.ajax();
 	}
+
 	_parseData(data) {
 		return data ? data.json() : data;
 	}
@@ -126,10 +122,33 @@ class AjaxActions {
 			.then(result => this._parseData(result));
 	}
 
+	async getNewUserInfo() {
+		const headers = await getAuthHeaders(NEW_API_URL);
+		const axiosConfig = {
+			method: "get",
+			url: `${NEW_API_URL}users/me`,
+			headers: headers
+		};
+		return axios(axiosConfig)
+			.then(result => (result && result.data ? result.data : {}), (e) => {
+				webix.message({type: "error", text: e.response.data.detail});
+				return Promise.reject(e);
+			});
+	}
+
 	postUserTermsOfUse(acceptTerms) {
 		return this._ajax().post(`${BASE_API_URL}user/acceptTerms`, acceptTerms)
 			.fail(parseError)
 			.then(result => this._parseData(result));
+	}
+
+	async putUserTermsOfUse() {
+		const headers = await getAuthHeaders(NEW_API_URL);
+		return this._ajax()
+			.headers(headers)
+			.put(`${NEW_API_URL}users/accept-terms`)
+			.fail(parseError)
+			.then(result => (result.data ? result.data : {}));
 	}
 
 	getUsers(userParams) {
@@ -211,7 +230,7 @@ class AjaxActions {
 	getImages(sourceParams) {
 		if (sourceParams
 			&& sourceParams.filter
-) {
+		) {
 			sourceParams.conditions = sourceParams.filter;
 			return this.searchImages(sourceParams);
 		}
@@ -564,7 +583,7 @@ class AjaxActions {
 			data: file,
 			headers: {
 				"Content-Type": file.type,
-				"Girder-Token": authService.getToken()
+				"Girder-Token": state.auth.getToken()
 			}
 		}).then(result => result.data, (e) => {
 			webix.message({type: "error", text: "Uploading file error"});
@@ -665,7 +684,7 @@ class AjaxActions {
 	}
 
 	getUrlForDownloadRegisteredMetadata(datasetId, metadataFileId) {
-		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${authService.getToken()}`;
+		return `${BASE_API_URL}dataset/${datasetId}/metadata/${metadataFileId}/download?token=${state.auth.getToken()}`;
 	}
 
 	putForgotPasswordEmail(email) {

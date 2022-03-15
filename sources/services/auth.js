@@ -121,12 +121,12 @@ class Auth {
 				webix.storage.local.put("user", user);
 			});
 		}
-		else {
-			return new Promise((resolve, reject) => {
-				webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
-				resolve();
-			});
-		}
+		
+		return new Promise((resolve) => {
+			webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+			resolve();
+		});
+		
 	}
 
 	showMainPage() {
@@ -187,15 +187,21 @@ class OAuthISIC extends Auth {
 				.then((_legacyToken) => {
 					if (_legacyToken) {
 						webix.storage.local.put("authToken", _legacyToken);
-						return ajax.getUserInfo();
+						Promise.all([
+							ajax.getUserInfo(),
+							ajax.getNewUserInfo()
+						]);
 					}
 					return null;
 				})
-				.then((user) => {
-					if (user) {
-						webix.storage.local.put("user", user);
+				.then(([userOldApi, userNewApi]) => {
+					if (userOldApi) {
+						webix.storage.local.put("user", userOldApi);
 						// trigger event
 						state.app.callEvent("login");
+					}
+					if (userNewApi && userNewApi.accepted_terms) {
+						webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
 					}
 				})
 				.catch(() => {
@@ -232,8 +238,32 @@ class OAuthISIC extends Auth {
 	getClient() {
 		return client;
 	}
+
+	acceptTermOfUse() {
+		const user = this.getUserInfo();
+		if (user) {
+			return ajax.putUserTermsOfUse(true)
+				.then(async () => {
+					const userInfoNewApi = await ajax.getNewUserInfo();
+					if (userInfoNewApi && userInfoNewApi.accepted_terms) {
+						webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+					}
+				});
+		}
+		return new Promise((resolve) => {
+			webix.storage.local.put(constants.KEY_ACCEPT_TERMS, true);
+			resolve();
+		});
+	}
+
+	isTermsOfUseAccepted() {
+		const termOfUse = webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
+		return termOfUse;
+	}
 }
 
 const instance = state.authorization_mode === "Legacy" ? new Auth() : new OAuthISIC();
+
+state.auth = instance;
 
 export default instance;
