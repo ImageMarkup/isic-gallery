@@ -2,7 +2,6 @@ import state from "../models/state";
 import util from "../utils/util";
 import constants from "../constants";
 import authService from "./auth";
-import ApiWindow from "../views/header/windows/apiWindow";
 
 export default {
 	clickAbout() {
@@ -67,9 +66,8 @@ export default {
 		state.app.show(constants.PATH_MAIN);
 	},
 
-	clickAPI(thisView) {
-		let apiWindow = thisView.$scope.ui(ApiWindow);
-		apiWindow.showWindow();
+	clickAPI() {
+		util.openInNewTab(constants.URL_NEW_API_DOCS);
 	},
 
 	clickTermsOfUse() {
