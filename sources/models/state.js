@@ -2,8 +2,8 @@
  this object we use for saving state for pages. For example, userinfo after authentification
  */
 const state = {
-	app: {}, // init in app.js
-	auth: {}, // init in
+	app: null, // init in app.js
+	auth: null, // init in auth.js
 	datasetMapForFilters: {}, // init in models/imagesFilters
 	dashboard: { // state of dashboard page
 		selectedDatasetIdsSet: new Set(),
@@ -16,7 +16,6 @@ const state = {
 	studies: {
 		toolbarValues: {}
 	},
-	authorization_mode: process.env.AUTHORIZATION_MODE,
 	clear() {
 		this.dashboard = { // state of dashboard page
 			selectedDatasetIdsSet: new Set(),

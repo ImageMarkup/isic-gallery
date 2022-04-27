@@ -216,9 +216,7 @@ export default class CreateStudyPage extends JetView {
 	}
 
 	urlChange() {
-		if (!authService.isStudyAdmin()) {
-			authService.showMainPage();
-		}
+		authService.showMainPage();
 	}
 
 	getStudyDataview() {

@@ -3,7 +3,16 @@ import util from "../../utils/util";
 import storage from "../../models/wizardUploaderStorage";
 
 class WizzardUploaderService {
-	constructor(view, form, uploader, removeButton, exportButton, clearSessionButton, previewTemplate, dropArea) {
+	constructor(
+		view,
+		form,
+		uploader,
+		removeButton,
+		exportButton,
+		clearSessionButton,
+		previewTemplate,
+		dropArea
+	) {
 		this._view = view;
 		this._form = form;
 		this._uploader = uploader;
@@ -18,13 +27,14 @@ class WizzardUploaderService {
 	_init() {
 		this._form.attachEvent("onAfterValidation", (result, values) => {
 			if (!result) {
-				for (let key in values) {
+				const valuesKeys = Object.keys(values);
+				valuesKeys.forEach((key) => {
 					if (key === "mel_thick_mm") {
 						const thicknessTextView = this._form.queryView({name: key});
 						thicknessTextView.define("bottomPadding", 30);
 						thicknessTextView.resize();
 					}
-				}
+				});
 			}
 		});
 
@@ -40,18 +50,6 @@ class WizzardUploaderService {
 			this._exportButton.enable();
 		}
 
-		ajaxActions.getDataset({details: true}).then((data) => {
-			if (data && data.filter) {
-				const preparedData = data.filter((item) => {
-					const newItem = webix.copy(item);
-					newItem.id = item._id;
-					if (newItem._accessLevel >= 1) {
-						return newItem;
-					}
-				});
-				this._form.elements.dataset.getList().parse(preparedData);
-			}
-		});
 
 		this._view.on(this._view.app, "imageAdded", () => {
 			this._exportButton.enable();
@@ -95,7 +93,8 @@ class WizzardUploaderService {
 		});
 
 		this._uploader.attachEvent("onBeforeFileAdd", (item) => {
-			// This mark is needed for correct processing several files after drag and drop. We should show alert only once. But "onBeforeFileAdd" calls for every attempt
+			// This mark is needed for correct processing several files after drag and drop.
+			// We should show alert only once. But "onBeforeFileAdd" calls for every attempt
 			const alertDivCollection = document.getElementsByClassName("webix_alert-warning");
 			if (!alertDivCollection.length) {
 				if (!(item.type.toLowerCase() === "png" || item.type.toLowerCase() === "jpg" || item.type.toLowerCase() === "jpeg")) {
@@ -111,6 +110,7 @@ class WizzardUploaderService {
 					return false;
 				}
 			}
+			return false;
 		});
 
 		this._form.elements.submit.attachEvent("onItemClick", () => {
@@ -120,7 +120,8 @@ class WizzardUploaderService {
 					{
 						type: "alert-error",
 						text: "There are no image for uploading. Please, add image"
-					});
+					}
+				);
 				return;
 			}
 			if (!this._form.elements.signature_approve.getValue()) {
@@ -128,7 +129,8 @@ class WizzardUploaderService {
 					{
 						type: "alert-error",
 						text: "You should confirm your signature by checkbox mark"
-					});
+					}
+				);
 				return;
 			}
 			if (this._form.validate()) {
@@ -136,34 +138,14 @@ class WizzardUploaderService {
 				const datasetWebixId = values.dataset;
 				const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
 				const datasetId = datasetItem._id;
-				ajaxActions.addImageToDataset(datasetId, values, fileItem.file).then((imageData) => {
-					if (imageData) {
-						webix.message("Image has been uploaded");
-						const preparedValues = this._prepareDataForStorage(values);
-						const params = {
-							metadata: preparedValues,
-							save: true
-						};
-						ajaxActions.addImageMetadata(imageData._id, params).then(() => {
-							webix.message("Metadata has been saved");
-							preparedValues.id = imageData._id;
-							storage.addFileInfoToStorage(preparedValues);
-							storage.saveSignature(this._form.elements.signature.getValue());
-							this._view.app.callEvent("imageAdded");
-							this._uploader.files.clearAll();
-							this._removeButton.disable();
-							this._dropArea.show(false, false);
-							this._clearForm();
-						});
-					}
-				});
 			}
 		});
 		this._initFormRestrictions();
 	}
 
 	_clearForm() {
-		// we block event because clear method call onChange event for signature_approve.  we need to prevent event
+		// we block event because clear method call onChange event for signature_approve.
+		// we need to prevent event
 		this._form.elements.signature_approve.blockEvent();
 		this._form.clear();
 		this._form.elements.signature_approve.unblockEvent();
@@ -196,7 +178,7 @@ class WizzardUploaderService {
 
 	_initFormRestrictions() {
 		this._form.elements.signature_approve.attachEvent("onChange", (newv, oldv) => {
-			if (storage.getSignature() && newv == 0) {
+			if (storage.getSignature() && newv === 0) {
 				webix.alert({type: "alert-warning", text: "Please, clear session, if you want to change signature"});
 				this._form.elements.signature_approve.blockEvent();
 				this._form.elements.signature_approve.setValue(oldv);

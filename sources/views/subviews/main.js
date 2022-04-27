@@ -22,7 +22,8 @@ export default class mainView extends JetView {
 				"learning-challenges-card-block": () => menuHandlerService.clickChallengesStats(),
 				"upload-card-block": () => menuHandlerService.clickUpload(),
 				"dermoscopedia-card-block": () => menuHandlerService.clickDermoscopedia(),
-				"download-card-block": () => menuHandlerService.clickAPI()
+				"download-card-block": () => menuHandlerService.clickAPI(),
+				"dashboard-card-block": () => menuHandlerService.clickDashboard()
 			}
 		};
 		return {

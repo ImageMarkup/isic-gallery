@@ -1,12 +1,11 @@
 import {JetView} from "webix-jet";
-import ajaxActions from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import "../../components/passwordInput";
 
 const ID_PROFILE_FORM = "user-account-profile-form";
 const ID_PASSWORD_FORM = "user-account-password-form";
 const ID_TEMPLATE_NAME = "user-account-template-name";
-const ID_LAYOUT_ADMIN_ACCESS_PROFILE_RORM = "layout-admin-access-profile-form";
+const ID_LAYOUT_ADMIN_ACCESS_PROFILE_FORM = "layout-admin-access-profile-form";
 const ID_TAB_PASSWORD = "password-tab";
 const ID_TABVIEW = "user-account-tabview";
 
@@ -56,6 +55,7 @@ export default class UserAccountView extends JetView {
 							{
 								view: "text",
 								css: "text-field",
+								hidden: true,
 								name: "firstName",
 								label: "First name",
 								placeholder: "Enter your First name",
@@ -64,13 +64,14 @@ export default class UserAccountView extends JetView {
 							{
 								view: "text",
 								css: "text-field",
+								hidden: true,
 								name: "lastName",
 								label: "Last name",
 								placeholder: "Enter your Last name",
 								invalidMessage: "Enter your Last name"
 							},
 							{
-								id: ID_LAYOUT_ADMIN_ACCESS_PROFILE_RORM,
+								id: ID_LAYOUT_ADMIN_ACCESS_PROFILE_FORM,
 								hidden: true,
 								rows: [
 									{
@@ -95,8 +96,9 @@ export default class UserAccountView extends JetView {
 										]
 									}
 								]
-							},
-							{
+							}
+							// TODO: uncomment if updating user information will be possible
+							/* {
 								cols: [
 									{},
 									{
@@ -123,7 +125,7 @@ export default class UserAccountView extends JetView {
 										}
 									}
 								]
-							}
+							} */
 
 						]
 					}
@@ -158,7 +160,7 @@ export default class UserAccountView extends JetView {
 
 	_load() {
 		const user = authService.getUserInfo();
-		$$(ID_TEMPLATE_NAME).setValues({name: `${user.firstName} ${user.lastName} (${user.login})`});
+		$$(ID_TEMPLATE_NAME).setValues({name: `${user.first_name} ${user.last_name}`});
 		$$(ID_PROFILE_FORM).setValues(user);
 	}
 

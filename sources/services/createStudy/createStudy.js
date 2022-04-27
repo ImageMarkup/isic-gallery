@@ -270,23 +270,6 @@ export default class CreateStudyService {
 				features
 			};
 
-			this._view.showProgress();
-			ajaxActions.createNewStudy(studyParams)
-				.then(() => {
-					webix.message("New study was successfully created!");
-					this._view.hideProgress();
-					this._setStudyCreatedValue(true);
-					this._view.$scope.app.show(constants.PATH_GALLERY);
-				})
-				.catch((error) => {
-					let errorObject = JSON.parse(error.responseText);
-					webix.alert({
-						title: "Error!",
-						text: errorObject.message,
-						type: "alert-error"
-					});
-					this._view.hideProgress();
-				});
 		});
 	}
 

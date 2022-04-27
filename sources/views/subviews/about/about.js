@@ -131,6 +131,10 @@ const SIDEBAR_MENU_ITEMS = [
 		value: "ISIC Publications"
 	},
 	{
+		id: "faq",
+		value: "FAQ"
+	},
+	{
 		id: "contactInfo",
 		value: "Contact Information"
 	}
@@ -255,6 +259,10 @@ export default class aboutView extends JetView {
 			]
 		};
 		return ui;
+	}
+
+	ready() {
+		this.setMenuHeight();
 	}
 
 	urlChange(view, url) {

@@ -34,4 +34,4 @@ function getDownloadingPanel() {
 
 export default {
 	getDownloadingPanel
-}
+};

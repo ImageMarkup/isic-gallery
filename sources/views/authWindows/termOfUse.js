@@ -1,6 +1,5 @@
 import windowWithHeader from "../components/windowWithHeader";
-import authService from "../../services/auth";
-
+import state from "../../models/state";
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
 import mdTemplate from "../templates/termsOfUse.md";
 import mdLoader from "../../services/mdLoader";
@@ -43,7 +42,7 @@ const body = {
 							if (typeof thisWindow.okCallback === "function") {
 								thisWindow.okCallback();
 							}
-							authService.acceptTermOfUse().then(() => {
+							state.auth.acceptTermOfUse().then(() => {
 								this.getTopParentView().hide();
 							});
 						}
@@ -58,7 +57,7 @@ const body = {
 					on: {
 						onItemClick() {
 							this.getTopParentView().hide();
-							authService.showMainPage();
+							state.auth.showMainPage();
 						}
 					}
 				}
@@ -68,7 +67,7 @@ const body = {
 };
 
 function getConfig(id) {
-	return windowWithHeader.getConfig(id, body, "Terms of Use", authService.showMainPage);
+	return windowWithHeader.getConfig(id, body, "Terms of Use", state.auth.showMainPage);
 }
 
 function getIdFromConfig() {

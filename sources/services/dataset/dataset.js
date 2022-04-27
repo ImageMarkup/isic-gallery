@@ -45,10 +45,6 @@ class DatasetViewService {
 				this._showAccordionItem(accordionItem.getNode());
 				return;
 			}
-			ajaxActions.getDatasetItem(accordionItem.config.elementId).then((item) => {
-				accItem.createAccordion(item, accordionItem);
-				this._showAccordionItem(accordionItem.getNode());
-			});
 		});
 
 		this._view.$scope.use(plugins.UnloadGuard, () => {

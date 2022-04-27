@@ -39,10 +39,8 @@ class DashboardService {
 		});
 
 		this._infoTemplate = this._view.$scope.getInfoTemplate();
-		if (auth.isStudyAdmin()) {
-			//this._buttonManagementUI.show();
-			this._buttonInviteUser.show();
-		}
+		//this._buttonManagementUI.show();
+		this._buttonInviteUser.show();
 		// this._buttonManagementUI.attachEvent("onItemClick", () => {
 		// 	this._view.$scope.app.show(constants.PATH_MANAGEMENT_UI_ABOUT);
 		// });
@@ -57,6 +55,7 @@ class DashboardService {
 			accordionItem.expand();
 		}
 	}
+
 	load() {
 		let firstRowOfStatsToDisplay = [{
 			cols: []
@@ -73,21 +72,8 @@ class DashboardService {
 			this._expandAccordionItem(item);
 		}
 
-		ajaxActions.getStudies({userId: "me"}).then((studies) => {
-			if (studies) {
-				this._templatePartisipateStadies.setValues({count: studies.length});
-				this._listPartisipateStudies.parse(studies);
-			}
-		});
 		if (auth.hasSegmentationSkill()) {
 			this._accordionItemSegmentationTask.show();
-			ajaxActions.getTaskSegmentation().then((tasks) => {
-				if (tasks) {
-					const count = tasks.reduce((sum, current) => sum + current.count, 0);
-					this._templatePartisipantSegmentationTasks.setValues({count});
-					this._listPartisipateSegmentationTasks.parse(tasks);
-				}
-			});
 		}
 
 		const dashboardStatsKeys = Object.keys(dashboardStats);

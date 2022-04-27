@@ -8,7 +8,7 @@ import annotatorsPanel from "../../views/subviews/studiesManagement/parts/annota
 import imagesPanel from "../../views/subviews/studiesManagement/parts/imagesPanel";
 import actionPanel from "../../views/subviews/studiesManagement/parts/actionPanel";
 import accordionView from "../../views/subviews/studiesManagement/parts/accordionView";
-import state from "../../models/state"
+import state from "../../models/state";
 
 class StudiesManagementService {
 	constructor(view, pager, clonePager, headerTemplate, accordion) {
@@ -17,7 +17,7 @@ class StudiesManagementService {
 		this._clonePager = clonePager;
 		this._headerTemplate = headerTemplate;
 		this._accordion = accordion;
-		this._init()
+		this._init();
 	}
 
 	_init() {
@@ -30,17 +30,6 @@ class StudiesManagementService {
 			while (accordionLayouts.length !== 0) {
 				accordionItemChildViews[0].removeView(accordionLayouts[0].config.id);
 			}
-			ajaxActions.getStudy(accordionItem.config.elementId).then((item) => {
-				accordionItemChildViews[0].addView(infoPanel.createInfoPanel(item));
-				accordionItemChildViews[0].addView(annotatorsPanel.createAnnotatorsPanel(item));
-				accordionItemChildViews[0].addView(imagesPanel.createImagesPanel(item));
-				// add condition if studyAdmin, then add action panel
-				if (authService.isStudyAdmin()) {
-					accordionItemChildViews[0].addView(actionPanel.createActionsPanel(item, this));
-				}
-				accordionItem.contentLoaded = true;
-				this._showAccordionItem(id);
-			});
 		});
 
 		this._pager.attachEvent("onItemClick", (id) => {

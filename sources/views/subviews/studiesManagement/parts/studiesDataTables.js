@@ -32,13 +32,6 @@ function createUsersDatatable(item, template) {
 					type: "confirm-error",
 					callback(result) {
 						if (result) {
-							ajaxActions.removeAnnotatorFromStudy(item._id, selectedUser.id).then(() => {
-								webix.message("User has been removed from study");
-								updateData.updateUsersAndRequestsTables(item._id, null, item.usersDatatableId);
-								template.parse({
-									users: $$(item.usersDatatableId).count() - 1
-								});
-							});
 						}
 					}
 				});
@@ -53,9 +46,7 @@ function createUsersDatatable(item, template) {
 				else {
 					this.define({yCount: 10, autoheight: false});
 				}
-				if (!authService.isStudyAdmin()) {
-					this.hideColumn("remove");
-				}
+				this.hideColumn("remove");
 			}
 		}
 	};
@@ -100,13 +91,6 @@ function createRequestsDatatable(item) {
 					callback(result) {
 						if (result) {
 							const usersIds = [selectedUser.id]; // because we need to send array to server
-							ajaxActions.addUsersToStudy(item._id, usersIds).then(() => {
-								webix.message("User has been added to study");
-								updateData.updateUsersAndRequestsTables(item._id, item.requestsDatatableId, item.usersDatatableId);
-								template.parse({
-									users: $$(item.usersDatatableId).count() + 1
-								});
-							});
 						}
 					}
 				});
@@ -118,10 +102,6 @@ function createRequestsDatatable(item) {
 					type: "confirm-error",
 					callback(result) {
 						if (result) {
-							ajaxActions.removeParticipationRequest(item._id, selectedUser.id).then(() => {
-								webix.message("Request has been removed");
-								updateData.updateUsersAndRequestsTables(item._id, item.requestsDatatableId);
-							});
 						}
 					}
 				});
@@ -144,9 +124,7 @@ function createRequestsDatatable(item) {
 				else {
 					this.define({yCount: 10, autoheight: false});
 				}
-				if (!authService.isStudyAdmin()) {
-					this.hideColumn("remove");
-				}
+				this.hideColumn("remove");
 			}
 		}
 	};

@@ -47,9 +47,7 @@ class GalleryService {
 	}
 
 	_searchHandlerByFilter() {
-		let searchValue = this._searchInput.getValue();
-		searchValue = searchValue.trim();
-		searchValue = searchValue.replace(/\s+/g, " ");
+		let searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
 		this._searchInput.setValue(searchValue);
 		if (searchValue.length < 3) {
 			webix.alert("You should type minimum 3 characters");
@@ -85,19 +83,21 @@ class GalleryService {
 	}
 
 	_searchHandlerByName(afterFilterSelected) {
-		let searchValue = this._searchInput.getValue();
-		searchValue = searchValue.trim();
-		searchValue = searchValue.replace(/\s+/g, " ");
-		this._searchInput.setValue(searchValue);
-		if (searchValue && searchValue.length < 9) {
-			webix.alert("You should type minimum 9 characters");
+		let searchValue = this._searchInput.getValue().trim().split(" ").join("");
+		if (searchValue === "" && this._view.$scope.getParam("name") === "") {
 			return;
 		}
-		else if (searchValue === "") {
+		if (searchValue === "" && this._view.$scope.getParam("name") !== "") {
+			this._view.$scope.setParam("name", "", true);
 			this._clearNameFilter();
 			this._reload();
 			return;
 		}
+		if (searchValue.length < 9) {
+			webix.alert("You should type minimum 9 characters");
+			return;
+		}
+		this._searchInput.setValue(searchValue);
 		const valueOfMarkedCheckbox = 1;
 		let filteredImages = [];
 		let studyFlag = selectedImages.getStudyFlag();
@@ -111,77 +111,8 @@ class GalleryService {
 		}
 
 		this._view.$scope.setParam("name", searchValue, true);
-		// TODO: delete setFilterByName after study endpoint will be implemented
-		// begin setFilterByName
 		appliedFilterModel.setFilterByName(true);
-		// end setFilterByName
 		this._view.showProgress();
-		// TODO: will be uncomment after study endpoint will be implemented in new API
-		// this.studiesPromise
-		// 	.then(annotatedImages => ajax.getAllImages(sourceParams, annotatedImages))
-		// 	.then((valuesArray) => {
-		// 		const annotatedImages = valuesArray.annotatedImages;
-		// 		const allImagesArray = webix.copy(valuesArray.allImages);
-		// 		const totalCount = allImagesArray.length;
-		// 		allImagesArray.forEach((imageObj) => {
-		// 			if (annotatedImages[imageObj.isic_id]) {
-		// 				imageObj.hasAnnotations = true;
-		// 				imageObj.studyId = annotatedImages[imageObj.isic_id].studyId;
-		// 			}
-		// 			if (studyFlag && selectedImages.isSelectedInStudies(imageObj.isic_id)) {
-		// 				imageObj.markCheckbox = valueOfMarkedCheckbox;
-		// 			}
-		// 			else if (!studyFlag && selectedImages.isSelected(imageObj.isic_id)) {
-		// 				imageObj.markCheckbox = valueOfMarkedCheckbox;
-		// 			}
-		// 			filteredImages.push(imageObj);
-		// 		});
-		// 		const currentCount = filteredImages.length;
-		// 		if (currentCount > 0) {
-		// 			this._imagesDataview.clearAll();
-		// 			let page = 0;
-		//			let pagerCount = this._pager.data.size;
-		// 			this._updatePagerCount(pagerCount, page);
-		// 			// connecting pager to data view
-		// 			this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
-		// 			this._pager.hide();
-		// 			this._clonedPagerForNameSearch.show();
-		// 			this._imagesDataview.parse(filteredImages);
-		//
-		// 			const rangeFinish = this._pager.data.size;
-		// 			const headerValues = {
-		// 				rangeStart: 1,
-		// 				rangeFinish,
-		// 				currentCount,
-		// 				filtered: true,
-		// 				totalCount
-		// 			};
-		// 			this._contentHeaderTemplate.setValues(headerValues);
-		// 			this._contentHeaderTemplate.refresh();
-		// 			appliedFilterModel.setFilterByName(true);
-		// 		}
-		// 		else {
-		// 			if (afterFilterSelected) {
-		// 				this._imagesDataview.clearAll();
-		// 				const headerValues = {
-		// 					rangeStart: 0,
-		// 					rangeFinish: 0,
-		// 					filtered: true,
-		// 					currentCount,
-		// 					totalCount
-		// 				};
-		// 				this._contentHeaderTemplate.setValues(headerValues);
-		// 				this._contentHeaderTemplate.refresh();
-		// 				this._imagesDataview.showOverlay(`<div style="font-size: 17px; font-weight: bold;">Nothing Has Found With Name "${searchValue}"</div>`);
-		// 			}
-		// 			webix.alert(`Nothing has found with name "${searchValue}"`);
-		// 		}
-		// 		this._view.hideProgress();
-		// 	})
-		// 	.fail(() => {
-		// 		webix.message("Something went wrong");
-		// 		this._view.hideProgress();
-		// 	});
 
 		ajax.searchImages(sourceParams)
 			.then((foundImages) => {
@@ -214,7 +145,7 @@ class GalleryService {
 				}
 				this._view.hideProgress();
 			})
-			.fail(() => {
+			.catch(() => {
 				webix.message("Something went wrong");
 				this._view.hideProgress();
 			});
@@ -248,20 +179,9 @@ class GalleryService {
 		});
 
 		if (authService.isLoggedin()) {
-			if (authService.getUserInfo().permissions.adminStudy) {
-				let studyFlag = selectedImages.getStudyFlag();
-				if (!studyFlag) {
-					this._onChangeForDownload(true);
-					selectedImagesArray = selectedImages.getSelectedImagesForDownload();
-				}
-				else {
-					let newValue = 1;
-					this._toggleButton.setValue(newValue);
-					this._onChangeForStudy(true);
-					selectedImagesArray = selectedImages.getStudyImagesId();
-				}
-			}
-			else {
+			if (authService.getUserInfo()) {
+				// TODO: uncomment in galleryDataview and galaryService when download will be implemented
+				// this._onChangeForDownload(true);
 				selectedImagesArray = selectedImages.getSelectedImagesForDownload();
 			}
 		}
@@ -630,10 +550,6 @@ class GalleryService {
 				else {
 					this._view.showProgress();
 					ajax.getAllImages(sourceParams)
-						.fail(() => {
-							this._view.hideProgress();
-							webix.message("Unable to select images");
-						})
 						.then((allImagesData) => {
 							allImagesData.forEach((imageObj) => {
 								if (selectedImages.isSelectedInStudies(imageObj.isic_id)) {
@@ -673,6 +589,10 @@ class GalleryService {
 								this._removeTooltipForDataview(this._allPagesTemplate);
 							}
 							this._view.hideProgress();
+						})
+						.catch(() => {
+							this._view.hideProgress();
+							webix.message("Unable to select images");
 						});
 				}
 			},
@@ -877,80 +797,77 @@ class GalleryService {
 		return result;
 	}
 
-	downloadZip(type, onlySelected) {
-		let url = `${ajax.getBaseApiUrl()}image/download?include=${type}`;
-		if (onlySelected) {
-			if (!selectedImages.count()) {
-				webix.alert({
-					text: "There are no images selected for downloading",
-					type: "alert-error"
-				});
-				return;
-			}
-			const checkedIds = selectedImages.getURIEncoded();
-			url += `&imageIds=${checkedIds}`;
-		}
-		else if (appliedFilterModel.count()) {
-			url += `&filter=${appliedFilterModel.getConditionsForApi()}`;
-		}
-		util.downloadByLink(url, `${type}.zip`);
-	}
+	// TODO uncomment after implementation
+	// downloadZip(type, onlySelected) {
+	// 	let url = `${ajax.getBaseApiUrl()}image/download?include=${type}`;
+	// 	if (onlySelected) {
+	// 		if (!selectedImages.count()) {
+	// 			webix.alert({
+	// 				text: "There are no images selected for downloading",
+	// 				type: "alert-error"
+	// 			});
+	// 			return;
+	// 		}
+	// 		const checkedIds = selectedImages.getURIEncoded();
+	// 		url += `&imageIds=${checkedIds}`;
+	// 	}
+	// 	else if (appliedFilterModel.count()) {
+	// 		url += `&filter=${appliedFilterModel.getConditionsForApi()}`;
+	// 	}
+	// 	util.downloadByLink(url, `${type}.zip`);
+	// }
 
 	async load() {
-		state.imagesTotalCounts = {};
-		state.imagesTotalCounts.passedFilters = {};
-		const images = await ajax.getImages();
-		state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
-		this._updateContentHeaderTemplate(
-			{
-				rangeStart: 1,
-				rangeFinish: this._pager.data.size,
-				totalCount: state.imagesTotalCounts.passedFilters.count
-			}
-		);
-		this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
-		const facets = await ajax.getFacets();
-		const ids = Object.keys(facets);
-		ids.forEach((id) => {
-			state.imagesTotalCounts[id] = facets[id].buckets;
-		});
-		let appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		const paramFilters = this._view.$scope.getParam("filter");
-		if (appliedFiltersArray.length) {
-			webix.delay(() => {
-				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+		try {
+			state.imagesTotalCounts = {};
+			state.imagesTotalCounts.passedFilters = {};
+			const images = await ajax.getImages();
+			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
+			this._updateContentHeaderTemplate(
+				{
+					rangeStart: 1,
+					rangeFinish: this._pager.data.size,
+					totalCount: state.imagesTotalCounts.passedFilters.count
+				}
+			);
+			this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
+			const facets = await ajax.getFacets();
+			const ids = Object.keys(facets);
+			ids.forEach((id) => {
+				state.imagesTotalCounts[id] = facets[id].buckets;
 			});
-		}
-		else {
-			this._createFilters([], true)
-				.then(() => {
-					if (paramFilters) {
-						try {
-							const parsedFilters = JSON.parse(paramFilters);
-							appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
-							this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			const paramFilters = this._view.$scope.getParam("filter");
+			if (appliedFiltersArray.length) {
+				webix.delay(() => {
+					this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+				});
+			}
+			else {
+				this._createFilters([], true)
+					.then(() => {
+						if (paramFilters) {
+							try {
+								const parsedFilters = JSON.parse(paramFilters);
+								appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
+								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+							}
+							catch (err) {
+								this._view.$scope.setParam("filter", "[]", true);
+								this._view.$scope.app.callEvent("filtersChanged", [[]]);
+							}
 						}
-						catch (err) {
-							this._view.$scope.setParam("filter", "[]", true);
-							this._view.$scope.app.callEvent("filtersChanged", [[]]);
-						}
-					}
-				}); // create filters form controls from config
+					}); // create filters form controls from config
+			}
+			filterService.updateFiltersCounts();
+			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
-		filterService.updateFiltersCounts();
-		if (!paramFilters && !appliedFiltersArray.length) this._reload();
+		catch (error) {}
 	}
 
 	_reload(offsetSource, limitSource) {
 		let limit = limitSource || this._pager.data.size;
 		let offset = offsetSource || 0;
-		// save promise to object. we need wait for its result before rendering images dataview
-		// TODO: uncomment when study endpoint will be implemented
-		// this.studiesPromise = ajax.getStudies({
-		// 	sort: "lowerName",
-		// 	sortdir: "1",
-		// 	detail: true
-		// }).then(data => this._prepareAnnotatedImagesList(data));
 		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 		this._createFilters(appliedFiltersArray);
 		this._updateCounts();
@@ -1030,16 +947,18 @@ class GalleryService {
 
 	async _updateImagesDataview(offset, limit) {
 		this._imagesDataview.clearAll();
-		const filter = appliedFilterModel.getConditionsForApi();
 		const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
+		const nameParam = this._view.$scope.getParam("name");
+		if (nameParam) {
+			this._leftPanelToggleButton.setValue(1);
+			this._searchInput.setValue(nameParam);
+		}
 		const searchValue = this._searchInput.getValue();
-		if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8) {
+		if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8 && nameParam) {
 			this._searchHandlerByName(true);
 			return;
 		}
-		else if (searchValue > 0 && searchValue < 9) {
-			webix.alert("You should type minimum 9 characters for name search");
-		}
+		const filter = appliedFilterModel.getConditionsForApi();
 		this._view.showProgress();
 		try {
 			const images = await ajax.getImages({
@@ -1075,7 +994,9 @@ class GalleryService {
 			this._view.hideProgress();
 		}
 		catch (error) {
-			this._view.hideProgress();
+			if (!this._view.$destructed) {
+				this._view.hideProgress();
+			}
 		}
 	}
 

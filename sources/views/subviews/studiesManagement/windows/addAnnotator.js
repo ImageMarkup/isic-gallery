@@ -60,13 +60,6 @@ const form = {
 									const thisForm = $$(form.id);
 									const params = thisForm.getValues();
 									params.q = text;
-									ajax.search(params).then((data) => {
-										this.clearAll();
-										if (data && data.user && data.user.length) {
-											this.parse(data.user);
-											this.sort("name");
-										}
-									});
 								}
 							}
 						}
