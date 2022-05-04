@@ -6,7 +6,7 @@ The following table is a brief synopsis of the ISIC Grand Challenges. The indivi
 
 To visit a specific challenge, please click on the year in the table header, or visit the [challenges overview](https://challenge.isic-archive.com/challenges) page.
 <br />
-| | [2016](https://challenge.isic-archive.com/landing/2016) | [2017](https://challenge.isic-archive.com/landing/2017) | [2018](https://challenge.isic-archive.com/landing/2018) | [2019](https://challenge.isic-archive.com/landing/2019) | [2020](https://www.kaggle.com/c/siim-isic-melanoma-classification/overview) |
+| | [2016](https://challenge2016.isic-archive.com/) | [2017](https://challenge2017.isic-archive.com/) | [2018](https://challenge2018.isic-archive.com/) | [2019](https://challenge2019.isic-archive.com/) | [2020](https://challenge2020.isic-archive.com/) |
 | - | - | - | - | - | - |
 | <u>Conference/Host:</u> | ISBI / MSKCC | ISBI / MSKCC | MICCAI / Univ. of Vienna | MICCAI / Univ. of Barcelona | MICCAI / CVPR |
 | <u>Diagnoses:</u> | (2) melanoma,<br />nevus | (3) melanoma,<br />nevus,<br />seb.&nbsp;keratosis | (7) melanoma,<br />nevus,<br />seb.&nbsp;keratosis,<br />basal cell<br />carcinoma,<br />squamous cell<br />carcinoma,<br />angioma,<br />dermatofibroma,  | (9) melanoma,<br />nevus,<br />seb.&nbsp;keratosis,<br />basal cell<br />carcinoma,<br />squamous cell<br />carcinoma,<br />angioma,<br />dermatofibroma,<br />actinic keratosis,<br />UNKNOWN | (2) benign,<br />melanoma<br />(+ patient-level contextual images and patient ID) |
