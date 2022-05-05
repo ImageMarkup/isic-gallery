@@ -1,7 +1,7 @@
 import axios from "../../node_modules/axios/dist/axios.min";
 import state from "../models/state";
 
-const API_URL = process.env.ISIC_API_URL;
+const API_URL = process.env.ISIC_NEW_API_URL;
 
 function parseError(xhr) {
 	let message;

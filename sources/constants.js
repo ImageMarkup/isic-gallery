@@ -133,7 +133,7 @@ export default {
 	URL_CHALLENGES: "https://challenge.isic-archive.com",
 	URL_CHALLENGES_STATS: "https://challenge.isic-archive.com/stats",
 	URL_CHALLENGES_LIVE: "https://challenge.isic-archive.com/challenges",
-	URL_API: `${process.env.ISIC_API_URL}`,
+	URL_API: `${process.env.ISIC_NEW_API_URL}`,
 	URL_CHALLENGE_2016: "https://challenge2016.isic-archive.com/",
 	URL_CHALLENGE_2017: "https://challenge2017.isic-archive.com/",
 	URL_CHALLENGE_2018: "https://challenge2018.isic-archive.com/",
