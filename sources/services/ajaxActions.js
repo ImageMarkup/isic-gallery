@@ -78,7 +78,7 @@ class AjaxActions {
 		const headers = await getAuthHeaders();
 		const axiosConfig = {
 			method: "get",
-			url: `${API_URL}users/me`,
+			url: `${API_URL}users/me/`,
 			headers
 		};
 		return axios(axiosConfig)
@@ -92,7 +92,7 @@ class AjaxActions {
 		const headers = await getAuthHeaders();
 		return this._ajax()
 			.headers(headers)
-			.put(`${API_URL}users/accept-terms`)
+			.put(`${API_URL}users/accept-terms/`)
 			.fail(parseError)
 			.then(result => (result.data ? result.data : {}));
 	}
@@ -109,14 +109,14 @@ class AjaxActions {
 			limit: sourceParams.limit || 0,
 			offset: sourceParams.offset || 0
 		} : {};
-		return this._ajaxGet(`${API_URL}images`, params)
+		return this._ajaxGet(`${API_URL}images/`, params)
 			.then(result => this._parseData(result))
 			.catch(parseError);
 	}
 
 	// New API
 	getImageItem(isicId) {
-		return this._ajaxGet(`${API_URL}images/${isicId}`)
+		return this._ajaxGet(`${API_URL}images/${isicId}/`)
 			.then(result => this._parseData(result))
 			.catch(parseError);
 	}
@@ -129,7 +129,7 @@ class AjaxActions {
 			offset: sourceParams.offset || 0,
 			query: conditions
 		};
-		return this._ajaxGet(`${API_URL}images/search`, params)
+		return this._ajaxGet(`${API_URL}images/search/`, params)
 			.then(result => this._parseData(result))
 			.catch(parseError);
 	}
@@ -143,7 +143,7 @@ class AjaxActions {
 			query: conditions,
 			collection
 		};
-		return this._ajaxGet(`${API_URL}images/facets`, params)
+		return this._ajaxGet(`${API_URL}images/facets/`, params)
 			.then((result) => {
 				const facets = this._parseData(result);
 				const ids = Object.keys(facets);
@@ -199,7 +199,7 @@ class AjaxActions {
 			offset: sourceParams.offset || 0
 		} : {limit: 0, offset: 0};
 
-		return this._ajaxGet(`${API_URL}images`, params)
+		return this._ajaxGet(`${API_URL}images/`, params)
 			.then((result) => {
 				if (annotatedImages) {
 					return {
