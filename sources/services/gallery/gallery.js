@@ -989,7 +989,7 @@ class GalleryService {
 				this._imagesDataview.parse(images.results);
 			}
 			else {
-				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing Has Found</div>");
+				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing was found</div>");
 			}
 			this._view.hideProgress();
 		}
