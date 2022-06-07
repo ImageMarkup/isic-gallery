@@ -122,6 +122,7 @@ export default {
 	PATH_ABOUT_MEETINGS_GROUPS: "/topWithHeader/tightContentTop/about/isicMeetingsGroups",
 	PATH_ABOUT_MEETINGS_WORKSHOPS: "/topWithHeader/tightContentTop/about/isicMeetingsWorkshops",
 	PATH_ABOUT_PUBLICATIONS: "/topWithHeader/tightContentTop/about/isicPublications",
+	PATH_ABOUT_FAQ: "/topWithHeader/tightContentTop/about/faq",
 	PATH_ABOUT_CONTACT_INFORMATION: "/topWithHeader/tightContentTop/about/contactInfo",
 
 	PATH_DOWNLOAD_PDF_TERMS_OF_USE: "/sources/filesForDownload/termsOfUse.pdf",
@@ -132,11 +133,7 @@ export default {
 	URL_CHALLENGES: "https://challenge.isic-archive.com",
 	URL_CHALLENGES_STATS: "https://challenge.isic-archive.com/stats",
 	URL_CHALLENGES_LIVE: "https://challenge.isic-archive.com/challenges",
-	URL_API: `${process.env.ISIC_BASE_API_URL}`,
-	URL_ANNOTATIONS_TOOL: `${process.env.ISIC_BASE_API_URL}task/me/annotation/redirect`,
-	//URL_ANNOTATIONS_TOOL_SEGMENT: `${process.env.ISIC_SITE_URL}markup/segment#/`,
-	URL_SEGMENTATION_TOOL: `${process.env.ISIC_BASE_API_URL}task/me/segmentation/redirect`,
-	//URL_BATCH_UPLOAD: `${process.env.ISIC_SITE_URL}#dataset/upload/batch`,
+	URL_API: `${process.env.ISIC_NEW_API_URL}`,
 	URL_CHALLENGE_2016: "https://challenge2016.isic-archive.com/",
 	URL_CHALLENGE_2017: "https://challenge2017.isic-archive.com/",
 	URL_CHALLENGE_2018: "https://challenge2018.isic-archive.com/",
@@ -144,6 +141,7 @@ export default {
 	URL_CHALLENGE_2020: "https://challenge2020.isic-archive.com/",
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
 	URL_FORUM: "https://forum.isic-archive.com",
+	URL_DASHBOARD: "https://api.isic-archive.com/stats/",
 	URL_PARTICIPATE_BUTTON: "http://bit.ly/ISICpart",
 	URL_NEW_API_DOCS: `${process.env.ISIC_NEW_API_DOCS_URL}`,
 

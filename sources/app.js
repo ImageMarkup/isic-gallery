@@ -22,7 +22,6 @@ import MedicalDisclaimer from "./views/subviews/medicalDisclaimer/medicalDisclai
 import PrivacyPolicy from "./views/subviews/privacyPolicy/privacyPolicy";
 import Dashboard from "./views/subviews/dashboard/dashboard";
 import UserAccount from "./views/subviews/userAccount/userAccount";
-import InviteUser from "./views/subviews/inviteUser/inviteUser";
 import CreateDataset from "./views/subviews/createDataset/createDataset";
 import UploadData from "./views/subviews/uploadData/uploadData";
 import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
@@ -56,6 +55,7 @@ import IsicChallengesPlanned from "./views/subviews/about/subviews/isicChallenge
 import IsicMeetingsGroups from "./views/subviews/about/subviews/isicMeetings/groups";
 import IsicMeetingsWorkshops from "./views/subviews/about/subviews/isicMeetings/workshops";
 import IsicPublications from "./views/subviews/about/subviews/isicPublications";
+import FAQ from "./views/subviews/about/subviews/faq";
 import ContactInfo from "./views/subviews/about/subviews/contactInfo";
 
 webix.ready(() => {
@@ -81,7 +81,6 @@ webix.ready(() => {
 			privacyPolicy: PrivacyPolicy,
 			[constants.NAME_VIEW_DASHBOARD]: Dashboard,
 			userAccount: UserAccount,
-			inviteUser: InviteUser,
 			createDataset: CreateDataset,
 			wizardUploader: WizzardUploader,
 			batchUploader: BatchUpload,
@@ -114,6 +113,7 @@ webix.ready(() => {
 			isicMeetingsGroups: IsicMeetingsGroups,
 			isicMeetingsWorkshops: IsicMeetingsWorkshops,
 			isicPublications: IsicPublications,
+			faq: FAQ,
 			contactInfo: ContactInfo
 		}
 	});
@@ -150,5 +150,7 @@ webix.ready(() => {
 	});
 
 	state.app = app;
+	// trigger event
+	app.callEvent("login");
 	state.toSelectByShift = false;
 });

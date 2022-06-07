@@ -56,19 +56,6 @@ class RegisterMetadataaService {
 				this._view.showProgress();
 				PromiseFileReader.readAsText(item.file)
 					.then((fileData) => {
-						ajaxActions.postRegisterMetadata(datasetValues._id, fileName, fileData)
-							.then(() => {
-								webix.message("Metadata was successfully registered!");
-								this._removeFileButton.callEvent("onItemClick");
-								this._uploader.files.clearAll();
-								this._view.hideProgress();
-							})
-							.fail(() => {
-								webix.message("Something went wrong!");
-								this._removeFileButton.callEvent("onItemClick");
-								this._uploader.files.clearAll();
-								this._view.hideProgress();
-							});
 					})
 					.catch((error) => {
 						this._removeFileButton.callEvent("onItemClick");
@@ -82,9 +69,6 @@ class RegisterMetadataaService {
 	}
 
 	load(datasetId) {
-		ajaxActions.getDatasetItem(datasetId).then((data) => {
-			this._datasetInfoTemplate.setValues(data);
-		});
 	}
 }
 

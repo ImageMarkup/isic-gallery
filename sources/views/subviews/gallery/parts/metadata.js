@@ -1,131 +1,28 @@
-import datesHelper from "../../../../utils/formats";
-import ajax from "../../../../services/ajaxActions";
-import util from "../../../../utils/util";
 import "../../../components/templateWithImages";
-import auth from "../../../../services/auth";
 
 const HEADER_HEIGHT = 28;
-const SEGMENTATION_TEMPLATE_ID = "segmentation-template";
 
 let scrollviewId;
-let isolateLayoutId;
-let imageObj;
+const clinicalAttributes = [
+	"age_approx",
+	"anatom_site_general",
+	"slin_size_long_diam_mm",
+	"diagnosis_confirm_type",
+	"family_hx_mm",
+	"mel_class",
+	"mel_mitotic_index",
+	"mel_thick_mm",
+	"mel_type",
+	"mel_ulcer",
+	"melanocytic",
+	"nevus_type",
+	"personal_hx_mm",
+	"sex"
+];
 
 webix.protoUI({
-	name: "metadataEditView",
-	$init() {
-		this.$ready.push(this.custom_func);
-	},
-	custom_func() {
-		const scrollView = $$(scrollviewId);
-		const editButton = scrollView.queryView({name: "editButtonName"});
-		const saveButton = scrollView.queryView({name: "saveButtonName"});
-		const cancelButton = scrollView.queryView({name: "cancelButtonName"});
-		const editForm = scrollView.queryView({name: "editFormName"});
-		const editViews = scrollView.queryView({name: "editViewsName"});
-		// TODO: does not work with new API
-		// const clinicalForm = scrollView.queryView({name: "clinical-editFormName"});
-		// const acquisitionForm = scrollView.queryView({name: "acquisition-editFormName"});
-		// const clinicalInitialValues = clinicalForm.getValues();
-		// const acquisitInitialionValues = acquisitionForm.getValues();
-		const window = scrollView.getTopParentView();
-
-		// show button for study admin
-		if (auth.isStudyAdmin()) {
-			// TODO: uncomment when put method will be implemented on images endpoint
-			// editButton.show();
-		}
-
-		// TODO: uncomment when put method will be implemented on images endpoint
-		// editButton.attachEvent("onItemClick", () => {
-		// 	editButton.hide();
-		// 	saveButton.show();
-		// 	cancelButton.show();
-		// 	editForm.show();
-		// });
-
-		// saveButton.attachEvent("onItemClick", function () {
-		// 	const clinicalValues = clinicalForm.getValues();
-		// 	const acquisitionValues = acquisitionForm.getValues();
-		// 	const valuesToUpload = Object.assign(clinicalValues, acquisitionValues);
-		// 	ajax.postImageMetadata(imageObj._id, valuesToUpload)
-		// 		.then((data) => {
-		// 			const errorsArray = data.errors;
-		// 			if (errorsArray.length === 0) {
-		// 				this.hide();
-		// 				cancelButton.hide();
-		// 				editButton.show();
-		// 				editViews.back();
-		// 				window.hide();
-		// 				webix.message("Metadata has been edited successfully!");
-		// 			}
-		// 			else {
-		// 				const regexForTextName = /'.*?'/;
-		// 				const regexToReplace = /'/g;
-		// 				errorsArray.forEach((errorMessage) => {
-		// 					let errorField = errorMessage.description.match(regexForTextName)[0];
-		// 					errorField = errorField.replace(regexToReplace, "");
-		// 					let errorElement;
-		// 					if (errorField === "age") {
-		// 						errorElement = clinicalForm.elements.age_approx;
-		// 					}
-		// 					else if (errorField !== "image_type") {
-		// 						errorElement = clinicalForm.elements[errorField];
-		// 					}
-		// 					else {
-		// 						errorElement = acquisitionForm.elements[errorField];
-		// 					}
-		// 					util.changeInputNodeColor(errorElement);
-		// 					webix.message({
-		// 						text: errorMessage.description,
-		// 						expire: -1
-		// 					});
-		// 				});
-		// 			}
-		// 		}).fail(() => {
-		// 			webix.message("Something went wrong!");
-		// 		});
-		// });
-		// cancelButton.attachEvent("onItemClick", function () {
-		// 	clinicalForm.clear();
-		// 	acquisitionForm.clear();
-		// 	clinicalForm.setValues(clinicalInitialValues);
-		// 	acquisitionForm.setValues(acquisitInitialionValues);
-		// 	this.hide();
-		// 	saveButton.hide();
-		// 	editButton.show();
-		// 	editViews.back();
-		// 	webix.message.hideAll();
-		// });
-	}
-
+	name: "metadataEditView"
 }, webix.ui.scrollview);
-
-const segmentationSelect = {
-	view: "richselect",
-	css: "select-field",
-	width: 290,
-	placeholder: "Select Segmentations",
-	options: {
-		body: {
-			template(obj) {
-				return ` ${datesHelper.formatDateString(obj.created)} ${obj.skill}`;
-			}
-		}
-	},
-	on: {
-		onChange(newv) {
-			const segmentationTemplate = $$(isolateLayoutId).$$(SEGMENTATION_TEMPLATE_ID);
-			const selectedItem = this.getList().getItem(newv);
-			ajax.getSegmentationItem(selectedItem._id).then((data) => {
-				$$(isolateLayoutId).$$(SEGMENTATION_TEMPLATE_ID).setValues(data);
-				if (!segmentationTemplate.isVisible()) {
-					segmentationTemplate.show();
-				}
-			});
-		}
-	}
-};
 
 function createEditForm(itemData, name) {
 	let dataForElements = [];
@@ -167,17 +64,33 @@ function createEditForm(itemData, name) {
 	return view;
 }
 
-function createTemplateRows(itemData) {
+function createTemplateRows(itemData, type) {
 	let template = "";
+	const attributes = [];
+	let itemMetadataKeys;
+	switch (type) {
+		case "clinical":
+			attributes.push(...clinicalAttributes);
+			break;
+		case "unstructured":
+			itemMetadataKeys = Object.keys(itemData);
+			attributes.push(...itemMetadataKeys.filter(key => !clinicalAttributes.includes(key)));
+			break;
+		default:
+			break;
+	}
+
 	if (!itemData) {
 		return template;
 	}
 	const keys = Object.keys(itemData);
 	keys.forEach((key) => {
-		template += `<div class="item-content-row">
+		if (attributes.includes(key)) {
+			template += `<div class="item-content-row">
 						<div class="item-content-label">${key}</div>
-						<div class="item-content-value">${itemData[key] || ""}</div>
+						<div class="item-content-value">${itemData[key].toString() || ""}</div>
 					</div>`;
+		}
 	});
 	return template;
 }
@@ -198,24 +111,7 @@ function createTagsTemplate(data) {
 			</div>`;
 }
 
-function prepareReviewSkill(reviews) {
-	let skill = "";
-	if (reviews && reviews.length) {
-		let latestReview;
-		let latestDate;
-		reviews.forEach((review) => {
-			let currentReviewDate = new Date(review.time);
-			if (!latestDate || currentReviewDate > latestDate) {
-				latestDate = currentReviewDate;
-				latestReview = review;
-			}
-		});
-		skill = latestReview.skill;
-	}
-	return skill;
-}
-
-function createTemplate(data, acquisitionDynamicProps) {
+function createTemplate(data) {
 	return {
 		rows: [
 			{
@@ -228,31 +124,7 @@ function createTemplate(data, acquisitionDynamicProps) {
 
 					template: `<div class="accordion-item-template">
 								<div class="item-content-block">
-									${createTemplateRows(data.metadata.clinical)}
-								</div>
-							</div>`,
-					autoheight: true,
-					borderless: true
-				}
-			},
-			{
-				header: "ACQUISITION METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: {
-					view: "template",
-					template: `	<div class="accordion-item-template">
-								<div class="item-content-block">
-									<div class="item-content-row">
-										<div class="item-content-label">Dimentions (pixels)</div>
-										<div class="item-content-value">
-											${data.metadata.acquisition ? data.metadata.acquisition.pixelsX : ""} 
-											&#9747 
-											${data.metadata.acquisition ? data.metadata.acquisition.pixelsY : ""}
-										</div>
-									</div>
-									${createTemplateRows(acquisitionDynamicProps)}
+									${createTemplateRows(data.metadata, "clinical")}
 								</div>
 							</div>`,
 					autoheight: true,
@@ -267,14 +139,9 @@ function createTemplate(data, acquisitionDynamicProps) {
 				body: {
 					view: "template",
 					name: "editTemplateName",
-					// template: `	<div class="accordion-item-template">
-					// 			<div class="item-content-block">
-					// 				${createTemplateRows(data.metadata.unstructured)}
-					// 			</div>
-					// 		</div>`,
 					template: `	<div class="accordion-item-template">
 								<div class="item-content-block">
-									${createTemplateRows(data.metadata)}
+									${createTemplateRows(data.metadata, "unstructured")}
 								</div>
 							</div>`,
 					autoheight: true,
@@ -294,39 +161,26 @@ function createFormView(data) {
 				css: "accordion-item-pale",
 				headerAltHeight: HEADER_HEIGHT,
 				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.metadata.clinical, "clinical")
-			},
-			{
-				header: "ACQUISITION METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: createEditForm(data.metadata.acquisition, "acquisition")
+				body: createEditForm(data.metadata, "clinical")
 			}
 		]
 	};
 }
 
-function createMutliView(data, acquisitionDynamicProps) {
+function createMutliView(data) {
 	let multiview = {
 		name: "editViewsName",
 		animate: false,
 		cells: [
-			createTemplate(data, acquisitionDynamicProps)
-			// createFormView(data)
+			createTemplate(data),
+			createFormView(data)
 		]
 	};
 	return multiview;
 }
 
 function createAccordionRows(data) {
-	let acquisitionDynamicProps;
-	if (data.acquisition) {
-		acquisitionDynamicProps = webix.copy(data.acquisition);
-		delete acquisitionDynamicProps.pixelsX;
-		delete acquisitionDynamicProps.pixelsY;
-	}
-	const multiView = createMutliView(data, acquisitionDynamicProps);
+	const multiView = createMutliView(data);
 	return [
 		multiView,
 		{
@@ -359,63 +213,11 @@ function createAccordionRows(data) {
 				autoheight: true,
 				borderless: true
 			}
-		},
-		{
-			header: "SEGMENTATION",
-			css: "accordion-item-pale",
-			headerAltHeight: HEADER_HEIGHT,
-			headerHeight: HEADER_HEIGHT,
-			body: {
-				rows: [
-					{
-						paddingY: 8,
-						paddingX: 35,
-						rows: [
-							// segmentationSelect
-						]
-					}
-					// {
-					// 	view: "templateWithImages",
-					// 	id: SEGMENTATION_TEMPLATE_ID,
-					// 	hidden: true,
-					// 	template(obj) {
-					// 		return `	<div class="accordion-item-template">
-					// 			<div class="item-content-block">
-					// 				<div class="item-content-row">
-					// 					<div class="item-content-label">Created</div>
-					// 					<div class="item-content-value">${obj.created ? datesHelper.formatDateString(obj.created) : ""}</div>
-					// 				</div>
-					// 				<div class="item-content-row">
-					// 					<div class="item-content-label">Creator</div>
-					// 					<div class="item-content-value">${obj.creator.name || ""}</div>
-					// 				</div>
-					// 				<div class="item-content-row">
-					// 					<div class="item-content-label">Review Skill</div>
-					// 					<div class="item-content-value">${prepareReviewSkill(obj.reviews)}</div>
-					// 				</div>
-					// 			</div>
-					// 			<div class="item-content-img"><img src="${ajax.getBaseApiUrl()}segmentation/${obj._id}/thumbnail?width=256"/></div>
-					// 			<div class="item-content-block"><div class="link segmentation-download">Download segmentation image</div></div>
-					// 		</div>`;
-					// 	},
-					// 	onClick: {
-					// 		"segmentation-download": function () {
-					// 			ajax.getSegmentationMask(this.data._id).then((blob) => {
-					// 				util.downloadBlob(blob, `${data.name}_segmentation.png`);
-					// 			});
-					// 		}
-					// 	},
-					// 	borderless: true,
-					// 	autoheight: true
-					// }
-				]
-			}
 		}
 	];
 }
 
 function createConfig(data) {
-	// segmentationSelect.options.body.data = webix.copy(data.segmentation);
 	return {
 		css: "metadata-scrollview",
 		view: "metadataEditView",
@@ -476,7 +278,7 @@ function createConfig(data) {
 	};
 }
 
-function getConfig(id, data, image) {
+function getConfig(id, data) {
 	let resultConfig = {};
 	if (data) {
 		resultConfig = createConfig(data);
@@ -484,8 +286,6 @@ function getConfig(id, data, image) {
 	resultConfig.id = id || `metadata-${webix.uid()}`;
 	scrollviewId = resultConfig.id;
 	resultConfig.body.id = `isolate-layout-${webix.uid()}`;
-	isolateLayoutId = resultConfig.body.id;
-	imageObj = image;
 	return resultConfig;
 }
 

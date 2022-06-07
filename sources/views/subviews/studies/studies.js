@@ -109,7 +109,6 @@ export default class StudiesView extends JetView {
 							StudiesService.getFirstAnnotationId(item)
 								.then((annotationId) => {
 									if (annotationId) {
-										util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}?studyId=${item._id}`);
 									}
 									else {
 										webix.message({

@@ -207,6 +207,11 @@ const map = new Map([
 		text: "ISIC Publications",
 		parent: "home"
 	}],
+	["about:faq", {
+		path: constants.PATH_ABOUT_FAQ,
+		text: "FAQ",
+		parent: "home"
+	}],
 	["about:contactInfo", {
 		path: constants.PATH_ABOUT_CONTACT_INFORMATION,
 		text: "Contact Info",

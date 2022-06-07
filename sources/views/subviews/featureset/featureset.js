@@ -134,11 +134,6 @@ export default class FeaturesetView extends JetView {
 					if (accordionItem.contentLoaded) {
 						return;
 					}
-					ajaxActions.getFeaturesetItem(accordionItem.config.elementId).then((item) => {
-						const html = createAccordionItemTemplate(item);
-						accordionItem.getChildViews()[0].setHTML(html);
-						accordionItem.contentLoaded = true;
-					});
 				}
 			},
 			rows: []

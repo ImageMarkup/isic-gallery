@@ -175,7 +175,6 @@ export default class GalleryView extends JetView {
 			width: 150,
 			openAction: "click",
 			// TODO: enable when download will be implemented
-			// TODO: uncomment in galleryDataview and galaryService when download will be implemented
 			disabled: true,
 			submenuConfig: {
 				width: 300
@@ -492,11 +491,6 @@ export default class GalleryView extends JetView {
 		}
 		if (authService.isLoggedin()) {
 			this.dataviewYCountSelection.show();
-			if (authService.isStudyAdmin()) {
-				this.imagesSelectionTemplate.define("maxWidth", 235);
-				this.allPagesTemplate.show();
-				this.toggleButton.show();
-			}
 		}
 
 		const that = this;

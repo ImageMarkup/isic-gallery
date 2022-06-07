@@ -19,16 +19,11 @@ function canReviewDataset() {
 	return user && user.permissions && user.permissions.reviewDataset;
 }
 
-function isStudyAdmin() {
-	const user = __getUserInfo();
-	return user && user.permissions && user.permissions.adminStudy;
-}
-
 function isTermsOfUseAccepted() {
 	const user = __getUserInfo();
 	let termOfUse;
 	if (user) {
-		termOfUse = user.permissions.acceptTerms;
+		termOfUse = !!user.accepted_terms;
 	}
 	else {
 		termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
@@ -46,7 +41,6 @@ export default {
 	canCreateDataset,
 	hasSegmentationSkill,
 	canReviewDataset,
-	isStudyAdmin,
 	isTermsOfUseAccepted,
 	isUserInfoChanged
 };

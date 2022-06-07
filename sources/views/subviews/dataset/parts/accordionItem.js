@@ -63,24 +63,6 @@ function createActionsPanel(item) {
 						on: {
 							onItemClick: () => {
 								const win = $$(ACCESS_CONTROL_WINDOW_ID);
-								ajaxActions.getDatasetAccess(item._id).then((data) => {
-									if (!data) {
-										return;
-									}
-									const list = $$(accessControlWindow.getListId());
-									const form = $$(accessControlWindow.getFormId());
-									form.config.datasetId = item._id;
-									const template = $$(accessControlWindow.getTemplateId());
-									template.setValues({name: item.name});
-
-									const values = form.getCleanValues();
-									values.public = data.public.toString();
-									form.setValues(values);
-									list.clearAll();
-									const users = prepareUsersListData(data.access);
-									list.parse(users);
-									win.show();
-								});
 							}
 						}
 					},
@@ -145,9 +127,7 @@ function createAccordion(item, accordionItem) {
 		autoheight: true,
 		borderless: true
 	});
-	if (authService.isStudyAdmin()) {
-		accordionItem.getChildViews()[0].addView(createActionsPanel(item));
-	}
+	accordionItem.getChildViews()[0].addView(createActionsPanel(item));
 	accordionItem.contentLoaded = true;
 }
 

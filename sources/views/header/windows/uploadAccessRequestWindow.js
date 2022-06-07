@@ -60,17 +60,6 @@ function getIdFromConfig() {
 }
 
 function requestContributeAccess() {
-	ajax.createDatasetPermission().then((data) => {
-		webix.storage.session.put(`contribute-to-archive-request-${user ? user._id : ""}`, true);
-		webix.message("Request has been sent");
-		const window = webix.$$(constants.ID_WINDOW_ACCESS_REQUEST);
-		const button = window.queryView({view: "button", value: "Request access"});
-		const template = window.queryView({name: "requestTemplate"});
-		template.setValues(data);
-		window.hide();
-		template.show();
-		button.hide();
-	});
 }
 
 export default {

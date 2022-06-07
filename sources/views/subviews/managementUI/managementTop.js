@@ -46,8 +46,6 @@ export default class ManagementUIView extends JetView {
 	}
 
 	urlChange() {
-		if (!authService.isStudyAdmin()) {
-			authService.showMainPage();
-		}
+		authService.showMainPage();
 	}
 }

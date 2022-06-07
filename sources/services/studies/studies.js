@@ -77,33 +77,6 @@ class StudiesService {
 
 		this._view.showProgress({type: "icon"});
 		this._dataview.disable();
-
-		if (!params.state) {
-			const activeStudiesPromise = ajaxActions.getStudies(webix.copy(params, {state: "active"}));
-			const completedStudiesPromise = ajaxActions.getStudies(webix.copy(params, {state: "complete"}));
-			webix.promise.all([
-				activeStudiesPromise,
-				completedStudiesPromise
-			]).then((results) => {
-				const [active, completed] = results;
-				active.forEach((activeStudy) => {
-					activeStudy.state = "active";
-				});
-				completed.forEach((completedStudy) => {
-					completedStudy.state = "complete";
-				});
-				const studies = active.concat(completed);
-				this._parseStudiesTODatataview(studies);
-			});
-		}
-		else {
-			ajaxActions.getStudies(params).then((studies) => {
-				studies.forEach((study) => {
-					study.state = params.state;
-				});
-				this._parseStudiesTODatataview(studies);
-			});
-		}
 	}
 
 	_parseStudiesTODatataview(studies) {
@@ -128,32 +101,13 @@ class StudiesService {
 	}
 
 	participateStudy(study) {
-		//study._id - id in DB, study.id - inner id for dataview
-		ajaxActions.participateStudy(study._id).then(() => {
-			if (!Array.isArray(study.participationRequests)) {
-				study.participationRequests = [];
-			}
-			study.participationRequests.push(authService.getUserInfo());
-			this._dataview.updateItem(study.id);
-			webix.message("Request has been sent");
-		});
 	}
 
 	static getFirstAnnotationId(study) {
 		return new Promise((resolve, reject) => {
 			if (study && study._id) {
 				const user = authService.getUserInfo();
-				ajaxActions.getAnnotations({
-					userId: user._id,
-					studyId: study._id
-				}).then((annotations) => {
-					if (annotations.length) {
-						resolve(annotations[0]._id);
-					}
-					else {
-						resolve(null);
-					}
-				});
+				resolve(null);
 			}
 			else {
 				resolve(null);

@@ -17,29 +17,6 @@ class BatchUploadService {
 		this._descriptionTemplate = this._view.$scope.getDescriptionTemplate();
 		webix.extend(this._view, webix.ProgressBar);
 
-		ajaxActions.getDataset({detail: true})
-			.then((data) => {
-				if (data && data.filter) {
-					const preparedData = data.filter((item) => {
-						const newItem = webix.copy(item);
-						newItem.id = item._id;
-						if (newItem._accessLevel >= 1) {
-							return newItem;
-						}
-					});
-
-					this._form.elements.dataset.getList().parse(preparedData);
-					let hasDatasetCreated = createDatasetModel.getHasDatasetCreated();
-					if (hasDatasetCreated) {
-						let createdDatasetId = this._form.elements.dataset.getList().getFirstId();
-						this._form.elements.dataset.getList().select(createdDatasetId);
-						this._form.elements.dataset.setValue(createdDatasetId);
-						hasDatasetCreated = false;
-						createDatasetModel.setHasDatasetCreated(hasDatasetCreated);
-					}
-				}
-			});
-
 		this._form.elements.dataset.attachEvent("onChange", (newv) => {
 			const dataset = this._form.elements.dataset.getList().getItem(newv);
 			this._form.setValues(dataset, true);
@@ -88,51 +65,6 @@ class BatchUploadService {
 				};
 
 				this._uploader.files.find((obj) => {
-					this._view.showProgress();
-					ajaxActions.postBatchUpload(datasetId, signatureObject)
-						.then((responseData) => {
-							AWS.config.update({
-								accessKeyId: responseData.accessKeyId,
-								secretAccessKey: responseData.secretAccessKey,
-								sessionToken: responseData.sessionToken
-							});
-
-							// Store batch identifier
-							let batchId = responseData.batchId;
-
-							let s3 = new AWS.S3({
-								apiVersion: "2006-03-01"
-							});
-
-							let params = {
-								Bucket: responseData.bucketName,
-								Key: responseData.objectKey,
-								Body: obj.file
-							};
-							s3.upload(params, (err, data) => {
-								if (err) {
-									this._view.hideProgress();
-								}
-								else {
-									ajaxActions.finalizePostBatchUpload(datasetId, batchId)
-										.then(() => {
-											webix.message("You've uploaded zip archive to the server!");
-											this._buttonDeleteFiles.callEvent("onItemClick");
-											this._view.hideProgress();
-											const path = `${constants.PATH_REGISTER_METADATA}?datasetId=${datasetId}`;
-											this._view.$scope.app.show(path);
-										})
-										.fail(() => {
-											this._buttonDeleteFiles.callEvent("onItemClick");
-											this._view.hideProgress();
-										});
-								}
-							});
-						})
-						.fail(() => {
-							this._buttonDeleteFiles.callEvent("onItemClick");
-							this._view.hideProgress();
-						});
 				});
 			}
 		});

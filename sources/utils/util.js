@@ -1,5 +1,6 @@
 import constants from "../constants";
-import authService from "../services/auth";
+import state from "../models/state";
+
 const FileSaver = require("../../node_modules/file-saver/FileSaver");
 
 let hiddenGalleryCartList = false;
@@ -169,7 +170,7 @@ function deepCompare () {
 }
 
 function getUserId() {
-	const userInfo = authService.getUserInfo();
+	const userInfo = state.auth.getUserInfo();
 	return userInfo ? userInfo._id : "";
 }
 

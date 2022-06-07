@@ -212,18 +212,6 @@ export default class CreateDatasetView extends JetView {
 										if (values.attribution !== "Anonymous") {
 											values.attribution = values.attributedTo;
 										}
-										ajaxActions.createDataset(values)
-											.then(() => {
-												webix.message("Dataset has been created");
-												let toShowAfterSave = createDatasetModel.getCreateDatasetClicked();
-												let hasDatasetCreated = true;
-												createDatasetModel.setHasDatasetCreated(hasDatasetCreated);
-												if (toShowAfterSave === "dashboard") {
-													this.$scope.app.show(constants.PATH_DASHBOARD);
-												} else if (toShowAfterSave === "batch-upload") {
-													this.$scope.app.show(constants.PATH_BATCH_UPLOADER);
-												}
-											});
 									}
 								}
 							}

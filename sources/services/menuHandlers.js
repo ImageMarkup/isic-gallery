@@ -40,10 +40,10 @@ export default {
 
 	clickDashboard() {
 		if (authService.isLoggedin()) {
-			state.app.show(constants.PATH_DASHBOARD);
+			util.openInNewTab(constants.URL_DASHBOARD);
 		}
 		else {
-			$$(constants.ID_WINDOW_LOGIN).show();
+			authService.login();
 		}
 	},
 
@@ -80,6 +80,10 @@ export default {
 
 	clickMedicalDisclaimer() {
 		state.app.show(constants.PATH_MEDICAL_DISCLAIMER);
+	},
+
+	clickFAQ() {
+		state.app.show(constants.PATH_ABOUT_FAQ);
 	},
 
 	clickContact() {

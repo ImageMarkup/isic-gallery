@@ -43,7 +43,7 @@ class HeaderService {
 
 	showLogoutPanel() {
 		const user = authService.getUserInfo();
-		const cols = logoutPanelCols.createConfig(user.firstName, user.lastName, user.gravatar_baseUrl);
+		const cols = logoutPanelCols.createConfig(user.first_name, user.last_name);
 		webix.ui(cols, this._logoutPanel);
 		this._logoutPanel.show(false, false);
 	}

@@ -88,6 +88,7 @@ const dataview = {
 	template(obj, common) {
 		const imageIconDimensions = util.getImageIconDimensions();
 		let flagForStudies = selectedImages.getStudyFlag();
+		// TODO check this when if study works
 		if (flagForStudies) {
 			let dataviewConfig = $$(getIdFromConfig());
 			// TODO: find out why we use find

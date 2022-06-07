@@ -4,11 +4,7 @@ let data = [];
 
 const dataset = {
 	load(params) {
-		return ajaxActions.getFeatureset(params).then((sourceData) => {
-			if (Array.isArray(sourceData)) {
-				data = sourceData;
-			}
-		});
+		return null;
 	},
 	getData(limit, offset) {
 		return data.slice(offset, offset + limit);

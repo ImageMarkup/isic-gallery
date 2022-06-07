@@ -18,7 +18,7 @@ function createAnnotatorsPanel(item) {
 	item.templateId = `template-id-${webix.uid()}`;
 	const template = {
 		template(obj) {
-			let addButtomHtml = authService.isStudyAdmin() ? "<span class='site-btn add-annotator-btn'>+</span>" : "";
+			let addButtomHtml = authService.isLoggedin() ? "<span class='site-btn add-annotator-btn'>+</span>" : "";
 			return `<div class="item-content-header">Annotators (${getAnnotatorsCount(obj, item)}) ${addButtomHtml}</div>`;
 		},
 		autoheight: true,
@@ -31,13 +31,6 @@ function createAnnotatorsPanel(item) {
 					const usersDatatable = $$(item.usersDatatableId);
 					let existingUsers = usersDatatable.find(user => userId === user.id);
 					if (!existingUsers.length) {
-						ajaxActions.addAnnotatorsToStudy(item._id, [userId]).then(() => {
-							webix.message("User has been added to study");
-							updateUsersAndRequestsTables(item._id, item.requestsDatatableId, item.usersDatatableId);
-							template.parse({
-								users: $$(item.usersDatatableId).count() + 1
-							});
-						});
 						return true;
 					}
 					else {
@@ -77,7 +70,7 @@ function createAnnotatorsPanel(item) {
 				rows: [
 					datatables.createUsersDatatable(item),
 					{
-						hidden: !authService.isStudyAdmin(),
+						hidden: true,
 						rows: [
 							{height: 15},
 							{
@@ -97,18 +90,6 @@ function createAnnotatorsPanel(item) {
 }
 
 function updateUsersAndRequestsTables(studyId, reqDatatableId, usersDatatableId) {
-	ajaxActions.getStudy(studyId).then((study) => {
-		const usersDatatable = $$(usersDatatableId);
-		if (study && study.users && usersDatatable) {
-			usersDatatable.clearAll();
-			usersDatatable.parse(prepareData.prepareAnnotatorsData(study));
-		}
-		const reqDatatable = $$(reqDatatableId);
-		if (study && study.participationRequests && reqDatatable) {
-			reqDatatable.clearAll();
-			reqDatatable.parse(prepareData.prepareParticipationReqData(study));
-		}
-	});
 }
 
 export default {

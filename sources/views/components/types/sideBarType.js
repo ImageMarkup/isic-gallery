@@ -24,4 +24,4 @@ webix.type(webix.ui.tree, {
 		return "";
 	},
 	height: 35
-})
+});

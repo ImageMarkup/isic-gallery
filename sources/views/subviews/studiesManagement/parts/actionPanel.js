@@ -27,10 +27,6 @@ function createActionsPanel(item, service) {
 									type: "confirm-error",
 									callback(result) {
 										if (result) {
-											ajaxActions.removeStudy(item._id).then(() => {
-												webix.message("Study has been removed");
-												service.load();
-											});
 										}
 									}
 								});

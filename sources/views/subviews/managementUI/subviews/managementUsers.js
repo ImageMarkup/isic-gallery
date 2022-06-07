@@ -72,13 +72,6 @@ export default class ManagementUsersView extends JetView {
 							mode: "prefix",
 							types: ["user"]
 						};
-						ajax.search(params).then((data) => {
-							this.clearAll();
-							if (data.user && data.user.length) {
-								this.parse(data.user);
-								this.sort("name");
-							}
-						});
 					}
 				}
 			}

@@ -1,8 +1,5 @@
 import {JetView} from "webix-jet";
 import constants from "../../constants";
-import loginWindow from "./../authWindows/loginWindow";
-import signupWindow from "./../authWindows/signUpWindow";
-import recoveryWindow from "./../authWindows/passwordRecoveryWindow";
 import HeaderService from "../../services/header/headerServices";
 import menuHandlerService from "../../services/menuHandlers";
 import authService from "../../services/auth";
@@ -101,7 +98,6 @@ export default class Header extends JetView {
 						this.hideItem("forum");
 					}
 					headerMenu.disableItem(constants.ID_HEADER_MENU_STUDIES);
-					headerMenu.disableItem(constants.ID_HEADER_MENU_DASHBOARD);
 				},
 				onMenuItemClick: (id) => {
 					const headerMenu = $$(BASE_MENU_ID);
@@ -170,12 +166,7 @@ export default class Header extends JetView {
 			width: 90,
 			onClick: {
 				"menu-login": (e, id) => {
-					if (state.authorization_mode === "Legacy") {
-						$$(constants.ID_WINDOW_LOGIN).show();
-					}
-					else {
-						authService.login();
-					}
+					authService.login();
 				}
 			}
 		};
@@ -223,10 +214,8 @@ export default class Header extends JetView {
 
 	init(view) {
 		this.view = view;
-		this.loginWindow = $$(constants.ID_WINDOW_LOGIN) || webix.ui(loginWindow.getConfig(constants.ID_WINDOW_LOGIN));
-		this.signupWindow = $$(constants.ID_WINDOW_SIGNUP) || webix.ui(signupWindow.getConfig(constants.ID_WINDOW_SIGNUP));
-		this.recoveryWindow = $$(constants.ID_WINDOW_RECOVERY) || webix.ui(recoveryWindow.getConfig(constants.ID_WINDOW_RECOVERY));
-		this.uploadWindow = $$(constants.ID_WINDOW_UPLOAD_TYPE) || webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
+		this.uploadWindow = $$(constants.ID_WINDOW_UPLOAD_TYPE)
+			|| webix.ui(uploadWindow.getConfig(constants.ID_WINDOW_UPLOAD_TYPE));
 		this.headerService = new HeaderService(
 			view,
 			$$(LOGIN_PANEL_ID),

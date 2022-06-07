@@ -184,17 +184,6 @@ const searchFieldset = {
 								mode: thisForm.getValues().mode,
 								types: ["user", "group"]
 							};
-							ajax.search(params).then((data) => {
-								this.clearAll();
-								const preparedData = prepareOptions(data);
-								if (preparedData && preparedData.length) {
-									this.parse(preparedData);
-									this.sort("name");
-								}
-								else {
-									this.getParentView().hide();
-								}
-							});
 						}
 					}
 				}
@@ -282,7 +271,6 @@ const form = {
 											public: thisForm.getValues().public
 										};
 										// form.config.datasetId has been added after window initialisation
-										ajax.putDatasetAccess(thisForm.config.datasetId, params);
 										this.getTopParentView().hide();
 									}
 									else {
