@@ -361,7 +361,7 @@ export default class GalleryView extends JetView {
 			},
 			template: (obj, common) => {
 				if (typeof galleryImagesUrls.getPreviewImageUrl(obj.isic_id) === "undefined") {
-					galleryImagesUrls.setPreviewImageUrl(obj.isic_id, obj.urls.thumbnail_256);
+					galleryImagesUrls.setPreviewImageUrl(obj.isic_id, obj.files.thumbnail_256.url);
 				}
 				return `<div>
 						<span class='webix_icon template-angle fas ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
