@@ -10,7 +10,7 @@ const templateViewer = {
 	template(obj) {
 		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
 			ajax.getImageItem(obj.imageId).then((item) => {
-				galleryImageUrl.setNormalImageUrl(obj.imageId, item.urls.full);
+				galleryImageUrl.setNormalImageUrl(obj.imageId, item.files.full.url);
 				$$(templateViewer.id).refresh();
 			});
 		}

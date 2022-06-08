@@ -110,7 +110,7 @@ const dataview = {
 			</div>` : "";
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
-			galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.urls.full); // to prevent sending query more than 1 time
+			galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.files.full.url); // to prevent sending query more than 1 time
 		}
 		return `<div class="gallery-images-container ${checkedClass}">
 					<div class='gallery-images-info'>

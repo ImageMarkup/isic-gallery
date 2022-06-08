@@ -94,7 +94,7 @@ export default class ImagesSelectionWindow extends JetView {
 				}
 				let checkedClass = obj.markCheckbox ? "is-checked" : "";
 				if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
-					galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.urls.thumbnail_256); // to prevent sending query more than 1 time
+					galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.files.thumbnail_256.url); // to prevent sending query more than 1 time
 					// ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
 					// 	galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
 					// 	$$(dataview.id).refresh(obj.id);
