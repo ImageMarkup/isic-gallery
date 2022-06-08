@@ -3,22 +3,7 @@ import "../../../components/templateWithImages";
 const HEADER_HEIGHT = 28;
 
 let scrollviewId;
-const clinicalAttributes = [
-	"age_approx",
-	"anatom_site_general",
-	"slin_size_long_diam_mm",
-	"diagnosis_confirm_type",
-	"family_hx_mm",
-	"mel_class",
-	"mel_mitotic_index",
-	"mel_thick_mm",
-	"mel_type",
-	"mel_ulcer",
-	"melanocytic",
-	"nevus_type",
-	"personal_hx_mm",
-	"sex"
-];
+
 
 webix.protoUI({
 	name: "metadataEditView"
@@ -64,34 +49,19 @@ function createEditForm(itemData, name) {
 	return view;
 }
 
-function createTemplateRows(itemData, type) {
+function createTemplateRows(itemData) {
 	let template = "";
-	const attributes = [];
-	let itemMetadataKeys;
-	switch (type) {
-		case "clinical":
-			attributes.push(...clinicalAttributes);
-			break;
-		case "unstructured":
-			itemMetadataKeys = Object.keys(itemData);
-			attributes.push(...itemMetadataKeys.filter(key => !clinicalAttributes.includes(key)));
-			break;
-		default:
-			break;
-	}
-
 	if (!itemData) {
 		return template;
 	}
-	const keys = Object.keys(itemData);
-	keys.forEach((key) => {
-		if (attributes.includes(key)) {
-			template += `<div class="item-content-row">
-						<div class="item-content-label">${key}</div>
-						<div class="item-content-value">${itemData[key].toString() || ""}</div>
-					</div>`;
-		}
+
+	Object.keys(itemData).sort().forEach((key) => {
+		template += `<div class="item-content-row">
+					<div class="item-content-label">${key}</div>
+					<div class="item-content-value">${itemData[key].toString() || ""}</div>
+				</div>`;
 	});
+
 	return template;
 }
 
@@ -115,6 +85,23 @@ function createTemplate(data) {
 	return {
 		rows: [
 			{
+				header: "ACQUISITION INFORMATION",
+				css: "accordion-item-pale",
+				headerAltHeight: HEADER_HEIGHT,
+				headerHeight: HEADER_HEIGHT,
+				body: {
+					view: "template",
+
+					template: `<div class="accordion-item-template">
+								<div class="item-content-block">
+									${createTemplateRows(data.metadata.acquisition)}
+								</div>
+							</div>`,
+					autoheight: true,
+					borderless: true
+				}
+			},
+			{
 				header: "CLINICAL INFORMATION",
 				css: "accordion-item-pale",
 				headerAltHeight: HEADER_HEIGHT,
@@ -124,30 +111,13 @@ function createTemplate(data) {
 
 					template: `<div class="accordion-item-template">
 								<div class="item-content-block">
-									${createTemplateRows(data.metadata, "clinical")}
+									${createTemplateRows(data.metadata.clinical)}
 								</div>
 							</div>`,
 					autoheight: true,
 					borderless: true
 				}
 			},
-			{
-				header: "UNSTRUCTURED METADATA",
-				css: "accordion-item-pale",
-				headerAltHeight: HEADER_HEIGHT,
-				headerHeight: HEADER_HEIGHT,
-				body: {
-					view: "template",
-					name: "editTemplateName",
-					template: `	<div class="accordion-item-template">
-								<div class="item-content-block">
-									${createTemplateRows(data.metadata, "unstructured")}
-								</div>
-							</div>`,
-					autoheight: true,
-					borderless: true
-				}
-			}
 		]
 	};
 }
