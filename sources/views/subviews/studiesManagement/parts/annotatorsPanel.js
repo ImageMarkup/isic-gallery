@@ -1,7 +1,5 @@
 import authService from "../../../../services/auth";
-import ajaxActions from "../../../../services/ajaxActions";
 import addUserWindow from "../windows/addAnnotator";
-import prepareData from "../../../../services/studiesManagement/annotatorsAndParticipationData";
 import datatables from "./studiesDataTables";
 
 const ADD_USER_WINDOW_ID = "user-adding-window";
@@ -9,9 +7,8 @@ const ADD_USER_WINDOW_ID = "user-adding-window";
 function getAnnotatorsCount(obj, item) {
 	if (obj.users) {
 		return obj.users;
-	} else {
-		return item.users ? item.users.length : 0
 	}
+	return item.users ? item.users.length : 0;
 }
 
 function createAnnotatorsPanel(item) {
@@ -26,17 +23,16 @@ function createAnnotatorsPanel(item) {
 		id: item.templateId,
 		onClick: {
 			"add-annotator-btn": function () {
-				const template = this;
+				// eslint-disable-next-line no-unused-vars
+				const thisTemplate = this;
 				const okCallback = function (userId) {
 					const usersDatatable = $$(item.usersDatatableId);
 					let existingUsers = usersDatatable.find(user => userId === user.id);
 					if (!existingUsers.length) {
 						return true;
 					}
-					else {
-						webix.alert({type: "alert-warning", text: "User is already in study"});
-						return false;
-					}
+					webix.alert({type: "alert-warning", text: "User is already in study"});
+					return false;
 				};
 				const win = webix.ui(addUserWindow.getConfig(ADD_USER_WINDOW_ID, okCallback));
 				win.attachEvent("onHide", () => {
@@ -89,7 +85,7 @@ function createAnnotatorsPanel(item) {
 	};
 }
 
-function updateUsersAndRequestsTables(studyId, reqDatatableId, usersDatatableId) {
+function updateUsersAndRequestsTables(/* studyId, reqDatatableId, usersDatatableId */) {
 }
 
 export default {

@@ -27,13 +27,13 @@ function downloadByLink(url, name) {
 
 function downloadBlob(blob, name) {
 	FileSaver.saveAs(blob, name);
-	/*if (window.navigator.msSaveBlob) {
+	/* if (window.navigator.msSaveBlob) {
 		window.navigator.msSaveBlob(blob, name);
 	} else {
 		let url = window.URL.createObjectURL(blob);
 		downloadByLink(url, name);
 		window.URL.revokeObjectURL(url);
-	}*/
+	} */
 }
 
 function exportCsv(sourceArray) {
@@ -43,7 +43,7 @@ function exportCsv(sourceArray) {
 	let csvContent = "";
 	sourceArray.forEach((rowArray) => {
 		let row = rowArray.join();
-		csvContent += row + "\r\n";
+		csvContent += `${row}\r\n`;
 	});
 	const csvData = new Blob([csvContent], {type: "text/csv;charset=utf-8;"});
 	downloadBlob(csvData, "images.csv");
@@ -54,15 +54,18 @@ function isChrome() {
 }
 
 // from https://stackoverflow.com/questions/1068834/object-comparison-in-javascript
-function deepCompare () {
-	var i, l, leftChain, rightChain;
+function deepCompare(...args) {
+	let i;
+	let l;
+	let leftChain;
+	let rightChain;
 
-	function compare2Objects (x, y) {
-		var p;
+	function compare2Objects(x, y) {
+		let p;
 
 		// remember that NaN === NaN returns false
 		// and isNaN(undefined) returns true
-		if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+		if (Number.isNaN(x) && Number.isNaN(y) && typeof x === "number" && typeof y === "number") {
 			return true;
 		}
 
@@ -76,7 +79,7 @@ function deepCompare () {
 		// Works in case when functions are created in constructor.
 		// Comparing dates is a common scenario. Another built-ins?
 		// We can even handle functions passed across iframes
-		if ((typeof x === 'function' && typeof y === 'function') ||
+		if ((typeof x === "function" && typeof y === "function") ||
 			(x instanceof Date && y instanceof Date) ||
 			(x instanceof RegExp && y instanceof RegExp) ||
 			(x instanceof String && y instanceof String) ||
@@ -108,6 +111,7 @@ function deepCompare () {
 
 		// Quick checking of one object being a subset of another.
 		// todo: cache the structure of arguments[0] for performance
+		// eslint-disable-next-line no-restricted-syntax
 		for (p in y) {
 			if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
 				return false;
@@ -117,6 +121,7 @@ function deepCompare () {
 			}
 		}
 
+		// eslint-disable-next-line
 		for (p in x) {
 			if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
 				return false;
@@ -124,15 +129,12 @@ function deepCompare () {
 			else if (typeof y[p] !== typeof x[p]) {
 				return false;
 			}
-
-			switch (typeof (x[p])) {
-				case 'object':
-				case 'function':
-
+			switch (typeof x[p]) {
+				case "object":
+				case "function":
 					leftChain.push(x);
 					rightChain.push(y);
-
-					if (!compare2Objects (x[p], y[p])) {
+					if (!compare2Objects(x[p], y[p])) {
 						return false;
 					}
 
@@ -151,17 +153,16 @@ function deepCompare () {
 		return true;
 	}
 
-	if (arguments.length < 1) {
-		return true; //Die silently? Don't know how to handle such case, please help...
+	if (args.length < 1) {
+		return true; // Die silently? Don't know how to handle such case, please help...
 		// throw "Need two or more arguments to compare";
 	}
 
-	for (i = 1, l = arguments.length; i < l; i++) {
-
-		leftChain = []; //Todo: this can be cached
+	for (i = 1, l = args.length; i < l; i++) {
+		leftChain = []; // Todo: this can be cached
 		rightChain = [];
 
-		if (!compare2Objects(arguments[0], arguments[i])) {
+		if (!compare2Objects(args[0], args[i])) {
 			return false;
 		}
 	}
@@ -174,19 +175,43 @@ function getUserId() {
 	return userInfo ? userInfo._id : "";
 }
 
-function setDataviewItemDimensions(imageWidth, imageHeight) {
-	webix.storage.local.put(`dataviewItemWidth-${getUserId()}`, imageWidth);
-	webix.storage.local.put(`dataviewItemHeight-${getUserId()}`, imageHeight);
+function setDataviewItemDimensions(width, height) {
+	webix.storage.local.put(`dataviewItemWidth-${getUserId()}`, width);
+	webix.storage.local.put(`dataviewItemHeight-${getUserId()}`, height);
+}
+
+function setImageDimensions(imageWidth, imageHeight){
+	webix.storage.local.put(`dataviewImageWidth-${getUserId()}`, imageWidth);
+	webix.storage.local.put(`dataviewImageHeight-${getUserId()}`, imageHeight);
+}
+
+function setDataviewHeight(height) {
+	webix.storage.local.put(`dataviewHeight-${getUserId()}`, height);
+}
+
+function getDataviewHeight() {
+	const localDataviewHeight = webix.storage.local.get(`dataviewHeight-${getUserId()}`);
+	return localDataviewHeight;
+}
+
+function getImageWidth() {
+	const localImageWidth = webix.storage.local.get(`dataviewImageWidth-${getUserId()}`);
+	return localImageWidth || DEFAULT_WIDTH;
+}
+
+function getImageHeight() {
+	const localImageHeight = webix.storage.local.get(`dataviewImageHeight-${getUserId()}`);
+	return localImageHeight || DEFAULT_HEIGHT;
 }
 
 function getDataviewItemWidth() {
 	let localWidth = webix.storage.local.get(`dataviewItemWidth-${getUserId()}`);
-	return localWidth ? localWidth : DEFAULT_WIDTH;
+	return localWidth || DEFAULT_WIDTH;
 }
 
 function getDataviewItemHeight() {
 	let localHeight = webix.storage.local.get(`dataviewItemHeight-${getUserId()}`);
-	return localHeight ? localHeight : DEFAULT_HEIGHT;
+	return localHeight || DEFAULT_HEIGHT;
 }
 
 function setDataviewSelectionId(id) {
@@ -221,13 +246,15 @@ function getImageIconDimensions() {
 			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
 			newIconHeight = newIconContainerHeight - deafultIconHeightDifference;
 			bottomOffsetPercentage = -8;
-		} else if (dataviewItemWidth <= 100 && dataviewItemWidth > 95) {
+		}
+		else if (dataviewItemWidth <= 100 && dataviewItemWidth > 95) {
 			newIconContainerWidth = initialIconWidth - 2;
 			newIconContainerHeight = initialIconHeight - 2;
 			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
 			newIconHeight = newIconContainerHeight - deafultIconHeightDifference;
 			bottomOffsetPercentage = -10;
-		} else if (dataviewItemWidth <= 95) {
+		}
+		else if (dataviewItemWidth <= 95) {
 			newIconContainerWidth = initialIconWidth - 3;
 			newIconContainerHeight = initialIconHeight - 3;
 			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
@@ -243,7 +270,8 @@ function getImageIconDimensions() {
 			width: newIconWidth,
 			height: newIconHeight
 		};
-	} else {
+	}
+	else {
 		iconContainerDimensions = {
 			width: initialIconContainerWidth,
 			height: initialIconContainerHeight
@@ -261,7 +289,8 @@ function getImageIconDimensions() {
 function setNewThumnailsNameFontSize(nameFontSize) {
 	if (nameFontSize > 28) {
 		nameFontSize = 28;
-	} else if (nameFontSize < 7.5) {
+	}
+	else if (nameFontSize < 7.5) {
 		nameFontSize = 7.5;
 	}
 	webix.storage.local.put(`thumbnailsNameFontSize-${getUserId()}`, nameFontSize);
@@ -269,18 +298,17 @@ function setNewThumnailsNameFontSize(nameFontSize) {
 
 function getNewThumnailsNameFontSize() {
 	let fontSize = webix.storage.local.get(`thumbnailsNameFontSize-${getUserId()}`);
-	return fontSize ? fontSize : 14;
+	return fontSize || 14;
 }
 
 function separateThousandsInNumber(number) {
-	let regExp = new RegExp("^(\\d{" + (number.length%3?number.length%3:0) + "})(\\d{3})", "g");
+	let regExp = new RegExp(`^(\\d{${number.length % 3 ? number.length % 3 : 0}})(\\d{3})`, "g");
 	return number.replace(regExp, "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
 }
 
 function isObjectEmpty(obj) {
 	for (let prop in obj) {
-		if (obj.hasOwnProperty(prop))
-			return false;
+		if (obj.hasOwnProperty(prop)) { return false; }
 	}
 	return true;
 }
@@ -295,6 +323,7 @@ function findItemInList(id, list) {
 		if (obj.isic_id === id) {
 			returnParam = true;
 		}
+		return false;
 	});
 	return returnParam;
 }
@@ -309,19 +338,32 @@ function getSelectedDataviewImages(studyFlag, createStudyDataview, selectedImage
 	if (studyFlag && createStudyDataview) {
 		selectedDataviewImages = selectedImages.getSelectedInAddNewImagePopup();
 		selectedImagesLength = selectedImages.countSelectedInAddNewImagePopup();
-	} else if (studyFlag) {
+	}
+	else if (studyFlag) {
 		selectedDataviewImages = selectedImages.getStudyImagesId();
 		selectedImagesLength = selectedImages.countForStudies();
-	} else {
+	}
+	else {
 		selectedDataviewImages = selectedImages.getSelectedImagesForDownload();
 		selectedImagesLength = selectedImages.count();
 	}
 	return [selectedDataviewImages, selectedImagesLength];
 }
 
-function getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, value, createStudyDataview) {
+function getImagesToSelectByShift(
+	item,
+	studyFlag,
+	selectedImages,
+	dataview,
+	value,
+	createStudyDataview
+) {
 	let isNeedShowAlert = true;
-	const selectedImagesInfoArray = getSelectedDataviewImages(studyFlag, createStudyDataview, selectedImages);
+	const selectedImagesInfoArray = getSelectedDataviewImages(
+		studyFlag,
+		createStudyDataview,
+		selectedImages
+	);
 	let imagesArrayToReturn = [];
 	const selectedDataviewImages = selectedImagesInfoArray[0];
 	const selectedImagesLength = selectedImagesInfoArray[1];
@@ -335,7 +377,8 @@ function getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, val
 			const lastItemId = deletedItemsDataCollection.getLastId();
 			lastActionItem = deletedItemsDataCollection.getItem(lastItemId);
 			indexOfLastItemToAction = dataview.getIndexById(item.id);
-		} else {
+		}
+		else {
 			lastActionItem = selectedDataviewImages[selectedImagesLength - 1];
 			indexOfLastItemToAction = dataview.getIndexById(item.id);
 		}
@@ -351,20 +394,26 @@ function getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, val
 		if (indexOfLastActionItem > indexOfLastItemToAction) {
 			startIndex = indexOfLastItemToAction;
 			finishIndex = indexOfLastActionItem;
-		} else {
+		}
+		else {
 			startIndex = indexOfLastActionItem;
 			finishIndex = indexOfLastItemToAction;
 		}
 		for (;startIndex <= finishIndex; startIndex++) {
 			const imagesArrayToReturnLength = imagesArrayToReturn.length;
-			if ((value && imagesArrayToReturnLength + selectedImagesLength <= constants.MAX_COUNT_IMAGES_SELECTION - 2) || !value) {
+			if (
+				value
+				&& imagesArrayToReturnLength + selectedImagesLength <= constants.MAX_COUNT_IMAGES_SELECTION - 2
+				|| !value
+			) {
 				let dataviewItemId = dataview.getIdByIndex(startIndex);
 				let dataviewItem = dataview.getItem(dataviewItemId);
 				if (dataviewItem && dataviewItem.markCheckbox !== value) {
 					dataviewItem.markCheckbox = value;
 					imagesArrayToReturn.push(dataviewItem);
 				}
-			} else if (isNeedShowAlert) {
+			}
+			else if (isNeedShowAlert) {
 				isNeedShowAlert = false;
 				webix.alert({
 					text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
@@ -374,9 +423,8 @@ function getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, val
 		imagesArrayToReturn.push(item);
 		deletedItemsDataCollection.clearAll();
 		return imagesArrayToReturn;
-	} else {
-		return [item];
 	}
+	return [item];
 }
 
 function changeInputNodeColor(textView) {
@@ -433,6 +481,8 @@ export default {
 	downloadBlob,
 	deepCompare,
 	setDataviewItemDimensions,
+	setDataviewHeight,
+	getDataviewHeight,
 	getDataviewItemWidth,
 	getDataviewItemHeight,
 	setDataviewSelectionId,
@@ -452,6 +502,9 @@ export default {
 	setHiddenGalleryCartList,
 	getHiddenGalleryLeftPanel,
 	setHiddenGalleryLeftPanel,
-	debounce
+	debounce,
+	getImageWidth,
+	getImageHeight,
+	setImageDimensions
 };
 

@@ -1,236 +1,250 @@
 const featureSetData = [
-    {
-        parent: "Lines", data: [
-            "Angulated lines / Polygons / Zig-zag pattern",
-            "Atypical pigment network / Reticulation",
-            "Branched streaks",
-            "Broadened pigment network / Reticulation",
-            "Cerebriform pattern",
-            "Crypts",
-            "Delicate pigment network / Reticulation",
-            "Fibrillar pattern",
-            "Fingerprint pattern",
-            "Leaf like areas",
-            "Negative pigment network",
-            "Parallel furrows pattern (volar lesions)",
-            "Parallel lines (volar lesions)",
-            "Parallel ridge pattern (volar lesions)",
-            "Pseudopods",
-            "Radial streaming",
-            "Rhomboids (facial skin)",
-            "Shiny white streaks",
-            "Spoke wheel areas",
-            "Streaks",
-            "Starburst pattern",
-            "Typical pigment network / Reticulation",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Globules / Clods", data: [
-            "Blue",
-            "Blue-gray ovoid nests",
-            "Cobblestone pattern",
-            "Comedo-like openings",
-            "Concentric",
-            "Irregular",
-            "Regular",
-            "Leaflike area",
-            "Spoke wheel areas",
-            "Milia-like cysts",
-            "Milky red",
-            "Lacunae : Red",
-            "Lacunae : Black",
-            "Lacunae : Blue",
-            "Lacunae : Red-purple",
-            "Lacunae : NOS",
-            "Rim of brown globules",
-            "Shiny white blotches and strands",
-            "Variant of spoke wheel area",
-            "White",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Dots", data: [
-            "Annular-granular pattern",
-            "Black",
-            "Blue-gray",
-            "Brown",
-            "Granularity",
-            "Irregular",
-            "Linear",
-            "Milia-like cysts",
-            "Peppering",
-            "Regular",
-            "Rosettes",
-            "Targetoid",
-            "Yellow",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Circles & Semicircles", data: [
-            "Asymmetric follicular openings",
-            "Brown",
-            "Circle within a circle",
-            "Fish scale (mucosal lesions)",
-            "Gray",
-            "White",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Structureless", data: [
-            "Blotch irregular",
-            "Blotch regular",
-            "Blue-whitish veil",
-            "Central white patch",
-            "Homogeneous pattern : Blue",
-            "Homogeneous pattern : Brown",
-            "Homogeneous pattern : Pink",
-            "Homogeneous pattern : NOS",
-            "Homogeneous pattern : NOS",
-            "Pseudonetwork",
-            "Rainbow pattern",
-            "Scar-like depigmentation",
-            "Strawberry pattern",
-            "Structureless brown (tan)",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Vessels", data: [
-            "Arborizing",
-            "Comma",
-            "Corkscrew",
-            "Crown",
-            "Dotted",
-            "Glomerular",
-            "Hairpin",
-            "Linear irregular",
-            "Monomorphous",
-            "Polymorphous",
-            "String of pearls",
-            "Targetoid",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Network", data: [
-            "Atypical pigment network / Reticulation",
-            "Broadened pigment network / Reticulation",
-            "Delicate Pigment Network / Reticulation",
-            "Negative pigment network",
-            "Typical pigment network / Reticulation",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Pattern", data: [
-            "Cerebriform",
-            "Fibrilar",
-            "Fingerprint",
-            "Homogeneous : Blue",
-            "Homogeneous : Brown",
-            "Homogeneous : Pink",
-            "Homogeneous : NOS",
-            "Honeycomb",
-            "Latticelike",
-            "Parallel furrow",
-            "Parallel ridge",
-            "Rainbow",
-            "Starburst",
-            "Strawberry",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Regression structures", data: [
-            "Peppering / Granularity",
-            "Scarlike depigmentation",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Shiny white structures", data: [
-            "Rosettes",
-            "Shiny white blotches and strands",
-            "Shiny white streaks",
-            "NOS"
-        ]
-    },
-    {
-        parent: "Facial Skin", data: [
-            "Annular-granular pattern",
-            "Asymmetric follicular openings",
-            "Brown circles",
-            "Circle within a circle",
-            "Pseudonetwork",
-            "Rhomboids / Zig-zag pattern"
-        ]
-    },
-    {
-        parent: "Volar lesions", data: [
-            "Parallel furrow pattern",
-            "Fibrilar pattern",
-            "Latticelike pattern",
-            "Parallel lines",
-            "Parallel ridge pattern"
-        ]
-    },
-    {
-        parent: "Nail lesions", data: [
-            "Blood spots",
-            "Granular inclusions",
-            "Hutchinson sign",
-            "Irregular lines",
-            "Pseudo-Hutchinson sign",
-            "Splinter hemorrhage",
-            "Regular lines"
-        ]
-    },
-    {
-        parent: "Miscellaneous", data: [
-            "Angulated lines / Polygons",
-            "Annular-granular pattern",
-            "Asymmetric pigmented follicular openings",
-            "Blood spots",
-            "Blotch irregular",
-            "Blotch regular",
-            "Blue-whitish veil",
-            "Circle within a circle",
-            "Comedo-like openings",
-            "Crypts",
-            "Disruption of parallelism",
-            "Fissures",
-            "Granularity or granules",
-            "Hutchinson sign",
-            "Lacunae : Red",
-            "Lacunae : Black",
-            "Lacunae : Blue",
-            "Lacunae : Red-purple",
-            "Lacunae : NOS",
-            "Leaflike area",
-            "Milia-like cysts, cloudy or starry",
-            "Moth-eaten border",
-            "Pseudo-Hutchinson sign",
-            "Pseudonetwork",
-            "Pseudopods",
-            "Radial streaming",
-            "Regularly bended ribbon sign",
-            "Rhomboids / Zig-zag pattern",
-            "Ridges",
-            "Scale",
-            "Setting-sun pattern",
-            "Spoke wheel area",
-            "Streaks",
-            "String of pearls",
-            "Structureless, brown (tan)",
-            "Twisted red loops",
-            "Ulceration / Erosion"
-        ]
-    }
+	{
+		parent: "Lines",
+		data: [
+			"Angulated lines / Polygons / Zig-zag pattern",
+			"Atypical pigment network / Reticulation",
+			"Branched streaks",
+			"Broadened pigment network / Reticulation",
+			"Cerebriform pattern",
+			"Crypts",
+			"Delicate pigment network / Reticulation",
+			"Fibrillar pattern",
+			"Fingerprint pattern",
+			"Leaf like areas",
+			"Negative pigment network",
+			"Parallel furrows pattern (volar lesions)",
+			"Parallel lines (volar lesions)",
+			"Parallel ridge pattern (volar lesions)",
+			"Pseudopods",
+			"Radial streaming",
+			"Rhomboids (facial skin)",
+			"Shiny white streaks",
+			"Spoke wheel areas",
+			"Streaks",
+			"Starburst pattern",
+			"Typical pigment network / Reticulation",
+			"NOS"
+		]
+	},
+	{
+		parent: "Globules / Clods",
+		data: [
+			"Blue",
+			"Blue-gray ovoid nests",
+			"Cobblestone pattern",
+			"Comedo-like openings",
+			"Concentric",
+			"Irregular",
+			"Regular",
+			"Leaflike area",
+			"Spoke wheel areas",
+			"Milia-like cysts",
+			"Milky red",
+			"Lacunae : Red",
+			"Lacunae : Black",
+			"Lacunae : Blue",
+			"Lacunae : Red-purple",
+			"Lacunae : NOS",
+			"Rim of brown globules",
+			"Shiny white blotches and strands",
+			"Variant of spoke wheel area",
+			"White",
+			"NOS"
+		]
+	},
+	{
+		parent: "Dots",
+		data: [
+			"Annular-granular pattern",
+			"Black",
+			"Blue-gray",
+			"Brown",
+			"Granularity",
+			"Irregular",
+			"Linear",
+			"Milia-like cysts",
+			"Peppering",
+			"Regular",
+			"Rosettes",
+			"Targetoid",
+			"Yellow",
+			"NOS"
+		]
+	},
+	{
+		parent: "Circles & Semicircles",
+		data: [
+			"Asymmetric follicular openings",
+			"Brown",
+			"Circle within a circle",
+			"Fish scale (mucosal lesions)",
+			"Gray",
+			"White",
+			"NOS"
+		]
+	},
+	{
+		parent: "Structureless",
+		data: [
+			"Blotch irregular",
+			"Blotch regular",
+			"Blue-whitish veil",
+			"Central white patch",
+			"Homogeneous pattern : Blue",
+			"Homogeneous pattern : Brown",
+			"Homogeneous pattern : Pink",
+			"Homogeneous pattern : NOS",
+			"Homogeneous pattern : NOS",
+			"Pseudonetwork",
+			"Rainbow pattern",
+			"Scar-like depigmentation",
+			"Strawberry pattern",
+			"Structureless brown (tan)",
+			"NOS"
+		]
+	},
+	{
+		parent: "Vessels",
+		data: [
+			"Arborizing",
+			"Comma",
+			"Corkscrew",
+			"Crown",
+			"Dotted",
+			"Glomerular",
+			"Hairpin",
+			"Linear irregular",
+			"Monomorphous",
+			"Polymorphous",
+			"String of pearls",
+			"Targetoid",
+			"NOS"
+		]
+	},
+	{
+		parent: "Network",
+		data: [
+			"Atypical pigment network / Reticulation",
+			"Broadened pigment network / Reticulation",
+			"Delicate Pigment Network / Reticulation",
+			"Negative pigment network",
+			"Typical pigment network / Reticulation",
+			"NOS"
+		]
+	},
+	{
+		parent: "Pattern",
+		data: [
+			"Cerebriform",
+			"Fibrilar",
+			"Fingerprint",
+			"Homogeneous : Blue",
+			"Homogeneous : Brown",
+			"Homogeneous : Pink",
+			"Homogeneous : NOS",
+			"Honeycomb",
+			"Latticelike",
+			"Parallel furrow",
+			"Parallel ridge",
+			"Rainbow",
+			"Starburst",
+			"Strawberry",
+			"NOS"
+		]
+	},
+	{
+		parent: "Regression structures",
+		data: [
+			"Peppering / Granularity",
+			"Scarlike depigmentation",
+			"NOS"
+		]
+	},
+	{
+		parent: "Shiny white structures",
+		data: [
+			"Rosettes",
+			"Shiny white blotches and strands",
+			"Shiny white streaks",
+			"NOS"
+		]
+	},
+	{
+		parent: "Facial Skin",
+		data: [
+			"Annular-granular pattern",
+			"Asymmetric follicular openings",
+			"Brown circles",
+			"Circle within a circle",
+			"Pseudonetwork",
+			"Rhomboids / Zig-zag pattern"
+		]
+	},
+	{
+		parent: "Volar lesions",
+		data: [
+			"Parallel furrow pattern",
+			"Fibrilar pattern",
+			"Latticelike pattern",
+			"Parallel lines",
+			"Parallel ridge pattern"
+		]
+	},
+	{
+		parent: "Nail lesions",
+		data: [
+			"Blood spots",
+			"Granular inclusions",
+			"Hutchinson sign",
+			"Irregular lines",
+			"Pseudo-Hutchinson sign",
+			"Splinter hemorrhage",
+			"Regular lines"
+		]
+	},
+	{
+		parent: "Miscellaneous",
+		data: [
+			"Angulated lines / Polygons",
+			"Annular-granular pattern",
+			"Asymmetric pigmented follicular openings",
+			"Blood spots",
+			"Blotch irregular",
+			"Blotch regular",
+			"Blue-whitish veil",
+			"Circle within a circle",
+			"Comedo-like openings",
+			"Crypts",
+			"Disruption of parallelism",
+			"Fissures",
+			"Granularity or granules",
+			"Hutchinson sign",
+			"Lacunae : Red",
+			"Lacunae : Black",
+			"Lacunae : Blue",
+			"Lacunae : Red-purple",
+			"Lacunae : NOS",
+			"Leaflike area",
+			"Milia-like cysts, cloudy or starry",
+			"Moth-eaten border",
+			"Pseudo-Hutchinson sign",
+			"Pseudonetwork",
+			"Pseudopods",
+			"Radial streaming",
+			"Regularly bended ribbon sign",
+			"Rhomboids / Zig-zag pattern",
+			"Ridges",
+			"Scale",
+			"Setting-sun pattern",
+			"Spoke wheel area",
+			"Streaks",
+			"String of pearls",
+			"Structureless, brown (tan)",
+			"Twisted red loops",
+			"Ulceration / Erosion"
+		]
+	}
 ];
 
 const featureSetSynonymsArray = [
@@ -364,7 +378,7 @@ const featureSetSynonymsArray = [
 	],
 	[
 		"Lines : Parallel ridge pattern (volar lesions)",
-		"Volar lesions : Parallel ridge pattern",
+		"Volar lesions : Parallel ridge pattern"
 	],
 	[
 		"Globules / Clods : Lacunae : Red",
@@ -393,7 +407,7 @@ const featureSetSynonymsArray = [
 	],
 	[
 		"Pattern : Latticelike",
-		"Volar lesions : Latticelike pattern",
+		"Volar lesions : Latticelike pattern"
 	],
 	[
 		"Structureless : Rainbow pattern",
@@ -437,7 +451,7 @@ const featureSetSynonymsArray = [
 	],
 	[
 		"Circles & Semicircles : Brown",
-		"Facial Skin : Brown circles",
+		"Facial Skin : Brown circles"
 	],
 	[
 		"Structureless : Structureless brown (tan)",
@@ -455,7 +469,7 @@ const featureSetSynonymsArray = [
 ];
 
 function getFeatureSetData() {
-    return featureSetData;
+	return featureSetData;
 }
 
 function getFeatureSetSynonymsArray() {
@@ -463,6 +477,6 @@ function getFeatureSetSynonymsArray() {
 }
 
 export default {
-    getFeatureSetData,
+	getFeatureSetData,
 	getFeatureSetSynonymsArray
-}
+};

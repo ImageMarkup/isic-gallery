@@ -26,12 +26,12 @@ function getCheckboxUI(data) {
 		]
 	};
 
-	function handleAgregateButton(data, elements, newValue, app) {
+	function handleAgregateButton(controlData, elements, newValue, app) {
 		const filtersInfo = [];
 		let selectNone = !newValue;
-		data.options.forEach((currentOption) => {
-			const option = filterService.prepareOptionName(currentOption, data.id);
-			const controlName = filterService.getOptionId(data.id, option);
+		controlData.options.forEach((currentOption) => {
+			const option = filterService.prepareOptionName(currentOption, controlData.id);
+			const controlName = filterService.getOptionId(controlData.id, option);
 			const control = elements[controlName];
 			control.blockEvent(); // block events for checkbox
 			control.setValue(newValue);
@@ -72,7 +72,7 @@ function getCheckboxUI(data) {
 	view.rows[1].rows.push(selectAllLabel);
 	view.rows[1].rows.push(selectNoneLabel);
 
-	data.options.forEach((currentOption) => {
+	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
 		const id = filterService.getOptionId(data.id, optionName);
 		const filtersChangedData = {

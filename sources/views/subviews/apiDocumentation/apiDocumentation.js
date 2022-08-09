@@ -457,9 +457,8 @@ export default class APIDocumentationPage extends JetView {
 			template: (obj) => {
 				if (obj.value) {
 					return `<span>${obj.value}</span>`;
-				} else {
-					return obj.errorMessage;
 				}
+				return obj.errorMessage;
 			}
 		};
 
@@ -467,7 +466,7 @@ export default class APIDocumentationPage extends JetView {
 			view: "text",
 			css: "text-field",
 			name: "searchInputName",
-			placeholder: "Search",
+			placeholder: "Search"
 		};
 
 		const isicLogoTemplate = {

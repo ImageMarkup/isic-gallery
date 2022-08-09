@@ -1,9 +1,7 @@
-import ajaxActions from "../services/ajaxActions";
-
 let data = [];
 
 const dataset = {
-	load(params) {
+	load() {
 		return null;
 	},
 	getData(limit, offset) {

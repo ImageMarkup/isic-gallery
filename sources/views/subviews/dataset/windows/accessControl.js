@@ -1,5 +1,4 @@
 import windowWithHeader from "../../../components/windowWithHeader";
-import ajax from "../../../../services/ajaxActions";
 import "../../../components/activeList";
 
 let callbacks = {};
@@ -14,6 +13,7 @@ function prepareOptions(data) {
 	return [];
 }
 
+// eslint-disable-next-line no-unused-vars
 function _prepereListDataForAPI(data) {
 	const result = {};
 	data.forEach((item) => {
@@ -177,13 +177,14 @@ const searchFieldset = {
 								}
 							}
 						},
-						dataFeed(text) {
-							const thisForm = $$(form.id);
+						dataFeed(/* text */) {
+							// TODO: uncomment when search will be implemented
+							/* const thisForm = $$(form.id);
 							const params = {
 								q: text,
 								mode: thisForm.getValues().mode,
 								types: ["user", "group"]
-							};
+							}; */
 						}
 					}
 				}
@@ -261,16 +262,18 @@ const form = {
 							align: "right",
 							on: {
 								onItemClick() {
-									const thisForm = this.getFormView();
 									const permissionsList = $$(list.id);
 									const ownersArray = permissionsList.data.find(obj => obj.level.toString() === "2");
 									if (ownersArray.length > 0) {
+										// TODO: uncomment when dataset will be implemented
+										/* const thisForm = this.getFormView();
 										const usersList = _prepereListDataForAPI(permissionsList.data.serialize());
 										const params = {
 											access: usersList,
 											public: thisForm.getValues().public
 										};
 										// form.config.datasetId has been added after window initialisation
+										ajax.putDatasetAccess(thisForm.config.datasetId, params); */
 										this.getTopParentView().hide();
 									}
 									else {

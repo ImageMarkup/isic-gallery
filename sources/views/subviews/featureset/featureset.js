@@ -1,16 +1,16 @@
 import {JetView} from "webix-jet";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
-import ajaxActions from "../../../services/ajaxActions";
 import featuresetModel from "../../../models/featureset";
 import dates from "../../../utils/formats";
 import authService from "../../../services/auth";
+import util from "../../../utils/util";
 
 const FEATURESET_ACCORDION_ID = "featureset-accordion-id";
 const PAGER_ID = "pager-id";
 const CLONE_PAGER_ID = "clone-pager-id";
 const CONTENT_HEADER_TEMPLATE_ID = "content-header-template";
 
-function createGlobalFeaturesHtml(gFeatures){
+function createGlobalFeaturesHtml(gFeatures) {
 	let globalFeaturesetHTML = "";
 	if (gFeatures && gFeatures.length) {
 		gFeatures.forEach((gFeature) => {
@@ -57,7 +57,7 @@ function createGlobalFeaturesHtml(gFeatures){
 	return globalFeaturesetHTML;
 }
 
-function createLocalFeaturesHtml(lFeatures){
+function createLocalFeaturesHtml(lFeatures) {
 	let localFeaturesetHTML = "";
 	if (lFeatures && lFeatures.length) {
 		lFeatures.forEach((lFeature) => {
@@ -83,6 +83,7 @@ function createLocalFeaturesHtml(lFeatures){
 	return localFeaturesetHTML;
 }
 
+// eslint-disable-next-line no-unused-vars
 function createAccordionItemTemplate(item) {
 	const globalFeaturesetHTML = createGlobalFeaturesHtml(item.globalFeatures);
 	const localFeaturesetHTML = createLocalFeaturesHtml(item.localFeatures);
@@ -132,6 +133,7 @@ export default class FeaturesetView extends JetView {
 					const accordionItem = $$(id);
 					// if contentLoaded == true we do not need to send query again
 					if (accordionItem.contentLoaded) {
+						// eslint-disable-next-line no-useless-return
 						return;
 					}
 				}
@@ -146,36 +148,60 @@ export default class FeaturesetView extends JetView {
 			size: 8,
 			template: "{common.first()} {common.prev()} <span class='pager-info'>{common.page()} page of #limit#</span> {common.next()} {common.last()}",
 			on: {
-				onItemClick(id, e, node) {
+				onItemClick(id/* , e, node */) {
 					let offset;
 					const lastPage = Math.floor(this.data.count / this.data.size);
-					switch (id){
+					const prevClickHandler = util.debounce(() => {
+						const nextPage = this.data.page > 0 ? this.data.page : 0;
+						offset = nextPage * this.data.size;
+						const portion = featuresetModel.getData(this.data.size, offset);
+						if (portion && portion.length) {
+							this.$scope._buildAccordion(portion);
+						}
+					});
+					const nextClickHandler = util.debounce(() => {
+						const nextPage = this.data.page < lastPage ? this.data.page : lastPage;
+						offset = nextPage * this.data.size;
+						const portion = featuresetModel.getData(this.data.size, offset);
+						if (portion && portion.length) {
+							this.$scope._buildAccordion(portion);
+						}
+					});
+					const firstClickHandler = util.debounce(() => {
+						offset = 0;
+						const portion = featuresetModel.getData(this.data.size, offset);
+						if (portion && portion.length) {
+							this.$scope._buildAccordion(portion);
+						}
+					});
+					const lastClickHandler = util.debounce(() => {
+						offset = lastPage * this.data.size;
+						const portion = featuresetModel.getData(this.data.size, offset);
+						if (portion && portion.length) {
+							this.$scope._buildAccordion(portion);
+						}
+					});
+					switch (id) {
 						case "prev": {
-							const nextPage = this.data.page > 0 ? this.data.page - 1 : 0;
-							offset = nextPage * this.data.size;
+							prevClickHandler();
 							break;
 						}
 						case "next": {
-							const nextPage = this.data.page < lastPage ? this.data.page + 1 : lastPage;
-							offset = nextPage * this.data.size;
+							nextClickHandler();
 							break;
 						}
 						case "first": {
-							offset = 0;
+							firstClickHandler();
 							break;
 						}
 						case "last": {
-							offset = lastPage * this.data.size;
+							lastClickHandler();
 							break;
 						}
 						default: {
 							offset = 0;
 							break;
 						}
-					}
-					const portion = featuresetModel.getData(this.data.size, offset);
-					if (portion && portion.length){
-						this.$scope._buildAccordion(portion);
 					}
 				}
 			}
@@ -237,14 +263,15 @@ export default class FeaturesetView extends JetView {
 			throw new Error("Data set is not Array");
 		}
 	}
-	_load(){
+
+	_load() {
 		const params = {
 			sort: "name",
 			sortdir: 1
 		};
-		// after finish data loading we set total count for pager, clone it to displaying it bottom and build accordion
+		// after finish data loading we set total count for pager,
+		// clone it to displaying it bottom and build accordion
 		featuresetModel.load(params).then(() => {
-
 			const pager = $$(PAGER_ID);
 			const clonePager = $$(CLONE_PAGER_ID);
 			pager.define({count: featuresetModel.getCount()});
@@ -266,6 +293,5 @@ export default class FeaturesetView extends JetView {
 				this._load();
 			});
 		}
-
 	}
 }

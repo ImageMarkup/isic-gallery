@@ -1,6 +1,5 @@
 import {JetView} from "webix-jet";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import ajax from "../../../../services/ajaxActions";
 import selectedGalleryImages from "../../../../models/selectedGalleryImages";
 
 export default class StudyDataview extends JetView {
@@ -10,7 +9,7 @@ export default class StudyDataview extends JetView {
 			css: "study-images-dataview",
 			template: (obj) => {
 				if (obj.name === "addImage") {
-					return this.getFirstDataviewItemTemplate()
+					return this.getFirstDataviewItemTemplate();
 				}
 				if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
 					galleryImageUrl.setPreviewImageUrl(obj.isic_id, ""); // to prevent sending query more than 1 time
@@ -53,7 +52,7 @@ export default class StudyDataview extends JetView {
 			type: {
 				width: 148,
 				height: 107
-			},
+			}
 		};
 
 		return {
@@ -71,7 +70,7 @@ export default class StudyDataview extends JetView {
 	}
 
 	getDataView() {
-		return this.getRoot().queryView({view:"dataview"});
+		return this.getRoot().queryView({view: "dataview"});
 	}
 
 	getFirstDataviewItemTemplate() {
@@ -92,7 +91,7 @@ export default class StudyDataview extends JetView {
 		this.dataview.parse({
 			pos: 0,
 			data: {
-				name: "addImage",
+				name: "addImage"
 			}
 		});
 		let imagesForDataview = selectedGalleryImages.getStudyImagesId();

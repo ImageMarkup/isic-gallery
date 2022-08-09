@@ -1,9 +1,6 @@
 import {JetView} from "webix-jet";
-import constants from "../../constants";
 import menuHandlerService from "../../services/menuHandlers";
-import authService from "../../services/auth";
 import mainTemplate from "../templates/main.html";
-import state from "../../models/state";
 
 const ID_TEMPLATE = "main-content-template";
 

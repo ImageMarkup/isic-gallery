@@ -19,51 +19,50 @@ export default class ImagesSelectionWindow extends JetView {
 			width: 250,
 			master: false,
 			template(obj, common) {
-				return `${common.first()} ${common.prev()}
-					<input type='text' class='pager-input' value='${common.page(obj, common)}'>	<span class="pager-amount">of ${obj.limit}</span>
-				${common.next()} ${common.last()}`;
+				return `${common.first()} ${common.prev()} ${common.next()} ${common.last()}`;
 			},
 			on: {
-				onAfterRender() {
-					const currentPager = this;
-					const node = this.getNode();
-					const inputNode = node.getElementsByClassName("pager-input")[0];
-					inputNode.addEventListener("focus", function () {
-						this.prev = this.value;
-					});
-					inputNode.addEventListener("keyup", function (e) {
-						if (e.keyCode === 13) { // enter
-							let value = parseInt(this.value);
-							if (value && value > 0 && value <= currentPager.data.limit) {
-								let offset = currentPager.data.size * (value - 1); // because in pager first page is 0
-								$$(DATAVIEW_ID).loadNext(currentPager.data.size, offset);
-								currentPager.select(value - 1); // because in pager first page is 0
-							}
-							else {
-								this.value = this.prev;
-							}
-						}
-					});
-				},
 				onItemClick(id) {
-					let offset;
+					let offset = 0;
+					const prevClickHandler = util.debounce(() => {
+						const url = galleryImageUrl.getPrevImagesUrl() || null;
+						offset = URLSearchParams(url).offset || 0;
+						const callback = null;
+						$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
+					});
+					const nextClickHandler = util.debounce(() => {
+						const url = galleryImageUrl.getNextImagesUrl() || null;
+						offset = URLSearchParams(url).offset || 0;
+						const callback = null;
+						$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
+					});
+					const firstClickHandler = util.debounce(() => {
+						offset = 0;
+						galleryImageUrl.setNextImagesUrl(null);
+						galleryImageUrl.setPrevImagesUrl(null);
+						$$(DATAVIEW_ID).loadNext(this.data.size, offset);
+					});
+					const lastClickHandler = util.debounce(() => {
+						offset = (this.data.limit - 1) * this.data.size;
+						galleryImageUrl.setNextImagesUrl(null);
+						galleryImageUrl.setPrevImagesUrl(null);
+						$$(DATAVIEW_ID).loadNext(this.data.size, offset);
+					});
 					switch (id) {
 						case "prev": {
-							const nextPage = this.data.page > 0 ? this.data.page - 1 : 0;
-							offset = nextPage * this.data.size;
+							prevClickHandler();
 							break;
 						}
 						case "next": {
-							const nextPage = this.data.page < this.data.limit - 1 ? this.data.page + 1 : this.data.limit - 1;
-							offset = nextPage * this.data.size;
+							nextClickHandler();
 							break;
 						}
 						case "first": {
-							offset = 0;
+							firstClickHandler();
 							break;
 						}
 						case "last": {
-							offset = (this.data.limit - 1) * this.data.size;
+							lastClickHandler();
 							break;
 						}
 						default: {
@@ -71,7 +70,6 @@ export default class ImagesSelectionWindow extends JetView {
 							break;
 						}
 					}
-					$$(DATAVIEW_ID).loadNext(this.data.size, offset);
 				}
 			}
 		};
@@ -82,19 +80,19 @@ export default class ImagesSelectionWindow extends JetView {
 			id: DATAVIEW_ID,
 			minWidth: 800,
 			template(obj, common) {
-				const IMAGE_HEIGHT = util.getDataviewItemHeight() - 10;
-				const IMAGE_WIDTH = util.getDataviewItemWidth();
 				let flagForStudies = selectedImages.getStudyFlag();
 				if (flagForStudies) {
-					$$(DATAVIEW_ID).find((obj) => {
-						if (selectedImages.isSelectedInAddNewImagePopup(obj.isic_id)){
-							obj.markCheckbox = 1;
+					// eslint-disable-next-line array-callback-return
+					$$(DATAVIEW_ID).find((dataviewObj) => {
+						if (selectedImages.isSelectedInAddNewImagePopup(dataviewObj.isic_id)) {
+							dataviewObj.markCheckbox = 1;
 						}
 					});
 				}
 				let checkedClass = obj.markCheckbox ? "is-checked" : "";
 				if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
-					galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.files.thumbnail_256.url); // to prevent sending query more than 1 time
+					// to prevent sending query more than 1 time
+					galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.files.thumbnail_256.url);
 					// ajax.getImage(obj._id, IMAGE_HEIGHT, IMAGE_WIDTH).then((data) => {
 					// 	galleryImageUrl.setPreviewImageUrl(obj._id, URL.createObjectURL(data));
 					// 	$$(dataview.id).refresh(obj.id);
@@ -132,7 +130,8 @@ export default class ImagesSelectionWindow extends JetView {
 							const dataview = $$(DATAVIEW_ID);
 							const item = dataview.getItem(this.config.$masterId);
 							const deletedItemsDataCollection = selectedImages.getDeletedItemsDataCollection();
-							if (value && selectedImages.countSelectedInAddNewImagePopup() >= constants.MAX_COUNT_IMAGES_SELECTION) {+
+							const selectedImagesCount = selectedImages.countSelectedInAddNewImagePopup();
+							if (value && selectedImagesCount >= constants.MAX_COUNT_IMAGES_SELECTION) {
 								dataview.updateItem(item.id, {markCheckbox: oldValue});
 								webix.alert({
 									text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
@@ -142,17 +141,26 @@ export default class ImagesSelectionWindow extends JetView {
 							item.markCheckbox = value;
 
 							if (state.toSelectByShift) {
-								imagesArray = util.getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, value, createStudyDataview);
-							} else {
+								imagesArray = util.getImagesToSelectByShift(
+									item,
+									studyFlag,
+									selectedImages,
+									dataview,
+									value,
+									createStudyDataview
+								);
+							}
+							else {
 								deletedItemsDataCollection.clearAll();
 								deletedItemsDataCollection.add(item);
 								imagesArray = [item];
 							}
 							if (value) {
 								selectedImages.addToSelectedInAddNewImagePopup(imagesArray);
-							} else {
-								imagesArray.forEach((item) => {
-									selectedImages.removeFromSelectedInAddNewImagePopup(item.isic_id);
+							}
+							else {
+								imagesArray.forEach((image) => {
+									selectedImages.removeFromSelectedInAddNewImagePopup(image.isic_id);
 								});
 							}
 							dataview.parse(imagesArray);
@@ -202,6 +210,7 @@ export default class ImagesSelectionWindow extends JetView {
 			height: 638,
 			body: {
 				name: "windowBodyTemplate",
+				// eslint-disable-next-line quote-props
 				css: {"background": "#E8EBF1"},
 				rows: [
 					{height: 10},
@@ -221,7 +230,7 @@ export default class ImagesSelectionWindow extends JetView {
 									}
 									return text;
 								},
-								borderless: true,
+								borderless: true
 							},
 							pager,
 							{width: 23}
@@ -284,9 +293,9 @@ export default class ImagesSelectionWindow extends JetView {
 			this.selectionTemplate.refresh();
 		});
 
-		this.selectionTemplate.define("onClick",  {
+		this.selectionTemplate.define("onClick", {
 			"unselect-images-on-all-pages": () => {
-				this.unselectImages()
+				this.unselectImages();
 			}
 		});
 	}
@@ -299,7 +308,8 @@ export default class ImagesSelectionWindow extends JetView {
 		let selectedImagesArrayLength = selectedImages.countForStudies();
 		if (selectedImagesArrayLength === 0) {
 			selectedImagesArray = selectedImages.getImageObjectsFromLocalStorage();
-		} else {
+		}
+		else {
 			selectedImagesArray = selectedImages.getStudyImagesId();
 		}
 		if (selectedImagesArray) {
@@ -345,19 +355,16 @@ export default class ImagesSelectionWindow extends JetView {
 			.then((results) => {
 				this.dataview.clearAll();
 				results.forEach((imageItem) => {
-					this.dataview.parse(imageItem)
+					this.dataview.parse(imageItem);
 				});
 				this.view.hideProgress();
-		})
+			})
 			.fail(() => {
 				this.view.hideProgress();
 			});
 	}
 
-	updatePagerCount(count, page) {
-		if (page !== undefined) {
-			this.pager.select(page);
-		}
+	updatePagerCount(count) {
 		if (count) {
 			this.pager.define("count", count);
 			this.pager.refresh();
@@ -370,14 +377,13 @@ export default class ImagesSelectionWindow extends JetView {
 			webix.alert({
 				title: "Warning!",
 				text: "At least one image should be selected for a study.",
-				type: "confirm-warning",
+				type: "confirm-warning"
 			});
-			return false;
 		}
 		else {
 			let selectedImagesInPopup = selectedImages.getSelectedInAddNewImagePopup();
 			selectedImages.clearImagesForStudies();
-			selectedImages.addForStudy(selectedImagesInPopup)
+			selectedImages.addForStudy(selectedImagesInPopup);
 			this.studyImagesDataview.loadDataToDataview();
 			webix.message("Study images were successfully updated!");
 			this.close();
@@ -391,18 +397,17 @@ export default class ImagesSelectionWindow extends JetView {
 	getImagesCount(selectedImagesCount) {
 		if (selectedImagesCount === 1) {
 			return `${selectedImagesCount} image.`;
-		} else {
-			return `${selectedImagesCount} images.`;
 		}
+		return `${selectedImagesCount} images.`;
 	}
 
 	unselectImages() {
-			this.dataview.data.each((item) => {
-				item.markCheckbox = 0;
-			});
-			selectedImages.clearSelectedInAddNewImagePopup();
-			this.view.$scope.app.callEvent("changedStudyImageCount");
-			this.dataview.refresh();
+		this.dataview.data.each((item) => {
+			item.markCheckbox = 0;
+		});
+		selectedImages.clearSelectedInAddNewImagePopup();
+		this.view.$scope.app.callEvent("changedStudyImageCount");
+		this.dataview.refresh();
 	}
 
 	close() {
@@ -410,5 +415,4 @@ export default class ImagesSelectionWindow extends JetView {
 		this.dataview.clearAll();
 		this.getRoot().hide();
 	}
-
 }

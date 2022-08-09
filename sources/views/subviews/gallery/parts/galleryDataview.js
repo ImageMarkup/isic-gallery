@@ -1,7 +1,6 @@
 import "../../../components/activeDataview";
 import selectedImages from "../../../../models/selectedGalleryImages";
 import state from "../../../../models/state";
-import ajax from "../../../../services/ajaxActions";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import constants from "../../../../constants";
 import util from "../../../../utils/util";
@@ -18,7 +17,8 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 	if (value) {
 		if (state.toSelectByShift) {
 			imagesArray = util.getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, value);
-		} else {
+		}
+		else {
 			imagesArray = [item];
 		}
 		if (studyFlag) {
@@ -28,7 +28,8 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 				newStudyButton.show();
 			}
 			selectedImages.addForStudy(imagesArray);
-		} else {
+		}
+		else {
 			if (selectedImages.count() === 0) {
 				// TODO: uncomment after download will be implemented
 				// let downloadMenu = $$(constants.DOWNLOAD_MENU_ID);
@@ -37,8 +38,8 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 			}
 			selectedImages.add(imagesArray);
 		}
-
-	} else {
+	}
+	else {
 		const deletedItemsDataCollection = selectedImages.getDeletedItemsDataCollection();
 		if (state.toSelectByShift) {
 			imagesArray = util.getImagesToSelectByShift(item, studyFlag, selectedImages, dataview, value);
@@ -73,7 +74,8 @@ function changeSelectedItem(item, value, dataview, studyFlag) {
 	}
 	if (studyFlag) {
 		state.app.callEvent("changedAllSelectedImagesCount");
-	} else {
+	}
+	else {
 		state.app.callEvent("changedSelectedImagesCount");
 	}
 	dataview.callEvent("onCheckboxItemClick", [imagesArray, value]);
@@ -90,8 +92,9 @@ const dataview = {
 		let flagForStudies = selectedImages.getStudyFlag();
 		// TODO check this when if study works
 		if (flagForStudies) {
+			// eslint-disable-next-line no-use-before-define
 			let dataviewConfig = $$(getIdFromConfig());
-			// TODO: find out why we use find
+			// eslint-disable-next-line array-callback-return
 			dataviewConfig.find((config) => {
 				if (selectedImages.isSelectedInStudies(config.isic_id)) {
 					config.markCheckbox = 1;
@@ -110,36 +113,41 @@ const dataview = {
 			</div>` : "";
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
-			galleryImageUrl.setPreviewImageUrl(obj.isic_id, obj.files.full.url); // to prevent sending query more than 1 time
+			galleryImageUrl.setPreviewImageUrl(
+				obj.isic_id,
+				obj.files.full.url
+			); // to prevent sending query more than 1 time
 		}
-		return `<div class="gallery-images-container ${checkedClass}">
-					<div class='gallery-images-info'>
-						<div class="gallery-images-header">
-							<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
-			                <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
-						</div>
-						<div class="gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
-							<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-								<span class="gallery-images-button resize-icon tooltip-title">
-									<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
-									</svg>
-								</span>
-								<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
+		return `<div class="gallery-images-container">
+					<div class="check-layout ${checkedClass}" style="height: ${util.getImageHeight()}px; width: 100%; position: absolute; right:0px; top:${Math.floor((util.getDataviewItemHeight() - util.getImageHeight()) / 2)}px">
+						<div class='gallery-images-info' style="height: ${util.getImageHeight()}px; position: absolute; right:0px;">
+							<div class="gallery-images-header">
+								<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
+			        	        <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
 							</div>
-							<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-								<span class="gallery-images-button info-icon tooltip-title">
-									<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
-									</svg>
-								</span>
-								<span class="tooltip-block tooltip-block-top">Metadata</span>
+							<div class="gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
+								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
+									<span class="gallery-images-button resize-icon tooltip-title">
+										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
+										</svg>
+									</span>
+									<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
+								</div>
+								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
+									<span class="gallery-images-button info-icon tooltip-title">
+										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
+										</svg>
+									</span>
+									<span class="tooltip-block tooltip-block-top">Metadata</span>
+								</div>
+								${diagnosisIcon}
 							</div>
-							${diagnosisIcon}
 						</div>
+						${starHtml}
+						<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height="${util.getImageHeight()}"/>
 					</div>
-					${starHtml}
-					<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height=${util.getDataviewItemHeight() - 10}/>
 				</div>`;
 	},
 	borderless: true,
@@ -158,7 +166,12 @@ const dataview = {
 					let studyFlag = selectedImages.getStudyFlag();
 					const datav = $$(dataview.id);
 					const item = datav.getItem(this.config.$masterId);
-					if (value && (selectedImages.count() >= constants.MAX_COUNT_IMAGES_SELECTION || selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION)) {
+					if (value
+						&& (
+							selectedImages.count() >= constants.MAX_COUNT_IMAGES_SELECTION
+							|| selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION
+						)
+					) {
 						datav.updateItem(item.id, {markCheckbox: oldValue});
 						webix.alert({
 							text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`

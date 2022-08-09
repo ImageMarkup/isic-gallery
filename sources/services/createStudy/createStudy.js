@@ -2,9 +2,6 @@ import LargeImageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import selectedGalleryImages from "../../models/selectedGalleryImages";
 import imageSelectionWindow from "../../views/subviews/createStudy/windows/imagesSelectionWindow";
 import createStudyModel from "../../models/createStudyModel";
-import ajaxActions from "../ajaxActions";
-import "wheelzoom";
-import constants from "../../constants";
 
 const IMAGE_WINDOW_ID = "study-creation-image-window-id";
 let featureSetListItemsCount;
@@ -14,7 +11,15 @@ let annotatorsListItemsCount;
 let studyCreatedValue;
 
 export default class CreateStudyService {
-	constructor(view, studyDataview, studyFeatureSet, questionsView, studyAnnotators, createStudyButton, studyNameTextView) {
+	constructor(
+		view,
+		studyDataview,
+		studyFeatureSet,
+		questionsView,
+		studyAnnotators,
+		createStudyButton,
+		studyNameTextView
+	) {
 		this._view = view;
 		this._studyDataview = studyDataview;
 		this._studyFeatureSet = studyFeatureSet;
@@ -40,8 +45,8 @@ export default class CreateStudyService {
 		this._invalidMessageTemplate = this._view.$scope.getInvalidMessageTemplate();
 
 		this._addedQuestionsLayout.attachEvent("onAfterQuestionsUpdated", () => {
-        	questionsCount = this._addedQuestionsLayout.getChildViews().length;
-        	this._headerQuestionsTemplate.parse({
+			questionsCount = this._addedQuestionsLayout.getChildViews().length;
+			this._headerQuestionsTemplate.parse({
 				count: questionsCount
 			});
 		});
@@ -65,11 +70,11 @@ export default class CreateStudyService {
 		});
 
 		this._imageDataView.on_click["add-new-image"] = () => {
-        	this._imageSelectionWindow.showWindow(this._imageDataView.$scope);
+			this._imageSelectionWindow.showWindow(this._imageDataView.$scope);
 		};
 
 		this._imageDataView.attachEvent("onAfterImagesUpdated", () => {
-        	imagesCount = this._imageDataView.data.order.length - 1;
+			imagesCount = this._imageDataView.data.order.length - 1;
 			this._headerDataviewTemplate.parse({
 				count: imagesCount
 			});
@@ -159,7 +164,11 @@ export default class CreateStudyService {
 			let studyName = this._studyNameTextView.getValue();
 			let newNameString = studyName.replace(nameRegEx, "");
 			let studyNameLength = newNameString.length;
-			if (!featureSetListItemsCount || !imagesCount || !questionsCount || studyNameLength < 3 || !annotatorsListItemsCount) {
+			if (!featureSetListItemsCount
+				|| !imagesCount
+				|| !questionsCount
+				|| studyNameLength < 3
+				|| !annotatorsListItemsCount) {
 				if (studyNameLength === 0) {
 					this._invalidMessageTemplate.parse({
 						message: "Study name should not be empty"
@@ -261,15 +270,7 @@ export default class CreateStudyService {
 					imageIds.push(obj.isic_id);
 				}
 			});
-
-			const studyParams = {
-				name: studyName,
-				imageIds,
-				userIds: annotatorsIds,
-				questions,
-				features
-			};
-
+			return false;
 		});
 	}
 

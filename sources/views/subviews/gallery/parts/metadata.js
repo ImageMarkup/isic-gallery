@@ -117,7 +117,7 @@ function createTemplate(data) {
 					autoheight: true,
 					borderless: true
 				}
-			},
+			}
 		]
 	};
 }
@@ -192,7 +192,9 @@ function createConfig(data) {
 		css: "metadata-scrollview",
 		view: "metadataEditView",
 		body: {
-			isolate: true, // if true, we can use child components by id only like this: $$("isolateComponentId").$$("childComponemtId")
+			// if true, we can use child components by id only
+			// like this: $$("isolateComponentId").$$("childComponemtId")
+			isolate: true,
 			rows: [
 				{
 					cols: [

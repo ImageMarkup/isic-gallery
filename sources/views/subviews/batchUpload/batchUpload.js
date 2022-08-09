@@ -148,13 +148,13 @@ export default class BatchUploadView extends JetView {
 										let objectLength = obj.length;
 										let templateStyle;
 										if (objectLength < 120) {
-											templateStyle = "padding-top:" + "10px;";
+											templateStyle = "padding-top:10px;";
 										}
 										else if (objectLength > 120 && objectLength < 240) {
 											templateStyle = "";
 										}
 										else {
-											templateStyle = "overflow:" + "scroll;" + "height:" + "55px;";
+											templateStyle = "overflow:scroll; height:55px;";
 										}
 										return `<div style=${templateStyle}>${obj}</div>`;
 									}} // label will be set after form.setValue
@@ -245,6 +245,7 @@ export default class BatchUploadView extends JetView {
 					if (value.replace(spacesRegex, "").length >= 3 && value.match(lettersRegex)) {
 						return value;
 					}
+					return undefined;
 				}
 			},
 			elementsConfig: {

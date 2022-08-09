@@ -1,10 +1,8 @@
-import authService from "../../../../services/auth";
 import constants from "../../../../constants";
-import accessControlWindow from "../windows/accessControl";
-import ajaxActions from "../../../../services/ajaxActions";
 import dates from "../../../../utils/formats";
 
-const ACCESS_CONTROL_WINDOW_ID = "access-control-window";
+// TODO: uncomment when dataset will be implemented
+// const ACCESS_CONTROL_WINDOW_ID = "access-control-window";
 
 
 function createActionsPanel(item) {
@@ -62,7 +60,8 @@ function createActionsPanel(item) {
 						height: 32,
 						on: {
 							onItemClick: () => {
-								const win = $$(ACCESS_CONTROL_WINDOW_ID);
+								// TODO: uncomment when dataset will be implemented
+								// const win = $$(ACCESS_CONTROL_WINDOW_ID);
 							}
 						}
 					},
@@ -73,16 +72,16 @@ function createActionsPanel(item) {
 	};
 }
 
-
-function prepareUsersListData(data) {
-	data.users.forEach((item) => {
-		item._modelType = "user";
-	});
-	data.groups.forEach((item) => {
-		item._modelType = "group";
-	});
-	return data.groups.concat(data.users);
-}
+// TODO: uncomment when dataset will be implemented
+// function prepareUsersListData(data) {
+// 	data.users.forEach((item) => {
+// 		item._modelType = "user";
+// 	});
+// 	data.groups.forEach((item) => {
+// 		item._modelType = "group";
+// 	});
+// 	return data.groups.concat(data.users);
+// }
 
 function createAccordion(item, accordionItem) {
 	const html = `	<div class='accordion-item-template'>

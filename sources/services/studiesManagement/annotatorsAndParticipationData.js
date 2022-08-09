@@ -39,4 +39,4 @@ function prepareParticipationReqData(item) {
 export default {
 	prepareAnnotatorsData,
 	prepareParticipationReqData
-}
+};

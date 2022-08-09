@@ -1,11 +1,11 @@
 import {JetView} from "webix-jet";
+import termsOfUseDownloadingPanel from "jet-views/parts/termsOfUseLinks";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
 import WizzardUploadService from "../../../services/wizzardUploader/wizzardUploader";
 import auth from "../../../services/auth";
 import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
 import constants from "../../../constants";
 import "../../components/templateWithImages";
-import termsOfUseDownloadingPanel from "jet-views/parts/termsOfUseLinks";
 import termsOfUseMD from "../../templates/termsOfUse.md";
 import mdLoader from "../../../services/mdLoader";
 
@@ -413,6 +413,7 @@ export default class WizzardUploaderView extends JetView {
 					cols: [
 						{
 							template: "<span> Electronic<br> signature <span style='color: red;'>*</span></span>",
+							// eslint-disable-next-line quote-props
 							css: {"padding-left": "5px;", "width": "130px !important"},
 							borderless: true,
 							autoheight: true,
@@ -456,7 +457,7 @@ export default class WizzardUploaderView extends JetView {
 			]
 		};
 
-		function thicknessRule(value, fields, name) {
+		function thicknessRule(value, fields) {
 			if (fields.diagnosis === "melanoma") {
 				return webix.rules.isNotEmpty(value);
 			}
@@ -469,19 +470,19 @@ export default class WizzardUploaderView extends JetView {
 			type: "clean",
 			borderless: true,
 			rules: {
-				age: (value, fields, name) => {
+				age: (value) => {
 					const pattern = new RegExp("^[0-9]{1,2}$");
 					return pattern.test(value);
 				},
 				filename: webix.rules.isNotEmpty,
 				dataset: webix.rules.isNotEmpty,
-				signature: (value, fields, name) => {
+				signature: (value) => {
 					const pattern = new RegExp("^[a-zA-Z]+$");
 					return pattern.test(value);
 				},
 				benign_malignant: webix.rules.isNotEmpty,
 				diagnosis: webix.rules.isNotEmpty,
-				mel_thick_mm: (value, fields, name) => {
+				mel_thick_mm: (value) => {
 					const pattern = new RegExp("^[0-9]{1,3}[\\.]?[0-9]*$");
 					const num = parseFloat(value) || 0;
 					return num >= 0 && num < 1000 && (value !== "" ? pattern.test(value) : true);

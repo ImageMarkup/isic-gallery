@@ -31,7 +31,8 @@ class ApiDocumentationService {
 			const searchValue = this._searchInput.getValue().toLowerCase();
 			if (searchValue === "") {
 				this._listOfSearchedValues.hide();
-			} else {
+			}
+			else {
 				this._leftSidebar.find((obj) => {
 					const value = obj.value.toLowerCase();
 					if (value.indexOf(searchValue) !== -1) {
@@ -42,7 +43,8 @@ class ApiDocumentationService {
 				if (parsedValuesLength === 0) {
 					this._listOfSearchedValues.clearAll();
 					this._listOfSearchedValues.showOverlay(`<div class="list-overlay-message">No Results Found for \"${searchValue}\"</div>`);
-				} else {
+				}
+				else {
 					this._listOfSearchedValues.hideOverlay();
 				}
 				this._listOfSearchedValues.show();
@@ -50,11 +52,11 @@ class ApiDocumentationService {
 				const isListOverflown = utils.isOverflown(listNode);
 				if (isListOverflown) {
 					this._listOfSearchedValues.define("scroll", "true");
-				} else {
+				}
+				else {
 					this._listOfSearchedValues.define("scroll", "false");
 				}
 			}
-
 		});
 
 		this._listOfSearchedValues.attachEvent("onItemClick", (id) => {
@@ -117,10 +119,12 @@ class ApiDocumentationService {
 			else if (sidebarItem.$level > 1) {
 				let offsetTop;
 				if (firstChild.isFirst) {
-					offsetTop = layoutToShow.$view.offsetTop - layoutToShow.$view.parentNode.parentNode.offsetTop;
+					offsetTop = layoutToShow.$view.offsetTop;
+					offsetTop -= layoutToShow.$view.parentNode.parentNode.offsetTop;
 				}
 				else {
-					offsetTop = layoutToShow.$view.offsetTop - layoutToShow.$view.parentNode.parentNode.parentNode.offsetTop;
+					offsetTop = layoutToShow.$view.offsetTop;
+					offsetTop -= layoutToShow.$view.parentNode.parentNode.parentNode.offsetTop;
 				}
 				this._pageScrollView.blockEvent();
 				this._pageScrollView.scrollTo(0, offsetTop);
@@ -155,7 +159,8 @@ class ApiDocumentationService {
 			let sideBarOverflown = utils.isOverflown(sideBarNode);
 			if (sideBarOverflown) {
 				this._leftSidebar.define("scroll", "true");
-			} else {
+			}
+			else {
 				this._leftSidebar.define("scroll", "false");
 			}
 		});
@@ -182,7 +187,8 @@ class ApiDocumentationService {
 			const isElementOverflown = utils.isOverflown(codeElement);
 			if (isElementOverflown) {
 				codeElement.style.overflowX = "scroll";
-			} else {
+			}
+			else {
 				codeElement.style.overflowX = "auto";
 			}
 		});
@@ -199,15 +205,21 @@ class ApiDocumentationService {
 	}
 
 	_afterPageScroll(scrollChildViews) {
-		const scrollChildViewsToFind = scrollChildViews ? scrollChildViews.getChildViews() : this._pageScrollView.getChildViews()[0].getChildViews();
-		const topShownView = scrollChildViewsToFind.find(childView => this._checkVisibalityOfElement(childView.getNode(), this._scrollOffsetTop));
+		const scrollChildViewsToFind = scrollChildViews
+			? scrollChildViews.getChildViews()
+			: this._pageScrollView.getChildViews()[0].getChildViews();
+		const topShownView = scrollChildViewsToFind.find(
+			childView => this._checkVisibalityOfElement(childView.getNode(), this._scrollOffsetTop)
+		);
 		const sidebarItemName = topShownView.config.id;
 
-		if(sidebarItemName.indexOf("$") !== -1) {
-			this._afterPageScroll(topShownView)
+		if (sidebarItemName.indexOf("$") !== -1) {
+			this._afterPageScroll(topShownView);
 		}
 
-		const arrayWithOneItemToSelect = this._leftSidebar.find(sidebarItem => sidebarItem.name === sidebarItemName);
+		const arrayWithOneItemToSelect = this._leftSidebar.find(
+			sidebarItem => sidebarItem.name === sidebarItemName
+		);
 
 		if (arrayWithOneItemToSelect.length !== 0) {
 			const itemToSelect = arrayWithOneItemToSelect[0];
@@ -215,16 +227,17 @@ class ApiDocumentationService {
 			// block select and click events
 			this._leftSidebar.blockEvent();
 
-			//select top visible item in sidebar
+			// select top visible item in sidebar
 			if (itemToSelect.$parent && !this._leftSidebar.isBranchOpen(itemToSelect.$parent)) {
 				this._leftSidebar.closeAll();
 				this._leftSidebar.open(itemToSelect.$parent);
-			} else if (!itemToSelect.$parent) {
+			}
+			else if (!itemToSelect.$parent) {
 				this._leftSidebar.closeAll();
 			}
 			this._leftSidebar.select(itemToSelect.id);
 
-			//unblock blocked events
+			// unblock blocked events
 			this._leftSidebar.unblockEvent();
 		}
 	}

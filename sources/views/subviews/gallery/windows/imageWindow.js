@@ -25,8 +25,6 @@ const templateViewer = {
 	borderless: true
 };
 
-
-
 // this rows will be set during initialisation. we set id to this element in getConfig method
 const layoutForMetadata = {
 	css: "metadata-layout",
@@ -57,13 +55,14 @@ const slideButton = {
 	value: false,
 	on: {
 		onChange(newv) {
-			const [imageWindowZoomPlusButtons, imageZoomMunusButtons] = $$(getViewerId()).$view.getElementsByClassName("zoom-btn");
 			if (newv) {
 				$$(metadataContainer.id).show();
+				// eslint-disable-next-line no-use-before-define
 				refreshTemplate();
 			}
 			else {
 				$$(metadataContainer.id).hide();
+				// eslint-disable-next-line no-use-before-define
 				refreshTemplate();
 			}
 		}
@@ -99,6 +98,7 @@ const windowBody = {
 };
 
 function refreshTemplate() {
+	// eslint-disable-next-line no-use-before-define
 	let imageTemplate = $$(getViewerId());
 	imageTemplate.refresh();
 }
@@ -112,7 +112,8 @@ function getConfig(id, studyImage) {
 	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
 	if (!studyImage) {
 		windowTitle = "Metadata";
-	} else {
+	}
+	else {
 		windowTitle = studyImage;
 	}
 	return windowWithHeader.getConfig(id, windowBody, windowTitle);

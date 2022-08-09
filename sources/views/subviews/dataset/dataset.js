@@ -1,12 +1,9 @@
-import {JetView, plugins} from "webix-jet";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
+import {JetView/* , plugins */} from "webix-jet";
 import authService from "../../../services/auth";
 import accessControlWindow from "./windows/accessControl";
 import constants from "../../../constants";
 import state from "../../../models/state";
 import DatasetViewService from "../../../services/dataset/dataset";
-import datasetModel from "../../../models/dataset";
-import accView from "./parts/accordionView";
 
 const DATASET_ACCORDION_ID = "dataset-accordion-id";
 const PAGER_ID = "pager-id";
@@ -61,7 +58,7 @@ export default class DatasetView extends JetView {
 					rows: [
 						{},
 						clonePager,
-						{height: 5},
+						{height: 5}
 					]
 				}
 			]
@@ -71,7 +68,8 @@ export default class DatasetView extends JetView {
 
 	init(view) {
 		this._setAccessWindow = this.ui(accessControlWindow.getConfig(ACCESS_CONTROL_WINDOW_ID));
-		this.datasetViewService = new DatasetViewService(view,
+		this.datasetViewService = new DatasetViewService(
+			view,
 			$$(PAGER_ID),
 			$$(CLONE_PAGER_ID),
 			$$(CONTENT_HEADER_TEMPLATE_ID),

@@ -1,6 +1,4 @@
-import ajaxActions from "../../../../services/ajaxActions";
-
-function createActionsPanel(item, service) {
+function createActionsPanel(item) {
 	return {
 		rows: [
 			{
@@ -24,11 +22,7 @@ function createActionsPanel(item, service) {
 							onItemClick() {
 								webix.confirm({
 									text: `Permanently remove <b>"${item.name}"</b> study?`,
-									type: "confirm-error",
-									callback(result) {
-										if (result) {
-										}
-									}
+									type: "confirm-error"
 								});
 							}
 						}

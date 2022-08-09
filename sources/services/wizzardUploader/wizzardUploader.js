@@ -1,4 +1,3 @@
-import ajaxActions from "../ajaxActions";
 import util from "../../utils/util";
 import storage from "../../models/wizardUploaderStorage";
 
@@ -49,7 +48,6 @@ class WizzardUploaderService {
 		if (storage.getFilesInfoFromStorage()) {
 			this._exportButton.enable();
 		}
-
 
 		this._view.on(this._view.app, "imageAdded", () => {
 			this._exportButton.enable();
@@ -114,7 +112,6 @@ class WizzardUploaderService {
 		});
 
 		this._form.elements.submit.attachEvent("onItemClick", () => {
-			const values = this._form.getValues();
 			if (!this._uploader.files.count()) {
 				webix.alert(
 					{
@@ -134,10 +131,12 @@ class WizzardUploaderService {
 				return;
 			}
 			if (this._form.validate()) {
-				const fileItem = this._uploader.files.getItem(this._uploader.files.getFirstId());
-				const datasetWebixId = values.dataset;
-				const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
-				const datasetId = datasetItem._id;
+				// TODO: implement when downloading will be implemented
+				// const values = this._form.getValues();
+				// const fileItem = this._uploader.files.getItem(this._uploader.files.getFirstId());
+				// const datasetWebixId = values.dataset;
+				// const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
+				// const datasetId = datasetItem._id;
 			}
 		});
 		this._initFormRestrictions();

@@ -11,16 +11,13 @@ const ID_FORM = "apply-metadata-form";
 const ID_FILE_SELECTION = "apply-metadata-file-selection";
 
 export default class ApplyMetadataView extends JetView {
-
 	config() {
-
 		function prepareFileInfoTemplate(fileInfo) {
 			if (!fileInfo) {
 				return "";
 			}
 			const userName = `${fileInfo.user.name}${fileInfo.user.firstName}[${fileInfo.user.lastName}(${fileInfo.user.login}])`;
 			return `${formats.formatDateString(fileInfo.time)} - ${fileInfo.file.name} - ${userName}`;
-
 		}
 
 		function prepareHtmlList(data, type) {
@@ -72,7 +69,7 @@ export default class ApplyMetadataView extends JetView {
 						},
 						borderless: true,
 						autoheight: true
-					},
+					}
 				},
 				{
 					paddingY: 15,

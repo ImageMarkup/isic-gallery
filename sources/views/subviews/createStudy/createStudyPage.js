@@ -191,7 +191,7 @@ export default class CreateStudyPage extends JetView {
 	}
 
 	ready(view) {
-		const studyDataview = this.getStudyDataview();
+		const studyDataviewView = this.getStudyDataview();
 		const studyFeatureSet = this.getStudyFeatureSet();
 		const questionsView = this.getQuestionsView();
 		const studyAnnotators = this.getStudyAnnotators();
@@ -206,7 +206,7 @@ export default class CreateStudyPage extends JetView {
 
 		this.createStudyService = new CreateStudyService(
 			view,
-			studyDataview,
+			studyDataviewView,
 			studyFeatureSet,
 			questionsView,
 			studyAnnotators,

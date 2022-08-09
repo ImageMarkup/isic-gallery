@@ -3,14 +3,12 @@ import authService from "../../../services/auth";
 import DashboardService from "../../../services/dashboard/dashboard";
 import Dataset from "../dataset/dataset";
 import StudiesManagement from "../studiesManagement/studiesManagement";
-import util from "../../../utils/util";
 import StudiesService from "../../../services/studies/studies";
 import constants from "../../../constants";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
 import state from "../../../models/state";
 
 const ID_BUTTON_INVITE_USER = "invite-user-button";
-const ID_BUTTON_MANAGEMENT_UI = "management-ui-button";
 
 const ID_PANEL_ADMIN_STUDIES = "admin-studies-panel";
 const ID_PANEL_ADMIN_DATASET = "admin-dataset-panel";
@@ -32,7 +30,6 @@ const ID_PARTICIPANT_ACCORDION = "dashboard-participant-accordion";
 const ID_ADMIN_ACCORDION = "dashboard-admin-accordion";
 
 export default class DashboardView extends JetView {
-
 	config() {
 		const adminStudiesPanel = {
 			view: "scrollview",
@@ -89,6 +86,7 @@ export default class DashboardView extends JetView {
 								StudiesService.getFirstAnnotationId(currentStudy)
 									.then((annotationId) => {
 										if (annotationId) {
+											// TODO: implement after study endpoint will be available
 										}
 										else {
 											webix.message({
@@ -127,8 +125,8 @@ export default class DashboardView extends JetView {
 						autoheight: true,
 						template: "<div class='task-info'>#dataset.name#<span class='tasks-count'>#count#</span> </div>",
 						on: {
-							onItemClick(id) {
-								const currentTask = this.getItem(id);
+							onItemClick(/* id */) {
+								// TODO: implement after study endpoint will be available
 							}
 						}
 					}
@@ -282,7 +280,7 @@ export default class DashboardView extends JetView {
 			$$(ID_PANEL_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_TEMPLATE_PARTISIPANT_TASKS_SEGMENTATION),
 			$$(ID_LIST_PARTISIPANT_TASKS_SEGMENTATION),
-			//$$(ID_BUTTON_MANAGEMENT_UI),
+			// $$(ID_BUTTON_MANAGEMENT_UI),
 			$$(ID_BUTTON_INVITE_USER),
 			$$(ID_ACCORDION_ITEM_SEGMENTATION_TASKS),
 			$$(ID_ACCORDION_ITEM_PARTICIPANT_STUDY),

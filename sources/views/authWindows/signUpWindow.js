@@ -143,7 +143,7 @@ const signupForm = {
 							const thisWindow = this.getTopParentView();
 							if (form.validate()) {
 								const values = form.getValues();
-								ajax.postUser(values).then((data) => {
+								ajax.postUser(values).then(() => {
 									webix.message("User has been registered. Please, log in");
 									thisWindow.hide();
 									form.clear();

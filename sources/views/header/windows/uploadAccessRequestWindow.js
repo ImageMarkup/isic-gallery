@@ -1,10 +1,11 @@
 import windowWithHeader from "../../components/windowWithHeader";
-import ajax from "../../../services/ajaxActions";
 import auth from "../../../services/auth";
-import constants from "../../../constants";
 
 const user = auth.getUserInfo();
 let isRequestSend = webix.storage.session.get(`contribute-to-archive-request-${user ? user._id : ""}`);
+
+// TODO: uncomment if requestCreateDatasetPermission will be implemented
+function requestContributeAccess() {}
 
 const body = {
 	width: 750,
@@ -37,7 +38,7 @@ const body = {
 					data: {
 						message: "Request has been sent"
 					},
-					template: (obj) => obj.message,
+					template: obj => obj.message,
 					css: {"text-align": "center"},
 					borderless: true,
 					hidden: !isRequestSend,
@@ -57,9 +58,6 @@ function getConfig(id) {
 
 function getIdFromConfig() {
 	return windowWithHeader.getIdFromConfig();
-}
-
-function requestContributeAccess() {
 }
 
 export default {

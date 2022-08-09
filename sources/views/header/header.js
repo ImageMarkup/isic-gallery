@@ -4,7 +4,6 @@ import HeaderService from "../../services/header/headerServices";
 import menuHandlerService from "../../services/menuHandlers";
 import authService from "../../services/auth";
 import uploadWindow from "./windows/uploadTypeWindow";
-import state from "../../models/state";
 
 const LOGIN_MENU_ID = "login-menu";
 const LOGOUT_PANEL_ID = "logout-panel";
@@ -165,7 +164,7 @@ export default class Header extends JetView {
 			borderless: true,
 			width: 90,
 			onClick: {
-				"menu-login": (e, id) => {
+				"menu-login": (/* e, id */) => {
 					authService.login();
 				}
 			}
@@ -227,6 +226,5 @@ export default class Header extends JetView {
 		}
 	}
 
-	urlChange(view, url) {
-	}
+	urlChange(/* view, url */) {}
 }

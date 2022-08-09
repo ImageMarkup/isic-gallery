@@ -5,8 +5,8 @@ import "../../../components/activeList";
 const oneLineHeight = 41;
 let initialView;
 let textViewNameNumber;
-let questionLabelNumber;
-let answersCount;
+let _questionLabelNumber;
+let _answersCount;
 
 export default class StudyQuestions extends JetView {
 	config() {
@@ -18,6 +18,7 @@ export default class StudyQuestions extends JetView {
 			value: "Add Question",
 			width: 110,
 			height: 32,
+			// eslint-disable-next-line consistent-return
 			click: () => {
 				const answersToAddCount = this.layoutOfAnswersToAdd.getChildViews().length;
 				if (answersToAddCount <= 1) {
@@ -28,7 +29,7 @@ export default class StudyQuestions extends JetView {
 				const createdAddedQuestionLayout = this
 					.createAddedQuestionsLayout(answerValues, questionValue);
 				this.layoutOfAddedQuestions.addView(createdAddedQuestionLayout);
-				this.setQuestionLabel();
+				this.setQuestionLabelNumber();
 				this.layoutOfQuestionToAdd.callEvent("onBeforeRefresh");
 				this.layoutOfQuestionToAdd.setValue("");
 				this.layoutOfQuestionToAdd.refresh();
@@ -46,12 +47,12 @@ export default class StudyQuestions extends JetView {
 			width: 430,
 			placeholder: "Type your question",
 			css: "text-field",
-			label: `${this.getQuestionLabel()}`,
+			label: `${this.getQuestionLabelNumber()}`,
 			labelAlign: "right",
 			labelWidth: 30,
 			on: {
 				onBeforeRefresh: () => {
-					this.layoutOfQuestionToAdd.config.label = `${this.getQuestionLabel()}`;
+					this.layoutOfQuestionToAdd.config.label = `${this.getQuestionLabelNumber()}`;
 				}
 			}
 		};
@@ -114,11 +115,11 @@ export default class StudyQuestions extends JetView {
 	ready() {
 		this.layoutOfAnswersToAdd = this.getLayoutAnswersToAdd();
 		this.layoutOfAnswersToAdd.attachEvent("onAfterLayoutRender", () => {
-			createStudyModel.setTextLayoutNames(`textViewName-${questionLabelNumber}-${textViewNameNumber}`);
+			createStudyModel.setTextLayoutNames(`textViewName-${_questionLabelNumber}-${textViewNameNumber}`);
 		});
 		this.layoutOfQuestionToAdd = this.getQuestionToAdd();
 		this.layoutOfAnswersToAdd.callEvent("onAfterLayoutRender");
-		this.layoutOfAddedQuestions = this.getAddedQustions();
+		this.layoutOfAddedQuestions = this.getAddedQuestions();
 		this.questionsScrollView = this.getQuestionsScrollView();
 	}
 
@@ -130,16 +131,21 @@ export default class StudyQuestions extends JetView {
 		return this.getRoot().queryView({name: "questionToAddName"});
 	}
 
-	getAddedQustions() {
+	getAddedQuestions() {
 		return this.getRoot().queryView({name: "layoutOfAddedQuestionsName"});
 	}
 
-	setQuestionLabel(reduce) {
-		reduce ? questionLabelNumber-- : questionLabelNumber++;
+	setQuestionLabelNumber(reduce) {
+		if (reduce) {
+			_questionLabelNumber -= 1;
+		}
+		else {
+			_questionLabelNumber += 1;
+		}
 	}
 
-	getQuestionLabel() {
-		return questionLabelNumber;
+	getQuestionLabelNumber() {
+		return _questionLabelNumber;
 	}
 
 	getLayoutModel() {
@@ -149,11 +155,11 @@ export default class StudyQuestions extends JetView {
 					height: 35,
 					cols: [
 						{
-							view: "text", 
+							view: "text",
 							css: "text-field",
 							name: `textViewName-${this.getTextViewNameNumber()}`,
-							placeholder: `Type answer ${this.getQuestionLabel()}${this.getAnswerLabel()}`,
-							labelWidth: 50, 
+							placeholder: `Type answer ${this.getQuestionLabelNumber()}${this.getAnswerLabel()}`,
+							labelWidth: 50,
 							width: 430,
 							labelAlign: "right",
 							label: `${this.getAnswerLabel()}`
@@ -170,7 +176,7 @@ export default class StudyQuestions extends JetView {
 									width: 16,
 									height: 16,
 									click: () => {
-										createStudyModel.setTextLayoutNames(`textViewName-${questionLabelNumber}-${textViewNameNumber + 1}`);
+										createStudyModel.setTextLayoutNames(`textViewName-${_questionLabelNumber}-${textViewNameNumber + 1}`);
 										this.setTextViewNameNumber();
 										initialView = false;
 										this.addNewView();
@@ -181,7 +187,7 @@ export default class StudyQuestions extends JetView {
 										this.scrollToAddedQuestion(lastAddedView.config.id);
 									}
 								},
-								{height: 3},	
+								{height: 3},
 								{
 									view: "button",
 									css: "btn",
@@ -190,12 +196,16 @@ export default class StudyQuestions extends JetView {
 									hidden: this.hideMinusInitButton(),
 									width: 16,
 									height: 16,
-									click:(id) => {
+									click: (id) => {
 										const minusButton = this.$$(id);
 										const textNameNumber = minusButton.config.siblingTextNumber;
 										const siblingTextView = this.getTextView(textNameNumber);
 										const textViewName = siblingTextView.config.name;
-										const layoutOfAnswersId = siblingTextView.getParentView().getParentView().config.id;
+										const layoutOfAnswersId = siblingTextView
+											.getParentView()
+											.getParentView()
+											.config
+											.id;
 										createStudyModel.removeTextLayoutName(textViewName);
 										this.layoutOfAnswersToAdd.removeView(layoutOfAnswersId);
 										this.refreshLabelAndPlaceholderValues();
@@ -253,12 +263,12 @@ export default class StudyQuestions extends JetView {
 	}
 
 	getTextViewNameNumber() {
-		return `${this.getQuestionLabel()}-${textViewNameNumber}`;
+		return `${this.getQuestionLabelNumber()}-${textViewNameNumber}`;
 	}
 
 	getTextView(nameNumber, name) {
 		let nameToPaste;
-		name ? nameToPaste = name : nameToPaste = `textViewName-${nameNumber}`;
+		nameToPaste = name || `textViewName-${nameNumber}`;
 		return this.getRoot().queryView({name: nameToPaste});
 	}
 
@@ -283,7 +293,7 @@ export default class StudyQuestions extends JetView {
 		}
 		else {
 			textViewNamesArray = createStudyModel.getTextLayoutNames();
-			textQuestionLabel = this.getQuestionLabel();
+			textQuestionLabel = this.getQuestionLabelNumber();
 		}
 		textViewNamesArray.forEach((textViewName, index) => {
 			let textView = this.getTextView(false, textViewName);
@@ -317,19 +327,19 @@ export default class StudyQuestions extends JetView {
 	}
 
 	setAnswersCount() {
-		answersCount++;
+		_answersCount++;
 	}
 
 	getAnswersCount() {
-		return answersCount;
+		return _answersCount;
 	}
 
 	createAddedQuestionsLayout(answerValues, questionValue) {
 		let answersLayoutRows = [];
 		let answersNames = [];
-		let questionLabel = this.getQuestionLabel();
+		let questionLabelNumber = this.getQuestionLabelNumber();
 		let answersCount = this.getAnswersCount();
-		let questionTextViewName = `addedQuestion-${questionLabel}`;
+		let questionTextViewName = `addedQuestion-${questionLabelNumber}`;
 		let layoutModelArray = [];
 
 		const questionTextView = {
@@ -338,7 +348,7 @@ export default class StudyQuestions extends JetView {
 			width: 430,
 			placeholder: "Type your question",
 			css: "text-field",
-			label: `${this.getQuestionLabel()}`,
+			label: `${this.getQuestionLabelNumber()}`,
 			labelAlign: "right",
 			labelWidth: 30,
 			value: questionValue
@@ -354,39 +364,49 @@ export default class StudyQuestions extends JetView {
 			height: 25,
 			click: (id) => {
 				const deleteButton = this.$$(id);
-				const mainQustionLayout = this.getRoot().queryView({name: `${questionTextViewName}-${deleteButton.config.mainLayoutNamesNumber}`});
-				let mainQuestionLayoutId = mainQustionLayout.config.id;
-				createStudyModel.removeAddedQustions(questionTextViewName);
+				const mainQuestionLayout = this.getRoot().queryView({name: `${questionTextViewName}-${deleteButton.config.mainLayoutNamesNumber}`});
+				let mainQuestionLayoutId = mainQuestionLayout.config.id;
+				createStudyModel.removeAddedQuestions(questionTextViewName);
 				this.layoutOfAddedQuestions.removeView(mainQuestionLayoutId);
-				this.setQuestionLabel(true);
+				this.setQuestionLabelNumber(true);
 				let addedQuestionArray = this.layoutOfAddedQuestions.getChildViews();
 
 				addedQuestionArray.forEach((addedQuestionLayout, index) => {
-					let questionTextView = this.getRoot().queryView({name: addedQuestionLayout.config.questionNameOfThisLayout});
-					if (questionTextView) {
+					let studyQuestionView = this
+						.getRoot()
+						.queryView({name: addedQuestionLayout.config.questionNameOfThisLayout});
+					if (studyQuestionView) {
 						let questionLabel = index + 1;
-						questionTextView.config.label = questionLabel;
-						questionTextView.refresh();
+						studyQuestionView.config.label = questionLabel;
+						studyQuestionView.refresh();
 						let namesOfAddedQuestionArray = createStudyModel.getAddedQuestionsAndAnswersNames();
 						namesOfAddedQuestionArray.forEach((addedQuestionName) => {
-							if (addedQuestionName.questionName === questionTextView.config.name) {
-								this.refreshLabelAndPlaceholderValues(false, addedQuestionName.answerNames, questionLabel);
+							if (addedQuestionName.questionName === studyQuestionView.config.name) {
+								this.refreshLabelAndPlaceholderValues(
+									false,
+									addedQuestionName.answerNames,
+									questionLabel
+								);
 							}
 						});
 					}
 				});
 
-				this.layoutOfQuestionToAdd.config.label = this.getQuestionLabel();
+				this.layoutOfQuestionToAdd.config.label = this.getQuestionLabelNumber();
 				this.layoutOfQuestionToAdd.refresh();
 				let namesOfAnswersToAddArray = createStudyModel.getTextLayoutNames();
-				this.refreshLabelAndPlaceholderValues(false, namesOfAnswersToAddArray, this.getQuestionLabel());
+				this.refreshLabelAndPlaceholderValues(
+					false,
+					namesOfAnswersToAddArray,
+					this.getQuestionLabelNumber()
+				);
 
 				this.layoutOfAddedQuestions.callEvent("onAfterQuestionsUpdated");
 			}
 		};
 
 		answerValues.forEach((answerValue, index) => {
-			let unpreparedAnswerName = `textViewNameAdded-${this.getQuestionLabel()}`;
+			let unpreparedAnswerName = `textViewNameAdded-${this.getQuestionLabelNumber()}`;
 			let newAnswerName = `${unpreparedAnswerName}-${index}`;
 			this.setAnswersCount();
 			const answersLayout = {
@@ -398,7 +418,7 @@ export default class StudyQuestions extends JetView {
 								view: "text",
 								css: "text-field",
 								name: newAnswerName,
-								placeholder: `Type answer ${this.getQuestionLabel()}${this.getAnswerLabel(index)}`,
+								placeholder: `Type answer ${this.getQuestionLabelNumber()}${this.getAnswerLabel(index)}`,
 								labelWidth: 50,
 								width: 430,
 								labelAlign: "right",
@@ -415,19 +435,36 @@ export default class StudyQuestions extends JetView {
 										label: "+",
 										siblingUnpreparedAnswerName: unpreparedAnswerName,
 										siblingTextViewName: newAnswerName,
-										questionLabel: `${this.getQuestionLabel()}`,
+										questionLabel: `${this.getQuestionLabelNumber()}`,
 										width: 16,
 										height: 16,
 										click: (id) => {
 											const plusButton = this.$$(id);
-											let layoutOfAddedAnswers = this.getRoot().queryView({name: questionTextViewName}).getParentView().getParentView().getChildViews()[3];
+											let layoutOfAddedAnswers = this
+												.getRoot()
+												.queryView({name: questionTextViewName})
+												.getParentView()
+												.getParentView()
+												.getChildViews()[3];
 											layoutOfAddedAnswers.addView(answersLayout);
-											let answerLayoutsArray = this.getRoot().queryView({name: questionTextViewName}).getParentView().getParentView().getChildViews()[3].getChildViews();
+											let answerLayoutsArray = this
+												.getRoot()
+												.queryView({name: questionTextViewName})
+												.getParentView()
+												.getParentView()
+												.getChildViews()[3]
+												.getChildViews();
 											let answerLayoutArrayLength = answerLayoutsArray.length;
 											let answerIndex = answerLayoutArrayLength - 1;
-											let newAddedAnswer = answerLayoutsArray[answerIndex].getChildViews()[0].getChildViews()[0];
-											const minusButton = newAddedAnswer.getParentView().getChildViews()[2].getChildViews()[3];
-											const spacerHeight = newAddedAnswer.getParentView().getChildViews()[2].getChildViews()[0];
+											let newAddedAnswer = answerLayoutsArray[answerIndex]
+												.getChildViews()[0]
+												.getChildViews()[0];
+											const minusButton = newAddedAnswer.getParentView()
+												.getChildViews()[2]
+												.getChildViews()[3];
+											const spacerHeight = newAddedAnswer.getParentView()
+												.getChildViews()[2]
+												.getChildViews()[0];
 											let spacerHeightId = spacerHeight.config.id;
 											spacerHeight.getParentView().removeView(spacerHeightId);
 											minusButton.show();
@@ -450,15 +487,31 @@ export default class StudyQuestions extends JetView {
 										hidden: this.hideMinusInitButton(index),
 										width: 16,
 										height: 16,
-										click:(id) => {
+										click: (id) => {
 											const minusButton = this.$$(id);
-											let layoutOfAddedAnswers = this.getRoot().queryView({name: questionTextViewName}).getParentView().getParentView().getChildViews()[3];
-											let layoutOfAnswerId = minusButton.getParentView().getParentView().getParentView().config.id;
-											let siblingTextViewName = minusButton.getParentView().getParentView().getChildViews()[0].config.name;
+											let layoutOfAddedAnswers = this
+												.getRoot()
+												.queryView({name: questionTextViewName})
+												.getParentView()
+												.getParentView()
+												.getChildViews()[3];
+											let layoutOfAnswerId = minusButton
+												.getParentView()
+												.getParentView()
+												.getParentView().config.id;
+											let siblingTextViewName = minusButton
+												.getParentView()
+												.getParentView()
+												.getChildViews()[0].config.name;
 											createStudyModel.removeAnswerName(questionTextViewName, siblingTextViewName);
 											layoutOfAddedAnswers.removeView(layoutOfAnswerId);
-											let addedAnswerNames = createStudyModel.getAddedAnswerNames(questionTextViewName);
-											this.refreshLabelAndPlaceholderValues(false, addedAnswerNames, questionLabel);
+											let addedAnswerNames = createStudyModel
+												.getAddedAnswerNames(questionTextViewName);
+											this.refreshLabelAndPlaceholderValues(
+												false,
+												addedAnswerNames,
+												questionLabelNumber
+											);
 										}
 									}
 								]
@@ -511,7 +564,8 @@ export default class StudyQuestions extends JetView {
 		const parentNodeOffsetTop = webix.$$(id).$view.parentNode.offsetTop;
 		let topPos;
 		if (textViewOffsetTop === parentNodeOffsetTop) {
-			topPos = textViewOffsetTop - webix.$$(id).$view.parentNode.parentNode.parentNode.parentNode.offsetTop;
+			const offsetTop = webix.$$(id).$view.parentNode.parentNode.parentNode.parentNode.offsetTop;
+			topPos = textViewOffsetTop - offsetTop;
 		}
 		else {
 			topPos = textViewOffsetTop - parentNodeOffsetTop;
@@ -522,8 +576,8 @@ export default class StudyQuestions extends JetView {
 	setInitialView() {
 		initialView = true;
 		textViewNameNumber = 0;
-		questionLabelNumber = 1;
-		answersCount = 0;
+		_questionLabelNumber = 1;
+		_answersCount = 0;
 		createStudyModel.clearTextLayoutNames();
 	}
 

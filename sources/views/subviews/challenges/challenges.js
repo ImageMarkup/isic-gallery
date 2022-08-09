@@ -86,7 +86,7 @@ export default class aboutView extends JetView {
 		return ui;
 	}
 
-	urlChange(view, url) {
+	urlChange(/* view, url */) {
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_CHALLENGES}]);
 	}
 }

@@ -1,5 +1,4 @@
-import ajax from "../services/ajaxActions";
-import state from "../models/state";
+import state from "./state";
 
 let filtersData;
 
@@ -200,7 +199,10 @@ function prepareDatasetFilterData(dataset) {
 	dataset.forEach((item) => {
 		if (isNeedShow(item._id)) {
 			state.datasetMapForFilters[item._id] = item.name;
-			options.push(item._id); // we set id as options value. we will replace it with "name" from state.datasetForFilters before rendering checkboxes
+			/* we set id as options value.
+			we will replace it with "name" from state.datasetForFilters
+			before rendering checkboxes */
+			options.push(item._id);
 		}
 	});
 	result.push({
@@ -223,7 +225,9 @@ function getFiltersData(forceRebuild) {
 		// const DATASET_POSITION = filtersData.length - 1;
 		// const DB_ATTRIBUTE_LABEL = "Database Attributes";
 		// if we have no datasets  we should get them with ajax and add to 'filtersData'
-		// if ((forceRebuild || filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL) && filtersData[DATASET_POSITION].data.length === 1) {
+		// if ((forceRebuild
+		// 	|| filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL)
+		// 	&& filtersData[DATASET_POSITION].data.length === 1) {
 		// 	ajax.getDataset().then((dataset) => {
 		// 		if (filtersData[DATASET_POSITION].data.length === 1) {
 		// 			filtersData[DATASET_POSITION] = {

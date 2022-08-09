@@ -1,5 +1,4 @@
 import windowWithHeader from "../../../components/windowWithHeader";
-import ajax from "../../../../services/ajaxActions";
 
 let callbacks = {};
 
@@ -24,20 +23,24 @@ const form = {
 						name: "mode",
 						value: "prefix",
 						options: [
-							{id: "prefix", value: '<span class="tooltip-container tooltip-search-prefix">' +
-													'<span class="tooltip-title">Search by prefix</span>' +
-													'<span class="tooltip-block tooltip-block-xs tooltip-block-right">You are searching by prefix. Start typing the first letters of whatever you are searching for.</span>' +
-												'</span>'},
-							{id: "text", value: '<span class="tooltip-container tooltip-search-text">' +
-													'<span class="tooltip-title">Full text search</span>' +
-													'<span class="tooltip-block tooltip-block-xs tooltip-block-right">By default, search results will be returned if they contain any of the terms of the search. If you wish to search for documents containing all of the terms, place them in quotes. Examples:' +
-														'<ul class="tooltip-block-list">' +
-															'<li><span class="code">cat dog</span> returns documents containing either "cat" or "dog".</li>' +
-															'<li><span class="code">"cat" "dog"</span> returns documents containing both "cat" and "dog".</li>' +
-															'<li><span class="code">"cat dog"</span> returns documents containing the phrase "cat dog".</li>' +
-														'</ul>' +
-													'</span>' +
-												'</span>'}
+							{
+								id: "prefix",
+								value: '<span class="tooltip-container tooltip-search-prefix">' +
+											'<span class="tooltip-title">Search by prefix</span>' +
+											'<span class="tooltip-block tooltip-block-xs tooltip-block-right">You are searching by prefix. Start typing the first letters of whatever you are searching for.</span>' +
+										"</span>"},
+							{
+								id: "text",
+								value: '<span class="tooltip-container tooltip-search-text">' +
+											'<span class="tooltip-title">Full text search</span>' +
+											'<span class="tooltip-block tooltip-block-xs tooltip-block-right">By default, search results will be returned if they contain any of the terms of the search. If you wish to search for documents containing all of the terms, place them in quotes. Examples:' +
+												'<ul class="tooltip-block-list">' +
+													'<li><span class="code">cat dog</span> returns documents containing either "cat" or "dog".</li>' +
+													'<li><span class="code">"cat" "dog"</span> returns documents containing both "cat" and "dog".</li>' +
+													'<li><span class="code">"cat dog"</span> returns documents containing the phrase "cat dog".</li>' +
+												"</ul>" +
+											"</span>" +
+										"</span>"}
 						]
 					},
 					{
