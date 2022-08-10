@@ -115,7 +115,7 @@ const dataview = {
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
 			galleryImageUrl.setPreviewImageUrl(
 				obj.isic_id,
-				obj.files.full.url
+				obj.files.thumbnail_256.url
 			); // to prevent sending query more than 1 time
 		}
 		return `<div class="gallery-images-container">
