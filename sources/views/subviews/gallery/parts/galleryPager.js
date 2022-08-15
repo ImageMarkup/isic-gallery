@@ -10,7 +10,7 @@ const pager = {
 	width: 250,
 	master: false,
 	template(obj, common) {
-		return `${common.first()} ${common.prev()} ${common.next()} ${common.last()}`;
+		return `${common.prev()} ${common.next()}`;
 	},
 	on: {
 		onItemClick(id/* , e, node */) {
@@ -18,25 +18,17 @@ const pager = {
 			const prevClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getPrevImagesUrl() || null;
 				const callback = null;
-				$$(dataviewId).loadNext(this.data.size, offset, callback, url);
-			});
+				if (url) {
+					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+				}
+			}, 100);
 			const nextClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getNextImagesUrl() || null;
 				const callback = null;
-				$$(dataviewId).loadNext(this.data.size, offset, callback, url);
-			});
-			const lastClickHandler = util.debounce(() => {
-				offset = (this.data.limit - 1) * this.data.size;
-				galleryImagesUrls.setNextImagesUrl(null);
-				galleryImagesUrls.setPrevImagesUrl(null);
-				$$(dataviewId).loadNext(this.data.size, offset);
-			});
-			const firstClickHandler = util.debounce(() => {
-				offset = 0;
-				galleryImagesUrls.setNextImagesUrl(null);
-				galleryImagesUrls.setPrevImagesUrl(null);
-				$$(dataviewId).loadNext(this.data.size, offset);
-			});
+				if (url) {
+					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+				}
+			}, 100);
 			switch (id) {
 				case "prev": {
 					prevClickHandler();
@@ -44,14 +36,6 @@ const pager = {
 				}
 				case "next": {
 					nextClickHandler();
-					break;
-				}
-				case "first": {
-					firstClickHandler();
-					break;
-				}
-				case "last": {
-					lastClickHandler();
 					break;
 				}
 				default: {

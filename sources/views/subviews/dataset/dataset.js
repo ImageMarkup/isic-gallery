@@ -27,7 +27,7 @@ export default class DatasetView extends JetView {
 			id: PAGER_ID,
 			master: false,
 			size: 8,
-			template: "{common.first()} {common.prev()} <span class='pager-info'>{common.page()} page of #limit#</span> {common.next()} {common.last()}"
+			template: "{common.prev()} {common.next()} "
 		};
 
 		// we need all the same properties for cloned pager. we will clone it in init method

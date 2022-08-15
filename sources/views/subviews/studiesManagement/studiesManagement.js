@@ -26,7 +26,7 @@ export default class StudiesManagementView extends JetView {
 			id: PAGER_ID,
 			master: false,
 			size: 8,
-			template: "{common.first()} {common.prev()} <span class='pager-info'>{common.page()} page of #limit#</span> {common.next()} {common.last()}"
+			template: "{common.prev()} {common.next()}}"
 
 		};
 

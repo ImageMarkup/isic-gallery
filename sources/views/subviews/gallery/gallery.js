@@ -42,7 +42,7 @@ export default class GalleryView extends JetView {
 			height: 36,
 			width: 250,
 			template(obj, common) {
-				return `${common.first()} ${common.prev()} ${common.next()} ${common.last()}`;
+				return `${common.prev()} ${common.next()}`;
 			}
 		};
 
@@ -477,7 +477,8 @@ export default class GalleryView extends JetView {
 		const yCountSelectionValue = dataviewYCountSelection.getValue();
 		const doNotCallUpdatePager = true;
 		dataviewYCountSelection.callEvent("onChange", [yCountSelectionValue, null, doNotCallUpdatePager]);
-		this.updatePagerSize();
+		const initial = true;
+		this.updatePagerSize(initial);
 		const hiddenLeftPanel = util.getHiddenGalleryLeftPanel();
 		if (hiddenLeftPanel) {
 			const leftPanelCollapser = this.getLeftPanelWithCollapser().queryView({state: "wasOpened"});
@@ -606,7 +607,7 @@ export default class GalleryView extends JetView {
 		galleryRichselect.callEvent("onChange", [gallerySelectionId, null, doNotCallUpdatePager]);
 	}
 
-	updatePagerSize() {
+	updatePagerSize(initial) {
 		const currentPager = this.$$(PAGER_ID);
 		const dataWindowView = this.getGalleryDataview();
 		let galleryDataviewWidth = dataWindowView.$width;
@@ -684,7 +685,9 @@ export default class GalleryView extends JetView {
 			currentPager.data.size = newSize;
 			galleryImagesUrls.setPrevImagesUrl(null);
 			galleryImagesUrls.setNextImagesUrl(null);
-			this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
+			if (!initial) {
+				this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
+			}
 		}
 	}
 }

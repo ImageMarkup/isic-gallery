@@ -19,7 +19,7 @@ export default class ImagesSelectionWindow extends JetView {
 			width: 250,
 			master: false,
 			template(obj, common) {
-				return `${common.first()} ${common.prev()} ${common.next()} ${common.last()}`;
+				return `${common.prev()} ${common.next()}`;
 			},
 			on: {
 				onItemClick(id) {
@@ -28,25 +28,17 @@ export default class ImagesSelectionWindow extends JetView {
 						const url = galleryImageUrl.getPrevImagesUrl() || null;
 						offset = URLSearchParams(url).offset || 0;
 						const callback = null;
-						$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
+						if (url) {
+							$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
+						}
 					});
 					const nextClickHandler = util.debounce(() => {
 						const url = galleryImageUrl.getNextImagesUrl() || null;
 						offset = URLSearchParams(url).offset || 0;
 						const callback = null;
-						$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
-					});
-					const firstClickHandler = util.debounce(() => {
-						offset = 0;
-						galleryImageUrl.setNextImagesUrl(null);
-						galleryImageUrl.setPrevImagesUrl(null);
-						$$(DATAVIEW_ID).loadNext(this.data.size, offset);
-					});
-					const lastClickHandler = util.debounce(() => {
-						offset = (this.data.limit - 1) * this.data.size;
-						galleryImageUrl.setNextImagesUrl(null);
-						galleryImageUrl.setPrevImagesUrl(null);
-						$$(DATAVIEW_ID).loadNext(this.data.size, offset);
+						if (url) {
+							$$(DATAVIEW_ID).loadNext(this.data.size, offset, callback, url);
+						}
 					});
 					switch (id) {
 						case "prev": {
@@ -55,14 +47,6 @@ export default class ImagesSelectionWindow extends JetView {
 						}
 						case "next": {
 							nextClickHandler();
-							break;
-						}
-						case "first": {
-							firstClickHandler();
-							break;
-						}
-						case "last": {
-							lastClickHandler();
 							break;
 						}
 						default: {
@@ -344,7 +328,6 @@ export default class ImagesSelectionWindow extends JetView {
 	updateImagesDataview(offset, limit) {
 		let appliedFilters = appliedFiltersModel.getAppliedFiltersFromLocalStorage();
 		const imagesPromise = ajax.getImages({
-			offset,
 			limit,
 			filter: appliedFilters
 		});

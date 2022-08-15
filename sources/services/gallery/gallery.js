@@ -403,7 +403,10 @@ class GalleryService {
 		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit, callback, url) => {
 			try {
 				await this._updateImagesDataview(offset, limit, url);
-				const totalCount = state.imagesTotalCounts.passedFilters.count;
+				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
+					|| state.imagesTotalCounts.passedFilters.currentCount;
+				const count = state.imagesTotalCounts.passedFilters.count;
+				const filtered = state.imagesTotalCounts.passedFilters.filtered;
 				let currOffset;
 				if (url) {
 					let currUrl = new URL(url);
@@ -415,7 +418,10 @@ class GalleryService {
 				}
 				this._updateContentHeaderTemplate({
 					rangeStart: currOffset + 1,
-					rangeFinish: currOffset + limit >= totalCount ? totalCount : currOffset + limit
+					rangeFinish: currOffset + limit >= currentCount ? currentCount : currOffset + limit,
+					totalCount: count,
+					currentCount,
+					filtered
 				});
 			}
 			catch (error) {
@@ -927,7 +933,6 @@ class GalleryService {
 
 	_updateContentHeaderTemplate(ranges) {
 		const values = webix.copy(ranges);
-		values.filtered = appliedFilterModel.count();
 		this._contentHeaderTemplate.setValues(values, true); // true -> unchange existing values
 		this._contentHeaderTemplate.refresh();
 	}
@@ -999,6 +1004,7 @@ class GalleryService {
 
 	async _updateImagesDataview(offset, limit, url) {
 		try {
+			this._view.showProgress();
 			if (offset === 0) {
 				this._pager.define("page", 0);
 			}
@@ -1006,13 +1012,14 @@ class GalleryService {
 				try {
 					this._imagesDataview.clearAll();
 					this._imagesDataview.parse(images.results);
+					this._view.hideProgress();
 				}
 				catch (e) {
 					if (!this._imagesDataview.$destructed) {
 						this._view.hideProgress();
 					}
 				}
-			}, 1000);
+			}, 300);
 			const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
 			const nameParam = this._view.$scope.getParam("name");
 			if (nameParam) {
@@ -1025,28 +1032,32 @@ class GalleryService {
 				return;
 			}
 			const filter = appliedFilterModel.getConditionsForApi();
-			this._view.showProgress();
 			const images = url
 				? await ajax.getImagesByUrl(url)
 				: await ajax.getImages({
-					offset,
 					limit,
 					filter
 				});
+			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
-			// if (images.count < state.imagesTotalCounts.passedFilters.count) {
 			if (filter) {
+				state.imagesTotalCounts.passedFilters.filtered = true;
+				state.imagesTotalCounts.passedFilters.currentCount = images.count;
 				this._updateContentHeaderTemplate({
 					rangeStart: start,
 					rangeFinish: start + this._pager.data.size - 1,
-					currentCount: images.count
+					currentCount: images.count,
+					totalCount: state.imagesTotalCounts.passedFilters.count,
+					filtered: true
 				});
 			}
 			else {
+				state.imagesTotalCounts.passedFilters.filtered = false;
 				this._updateContentHeaderTemplate({
 					rangeStart: start,
 					rangeFinish: start + this._pager.data.size - 1,
-					totalCount: state.imagesTotalCounts.passedFilters.count
+					totalCount: state.imagesTotalCounts.passedFilters.count,
+					filtered: false
 				});
 			}
 			galleryImagesUrls.setNextImagesUrl(images.next);
@@ -1056,14 +1067,13 @@ class GalleryService {
 				images.results.forEach((item) => {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
 				});
-				this._imagesDataview.clearAll();
-				this._imagesDataview.parse(images.results);
 				parseDataToDataview(images);
 			}
 			else {
+				this._imagesDataview.clearAll();
 				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing was found</div>");
+				this._view.hideProgress();
 			}
-			this._view.hideProgress();
 		}
 		catch (error) {
 			if (!this._view.$destructed) {
