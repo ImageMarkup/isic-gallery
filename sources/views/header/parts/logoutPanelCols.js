@@ -13,7 +13,10 @@ function createConfig(firstName, lastName) {
 		{},
 		{
 			// TODO: uncomment if user avatar will be implemented in new API
-			// template: `<div class="userbar-avatar"><img src="${imageUrl}" class="userbar-avatar-image" width="50px" height="50px"/></div>`,
+			// template:
+			// 	`<div class="userbar-avatar">
+			// 		<img src="${imageUrl}" class="userbar-avatar-image" width="50px" height="50px"/>
+			// 	</div>`,
 			borderless: true,
 			width: 60
 		},

@@ -1,3 +1,4 @@
+import "wheelzoom";
 import ajax from "../ajaxActions";
 import metadataPart from "../../views/subviews/gallery/parts/metadata";
 import filtersData from "../../models/imagesFilters";
@@ -22,15 +23,31 @@ let imagesArray = [];
 let selectedImagesArray = [];
 
 class GalleryService {
-	constructor(view, pager, imagesDataview, contentHeaderTemplate, imageWindow,
-		imageWindowViewer, imageWindowMetadata, metadataWindow, metadataWindowMetadata,
-		filtersForm, appliedFiltersList, unselectLink, downloadingMenu,
-		searchInput, clearAllFiltersTemplate, allPagesTemplate, filterScrollView) {
+	constructor(
+		view,
+		pager,
+		imagesDataview,
+		contentHeaderTemplate,
+		imageWindowInstance,
+		imageWindowViewer,
+		imageWindowMetadata,
+		metadataWindow,
+		metadataWindowMetadata,
+		filtersForm,
+		appliedFiltersList,
+		unselectLink,
+		downloadingMenu,
+		searchInput,
+		clearAllFiltersTemplate,
+		allPagesTemplate,
+		filterScrollView,
+		galleryLeftPanel
+	) {
 		this._view = view;
 		this._pager = pager;
 		this._imagesDataview = imagesDataview;
 		this._contentHeaderTemplate = contentHeaderTemplate;
-		this._imageWindow = imageWindow;
+		this._imageWindow = imageWindowInstance;
 		this._imageWindowViewer = imageWindowViewer;
 		this._imageWindowMetadata = imageWindowMetadata;
 		this._metadataWindow = metadataWindow;
@@ -43,6 +60,7 @@ class GalleryService {
 		this._clearAllFiltersTemplate = clearAllFiltersTemplate;
 		this._allPagesTemplate = allPagesTemplate;
 		this._filterScrollView = filterScrollView;
+		this._galleryLeftPanel = galleryLeftPanel;
 		this._init();
 	}
 
@@ -56,7 +74,8 @@ class GalleryService {
 		this._appliedFiltersList.clearAll();
 		appliedFilterModel.clearAll();
 		const filtersInfo = [];
-		for (let key in this._filtersForm.elements) {
+		const filterFormElements = Object.keys(this._filtersForm.elements);
+		filterFormElements.forEach((key) => {
 			if (this._filtersForm.elements.hasOwnProperty(key)) {
 				appliedFilterModel.setFilterValue(searchValue);
 				let element = this._filtersForm.elements[key];
@@ -72,7 +91,7 @@ class GalleryService {
 					filtersInfo.push(params);
 				}
 			}
-		}
+		});
 		if (filtersInfo.length > 0) {
 			filtersBySearchCollection.parse(filtersInfo);
 		}
@@ -82,7 +101,7 @@ class GalleryService {
 		this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
 	}
 
-	_searchHandlerByName(afterFilterSelected) {
+	_searchHandlerByName(/* afterFilterSelected */) {
 		let searchValue = this._searchInput.getValue().trim().split(" ").join("");
 		if (searchValue === "" && this._view.$scope.getParam("name") === "") {
 			return;
@@ -98,9 +117,7 @@ class GalleryService {
 			return;
 		}
 		this._searchInput.setValue(searchValue);
-		const valueOfMarkedCheckbox = 1;
 		let filteredImages = [];
-		let studyFlag = selectedImages.getStudyFlag();
 		const sourceParams = {
 			limit: this._pager.data.size,
 			offset: 0,
@@ -123,10 +140,6 @@ class GalleryService {
 				});
 				if (foundImagesCount > 0) {
 					this._imagesDataview.clearAll();
-					let page = 0;
-					let pagerCount = this._pager.data.size;
-					this._updatePagerCount(pagerCount, page);
-					// connecting pager to data view
 					this._imagesDataview.define("pager", this._clonedPagerForNameSearch);
 					this._pager.hide();
 					this._clonedPagerForNameSearch.show();
@@ -146,8 +159,10 @@ class GalleryService {
 				this._view.hideProgress();
 			})
 			.catch(() => {
-				webix.message("Something went wrong");
-				this._view.hideProgress();
+				if (!this._view.$destructed) {
+					webix.message("Search Images: Something went wrong");
+					this._view.hideProgress();
+				}
 			});
 	}
 
@@ -164,9 +179,12 @@ class GalleryService {
 		this._buttonsLayout = $$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
 		this._leftPanelToggleButton = this._view.$scope.getLeftPanelToggleButton();
 		this._clonedPagerForNameSearch = this._view.$scope.getClonedPagerForNameSearch();
+		this._leftPanelWithCollapser = this._view.$scope.getLeftPanelWithCollapser();
+		this._rightPanelWithCollapser = this._view.$scope.getCartListCollapsedView();
 
 		this._activeCartList.attachEvent("onAfterRender", () => {
 			if (modifiedObjects.count() > 0) {
+				// eslint-disable-next-line array-callback-return
 				modifiedObjects.find((obj) => {
 					const itemNode = this._activeCartList.getItemNode(obj.id);
 					if (itemNode) {
@@ -217,7 +235,13 @@ class GalleryService {
 
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this));
-					searchButtonModel.createTimesSearchButton(this._searchInput, appliedFilterModel, inputNode, tooltipText, true);
+					searchButtonModel.createTimesSearchButton(
+						this._searchInput,
+						appliedFilterModel,
+						inputNode,
+						tooltipText,
+						true
+					);
 				}
 				else {
 					this._filtersForm.enable();
@@ -230,7 +254,12 @@ class GalleryService {
 						this._clearNameFilter();
 					}
 					this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
-					searchButtonModel.createTimesSearchButton(this._searchInput, appliedFilterModel, inputNode, tooltipText);
+					searchButtonModel.createTimesSearchButton(
+						this._searchInput,
+						appliedFilterModel,
+						inputNode,
+						tooltipText
+					);
 				}
 			}
 		});
@@ -264,8 +293,8 @@ class GalleryService {
 
 		const resizeHandler = util.debounce((event) => {
 			const contentWidth = event[0].contentRect.width;
-			const minCurrentTargenInnerWidth = searchButtonModel.getMinCurrentTargenInnerWidth();
-			if (contentWidth >= minCurrentTargenInnerWidth) {
+			const minCurrentTargetInnerWidth = searchButtonModel.getMinCurrentTargetInnerWidth();
+			if (contentWidth >= minCurrentTargetInnerWidth) {
 				dataviewSelectionId = util.getDataviewSelectionId();
 				this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
 			}
@@ -274,66 +303,71 @@ class GalleryService {
 		const galleryNode = this._view.getNode();
 		resizeObserver.observe(galleryNode);
 
-		this._dataviewYCountSelection.attachEvent("onChange", (id) => {
-			let newitemWidth;
-			let newItemHeight;
+		this._dataviewYCountSelection.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
+			let newItemWidth;
+			let newImageWidth;
 			let newInnerImageNameSize;
-			const previousItemWidth = this._imagesDataview.type.width;
 			const previousItemHeight = this._imagesDataview.type.height;
-			let multiplier = previousItemHeight / previousItemWidth;
+			let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
+				/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
 			let dataviewWidth = this._imagesDataview.$width;
 			let fontSizeMultiplier = this._getInitialFontSizeMultiplier();
 
 			switch (id) {
 				case constants.TWO_DATAVIEW_COLUMNS: {
-					newitemWidth = Math.round(dataviewWidth / 2) - 5;
+					newItemWidth = Math.round(dataviewWidth / 2) - 5;
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				case constants.THREE_DATAVIEW_COLUMNS: {
-					newitemWidth = Math.round(dataviewWidth / 3) - 5;
+					newItemWidth = Math.round(dataviewWidth / 3) - 5;
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				case constants.FOUR_DATAVIEW_COLUMNS: {
-					newitemWidth = Math.round(dataviewWidth / 4) - 5;
+					newItemWidth = Math.round(dataviewWidth / 4) - 5;
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				case constants.FIVE_DATAVIEW_COLUMNS: {
-					newitemWidth = Math.round(dataviewWidth / 5) - 5;
+					newItemWidth = Math.round(dataviewWidth / 5) - 5;
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				case constants.SIX_DATAVIEW_COLUMNS: {
-					newitemWidth = Math.round(dataviewWidth / 6) - 5;
+					newItemWidth = Math.round(dataviewWidth / 6) - 5;
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				case constants.DEFAULT_DATAVIEW_COLUMNS: {
-					newitemWidth = 180;
-					newItemHeight = 123;
-					newInnerImageNameSize = 14;
+					const minGalleryWidth = window.innerWidth
+						- this._galleryLeftPanel.config.width
+						- this._activeCartList.config.width;
+					const cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
+					newItemWidth = Math.floor(dataviewWidth / cols);
+					newImageWidth = newItemWidth - 10;
 					break;
 				}
 				default: {
-					newitemWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
-					newItemHeight = constants.DEFAULT_GALLERY_IMAGE_HEIGHT;
+					newItemWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
+					newImageWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
 					break;
 				}
 			}
-			if (id !== constants.DEFAULT_DATAVIEW_COLUMNS) {
-				newItemHeight = Math.round(newitemWidth * multiplier);
-				newInnerImageNameSize = Math.round(newItemHeight * fontSizeMultiplier);
-			}
+
+			const newImageHeight = Math.round(multiplier * newImageWidth);
+			newInnerImageNameSize = Math.round(newImageHeight * fontSizeMultiplier);
 			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
-			this._setDataviewColumns(newitemWidth, newItemHeight);
-			this._imagesDataview.$scope.updatePagerSize();
+			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
+			if (!doNotCallUpdatePager) {
+				this._imagesDataview.$scope.updatePagerSize();
+			}
 		});
 
 		this._imagesDataview.attachEvent("onAfterLoad", () => {
 			this._imagesDataview.hideOverlay();
 		});
-
-		this._imagesDataview.attachEvent("onAfterLoad", webix.once(() => {
-			this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
-		}));
 
 		this._downloadingMenu.attachEvent("onMenuItemClick", (id) => {
 			switch (id) {
@@ -366,16 +400,35 @@ class GalleryService {
 				}
 			}
 		});
-		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit) => {
+		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit, callback, url) => {
 			try {
-				await this._updateImagesDataview(offset, limit);
-				const totalCount = state.imagesTotalCounts.passedFilters.count;
+				await this._updateImagesDataview(offset, limit, url);
+				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
+					|| state.imagesTotalCounts.passedFilters.currentCount;
+				const count = state.imagesTotalCounts.passedFilters.count;
+				const filtered = state.imagesTotalCounts.passedFilters.filtered;
+				let currOffset;
+				if (url) {
+					let currUrl = new URL(url);
+					let params = new URLSearchParams(currUrl.search);
+					currOffset = Number(params.get("offset"));
+				}
+				else {
+					currOffset = offset;
+				}
 				this._updateContentHeaderTemplate({
-					rangeStart: offset + 1,
-					rangeFinish: offset + limit >= totalCount ? totalCount : offset + limit
+					rangeStart: currOffset + 1,
+					rangeFinish: currOffset + limit >= currentCount ? currentCount : currOffset + limit,
+					totalCount: count,
+					currentCount,
+					filtered
 				});
 			}
-			catch (error) {}
+			catch (error) {
+				if (!this._view.$destructed) {
+					webix.message("DataRequest: Something went wrong");
+				}
+			}
 		});
 
 		this._imageWindow.getNode().addEventListener("keyup", (e) => {
@@ -426,7 +479,11 @@ class GalleryService {
 				this._eventForHideMessages(this._metadataWindow);
 				this._metadataWindow.show();
 			}
-			catch (error) {}
+			catch (error) {
+				if (!this._view.$destructed) {
+					webix.message("ShowMetadata: Something went wrong");
+				}
+			}
 		};
 
 		this._imagesDataview.on_click["diagnosis-icon"] = (e, id) => {
@@ -446,25 +503,13 @@ class GalleryService {
 			"gallery-select-all-images": () => {
 				imagesArray = [];
 				let isNeedShowAlert = true;
-				let limit;
-				let page;
-				const filterByName = appliedFilterModel.getFilterByName();
-				if (filterByName) {
-					limit = this._clonedPagerForNameSearch.config.size;
-					page = this._clonedPagerForNameSearch.config.page;
-				}
-				else {
-					limit = this._pager.config.size;
-					page = this._pager.config.page;
-				}
-				const offset = limit * page;
 				this._view.showProgress();
 				webix.delay(() => {
 					this._imagesDataview.data.each((item, index) => {
 						if (item.markCheckbox) {
 							return;
 						}
-						if (index >= offset + limit) {
+						if (index >= state.imagesTotalCounts.passedFilters.count) {
 							return;
 						}
 						if (selectedImages.count() < constants.MAX_COUNT_IMAGES_SELECTION) {
@@ -494,6 +539,7 @@ class GalleryService {
 		});
 
 		this._imagesDataview.attachEvent("onAfterSelectAllChanged", (checkboxValue) => {
+			// eslint-disable-next-line array-callback-return
 			this._imagesDataview.find((obj) => {
 				if (selectedImages.isSelectedInStudies(obj.isic_id)) {
 					obj.markCheckbox = checkboxValue;
@@ -525,7 +571,8 @@ class GalleryService {
 					this._view.showProgress();
 					webix.delay(() => {
 						this._imagesDataview.data.each((item) => {
-							if (item.markCheckbox || selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION) {
+							if (item.markCheckbox
+								|| selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION) {
 								return;
 							}
 							if (selectedImages.countForStudies() === 0) {
@@ -610,7 +657,7 @@ class GalleryService {
 		this._view.$scope.on(this._view.$scope.app, "changedAllSelectedImagesCount", () => {
 			this._allPagesTemplate.refresh();
 		});
-		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data, selectNone) => {
+		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data/* , selectNone */) => {
 			// add (or remove) filters data to model
 			appliedFilterModel.processNewFilters(data);
 			// refresh data in list
@@ -674,6 +721,7 @@ class GalleryService {
 				items = [items];
 			}
 			items.forEach((item) => {
+				// eslint-disable-next-line array-callback-return
 				this._imagesDataview.find((obj) => {
 					if (obj.isic_id === item.isic_id) {
 						item.id = obj.id;
@@ -689,7 +737,8 @@ class GalleryService {
 				if (items[0].markCheckbox) {
 					this._activeCartList.add(items[0]);
 				}
-				else if (!items[0].markCheckbox && util.findItemInList(items[0].isic_id, this._activeCartList)) {
+				else if (!items[0].markCheckbox
+					&& util.findItemInList(items[0].isic_id, this._activeCartList)) {
 					this._activeCartList.callEvent("onDeleteButtonClick", [items[0]]);
 				}
 			}
@@ -750,6 +799,7 @@ class GalleryService {
 			}
 			else {
 				item = listItem;
+				// eslint-disable-next-line array-callback-return
 				this._imagesDataview.find((obj) => {
 					if (obj && obj.isic_id === item.isic_id && !wasUpdated) {
 						obj.markCheckbox = value;
@@ -771,6 +821,7 @@ class GalleryService {
 				selectedImages.removeImageFromStudies(item.isic_id);
 				this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 			}
+			// eslint-disable-next-line array-callback-return
 			this._activeCartList.find((obj) => {
 				if (obj.isic_id === item.isic_id) {
 					this._activeCartList.remove(obj.id);
@@ -862,7 +913,11 @@ class GalleryService {
 			filterService.updateFiltersCounts();
 			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
-		catch (error) {}
+		catch (error) {
+			if (!this._view.$destructed) {
+				webix.message("Load: Something went wrong");
+			}
+		}
 	}
 
 	_reload(offsetSource, limitSource) {
@@ -878,7 +933,6 @@ class GalleryService {
 
 	_updateContentHeaderTemplate(ranges) {
 		const values = webix.copy(ranges);
-		values.filtered = appliedFilterModel.count();
 		this._contentHeaderTemplate.setValues(values, true); // true -> unchange existing values
 		this._contentHeaderTemplate.refresh();
 	}
@@ -890,9 +944,12 @@ class GalleryService {
 			params.conditions = filterQuery;
 			const facets = await ajax.getFacets(params);
 			filterService.updateFiltersCounts(facets);
-			this._updatePagerCount(null, 0);
 		}
-		catch (error) {}
+		catch (error) {
+			if (!this._view.$destructed) {
+				webix.message("UpdateCount: Something went wrong");
+			}
+		}
 	}
 
 	// update form controls values(true/false for checkboxes, etc)
@@ -921,12 +978,15 @@ class GalleryService {
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
 			webix.ui(elements, this._filtersForm);
-			const firstItemToScroll = filtersBySearchCollection.getItem(filtersBySearchCollection.getFirstId());
+			const firstItemToScroll = filtersBySearchCollection.getItem(
+				filtersBySearchCollection.getFirstId()
+			);
 			if (firstItemToScroll) {
 				const elementsToScroll = elements.find((element) => {
 					if (element.rows) {
 						return element.rows[0].template === firstItemToScroll.filterName;
 					}
+					return false;
 				}, true);
 				this._scrollToFilterFormElement(elementsToScroll);
 				filtersBySearchCollection.clearAll();
@@ -934,64 +994,86 @@ class GalleryService {
 		});
 	}
 
-	_updatePagerCount(count, page) {
+	_updatePagerCount(count) {
 		count = count || 1;
-		if (page !== undefined) {
-			this._pager.select(page);
-		}
 		if (count) {
 			this._pager.define("count", count);
 			this._pager.refresh();
 		}
 	}
 
-	async _updateImagesDataview(offset, limit) {
-		this._imagesDataview.clearAll();
-		const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
-		const nameParam = this._view.$scope.getParam("name");
-		if (nameParam) {
-			this._leftPanelToggleButton.setValue(1);
-			this._searchInput.setValue(nameParam);
-		}
-		const searchValue = this._searchInput.getValue();
-		if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8 && nameParam) {
-			this._searchHandlerByName(true);
-			return;
-		}
-		const filter = appliedFilterModel.getConditionsForApi();
-		this._view.showProgress();
+	async _updateImagesDataview(offset, limit, url) {
 		try {
-			const images = await ajax.getImages({
-				offset,
-				limit,
-				filter
-			});
+			this._view.showProgress();
+			if (offset === 0) {
+				this._pager.define("page", 0);
+			}
+			const parseDataToDataview = util.debounce((images) => {
+				try {
+					this._imagesDataview.clearAll();
+					this._imagesDataview.parse(images.results);
+					this._view.hideProgress();
+				}
+				catch (e) {
+					if (!this._imagesDataview.$destructed) {
+						this._view.hideProgress();
+					}
+				}
+			}, 300);
+			const leftPanelToggleButtonValue = this._leftPanelToggleButton.getValue();
+			const nameParam = this._view.$scope.getParam("name");
+			if (nameParam) {
+				this._leftPanelToggleButton.setValue(1);
+				this._searchInput.setValue(nameParam);
+			}
+			const searchValue = this._searchInput.getValue();
+			if (leftPanelToggleButtonValue !== 0 && searchValue.length > 8 && nameParam) {
+				this._searchHandlerByName(true);
+				return;
+			}
+			const filter = appliedFilterModel.getConditionsForApi();
+			const images = url
+				? await ajax.getImagesByUrl(url)
+				: await ajax.getImages({
+					limit,
+					filter
+				});
+			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
-			if (images.count < state.imagesTotalCounts.passedFilters.count) {
+			if (filter) {
+				state.imagesTotalCounts.passedFilters.filtered = true;
+				state.imagesTotalCounts.passedFilters.currentCount = images.count;
 				this._updateContentHeaderTemplate({
 					rangeStart: start,
 					rangeFinish: start + this._pager.data.size - 1,
-					currentCount: images.count
+					currentCount: images.count,
+					totalCount: state.imagesTotalCounts.passedFilters.count,
+					filtered: true
 				});
 			}
 			else {
+				state.imagesTotalCounts.passedFilters.filtered = false;
 				this._updateContentHeaderTemplate({
 					rangeStart: start,
 					rangeFinish: start + this._pager.data.size - 1,
-					totalCount: state.imagesTotalCounts.passedFilters.count
+					totalCount: state.imagesTotalCounts.passedFilters.count,
+					filtered: false
 				});
 			}
+			galleryImagesUrls.setNextImagesUrl(images.next);
+			galleryImagesUrls.setPrevImagesUrl(images.previous);
 			this._updatePagerCount(images.count);
 			if (images && images.results.length > 0) {
 				images.results.forEach((item) => {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
 				});
-				this._imagesDataview.parse(images.results);
+				parseDataToDataview(images);
 			}
 			else {
+				this._imagesDataview.clearAll();
 				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing was found</div>");
+				this._view.hideProgress();
 			}
-			this._view.hideProgress();
 		}
 		catch (error) {
 			if (!this._view.$destructed) {
@@ -1085,13 +1167,14 @@ class GalleryService {
 		}
 	}
 
-	_setDataviewColumns(width, height) {
+	_setDataviewColumns(width, height, imageWidth, imageHeight) {
 		this._imagesDataview.customize({
 			width,
 			height
 		});
 		galleryImagesUrls.clearPreviewUrls();
 		util.setDataviewItemDimensions(width, height);
+		util.setImageDimensions(imageWidth, imageHeight);
 		this._imagesDataview.refresh();
 	}
 
@@ -1111,7 +1194,12 @@ class GalleryService {
 		this._buttonsLayout.define("height", height);
 		this._buttonsLayout.resize();
 		if (studyFlag) {
-			toShow ? this._createStudyButton.show() : this._createStudyButton.hide();
+			if (toShow) {
+				this._createStudyButton.show();
+			}
+			else {
+				this._createStudyButton.hide();
+			}
 		}
 		// TODO: uncomment when donwload will be implemented
 		// else {

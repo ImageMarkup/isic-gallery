@@ -28,7 +28,8 @@ function getConfig(id) {
 	if (clientHeight < 700) {
 		windowHeight = clientHeight - 50;
 		windowScroll = true;
-	} else {
+	}
+	else {
 		windowHeight = 700;
 		windowScroll = false;
 	}

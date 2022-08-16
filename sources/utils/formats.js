@@ -18,6 +18,4 @@ function formatDateStringForManagement(dateStr) {
 
 export default {
 	formatDateString, formatDateStringForManagement
-}
-
-
+};

@@ -1,7 +1,6 @@
-import ajaxActions from "../ajaxActions";
+import {plugins} from "webix-jet";
 import state from "../../models/state";
 import authService from "../auth";
-import {plugins} from "webix-jet";
 import utils from "../../utils/util";
 
 class StudiesService {
@@ -14,14 +13,15 @@ class StudiesService {
 	}
 
 	_init() {
-		for (let key in this._toolbar.elements) {
+		const toolbarElements = Object.keys(this._toolbar.elements);
+		toolbarElements.forEach((key) => {
 			if (this._toolbar.elements.hasOwnProperty(key)) {
 				this._toolbar.elements[key].attachEvent("onItemClick", () => {
 					const values = this._toolbar.getValues();
 					this.updateDataview(values);
 				});
 			}
-		}
+		});
 
 		this._view.$scope.use(plugins.UnloadGuard, () => {
 			state.studies.toolbarValues = this._toolbar.getValues();
@@ -37,7 +37,8 @@ class StudiesService {
 			let dataviewOverflown = utils.isOverflown(dataviewNode);
 			if (dataviewOverflown) {
 				this._dataview.define("scroll", "true");
-			} else {
+			}
+			else {
 				this._dataview.define("scroll", "false");
 			}
 			if (!this._dataview.count()) { // if no data is available
@@ -100,12 +101,13 @@ class StudiesService {
 		}
 	}
 
-	participateStudy(study) {
-	}
+	// eslint-disable-next-line no-unused-vars
+	participateStudy(study) {}
 
 	static getFirstAnnotationId(study) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			if (study && study._id) {
+				// eslint-disable-next-line no-unused-vars
 				const user = authService.getUserInfo();
 				resolve(null);
 			}

@@ -1,5 +1,4 @@
 import {JetView} from "webix-jet";
-import ajax from "../../../../services/ajaxActions";
 import "../../../components/activeList";
 import utils from "../../../../utils/util";
 
@@ -48,11 +47,12 @@ export default class AnnotatorsView extends JetView {
 					dataFeed(text) {
 						this.clearAll();
 						if (text) {
-							const params = {
+							// TODO: uncomment when search will be implemented
+							/* const params = {
 								q: text,
 								mode: "prefix",
 								types: ["user"]
-							};
+							}; */
 						}
 					}
 				}
@@ -86,7 +86,7 @@ export default class AnnotatorsView extends JetView {
 		};
 
 		return {
-        	width: 350,
+			width: 350,
 			name: "studyAnnotatorsClass",
 			rows: [
 				{
@@ -109,15 +109,15 @@ export default class AnnotatorsView extends JetView {
 	}
 
 	init() {
-    	this.searchUser = this.getSearchUserView();
-    	this.annotatorsList = this.getAnnotatorsList();
+		this.searchUser = this.getSearchUserView();
+		this.annotatorsList = this.getAnnotatorsList();
 	}
 
 	getSearchUserView() {
-    	return this.getRoot().queryView({view: "combo"});
+		return this.getRoot().queryView({view: "combo"});
 	}
 
 	getAnnotatorsList() {
-    	return this.getRoot().queryView({view: "activeList"});
+		return this.getRoot().queryView({view: "activeList"});
 	}
 }

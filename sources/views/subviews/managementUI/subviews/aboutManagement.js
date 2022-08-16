@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import {JetView} from "webix-jet";
 import authService from "../../../../services/auth";
 import constants from "../../../../constants";
@@ -13,7 +14,7 @@ export default class ManagementUIAbout extends JetView {
 							<div class='management-about-frontpage-title'>ISIC Archive</div>
 							<div class='management-about-frontpage-subtitle'>Data management platform</div>
 						</div>
-					</div>`
+					</div>`;
 		};
 
 		const bodyTemplate = (obj) => {
@@ -45,7 +46,7 @@ export default class ManagementUIAbout extends JetView {
 								</li>
 							</ul>
 						</div>
-					</div>`
+					</div>`;
 		};
 
 		const frontPageHeader = {

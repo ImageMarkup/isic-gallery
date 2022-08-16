@@ -103,12 +103,14 @@ export default class StudiesView extends JetView {
 					width: 108,
 					on: {
 						onItemClick(id, e) {
-							const dataview = $$(DATAVIEW_ID);
-							const itemId = dataview.locate(e);
-							const item = dataview.getItem(itemId);
+							const thisDataview = $$(DATAVIEW_ID);
+							const itemId = thisDataview.locate(e);
+							const item = thisDataview.getItem(itemId);
 							StudiesService.getFirstAnnotationId(item)
 								.then((annotationId) => {
 									if (annotationId) {
+										// TODO: uncomment if study endpoint will be implemented
+										// util.openInNewTab(`${constants.URL_ANNOTATIONS_TOOL}?studyId=${item._id}`);
 									}
 									else {
 										webix.message({

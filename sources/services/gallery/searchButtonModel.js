@@ -1,4 +1,4 @@
-let minCurrentTargenInnerWidth;
+let minCurrentTargetInnerWidth;
 
 function removeTootipDiv(elementNode, tooltipClassName) {
 	elementNode.removeAttribute("tooltip");
@@ -24,14 +24,20 @@ function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName,
 		const linkProps = this.getBoundingClientRect();
 		const tooltipProps = tooltipWrap.getBoundingClientRect();
 		const topPos = linkProps.top - (tooltipProps.height + padding);
-		tooltipWrap.setAttribute("style", `top:${topPos}px;` + `left:${linkProps.left}px;`);
+		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;`);
 	});
 	elementNodeForTooltip.addEventListener("mouseout", () => {
 		removeTootipDiv(elementNodeForTooltip, tooltipClassName);
 	});
 }
 
-function createTimesSearchButton(searchInput, appliedFilterModel, inputNode, tooltipText, nameFilter) {
+function createTimesSearchButton(
+	searchInput,
+	appliedFilterModel,
+	inputNode,
+	tooltipText,
+	nameFilter
+) {
 	inputNode.lastChild.style.paddingRight = "26px";
 	const timesSpan = document.createElement("span");
 	inputNode.appendChild(timesSpan);
@@ -40,7 +46,11 @@ function createTimesSearchButton(searchInput, appliedFilterModel, inputNode, too
 	timesButtonNode.setAttribute("style", "height:26px; padding-top:6px;");
 	const tootipTextForTimesButton = `${tooltipText}`;
 	const tooltipClassNameForTimesButton = "tooltip";
-	createHintForSearchTimesButton(timesButtonNode, tooltipClassNameForTimesButton, tootipTextForTimesButton);
+	createHintForSearchTimesButton(
+		timesButtonNode,
+		tooltipClassNameForTimesButton,
+		tootipTextForTimesButton
+	);
 	searchInput.on_click["fa-times"] = () => {
 		if (searchInput.getValue() !== "") {
 			searchInput.setValue("");
@@ -57,12 +67,12 @@ function removeTimesSearchButton(inputNode) {
 	inputNode.lastChild.style.paddingRight = "0px";
 }
 
-function getMinCurrentTargenInnerWidth() {
-	return minCurrentTargenInnerWidth;
+function getMinCurrentTargetInnerWidth() {
+	return minCurrentTargetInnerWidth;
 }
 
-function setMinCurrentTargenInnerWidth(minWidth) {
-	minCurrentTargenInnerWidth = minWidth;
+function setMinCurrentTargetInnerWidth(minWidth) {
+	minCurrentTargetInnerWidth = minWidth;
 }
 
 export default {
@@ -70,6 +80,6 @@ export default {
 	createTimesSearchButton,
 	removeTimesSearchButton,
 	createHintForSearchTimesButton,
-	getMinCurrentTargenInnerWidth,
-	setMinCurrentTargenInnerWidth
+	getMinCurrentTargetInnerWidth,
+	setMinCurrentTargetInnerWidth
 };

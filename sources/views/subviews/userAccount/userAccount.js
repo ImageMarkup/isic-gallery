@@ -180,7 +180,7 @@ export default class UserAccountView extends JetView {
 		}
 		// if we appear on this page by link from recovery password email
 		else if (params.token && params.id) {
-			authService.loginByIdToken(params.id, params.token).then((data) => {
+			authService.loginByIdToken(params.id, params.token).then(() => {
 				const passwordForm = $$(ID_PASSWORD_FORM);
 				passwordForm.elements.old.setValue(params.token);
 				passwordForm.elements.old.hide();

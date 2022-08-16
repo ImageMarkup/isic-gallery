@@ -1,7 +1,6 @@
 import {JetView} from "webix-jet";
 import ManagementUsersService from "../../../../services/managementUI/managementUsers";
 import dates from "../../../../utils/formats";
-import ajax from "../../../../services/ajaxActions";
 
 const USER_PAGER_ID = "management-ui-user-pager-id";
 const USER_SORT_BUTTON_NAME = "userSortAZButtonName";
@@ -15,7 +14,7 @@ export default class ManagementUsersView extends JetView {
 			width: 150,
 			size: 26,
 			count: 500,
-			template: "{common.prev()} <span class='pager-input'>{common.page()}</span> {common.next()}"
+			template: "{common.prev()}{common.next()}"
 		};
 
 		const sortAZButton = {
@@ -66,12 +65,13 @@ export default class ManagementUsersView extends JetView {
 							console.log(id);
 						}
 					},
-					dataFeed(text) {
-						const params = {
+					dataFeed(/* text */) {
+						// TODO: uncomment when search will be implemented
+						/* const params = {
 							q: text,
 							mode: "prefix",
 							types: ["user"]
-						};
+						}; */
 					}
 				}
 			}

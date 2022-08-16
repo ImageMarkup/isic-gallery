@@ -1,12 +1,10 @@
 import {plugins} from "webix-jet";
-import ajaxActions from "../ajaxActions";
 import constants from "../../constants";
 import datasetModel from "../../models/dataset";
 import state from "../../models/state";
-import accItem from "../../views/subviews/dataset/parts/accordionItem";
 import accView from "../../views/subviews/dataset/parts/accordionView";
 import createDatasetModel from "../../models/createDatasetModel";
-import accessControl from "../../views/subviews/dataset/windows/accessControl";
+import util from "../../utils/util";
 
 class DatasetViewService {
 	constructor(view, pager, clonePager, headerTemplate, accordion, setAccessWindow) {
@@ -43,7 +41,6 @@ class DatasetViewService {
 			// if contentLoaded == true we do not need to send query again
 			if (accordionItem.contentLoaded) {
 				this._showAccordionItem(accordionItem.getNode());
-				return;
 			}
 		});
 
@@ -88,28 +85,57 @@ class DatasetViewService {
 	clickPagerItem(id) {
 		let offset;
 		const lastPage = Math.ceil(this._pager.data.count / this._pager.data.size);
+		const prevClickHandler = util.debounce(() => {
+			const nextPage = this._pager.data.page > 0 ? this._pager.data.page : 0;
+			offset = nextPage * this._pager.data.size;
+			const portion = datasetModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+		const nextClickHandler = util.debounce(() => {
+			const nextPage = this._pager.data.page < lastPage ? this._pager.data.page : lastPage;
+			offset = nextPage * this._pager.data.size;
+			const portion = datasetModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+
+		const lastClickHandler = util.debounce(() => {
+			if (lastPage > 1) {
+				offset = (lastPage - 1) * this._pager.data.size;
+			}
+			else {
+				offset = lastPage * this._pager.data.size;
+			}
+			const portion = datasetModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+		const firstClickHandler = util.debounce(() => {
+			offset = 0;
+			const portion = datasetModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
 		switch (id) {
 			case "prev": {
-				const nextPage = this._pager.data.page > 0 ? this._pager.data.page - 1 : 0;
-				offset = nextPage * this._pager.data.size;
+				prevClickHandler();
 				break;
 			}
 			case "next": {
-				const nextPage = this._pager.data.page < lastPage ? this._pager.data.page + 1 : lastPage;
-				offset = nextPage * this._pager.data.size;
+				nextClickHandler();
 				break;
 			}
 			case "first": {
-				offset = 0;
+				firstClickHandler();
 				break;
 			}
 			case "last": {
-				if (lastPage > 1) {
-					offset = (lastPage - 1) * this._pager.data.size;
-				}
-				else {
-					offset = lastPage * this._pager.data.size;
-				}
+				lastClickHandler();
 				break;
 			}
 			default: {
@@ -117,36 +143,32 @@ class DatasetViewService {
 				break;
 			}
 		}
-		const portion = datasetModel.getData(this._pager.data.size, offset);
-		if (portion && portion.length) {
-			accView.buildAccordion(portion, this._accordion, this._headerTemplate);
-		}
 	}
 
 	load(page, selectedDatasetIdsSet) {
 		const params = {
 			sortdir: -1
 		};
-		// after finish data loading we set total count for pager, clone it to displaying it bottom and build accordion
+		/* after finish data loading we set total count for pager,
+		   clone it to displaying it bottom and build accordion */
 		datasetModel.load(params).then(() => {
 			const pager = this._pager;
 			const clonePager = this._clonePager;
 			pager.define({count: datasetModel.getCount()});
 			pager.refresh();
 			pager.clone(clonePager);
-			pager.select(page);
 
 			const offset = pager.data.page * pager.data.size;
 			const portion = datasetModel.getData(pager.data.size, offset);
 			accView.buildAccordion(portion, this._accordion, this._headerTemplate);
 
 			if (selectedDatasetIdsSet) {
-				for (let item of selectedDatasetIdsSet) {
+				selectedDatasetIdsSet.forEach((item) => {
 					let accordionItem = $$(item);
 					if (accordionItem) {
 						accordionItem.expand();
 					}
-				}
+				});
 			}
 		});
 	}

@@ -5,6 +5,22 @@ let selectedInAddNewImagePopup = [];
 
 const deletedItemsCollection = new webix.DataCollection();
 
+function setSelectedImagesToLocalStorage(images) {
+	webix.storage.local.put("selectedImages", images);
+}
+
+function setImageObjectsToLocalStorage(imageObjects) {
+	webix.storage.local.put("studyImageObjects", imageObjects);
+}
+
+function getSelectedImagesFromLocalStorage() {
+	return webix.storage.local.get("selectedImages");
+}
+
+function getImageObjectsFromLocalStorage() {
+	return webix.storage.local.get("studyImageObjects");
+}
+
 function add(elements) {
 	if (!Array.isArray(elements)) {
 		elements = [elements];
@@ -98,14 +114,6 @@ function getStudyImagesId() {
 	return studySelectedImages;
 }
 
-function setImageObjectsToLocalStorage(imageObjects) {
-	webix.storage.local.put("studyImageObjects", imageObjects);
-}
-
-function getImageObjectsFromLocalStorage() {
-	return webix.storage.local.get("studyImageObjects");
-}
-
 function addToSelectedInAddNewImagePopup(elements) {
 	if (!Array.isArray(elements)) {
 		elements = [elements];
@@ -139,14 +147,6 @@ function isSelectedInAddNewImagePopup(element) {
 
 function getDeletedItemsDataCollection() {
 	return deletedItemsCollection;
-}
-
-function setSelectedImagesToLocalStorage(images) {
-	webix.storage.local.put("selectedImages", images);
-}
-
-function getSelectedImagesFromLocalStorage() {
-	return webix.storage.local.get("selectedImages");
 }
 
 function clearAll() {

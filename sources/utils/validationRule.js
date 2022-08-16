@@ -1,4 +1,4 @@
-import constants from "./../constants";
+import constants from "../constants";
 
 function validateLogin(value) {
 	const pattern = new RegExp(constants.PATTERN_LOGIN);

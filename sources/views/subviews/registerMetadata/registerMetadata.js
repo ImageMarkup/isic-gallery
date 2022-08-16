@@ -10,9 +10,7 @@ const ID_REGISTER_METADATA_FORM = "register-metadata-form";
 const ID_SUBMIT_BUTTON = "register-metadata-submit-button";
 
 export default class RegisterMetadataView extends JetView {
-
 	config() {
-
 		const form = {
 			view: "form",
 			id: ID_REGISTER_METADATA_FORM,
@@ -102,7 +100,7 @@ export default class RegisterMetadataView extends JetView {
 										},
 										autoheight: true,
 										borderless: true
-									},
+									}
 								]
 							},
 							{height: 15},

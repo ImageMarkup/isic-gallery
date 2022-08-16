@@ -22,13 +22,6 @@ class OAuthISIC {
 			client.maybeRestoreLogin()
 				.then(() => {
 					if (client.isLoggedIn) {
-						return client.getLegacyToken();
-					}
-					return null;
-				})
-				.then((_legacyToken) => {
-					if (_legacyToken) {
-						webix.storage.local.put("authToken", _legacyToken);
 						return ajax.getUserInfo();
 					}
 					return null;
@@ -56,7 +49,6 @@ class OAuthISIC {
 		client.logout()
 			.then(() => {
 				webix.storage.local.remove("user");
-				webix.storage.local.remove("authToken");
 				webix.storage.local.put(constants.KEY_ACCEPT_TERMS, false);
 				gallerySelectedImages.clearImagesForDownload();
 				gallerySelectedImages.clearImagesForStudies();

@@ -74,6 +74,7 @@ function processNewFilters(data) {
  status: "equals",
  filterName: "filterName"
  } */
+
 function processNewFilter(filter) {
 	switch (filter.view) {
 		case "checkbox":
@@ -108,10 +109,15 @@ function _prepareOptionNameForApi(name, key) {
 	switch (key) {
 		case "meta.datasetId":
 		{
-			for (let id in state.datasetMapForFilters) {
+			const datasetIds = Object.keys(state.datasetMapForFilters);
+			const foundId = datasetIds.find((id) => {
 				if (state.datasetMapForFilters[id] === name) {
 					return id;
 				}
+				return false;
+			});
+			if (foundId) {
+				return foundId;
 			}
 			break;
 		}
@@ -123,73 +129,6 @@ function _prepareOptionNameForApi(name, key) {
 		}
 	}
 	return name;
-}
-
-function _groupFiltersByKey() {
-	const result = [];
-	appliedFilters.data.each((item) => {
-		switch (item.view) {
-			case "checkbox":
-			{
-				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
-				if (!itemFromResult) {
-					itemFromResult = {
-						view: item.view,
-						key: item.key,
-						datatype: item.datatype,
-						values: []
-					};
-					result.push(itemFromResult);
-				}
-				itemFromResult.values.push(_prepareOptionNameForApi(item.value, item.key));
-				break;
-			}
-			case "rangeCheckbox":
-			{
-				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
-				if (!itemFromResult) {
-					itemFromResult = {
-						view: item.view,
-						key: item.key,
-						values: []
-					};
-					result.push(itemFromResult);
-				}
-				itemFromResult.values.push({
-					label: _prepareOptionNameForApi(item.value, item.key),
-					to: item.to,
-					from: item.from
-				});
-				break;
-			}
-			default:
-			{
-				break;
-			}
-		}
-	});
-	return result;
-}
-
-function _prepareCondition(filter) {
-	let result = [];
-	switch (filter.view) {
-		case "checkbox":
-		{
-			_prepareValuesCondition(filter, result);
-			break;
-		}
-		case "rangeCheckbox":
-		{
-			_prepareRangeCondition(filter, result);
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
-	return result;
 }
 
 function _prepareValuesCondition(filter, result) {
@@ -286,6 +225,73 @@ function _prepareRangeCondition(filter, result) {
 			type: filter.datatype
 		});
 	}
+}
+
+function _groupFiltersByKey() {
+	const result = [];
+	appliedFilters.data.each((item) => {
+		switch (item.view) {
+			case "checkbox":
+			{
+				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
+				if (!itemFromResult) {
+					itemFromResult = {
+						view: item.view,
+						key: item.key,
+						datatype: item.datatype,
+						values: []
+					};
+					result.push(itemFromResult);
+				}
+				itemFromResult.values.push(_prepareOptionNameForApi(item.value, item.key));
+				break;
+			}
+			case "rangeCheckbox":
+			{
+				let itemFromResult = result.find(comparedItem => comparedItem.key === item.key, true);
+				if (!itemFromResult) {
+					itemFromResult = {
+						view: item.view,
+						key: item.key,
+						values: []
+					};
+					result.push(itemFromResult);
+				}
+				itemFromResult.values.push({
+					label: _prepareOptionNameForApi(item.value, item.key),
+					to: item.to,
+					from: item.from
+				});
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+	});
+	return result;
+}
+
+function _prepareCondition(filter) {
+	let result = [];
+	switch (filter.view) {
+		case "checkbox":
+		{
+			_prepareValuesCondition(filter, result);
+			break;
+		}
+		case "rangeCheckbox":
+		{
+			_prepareRangeCondition(filter, result);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+	return result;
 }
 
 // see conditions example in the bottom of this file

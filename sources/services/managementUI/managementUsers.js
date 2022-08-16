@@ -1,5 +1,5 @@
 import ajaxActions from "../ajaxActions";
-
+import util from "../../utils/util";
 
 class ManagementUsersService {
 	constructor(view, listOfUsers, sortAZButton, listPager, richselectFilter) {
@@ -37,15 +37,23 @@ class ManagementUsersService {
 
 		this._listPager.attachEvent("onItemClick", (id) => {
 			let offset;
+			const prevClickHandler = util.debounce(() => {
+				const prevPage = this._listPager.data.page !== 0 ? this._listPager.data.page : 0;
+				offset = prevPage * this._listPager.data.size;
+				this._listOfUsers.loadNext(this._listPager.data.size, offset);
+			});
+			const nextClickHandler = util.debounce(() => {
+				const nextPage = this._listPager.data.page;
+				offset = nextPage * this._listPager.data.size;
+				this._listOfUsers.loadNext(this._listPager.data.size, offset);
+			});
 			switch (id) {
 				case "prev": {
-					const prevPage = this._listPager.data.page !== 0 ? this._listPager.data.page - 1 : 0;
-					offset = prevPage * this._listPager.data.size;
+					prevClickHandler();
 					break;
 				}
 				case "next": {
-					const nextPage = this._listPager.data.page + 1;
-					offset = nextPage * this._listPager.data.size;
+					nextClickHandler();
 					break;
 				}
 				default: {
@@ -53,7 +61,6 @@ class ManagementUsersService {
 					break;
 				}
 			}
-			this._listOfUsers.loadNext(this._listPager.data.size, offset);
 		});
 
 		this._listOfUsers.attachEvent("onDataRequest", (offset) => {

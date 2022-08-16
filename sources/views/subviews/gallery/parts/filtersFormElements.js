@@ -3,38 +3,6 @@ import appliedFilters from "../../../../models/appliedFilters";
 
 const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
 
-function transformToFormFormat(data, expandedFilters) {
-	const elems = [];
-	for (let key in data) {
-		if (data.hasOwnProperty(key)) {
-			elems.push(filtersViewHelper.getLabelUI(data[key].label));
-			for (let i = 0; i < data[key].data.length; i++) {
-				let filtersConfig = null;
-				const dataForCreatingControl = data[key].data[i];
-				switch (data[key].data[i].type) {
-					case "checkbox":
-					case "rangeCheckbox":
-						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl);
-						break;
-					/* case "range_slider":
-						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
-						break;*/
-					default:
-					{
-						break;
-					}
-				}
-				let collapsed = true;
-				if (expandedFilters.indexOf(dataForCreatingControl.id) !== -1 || showedFiltersCollection.find(showedFilter => dataForCreatingControl.id === showedFilter.id).length !== 0) {
-					collapsed = false;
-				}
-				elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
-			}
-		}
-	}
-	return elems;
-}
-
 // we assume that the first child of any filter will be a label
 // and then we attach the handler for its click event to hide or show the other children
 function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
@@ -83,6 +51,43 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	}
 
 	return collapsibleFilter;
+}
+
+function transformToFormFormat(data, expandedFilters) {
+	const elems = [];
+	const dataKeys = Object.keys(data);
+	dataKeys.forEach((key) => {
+		if (data.hasOwnProperty(key)) {
+			elems.push(filtersViewHelper.getLabelUI(data[key].label));
+			for (let i = 0; i < data[key].data.length; i++) {
+				let filtersConfig = null;
+				const dataForCreatingControl = data[key].data[i];
+				switch (data[key].data[i].type) {
+					case "checkbox":
+					case "rangeCheckbox":
+						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl);
+						break;
+					/* case "range_slider":
+						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
+						break; */
+					default:
+					{
+						break;
+					}
+				}
+				let collapsed = true;
+				const indexOfDataForCreatingControl = expandedFilters.indexOf(dataForCreatingControl.id);
+				const foundFilterCollection = showedFiltersCollection.find(
+					showedFilter => dataForCreatingControl.id === showedFilter.id
+				);
+				if (indexOfDataForCreatingControl !== -1 || foundFilterCollection.length !== 0) {
+					collapsed = false;
+				}
+				elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
+			}
+		}
+	});
+	return elems;
 }
 
 export default {

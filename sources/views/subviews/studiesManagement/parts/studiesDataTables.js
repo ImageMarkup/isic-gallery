@@ -1,9 +1,7 @@
-import updateData from "./annotatorsPanel";
-import authService from "../../../../services/auth";
-import ajaxActions from "../../../../services/ajaxActions";
 import prepareData from "../../../../services/studiesManagement/annotatorsAndParticipationData";
 
-function createUsersDatatable(item, template) {
+// TODO: uncomment when addAnnotatorsToStudy will be implemented
+function createUsersDatatable(item/* , template */) {
 	const usersTable = {
 		view: "activeDatatable",
 		id: item.usersDatatableId,
@@ -24,14 +22,24 @@ function createUsersDatatable(item, template) {
 		],
 		data: prepareData.prepareAnnotatorsData(item),
 		onClick: {
-			"fa-times": (event, id, node) => {
+			// TODO: uncomment when addAnnotatorsToStudy will be implemented
+			"fa-times": (event, id/* , node */) => {
 				const selectedUser = $$(item.usersDatatableId).getItem(id);
-				const template = $$(item.templateId);
+				// TODO: uncomment when addAnnotatorsToStudy will be implemented
+				// const template = $$(item.templateId);
 				webix.confirm({
 					text: `Permanently remove <b>"${selectedUser.userName}"</b> from study?`,
 					type: "confirm-error",
 					callback(result) {
 						if (result) {
+							// TODO: uncomment when addAnnotatorsToStudy will be implemented
+							/* ajaxActions.removeAnnotatorFromStudy(item._id, selectedUser.id).then(() => {
+								webix.message("User has been removed from study");
+								updateData.updateUsersAndRequestsTables(item._id, null, item.usersDatatableId);
+								template.parse({
+									users: $$(item.usersDatatableId).count() - 1
+								});
+							}); */
 						}
 					}
 				});
@@ -46,7 +54,10 @@ function createUsersDatatable(item, template) {
 				else {
 					this.define({yCount: 10, autoheight: false});
 				}
+				// TODO: check isStudyAdmin()
+				// if (!authService.isStudyAdmin()) {
 				this.hideColumn("remove");
+				// }
 			}
 		}
 	};
@@ -82,26 +93,30 @@ function createRequestsDatatable(item) {
 		],
 		data: prepareData.prepareParticipationReqData(item),
 		onClick: {
-			"fa-check": (event, id, node) => {
+			"fa-check": (event, id/* , node */) => {
 				const selectedUser = $$(item.requestsDatatableId).getItem(id);
-				const template = $$(item.templateId);
+				// TODO: uncomment if study endpoint will be implemented
+				// const template = $$(item.templateId);
 				webix.confirm({
 					text: `Add user <b>"${selectedUser.userName}"</b> to the study?`,
 					type: "confirm-error",
 					callback(result) {
 						if (result) {
-							const usersIds = [selectedUser.id]; // because we need to send array to server
+							// TODO: implement after study endpoint will be added
+							// const usersIds = [selectedUser.id]; // because we need to send array to server
 						}
 					}
 				});
 			},
-			"fa-times": (event, id, node) => {
+			// TODO: uncomment if study endpoint will be implemented
+			"fa-times": (event, id/* , node */) => {
 				const selectedUser = $$(item.requestsDatatableId).getItem(id);
 				webix.confirm({
 					text: `Delete participation request from <b>"${selectedUser.userName}"</b>?`,
 					type: "confirm-error",
 					callback(result) {
 						if (result) {
+							// TODO: implement after study endpoint will be added
 						}
 					}
 				});

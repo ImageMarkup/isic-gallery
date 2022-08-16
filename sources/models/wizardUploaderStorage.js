@@ -1,16 +1,16 @@
 const FILES_INFO = "filesInfo";
 const SIGNATURE = "signature";
 
+function getFilesInfoFromStorage() {
+	return webix.storage.session.get(FILES_INFO);
+}
+
 function addFileInfoToStorage(data) {
 	if (data) {
 		const filesInfo = getFilesInfoFromStorage() || [];
 		filesInfo.push(data);
 		webix.storage.session.put(FILES_INFO, filesInfo);
 	}
-}
-
-function getFilesInfoFromStorage() {
-	return webix.storage.session.get(FILES_INFO);
 }
 
 function saveSignature(signature) {

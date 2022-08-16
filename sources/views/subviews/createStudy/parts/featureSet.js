@@ -81,7 +81,8 @@ export default class FeatureSet extends JetView {
 						else {
 							listDataToParse = synonymsArray;
 						}
-					} else {
+					}
+					else {
 						listDataToParse = undefined;
 					}
 				}
@@ -105,6 +106,7 @@ export default class FeatureSet extends JetView {
 					if (!Array.isArray(listDataToParse)) {
 						listDataToParse = [listDataToParse];
 					}
+					// eslint-disable-next-line arrow-body-style
 					const featuresInList = this.activeList.find((obj) => {
 						return listDataToParse.find(listData => listData === obj.id);
 					}).map(feature => feature.id);
@@ -115,7 +117,8 @@ export default class FeatureSet extends JetView {
 						});
 						this.activeList.callEvent("onAfterPropertyUpdated");
 						utils.scrollToLast(this.activeList);
-					} else {
+					}
+					else {
 						webix.alert({
 							type: "alert-error",
 							text: "This feature was already added!"

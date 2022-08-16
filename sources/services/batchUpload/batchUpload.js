@@ -1,7 +1,7 @@
-import AWS from "aws-sdk";
-import ajaxActions from "../ajaxActions";
-import createDatasetModel from "../../models/createDatasetModel";
-import constants from "../../constants";
+// import AWS from "aws-sdk";
+// import ajaxActions from "../ajaxActions";
+// import createDatasetModel from "../../models/createDatasetModel";
+// import constants from "../../constants";
 
 class BatchUploadService {
 	constructor(view, form, uploader, buttonDeleteFile, datasetInfoPanel) {
@@ -37,7 +37,7 @@ class BatchUploadService {
 			this._buttonDeleteFiles.enable();
 		});
 
-		this._uploader.attachEvent("onFileUploadError", (item, response) => {
+		this._uploader.attachEvent("onFileUploadError", (/* item, response */) => {
 			webix.message({type: "error", text: "Uploading error"});
 		});
 
@@ -47,25 +47,19 @@ class BatchUploadService {
 		});
 
 		this._form.elements.submit.attachEvent("onItemClick", () => {
-			const values = this._form.getValues();
+			// TODO: uncomment when collections endpoint will be implemented
+			// const values = this._form.getValues();
 			if (!this._uploader.files.count()) {
 				webix.alert(
 					{
 						type: "alert-warning",
 						text: "There is no file for uploading. Please, add zip archive"
-					});
+					}
+				);
 				return;
 			}
 			if (this._form.validate()) {
-				const datasetWebixId = values.dataset;
-				const datasetItem = this._form.elements.dataset.getList().getItem(datasetWebixId);
-				const datasetId = datasetItem._id;
-				let signatureObject = {
-					signature: values.signature
-				};
-
-				this._uploader.files.find((obj) => {
-				});
+				// TODO: implement when collection endpoint will be implemented
 			}
 		});
 	}

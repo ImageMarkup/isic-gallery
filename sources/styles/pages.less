@@ -1080,12 +1080,16 @@
   position: relative;
   cursor: pointer;
   height: 100%;
-  background: @main-bg;
+  background: #E8EBF1;
   .border-radius(3px);
   text-align: center;
 
   .gallery-image {
     display: inline-block;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
   }
 
   .gallery-images-info {
@@ -1110,7 +1114,7 @@
     .gallery-images-info {
       /*opacity: 1;
       .transition-delay(0.35s);*/
-      display: block;
+      display: inline-block;
       .diagnosis-icon {
         pointer-events: none;
 		opacity: 0.5;
@@ -1119,8 +1123,12 @@
     }
   }
 
-  &.is-checked {
+  > .is-checked {
     .box-shadow(0 0 1px 4px @select-color2);
+  }
+
+  > .check-layout {
+    background: @main-bg;
   }
 }
 
@@ -1767,6 +1775,8 @@
   .webix_label_right {
     font-size: 14px;
     margin-top: 0px;
+    padding-top: 0px;
+    line-height: 24px;
   }
   .webix_inp_label {
     padding-top: 0px;

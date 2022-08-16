@@ -1,9 +1,17 @@
-import ajaxActions from "../ajaxActions";
+// import ajaxActions from "../ajaxActions";
 
 const PromiseFileReader = require("promise-file-reader");
 
 class RegisterMetadataaService {
-	constructor(view, datasetInfoTemplate, form, uploader, uploaderTempalte, submitButton, removeFileButton) {
+	constructor(
+		view,
+		datasetInfoTemplate,
+		form,
+		uploader,
+		uploaderTempalte,
+		submitButton,
+		removeFileButton
+	) {
 		this._view = view;
 		this._datasetInfoTemplate = datasetInfoTemplate;
 		this._form = form;
@@ -25,7 +33,7 @@ class RegisterMetadataaService {
 			return true;
 		});
 
-		this._uploader.attachEvent("onFileUploadError", (item, response) => {
+		this._uploader.attachEvent("onFileUploadError", (/* item, response */) => {
 			webix.message({type: "error", text: "Uploading error"});
 		});
 
@@ -40,23 +48,23 @@ class RegisterMetadataaService {
 
 
 		this._submitButton.attachEvent("onItemClick", () => {
-			const datasetValues = this._datasetInfoTemplate.getValues();
-			const fileName = this._uploader.filename;
 			if (!this._uploader.files.count()) {
-					webix.alert(
-						{
-							type: "alert-warning",
-							text: "There is no file for uploading. <br>Please, add CSV file.</br>"
-						});
-					return;
+				webix.alert(
+					{
+						type: "alert-warning",
+						text: "There is no file for uploading. <br>Please, add CSV file.</br>"
+					}
+				);
+				return;
 			}
 
+			// eslint-disable-next-line array-callback-return
 			this._uploader.files.find((obj) => {
 				const item = this._uploader.files.getItem(obj.id);
 				this._view.showProgress();
 				PromiseFileReader.readAsText(item.file)
-					.then((fileData) => {
-					})
+					// TODO: implement for collections
+					.then((/* fileData */) => {})
 					.catch((error) => {
 						this._removeFileButton.callEvent("onItemClick");
 						const errorObject = JSON.parse(error);
@@ -68,8 +76,7 @@ class RegisterMetadataaService {
 		});
 	}
 
-	load(datasetId) {
-	}
+	load() {}
 }
 
 export default RegisterMetadataaService;

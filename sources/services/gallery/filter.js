@@ -2,12 +2,33 @@ import state from "../../models/state";
 
 const NULL_OPTION_VALUE = "unknown";
 
+function prepareOptionName(value, key) {
+	switch (key) {
+		case "meta.datasetId":
+		{
+			if (state.datasetMapForFilters) {
+				return state.datasetMapForFilters[value];
+			}
+			break;
+		}
+		default:
+		{
+			if (value === null) {
+				return NULL_OPTION_VALUE;
+			}
+			else if (typeof value === "object") {
+				return value.key !== null ? value.key : NULL_OPTION_VALUE;
+			}
+		}
+	}
+	return value;
+}
+
 function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
-		foundItem = facets.buckets.find((element, index, array) =>
-			prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key)
-		);
+		// eslint-disable-next-line max-len
+		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
 	}
 	return foundItem ? foundItem.doc_count : null;
 }
@@ -38,29 +59,6 @@ function getOptionId(filterId, optionValue) {
 	return `${filterId || ""}|${optionValue || ""}`;
 }
 
-function prepareOptionName(value, key) {
-	switch (key) {
-		case "meta.datasetId":
-		{
-			if (state.datasetMapForFilters) {
-				return state.datasetMapForFilters[value];
-			}
-			break;
-		}
-		default:
-		{
-			if (value === null) {
-				return NULL_OPTION_VALUE;
-			}
-			else if (typeof value === "object") {
-				return value.key !== null ? value.key : NULL_OPTION_VALUE;
-			}
-		}
-	}
-	return value;
-}
-
-
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -73,7 +71,8 @@ function updateFiltersFormControl(data) {
 			const control = $$(controlId);
 			// we do not need to call onChange event for the control. so we block event
 			control.blockEvent();
-			// remove key is from "filtersChanged" event parameters. Its value is inverse for checkbox value
+			/* remove key is from "filtersChanged" event parameters.
+			   Its value is inverse for checkbox value */
 			control.setValue(!data.remove);
 			control.unblockEvent();
 			break;
@@ -92,7 +91,7 @@ function updateFiltersFormControl(data) {
 // if countsAfterFiltration == undefined that we have all applied filters
 // and current counts are the same as counts without filtration
 function updateFiltersCounts(countsAfterFiltration) {
-	//  state.imagesTotalCounts has been init after gettting facets(data with counts) response
+	//  state.imagesTotalCounts has been init after getting facets(data with counts) response
 	const filterKeys = Object.keys(state.imagesTotalCounts);
 	filterKeys.forEach((filterKey) => {
 		if (filterKey !== "passedFilters") {

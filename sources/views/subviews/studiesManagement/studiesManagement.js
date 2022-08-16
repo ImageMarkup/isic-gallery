@@ -11,7 +11,6 @@ const CLONE_PAGER_ID = "clone-studies-management-pager-id";
 const CONTENT_HEADER_TEMPLATE_ID = "studies-management-content-header-template";
 
 export default class StudiesManagementView extends JetView {
-
 	config() {
 		const accordion = {
 			id: STUDIES_MANAGEMENT_ACCORDION_ID,
@@ -27,7 +26,7 @@ export default class StudiesManagementView extends JetView {
 			id: PAGER_ID,
 			master: false,
 			size: 8,
-			template: "{common.first()} {common.prev()} <span class='pager-info'>{common.page()} page of #limit#</span> {common.next()} {common.last()}"
+			template: "{common.prev()} {common.next()}}"
 
 		};
 

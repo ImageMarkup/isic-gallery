@@ -22,4 +22,4 @@ export default {
 	getCreateDatasetClicked,
 	setHasDatasetCreated,
 	getHasDatasetCreated
-}
+};

@@ -10,11 +10,10 @@ import constants from "../../../constants";
 import authService from "../../../services/auth";
 import selectedImages from "../../../models/selectedGalleryImages";
 import "../../components/activeList";
-import utils from "../../../utils/util";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
-import ajax from "../../../services/ajaxActions";
 import appliedFiltersModel from "../../../models/appliedFilters";
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
+import util from "../../../utils/util";
 
 
 const PAGER_ID = "gallery-pager-id";
@@ -43,30 +42,7 @@ export default class GalleryView extends JetView {
 			height: 36,
 			width: 250,
 			template(obj, common) {
-				return `${common.first()} ${common.prev()}
-					<input type='text' class='pager-input' value='${common.page(obj, common)}'>	<span class="pager-amount">of ${obj.limit}</span>
-				${common.next()} ${common.last()}`;
-			},
-			on: {
-				onAfterRender() {
-					const currentPager = this;
-					const node = this.getNode();
-					const inputNode = node.getElementsByClassName("pager-input")[0];
-					inputNode.addEventListener("focus", function () {
-						this.prev = this.value;
-					});
-					inputNode.addEventListener("keyup", function (e) {
-						if (e.keyCode === 13) { // enter
-							let value = parseInt(this.value);
-							if (value && value > 0 && value <= currentPager.data.limit) {
-								currentPager.select(value - 1); // because in pager first page is 0
-							}
-							else {
-								this.value = this.prev;
-							}
-						}
-					});
-				}
+				return `${common.prev()} ${common.next()}`;
 			}
 		};
 
@@ -107,12 +83,17 @@ export default class GalleryView extends JetView {
 						onAfterRender: () => {
 							const searchInputWidth = $$(SEARCH_ID).$width;
 							const dataviewMinWidth = 800;
-							searchButtonModel.setMinCurrentTargenInnerWidth(dataviewMinWidth + searchInputWidth);
+							searchButtonModel.setMinCurrentTargetInnerWidth(dataviewMinWidth + searchInputWidth);
 							const inputNode = $$(SEARCH_ID).$view.getElementsByClassName("webix_el_box")[0];
 							const tooltipText = "Clear search value";
-							searchButtonModel.createTimesSearchButton($$(SEARCH_ID), appliedFiltersModel, inputNode, tooltipText);
+							searchButtonModel.createTimesSearchButton(
+								$$(SEARCH_ID),
+								appliedFiltersModel,
+								inputNode,
+								tooltipText
+							);
 						},
-						onChange: function () {
+						onChange() {
 							let searchValue = this.getValue();
 							searchValue = searchValue.trim();
 							searchValue = searchValue.replace(/\s+/g, " ");
@@ -159,7 +140,7 @@ export default class GalleryView extends JetView {
 								view: "form",
 								paddingX: 7,
 								margin: 0,
-								elements: []// elements will be setted after init, in gallery service
+								elements: []// elements will be set after init, in gallery service
 							}
 						]
 					}
@@ -185,10 +166,10 @@ export default class GalleryView extends JetView {
 					value: "Download as ZIP",
 					submenu: [
 						{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES_METADATA, value: "Download Selected Images and Metadata"},
-						//{id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES, value: "Download Selected Images only"},
+						// {id: constants.ID_MENU_DOWNLOAD_SEL_IMAGES, value: "Download Selected Images only"},
 						{id: constants.ID_MENU_DOWNLOAD_SEL_METADATA, value: "Download Selected Metadata only"},
 						{id: constants.ID_MENU_DOWNLOAD_IMAGES_METADATA, value: "Download all Images and Metadata in ISIC Archive"},
-						//{id: constants.ID_MENU_DOWNLOAD_IMAGES, value: "Download Images only"},
+						// {id: constants.ID_MENU_DOWNLOAD_IMAGES, value: "Download Images only"},
 						{id: constants.ID_MENU_DOWNLOAD_METADATA, value: "Download all Metadata in ISIC Archive"}
 					]
 				}
@@ -211,7 +192,7 @@ export default class GalleryView extends JetView {
 			height: 30
 		};
 
-		const dataviewYCountSelction = {
+		const dataviewYCountSelection = {
 			view: "richselect",
 			css: "select-field gallery-y-count-selection",
 			hidden: true,
@@ -251,10 +232,10 @@ export default class GalleryView extends JetView {
 							template(obj) {
 								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
-								const filterdAmountHtml = `Filtered images: <b>${obj.currentCount || 0}</b>`;
+								const filteredAmountHtml = `Filtered images: <b>${obj.currentCount || 0}</b>`;
 								let result = "";
 								if (obj.filtered) {
-									result = ` ${filterdAmountHtml} ${totalAmountHtml}`;
+									result = ` ${filteredAmountHtml} ${totalAmountHtml}`;
 									if (obj.rangeFinish - obj.rangeStart < obj.currentCount) {
 										result = `${rangeHtml} ${result}`;
 									}
@@ -283,9 +264,17 @@ export default class GalleryView extends JetView {
 							id: IMAGES_SELECTION_TEMPLATE_ID,
 							template: () => {
 								webix.delay(() => {
-									const selectImagesForDownloadTemplateNode = this.imagesSelectionTemplate.$view.firstChild.firstChild;
+									const selectImagesForDownloadTemplateNode = this
+										.imagesSelectionTemplate
+										.$view
+										.firstChild
+										.firstChild;
 									const tooltipTextForDownload = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for download.`;
-									searchButtonModel.createHintForSearchTimesButton(selectImagesForDownloadTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForDownload);
+									searchButtonModel.createHintForSearchTimesButton(
+										selectImagesForDownloadTemplateNode,
+										tooltipForDataviewTemplatesClassName,
+										tooltipTextForDownload
+									);
 								});
 								const text = "<span class='gallery-select-all-images link'> Select All on the Page for Download</span>";
 								const selectedImagesCount = selectedImages.count();
@@ -313,9 +302,17 @@ export default class GalleryView extends JetView {
 									hidden: true,
 									template: () => {
 										webix.delay(() => {
-											const selectImagesForStudyCreationTemplateNode = this.allPagesTemplate.$view.firstChild.firstChild;
+											const selectImagesForStudyCreationTemplateNode = this
+												.allPagesTemplate
+												.$view
+												.firstChild
+												.firstChild;
 											const tooltipTextForStudy = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for creating a study.`;
-											searchButtonModel.createHintForSearchTimesButton(selectImagesForStudyCreationTemplateNode, tooltipForDataviewTemplatesClassName, tooltipTextForStudy);
+											searchButtonModel.createHintForSearchTimesButton(
+												selectImagesForStudyCreationTemplateNode,
+												tooltipForDataviewTemplatesClassName,
+												tooltipTextForStudy
+											);
 										});
 										const text = `<span class='gallery-select-all-images-on-all-pages link'> Select First ${constants.MAX_COUNT_IMAGES_SELECTION} images for Study Creation</span>`;
 										const selectedImagesCount = selectedImages.countForStudies();
@@ -330,7 +327,7 @@ export default class GalleryView extends JetView {
 							]
 						},
 						{width: 13},
-						dataviewYCountSelction,
+						dataviewYCountSelection,
 						{width: 15},
 						pager.getConfig(PAGER_ID, DATAVIEW_ID),
 						clonePagerForNameFilter,
@@ -364,7 +361,7 @@ export default class GalleryView extends JetView {
 					galleryImagesUrls.setPreviewImageUrl(obj.isic_id, obj.files.thumbnail_256.url);
 				}
 				return `<div>
-						<span class='webix_icon template-angle fas ${utils.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
+						<span class='webix_icon template-angle fas ${util.angleIconChange(obj)}' style="color: rgba(0, 0, 0, 0.8) !important;"></span>
 						<div style='float: right'>${common.deleteButton(obj, common)}</div>
  						<div class='card-list-name'>${obj.isic_id}</div>
  						<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="cart-image">
@@ -470,12 +467,19 @@ export default class GalleryView extends JetView {
 			$$(SEARCH_ID),
 			$$(CLEAR_ALL_FILTERS_TEMPLATE_ID),
 			this.allPagesTemplate,
-			filterScrollView
+			filterScrollView,
+			$$(LEFT_PANEL_ID)
 		);
 	}
 
 	ready() {
-		const hiddenLeftPanel = utils.getHiddenGalleryLeftPanel();
+		const dataviewYCountSelection = this.getDataviewYCountSelection();
+		const yCountSelectionValue = dataviewYCountSelection.getValue();
+		const doNotCallUpdatePager = true;
+		dataviewYCountSelection.callEvent("onChange", [yCountSelectionValue, null, doNotCallUpdatePager]);
+		const initial = true;
+		this.updatePagerSize(initial);
+		const hiddenLeftPanel = util.getHiddenGalleryLeftPanel();
 		if (hiddenLeftPanel) {
 			const leftPanelCollapser = this.getLeftPanelWithCollapser().queryView({state: "wasOpened"});
 			leftPanelCollapser.config.onClick["collapser-btn"](leftPanelCollapser);
@@ -494,7 +498,7 @@ export default class GalleryView extends JetView {
 		}
 
 		const that = this;
-		const resizeHandler = utils.debounce(() => {
+		const resizeHandler = util.debounce(() => {
 			const galleryBodyWidth = that.getGalleryBody().$width;
 			const dataWindowView = that.getGalleryDataview();
 			const leftPanelWithCollapser = that.getLeftPanelWithCollapser();
@@ -579,7 +583,7 @@ export default class GalleryView extends JetView {
 
 	showList(afterInit) {
 		let collapserState;
-		let wasCollapsedListClosed = utils.getHiddenGalleryCartList();
+		let wasCollapsedListClosed = util.getHiddenGalleryCartList();
 		if (wasCollapsedListClosed && afterInit) {
 			collapserState = "wasOpened";
 		}
@@ -597,47 +601,93 @@ export default class GalleryView extends JetView {
 	}
 
 	changeDataviewYCount() {
-		let gallerySelectionId = utils.getDataviewSelectionId();
+		let gallerySelectionId = util.getDataviewSelectionId();
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
-		galleryRichselect.callEvent("onChange", [gallerySelectionId]);
+		const doNotCallUpdatePager = true;
+		galleryRichselect.callEvent("onChange", [gallerySelectionId, null, doNotCallUpdatePager]);
 	}
 
-	updatePagerSize() {
+	updatePagerSize(initial) {
 		const currentPager = this.$$(PAGER_ID);
 		const dataWindowView = this.getGalleryDataview();
-		const galleryDataviewWidth = dataWindowView.$width;
+		let galleryDataviewWidth = dataWindowView.$width;
+		const dataviewYCountSelection = this.getDataviewYCountSelection();
 		const galleryDataviewHeight = dataWindowView.$height;
-		const oldPage = currentPager.data.page;
-		const newSize = Math.floor(
-			Math.floor(galleryDataviewHeight / dataWindowView.type.height)
-			* Math.floor(galleryDataviewWidth / dataWindowView.type.width)
+		const galleryLeftPanel = this.getLeftPanelWithCollapser();
+		const galleryRightPanel = this.getCartListCollapsedView();
+		let cols = 1;
+		const yCountSelectionValue = dataviewYCountSelection.getValue();
+		let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT / constants.DEFAULT_GALLERY_IMAGE_WIDTH;
+		switch (yCountSelectionValue) {
+			case constants.TWO_DATAVIEW_COLUMNS: {
+				cols = 2;
+				break;
+			}
+			case constants.THREE_DATAVIEW_COLUMNS: {
+				cols = 3;
+				break;
+			}
+			case constants.FOUR_DATAVIEW_COLUMNS: {
+				cols = 4;
+				break;
+			}
+			case constants.FIVE_DATAVIEW_COLUMNS: {
+				cols = 5;
+				break;
+			}
+			case constants.SIX_DATAVIEW_COLUMNS: {
+				cols = 6;
+				break;
+			}
+			case constants.DEFAULT_DATAVIEW_COLUMNS: {
+				const minGalleryWidth = window.innerWidth
+					- this.$$(LEFT_PANEL_ID).config.width
+					- this.$$(ID_ACTIVE_CART_LIST).config.width;
+				cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+		const currentCol = Math.floor(galleryDataviewWidth / dataWindowView.type.width);
+		const maxGalleryWidth = galleryDataviewWidth
+			+ galleryLeftPanel.$width
+			+ (galleryRightPanel?.isVisible() ? galleryRightPanel?.$width : 0);
+		const maxImageWidth = Math.floor(maxGalleryWidth / cols);
+		const downloadingMenu = this.$$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
+		const maxDataviewHeight = galleryDataviewHeight
+			+ (downloadingMenu.isVisible() ? downloadingMenu.$height : 0);
+		const maxImageHeight = Math.floor(maxImageWidth * multiplier);
+		const rows = Math.floor(maxDataviewHeight / maxImageHeight);
+		const elementWidth = util.getDataviewItemWidth();
+		const elementHeight = Math.round(galleryDataviewHeight / rows);
+		dataWindowView.define("type", {width: elementWidth, height: elementHeight});
+		util.setDataviewItemDimensions(elementWidth, elementHeight);
+		if (currentCol !== cols) {
+			const doNotCallUpdatePager = true;
+			dataviewYCountSelection.callEvent(
+				"onChange",
+				[yCountSelectionValue, null, doNotCallUpdatePager]
+			);
+		}
+		const imageWidth = util.getImageWidth();
+		const imageHeight = util.getImageHeight();
+		this._galleryService._setDataviewColumns(
+			elementWidth,
+			elementHeight,
+			imageWidth,
+			imageHeight
 		);
+		const newSize = Math.floor(rows * cols);
 		if (newSize !== currentPager.data.size) {
-			let oldSize;
-			let newOffset;
-			let newPage;
-			if (oldPage === 0) {
-				newPage = 0;
-				newOffset = 0;
-				currentPager.data.size = newSize;
+			let newOffset = 0;
+			currentPager.data.size = newSize;
+			galleryImagesUrls.setPrevImagesUrl(null);
+			galleryImagesUrls.setNextImagesUrl(null);
+			if (!initial) {
+				this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
 			}
-			else {
-				oldSize = currentPager.data.size;
-				const oldOffset = oldPage * oldSize + 1;
-				newPage = Math.floor(oldOffset / newSize);
-				newOffset = newSize * newPage + 1;
-				currentPager.data.size = newSize;
-				// TODO fix pager's master refresh
-				if (newSize > oldSize) {
-					currentPager.select(newPage);
-					currentPager.refresh();
-				}
-				else {
-					currentPager.refresh();
-					currentPager.select(newPage);
-				}
-			}
-			this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
 		}
 	}
 }

@@ -1,14 +1,10 @@
-import {plugins} from "webix-jet"
-import ajaxActions from "../ajaxActions";
+import {plugins} from "webix-jet";
 import constants from "../../constants";
 import studiesManagementModel from "../../models/studiesForManagement";
-import authService from "../auth";
-import infoPanel from "../../views/subviews/studiesManagement/parts/infoPanel";
-import annotatorsPanel from "../../views/subviews/studiesManagement/parts/annotatorsPanel";
-import imagesPanel from "../../views/subviews/studiesManagement/parts/imagesPanel";
-import actionPanel from "../../views/subviews/studiesManagement/parts/actionPanel";
+
 import accordionView from "../../views/subviews/studiesManagement/parts/accordionView";
 import state from "../../models/state";
+import util from "../../utils/util";
 
 class StudiesManagementService {
 	constructor(view, pager, clonePager, headerTemplate, accordion) {
@@ -37,7 +33,7 @@ class StudiesManagementService {
 		});
 
 		this._clonePager.attachEvent("onItemClick", (id) => {
-			this.clickPagerItem(id)
+			this.clickPagerItem(id);
 		});
 
 		this._headerTemplate.define("onClick", {
@@ -65,27 +61,56 @@ class StudiesManagementService {
 	clickPagerItem(id) {
 		let offset;
 		const lastPage = Math.ceil(this._pager.data.count / this._pager.data.size);
+		const prevClickHandler = util.debounce(() => {
+			const nextPage = this._pager.data.page > 0 ? this._pager.data.page : 0;
+			offset = nextPage * this._pager.data.size;
+			const portion = studiesManagementModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+		const nextClickHandler = util.debounce(() => {
+			const nextPage = this._pager.data.page < lastPage ? this._pager.data.page : lastPage;
+			offset = nextPage * this._pager.data.size;
+			const portion = studiesManagementModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+		const firstClickHandler = util.debounce(() => {
+			offset = 0;
+			const portion = studiesManagementModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
+		const lastClickHandler = util.debounce(() => {
+			if (lastPage > 1) {
+				offset = (lastPage - 1) * this._pager.data.size;
+			}
+			else {
+				offset = lastPage * this._pager.data.size;
+			}
+			const portion = studiesManagementModel.getData(this._pager.data.size, offset);
+			if (portion && portion.length) {
+				accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
+			}
+		});
 		switch (id) {
 			case "prev": {
-				const nextPage = this._pager.data.page > 0 ? this._pager.data.page - 1 : 0;
-				offset = nextPage * this._pager.data.size;
+				prevClickHandler();
 				break;
 			}
 			case "next": {
-				const nextPage = this._pager.data.page < lastPage ? this._pager.data.page + 1 : lastPage;
-				offset = nextPage * this._pager.data.size;
+				nextClickHandler();
 				break;
 			}
 			case "first": {
-				offset = 0;
+				firstClickHandler();
 				break;
 			}
 			case "last": {
-				if (lastPage > 1) {
-					offset = (lastPage - 1) * this._pager.data.size;
-				} else {
-					offset = lastPage * this._pager.data.size;
-				}
+				lastClickHandler();
 				break;
 			}
 			default: {
@@ -93,12 +118,9 @@ class StudiesManagementService {
 				break;
 			}
 		}
-		const portion = studiesManagementModel.getData(this._pager.data.size, offset);
-		if (portion && portion.length) {
-			accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
-		}
 	}
 
+	// TODO: check page when study will be implemented
 	load(page, selectedAdminStudiesIdsSet) {
 		const params = {
 			limit: 26,
@@ -106,27 +128,25 @@ class StudiesManagementService {
 			sort: "name",
 			sortdir: 1
 		};
-		// after finish data loading we set total count for pager, clone it to displaying it bottom and build accordion
+		/* after finish data loading we set total count for pager,
+		   clone it to displaying it bottom and build accordion */
 		studiesManagementModel.load(params).then(() => {
 			const pager = this._pager;
 			const clonePager = this._clonePager;
 			pager.define({count: studiesManagementModel.getCount()});
 			pager.refresh();
 			pager.clone(clonePager);
-			if (page) {
-				pager.select(page);
-			}
 			const offset = pager.data.page * pager.data.size;
 			const portion = studiesManagementModel.getData(pager.data.size, offset);
 			accordionView.buildAccordion(portion, this._accordion, this._headerTemplate);
 
 			if (selectedAdminStudiesIdsSet) {
-				for (let item of selectedAdminStudiesIdsSet) {
+				selectedAdminStudiesIdsSet.forEach((item) => {
 					let accordionItem = $$(item);
 					if (accordionItem) {
 						accordionItem.expand();
 					}
-				}
+				});
 			}
 		});
 	}
@@ -137,4 +157,4 @@ class StudiesManagementService {
 	}
 }
 
-export default StudiesManagementService
+export default StudiesManagementService;

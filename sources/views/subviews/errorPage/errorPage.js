@@ -6,9 +6,7 @@ export default class ErrorPageView extends JetView {
 		const template = {
 			view: "template",
 			borderless: true,
-			template: () => {
-				return errorHTMl;
-			}
+			template: () => errorHTMl
 		};
 
 		return {
@@ -17,6 +15,6 @@ export default class ErrorPageView extends JetView {
 				template,
 				{gravity: 0.25}
 			]
-		}
+		};
 	}
 }

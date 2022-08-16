@@ -82,7 +82,7 @@ class AjaxActions {
 			headers
 		};
 		return axios(axiosConfig)
-			.then(result => (result && result.data ? result.data : {}), (e) => {
+			.then(result => result?.data || {}, (e) => {
 				webix.message({type: "error", text: e.response.data.detail});
 				return Promise.reject(e);
 			});
@@ -94,7 +94,7 @@ class AjaxActions {
 			.headers(headers)
 			.put(`${API_URL}users/accept-terms/`)
 			.fail(parseError)
-			.then(result => (result.data ? result.data : {}));
+			.then(result => result?.data || {});
 	}
 
 	// New API
@@ -106,10 +106,15 @@ class AjaxActions {
 			return this.searchImages(sourceParams);
 		}
 		const params = sourceParams ? {
-			limit: sourceParams.limit || 0,
-			offset: sourceParams.offset || 0
+			limit: sourceParams.limit || 0
 		} : {};
 		return this._ajaxGet(`${API_URL}images/`, params)
+			.then(result => this._parseData(result))
+			.catch(parseError);
+	}
+
+	getImagesByUrl(url) {
+		return this._ajaxGet(url)
 			.then(result => this._parseData(result))
 			.catch(parseError);
 	}
@@ -126,7 +131,6 @@ class AjaxActions {
 		const conditions = sourceParams.conditions;
 		const params = {
 			limit: sourceParams.limit || 0,
-			offset: sourceParams.offset || 0,
 			query: conditions
 		};
 		return this._ajaxGet(`${API_URL}images/search/`, params)
@@ -148,7 +152,7 @@ class AjaxActions {
 				const facets = this._parseData(result);
 				const ids = Object.keys(facets);
 				ids.forEach((id) => {
-					facets[id].buckets = facets[id].buckets.map((bucket) =>{
+					facets[id].buckets = facets[id].buckets.map((bucket) => {
 						if (bucket.key_as_string) {
 							return {
 								...bucket,
@@ -195,9 +199,8 @@ class AjaxActions {
 
 	getAllImages(sourceParams, annotatedImages) {
 		const params = sourceParams ? {
-			limit: sourceParams.limit || 0,
-			offset: sourceParams.offset || 0
-		} : {limit: 0, offset: 0};
+			limit: sourceParams.limit || 0
+		} : {limit: 0};
 
 		return this._ajaxGet(`${API_URL}images/`, params)
 			.then((result) => {

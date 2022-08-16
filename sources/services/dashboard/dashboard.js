@@ -1,19 +1,30 @@
-import ajaxActions from "../ajaxActions";
+// import ajaxActions from "../ajaxActions";
 import auth from "../auth";
 import constants from "../../constants";
 import state from "../../models/state";
-import dashboardStats from "../../../sources/dashboardStats/dashboardStats.json";
+import dashboardStats from "../../dashboardStats/dashboardStats.json";
 import util from "../../utils/util";
 
 const colsElementsCount = 8;
 
 class DashboardService {
-	constructor(view, panelAdminStudies, panelAdminDataset,
-		panelPartisipantStudies, templatePartisipateStadies, listPartisipateStudies,
-		panelPartisipantTasks, templatePartisipantTasks, listPartisipateTasks,
-		//buttonManagementUI,
-				buttonInviteUser, accordionItemSegmentationTask, accordionItemParticipantStudy,
-		accordionItemAdminDataset, accordionItemAdminStudy) {
+	constructor(
+		view,
+		panelAdminStudies,
+		panelAdminDataset,
+		panelPartisipantStudies,
+		templatePartisipateStadies,
+		listPartisipateStudies,
+		panelPartisipantTasks,
+		templatePartisipantTasks,
+		listPartisipateTasks,
+		// buttonManagementUI,
+		buttonInviteUser,
+		accordionItemSegmentationTask,
+		accordionItemParticipantStudy,
+		accordionItemAdminDataset,
+		accordionItemAdminStudy
+	) {
 		this._view = view;
 		this._panelAdminStudies = panelAdminStudies;
 		this._panelAdminDataset = panelAdminDataset;
@@ -23,7 +34,7 @@ class DashboardService {
 		this._panelPartisipantSegmentationTasks = panelPartisipantTasks;
 		this._templatePartisipantSegmentationTasks = templatePartisipantTasks;
 		this._listPartisipateSegmentationTasks = listPartisipateTasks;
-		//this._buttonManagementUI = buttonManagementUI;
+		// this._buttonManagementUI = buttonManagementUI;
 		this._buttonInviteUser = buttonInviteUser;
 		this._accordionItemSegmentationTask = accordionItemSegmentationTask;
 		this._accordionItemParticipantStudy = accordionItemParticipantStudy;
@@ -34,12 +45,17 @@ class DashboardService {
 
 	_init() {
 		setTimeout(() => {
-			const accordionViews = [this._accordionItemSegmentationTask, this._accordionItemParticipantStudy, this._accordionItemAdminDataset, this._accordionItemAdminStudy];
+			const accordionViews = [
+				this._accordionItemSegmentationTask,
+				this._accordionItemParticipantStudy,
+				this._accordionItemAdminDataset,
+				this._accordionItemAdminStudy
+			];
 			this._attachOnAfterExpandEvent(accordionViews);
 		});
 
 		this._infoTemplate = this._view.$scope.getInfoTemplate();
-		//this._buttonManagementUI.show();
+		// this._buttonManagementUI.show();
 		this._buttonInviteUser.show();
 		// this._buttonManagementUI.attachEvent("onItemClick", () => {
 		// 	this._view.$scope.app.show(constants.PATH_MANAGEMENT_UI_ABOUT);
@@ -64,13 +80,13 @@ class DashboardService {
 			cols: []
 		}];
 		// expand previously expanded accordion items
-		for (let item of state.dashboard.selectedAdminAccordionItemsIdsSet) {
+		state.dashboard.selectedAdminAccordionItemsIdsSet.forEach((item) => {
 			this._expandAccordionItem(item);
-		}
+		});
 		// expand previously expanded accordion items
-		for (let item of state.dashboard.selectedParticipateAccordionItemsIdsSet) {
+		state.dashboard.selectedParticipateAccordionItemsIdsSet.forEach((item) => {
 			this._expandAccordionItem(item);
-		}
+		});
 
 		if (auth.hasSegmentationSkill()) {
 			this._accordionItemSegmentationTask.show();
@@ -114,6 +130,9 @@ class DashboardService {
 				case "numberOfParticipantsInChallenge": {
 					infoText = "Participants in Challenge";
 					infoNumber = dashboardStats.numberOfParticipantsInChallenge;
+					break;
+				}
+				default: {
 					break;
 				}
 			}

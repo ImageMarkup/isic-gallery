@@ -33,14 +33,16 @@ function getAddedQuestionsAndAnswersNames() {
 }
 
 function getAddedAnswerNames(questionName) {
-	const qustionIndex = addedQuestionsAndAnswersNames.findIndex(item => item.questionName === questionName);
-	if (qustionIndex > -1) {
-		return addedQuestionsAndAnswersNames[qustionIndex].answerNames;
+	const questionIndex = addedQuestionsAndAnswersNames
+		.findIndex(item => item.questionName === questionName);
+	if (questionIndex > -1) {
+		return addedQuestionsAndAnswersNames[questionIndex].answerNames;
 	}
+	return null;
 }
 
 
-function removeAddedQustions(questionName) {
+function removeAddedQuestions(questionName) {
 	const index = addedQuestionsAndAnswersNames.findIndex(item => item.questionName === questionName);
 	if (index > -1) {
 		addedQuestionsAndAnswersNames.splice(index, 1);
@@ -48,17 +50,21 @@ function removeAddedQustions(questionName) {
 }
 
 function removeAnswerName(questionName, answerName) {
-	const qustionIndex = addedQuestionsAndAnswersNames.findIndex(item => item.questionName === questionName);
-	if (qustionIndex > -1) {
-		const answerIndex = addedQuestionsAndAnswersNames[qustionIndex].answerNames.findIndex(answer => answer === answerName);
-		addedQuestionsAndAnswersNames[qustionIndex].answerNames.splice(answerIndex, 1);
+	const questionIndex = addedQuestionsAndAnswersNames
+		.findIndex(item => item.questionName === questionName);
+	if (questionIndex > -1) {
+		const answerIndex = addedQuestionsAndAnswersNames[questionIndex]
+			.answerNames
+			.findIndex(answer => answer === answerName);
+		addedQuestionsAndAnswersNames[questionIndex].answerNames.splice(answerIndex, 1);
 	}
 }
 
 function addAnswerName(questionName, newAnswerName) {
-	const qustionIndex = addedQuestionsAndAnswersNames.findIndex(item => item.questionName === questionName);
-	if (qustionIndex > -1) {
-		addedQuestionsAndAnswersNames[qustionIndex].answerNames.push(newAnswerName);
+	const questionIndex = addedQuestionsAndAnswersNames
+		.findIndex(item => item.questionName === questionName);
+	if (questionIndex > -1) {
+		addedQuestionsAndAnswersNames[questionIndex].answerNames.push(newAnswerName);
 	}
 }
 
@@ -73,7 +79,7 @@ export default {
 	clearTextLayoutNames,
 	setAddedQuestionsAndAnswersNames,
 	getAddedQuestionsAndAnswersNames,
-	removeAddedQustions,
+	removeAddedQuestions,
 	removeAnswerName,
 	addAnswerName,
 	getAddedAnswerNames,

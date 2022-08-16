@@ -1,22 +1,22 @@
 function prepareAccordionItems(data) {
 	if (data && typeof data.map === "function") {
-		//const me = authService.getUserInfo();
+		// const me = authService.getUserInfo();
+		// eslint-disable-next-line arrow-body-style
 		return data.map((item) => {
-				/*const foundUser = item.users.find((item) => item._id === me._id);
-				const enrolledHtml = foundUser ? "<div class='accordion-item-mark'>Enrolled</div>" : "";*/
-				return {
-					css: "accordion-item",
-					id: `accordion-item-${item._id}`,
-					header: `${item.name}`,
-					body: {
-						rows: []
-					},
-					elementId: item._id,
-					headerAltHeight: 35,
-					headerHeight: 35
-				};
-			}
-		);
+			/* const foundUser = item.users.find((item) => item._id === me._id);
+			const enrolledHtml = foundUser ? "<div class='accordion-item-mark'>Enrolled</div>" : ""; */
+			return {
+				css: "accordion-item",
+				id: `accordion-item-${item._id}`,
+				header: `${item.name}`,
+				body: {
+					rows: []
+				},
+				elementId: item._id,
+				headerAltHeight: 35,
+				headerHeight: 35
+			};
+		});
 	}
 	return [];
 }

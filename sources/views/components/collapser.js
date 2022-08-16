@@ -8,7 +8,8 @@ function changeDataviewItemDimensions(collapsedView) {
 	if (collapsedView.config.id === "gallery-left-panel" || collapsedView.config.id === "active-cart-list-id") {
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
 		let dataviewSelectionId = util.getDataviewSelectionId();
-		galleryRichselect.callEvent("onChange", [dataviewSelectionId]);
+		const doNotCallUpdatePager = true;
+		galleryRichselect.callEvent("onChange", [dataviewSelectionId, null, doNotCallUpdatePager]);
 	}
 }
 
@@ -39,7 +40,8 @@ function getConfig(collapsedViewId, config) {
 						webix.ui.resize();
 						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
 							util.setHiddenGalleryCartList(true);
-						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
+						}
+						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
 							util.setHiddenGalleryLeftPanel(true);
 						}
 						changeDataviewItemDimensions(collapsedView);
@@ -65,7 +67,8 @@ function getConfig(collapsedViewId, config) {
 						webix.ui.resize();
 						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
 							util.setHiddenGalleryCartList(false);
-						} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
+						}
+						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
 							util.setHiddenGalleryLeftPanel(false);
 						}
 						changeDataviewItemDimensions(collapsedView);

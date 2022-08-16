@@ -1,9 +1,6 @@
 import {JetView} from "webix-jet";
-import ajaxActions from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
-import constants from "../../../constants";
 import licensesWindow from "./windows/licenseInfo";
-import createDatasetModel from "../../../models/createDatasetModel";
 
 const ID_WINDOW_LICENSES = "licenses-window";
 const LICENSE_TYPE_CC_0 = "CC-0";
@@ -13,17 +10,13 @@ const ATTRIBUTION_RADIO_ANONYMOUS = "Anonymous";
 const ATTRIBUTION_RADIO_ATTRIBUTED = "Attributed";
 
 export default class CreateDatasetView extends JetView {
-
 	config() {
-
 		const form = {
 			view: "form",
 			type: "clean",
 			borderless: true,
 			rules: {
-				name: (value) => {
-					return value.length <= 100 && value.length > 0;
-				},
+				name: value => value.length <= 100 && value.length > 0,
 				description: webix.rules.isNotEmpty,
 				license: webix.rules.isNotEmpty,
 				attribution: webix.rules.isNotEmpty,
@@ -104,19 +97,20 @@ export default class CreateDatasetView extends JetView {
 									{id: LICENSE_TYPE_CC_BY_NC, value: "CC-BY-NC (Attribution-NonCommercial)"}
 								],
 								on: {
-									onChange:(newv, oldv) => {
+									onChange: (newV/* , oldV */) => {
 										const currentForm = this.getFormView();
 										let options = [];
-										if (newv !== LICENSE_TYPE_CC_0) {
+										if (newV !== LICENSE_TYPE_CC_0) {
 											options = [
 												{id: ATTRIBUTION_RADIO_ATTRIBUTED, value: "Attributed to:"}
 											];
 											currentForm.elements.attribution.setValue(ATTRIBUTION_RADIO_ATTRIBUTED);
-										} else {
+										}
+										else {
 											options = [
 												{id: ATTRIBUTION_RADIO_ANONYMOUS, value: "Anonymous"},
 												{id: ATTRIBUTION_RADIO_ATTRIBUTED, value: "Attributed to:"}
-											]
+											];
 										}
 										this.defineRadioViewOptions(options);
 									}
@@ -128,7 +122,9 @@ export default class CreateDatasetView extends JetView {
 								borderless: true,
 								onClick: {
 									"help-me-choose": () => {
-										const win = $$(ID_WINDOW_LICENSES) || webix.ui(licensesWindow.getConfig(ID_WINDOW_LICENSES));
+										const win =
+											$$(ID_WINDOW_LICENSES)
+											|| webix.ui(licensesWindow.getConfig(ID_WINDOW_LICENSES));
 										win.show();
 									}
 								}
@@ -160,7 +156,7 @@ export default class CreateDatasetView extends JetView {
 									{id: ATTRIBUTION_RADIO_ATTRIBUTED, value: "Attributed to:"}
 								],
 								on: {
-									onChange(newv, oldv) {
+									onChange(newv/* , oldv */) {
 										const currentForm = this.getFormView();
 										const license = currentForm.elements.license.getValue();
 										// to prevent selection of anonymous if has been selected attribution license
@@ -173,7 +169,8 @@ export default class CreateDatasetView extends JetView {
 										}
 										if (newv === ATTRIBUTION_RADIO_ATTRIBUTED) {
 											currentForm.elements.attributedTo.enable();
-										} else {
+										}
+										else {
 											currentForm.elements.attributedTo.setValue("");
 											currentForm.elements.attributedTo.disable();
 										}
@@ -195,7 +192,10 @@ export default class CreateDatasetView extends JetView {
 					paddingY: 10,
 					cols: [
 						{
-							template: `<div style="padding-top: 11px;"><span style="color: red;">*</span> Indicates required field</div>`,
+							template:
+								`<div style="padding-top: 11px;">
+									<span style="color: red;">*</span> Indicates required field
+								</div>`,
 							borderless: true
 						},
 						{},
@@ -235,7 +235,7 @@ export default class CreateDatasetView extends JetView {
 		};
 		return ui;
 	}
-	
+
 	init() {
 		this.radioView = this.getRadioView();
 	}
@@ -249,14 +249,13 @@ export default class CreateDatasetView extends JetView {
 	getFormView() {
 		return this.getRoot().queryView({view: "form"});
 	}
-	
+
 	getRadioView() {
-		return this.getRoot().queryView({view: "radio"})
+		return this.getRoot().queryView({view: "radio"});
 	}
 
 	defineRadioViewOptions(options) {
 		this.radioView.define("options", options);
 		this.radioView.refresh();
-		
 	}
 }

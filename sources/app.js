@@ -1,7 +1,7 @@
 import "@babel/polyfill";
 import {JetApp} from "webix-jet";
 import "./styles/app.less";
-import "./utils/polifills";
+import "./utils/polyfills";
 import state from "./models/state";
 import constants from "./constants";
 import auth from "./services/auth";
