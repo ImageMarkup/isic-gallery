@@ -17,16 +17,16 @@ const pager = {
 			let offset = 0;
 			const prevClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getPrevImagesUrl() || null;
-				const callback = null;
 				if (url) {
-					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+					galleryImagesUrls.setCurrImagesUrl(url);
+					$$(dataviewId).loadNext(this.data.size, offset);
 				}
 			}, 100);
 			const nextClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getNextImagesUrl() || null;
-				const callback = null;
 				if (url) {
-					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+					galleryImagesUrls.setCurrImagesUrl(url);
+					$$(dataviewId).loadNext(this.data.size, offset);
 				}
 			}, 100);
 			switch (id) {

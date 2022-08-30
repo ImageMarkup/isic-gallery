@@ -400,9 +400,11 @@ class GalleryService {
 				}
 			}
 		});
-		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit, callback, url) => {
+		this._imagesDataview.attachEvent("onDataRequest", async (offset, limit) => {
 			try {
+				const url = galleryImagesUrls.getCurrImagesUrl();
 				await this._updateImagesDataview(offset, limit, url);
+				galleryImagesUrls.setCurrImagesUrl(null);
 				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
 					|| state.imagesTotalCounts.passedFilters.currentCount;
 				const count = state.imagesTotalCounts.passedFilters.count;
