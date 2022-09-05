@@ -28,7 +28,8 @@ const state = {
 		this.studies = {
 			toolbarValues: {}
 		};
-	}
+	},
+	imagesOffset: 0
 };
 
 export default state;

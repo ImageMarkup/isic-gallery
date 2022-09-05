@@ -120,7 +120,6 @@ class GalleryService {
 		let filteredImages = [];
 		const sourceParams = {
 			limit: this._pager.data.size,
-			offset: 0,
 			conditions: ""
 		};
 		if (searchValue) {
@@ -133,6 +132,7 @@ class GalleryService {
 
 		ajax.searchImages(sourceParams)
 			.then((foundImages) => {
+				state.imagesOffset = 0;
 				const allImagesArray = webix.copy(foundImages.results);
 				const foundImagesCount = foundImages.count;
 				allImagesArray.forEach((imageObj) => {
@@ -360,6 +360,7 @@ class GalleryService {
 			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
+			state.imagesOffset = 0;
 			if (!doNotCallUpdatePager) {
 				this._imagesDataview.$scope.updatePagerSize();
 			}
@@ -409,22 +410,14 @@ class GalleryService {
 					|| state.imagesTotalCounts.passedFilters.currentCount;
 				const count = state.imagesTotalCounts.passedFilters.count;
 				const filtered = state.imagesTotalCounts.passedFilters.filtered;
-				let currOffset;
-				if (url) {
-					let currUrl = new URL(url);
-					let params = new URLSearchParams(currUrl.search);
-					currOffset = Number(params.get("offset"));
-				}
-				else {
-					currOffset = offset;
-				}
 				this._updateContentHeaderTemplate({
-					rangeStart: currOffset + 1,
-					rangeFinish: currOffset + limit >= currentCount ? currentCount : currOffset + limit,
+					rangeStart: offset + 1,
+					rangeFinish: offset + limit >= currentCount ? currentCount : offset + limit,
 					totalCount: count,
 					currentCount,
 					filtered
 				});
+				state.imagesOffset = offset;
 			}
 			catch (error) {
 				if (!this._view.$destructed) {
@@ -925,6 +918,7 @@ class GalleryService {
 	_reload(offsetSource, limitSource) {
 		let limit = limitSource || this._pager.data.size;
 		let offset = offsetSource || 0;
+		state.imagesOffset = offset;
 		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 		this._createFilters(appliedFiltersArray);
 		this._updateCounts();
