@@ -1,5 +1,6 @@
 import galleryImagesUrls from "../../../../models/galleryImagesUrls";
 import util from "../../../../utils/util";
+import state from "../../../../models/state";
 
 let dataviewId;
 
@@ -14,19 +15,21 @@ const pager = {
 	},
 	on: {
 		onItemClick(id/* , e, node */) {
-			let offset = 0;
+			let offset = state.imagesOffset;
 			const prevClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getPrevImagesUrl() || null;
-				const callback = null;
 				if (url) {
-					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+					offset -= this.data.size;
+					galleryImagesUrls.setCurrImagesUrl(url);
+					$$(dataviewId).loadNext(this.data.size, offset);
 				}
 			}, 100);
 			const nextClickHandler = util.debounce(() => {
 				let url = galleryImagesUrls.getNextImagesUrl() || null;
-				const callback = null;
 				if (url) {
-					$$(dataviewId).loadNext(this.data.size, offset, callback, url);
+					offset += this.data.size;
+					galleryImagesUrls.setCurrImagesUrl(url);
+					$$(dataviewId).loadNext(this.data.size, offset);
 				}
 			}, 100);
 			switch (id) {
@@ -39,7 +42,6 @@ const pager = {
 					break;
 				}
 				default: {
-					offset = 0;
 					break;
 				}
 			}

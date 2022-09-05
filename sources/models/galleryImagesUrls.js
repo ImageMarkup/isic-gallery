@@ -3,6 +3,15 @@ let previewUrls = {};
 const normalUrls = {};
 let nextImagesUrl = "";
 let prevImagesUrl = "";
+let currImagesUrl = "";
+
+function setCurrImagesUrl(url) {
+	currImagesUrl = url;
+}
+
+function getCurrImagesUrl() {
+	return currImagesUrl;
+}
 
 function setNextImagesUrl(url) {
 	nextImagesUrl = url;
@@ -41,6 +50,8 @@ function clearPreviewUrls() {
 }
 
 export default {
+	setCurrImagesUrl,
+	getCurrImagesUrl,
 	setNextImagesUrl,
 	getNextImagesUrl,
 	setPrevImagesUrl,
