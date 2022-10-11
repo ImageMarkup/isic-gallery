@@ -31,6 +31,7 @@ const list = {
 					</span></div>`;
 	},
 	onClick: {
+		// eslint-disable-next-line func-names
 		"remove-filter-icon": function (e, id) {
 			const clickedItem = this.getItem(id);
 			this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
@@ -39,6 +40,7 @@ const list = {
 				datatype: clickedItem.datatype,
 				filterName: clickedItem.filterName,
 				value: clickedItem.value,
+				optionId: clickedItem.optionId,
 				remove: 1,
 				status: clickedItem.status
 			}, true]); // true - isNeedUpdateFiltersFormControls

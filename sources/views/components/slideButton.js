@@ -23,9 +23,9 @@ webix.protoUI({
 
 			const checked = config.checkValue === config.value;
 
-			const className = `webix_inp_checkbox_border webix_el_group webix_checkbox_${(checked ? "1" : "0")}`;
+			const className = `webix_inp_checkbox_border webix_el_group webix_checkbox_${checked ? "1" : "0"}`;
 			const ch = `<div class="cmn-toggle-box">
-				<input  id="cmn-toggle-${id}" class="cmn-toggle cmn-toggle-round" type="checkbox" ${(checked ? "checked" : "")}>
+				<input  id="cmn-toggle-${id}" class="cmn-toggle cmn-toggle-round" type="checkbox" ${checked ? "checked" : ""}>
 				<label  for="cmn-toggle-${id}"></label>
 				</div>`;
 

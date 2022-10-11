@@ -4,6 +4,7 @@ let filtersData;
 
 
 const filtersIds = {
+	pinnedCollections: "collections",
 	benignMelignant: "benign_malignant",
 	lesionDiagnosis: "diagnosis",
 	approximateAge: "age_approx",
@@ -27,6 +28,18 @@ const filtersIds = {
 
 function getFiltersDataValues() {
 	const filtersDataValues = [
+		{
+			label: "Collections",
+			data: [
+				{
+					id: filtersIds.pinnedCollections,
+					name: "PINNED",
+					type: "checkbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.pinnedCollections] ?? []
+				}
+			]
+		},
 		{
 			label: "Diagnostic Attributes",
 			data: [

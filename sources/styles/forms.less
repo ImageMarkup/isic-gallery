@@ -82,6 +82,24 @@ input::-ms-clear {
   }
 }
 
+/* to-collection-button */
+.to-collection {
+  .webix_img_btn {
+    color: @link-color;
+    font-size: 14px;
+    padding: 0px;
+    .webix_icon_btn {
+      &:before {
+        color: @link-color;
+        font-size: 12px;
+      }
+    }
+    &:focus,
+    &:hover {
+      background: transparent;
+    }
+  }
+}
 
 /* select-field */
 .select-field,

@@ -9,6 +9,7 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	const collapsibleFilter = webix.copy(filter);
 	const template = collapsibleFilter.rows[0];
 	template.onClick = {
+		// eslint-disable-next-line func-names
 		"collapssible-filter": function () {
 			const children = this.getParentView().getChildViews();
 			const labelObject = children[0];

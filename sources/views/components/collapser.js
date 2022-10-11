@@ -31,8 +31,9 @@ function getConfig(collapsedViewId, config) {
 				state: "wasOpened",
 				hidden: config && config.closed,
 				onClick: {
+					// eslint-disable-next-line func-names
 					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this && this.config ? this : thisButton;
+						const thisCollapsedButton = this?.config ? this : thisButton;
 						const collapsedView = $$(collapsedViewId);
 						collapsedView.hide();
 						thisCollapsedButton.hide();
@@ -58,8 +59,9 @@ function getConfig(collapsedViewId, config) {
 				state: "wasClosed",
 				hidden: !(config && config.closed),
 				onClick: {
+					// eslint-disable-next-line func-names
 					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this.config ? this : thisButton;
+						const thisCollapsedButton = this?.config ? this : thisButton;
 						const collapsedView = $$(collapsedViewId);
 						collapsedView.show();
 						thisCollapsedButton.hide();

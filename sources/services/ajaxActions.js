@@ -1,5 +1,6 @@
 import axios from "../../node_modules/axios/dist/axios.min";
 import state from "../models/state";
+import logger from "../utils/logger";
 
 const API_URL = process.env.ISIC_NEW_API_URL;
 
@@ -28,7 +29,7 @@ function parseError(xhr) {
 			}
 			catch (e) {
 				message = xhr.response;
-				console.log(`Not JSON response for request to ${xhr.responseURL}`);
+				logger.info(`Not JSON response for request to ${xhr.responseURL}`);
 			}
 			const regexForId = /".*?" /;
 			let messageToShow = message.replace(regexForId, "");
@@ -99,8 +100,7 @@ class AjaxActions {
 
 	// New API
 	getImages(sourceParams) {
-		if (sourceParams
-			&& sourceParams.filter
+		if (sourceParams?.filter || sourceParams?.collections
 		) {
 			sourceParams.conditions = sourceParams.filter;
 			return this.searchImages(sourceParams);
@@ -129,9 +129,11 @@ class AjaxActions {
 	// New API
 	searchImages(sourceParams) {
 		const conditions = sourceParams.conditions;
+		const collections = sourceParams.collections;
 		const params = {
 			limit: sourceParams.limit || 0,
-			query: conditions
+			query: conditions,
+			collections
 		};
 		return this._ajaxGet(`${API_URL}images/search/`, params)
 			.then(result => this._parseData(result))
@@ -142,10 +144,10 @@ class AjaxActions {
 	// New API
 	getFacets(sourceParams) {
 		const conditions = sourceParams && sourceParams.conditions ? sourceParams.conditions : null;
-		const collection = sourceParams && sourceParams.collection ? sourceParams.collection : "";
+		const collections = sourceParams && sourceParams.collections ? sourceParams.collections : "";
 		const params = {
 			query: conditions,
-			collection
+			collections
 		};
 		return this._ajaxGet(`${API_URL}images/facets/`, params)
 			.then((result) => {
@@ -213,6 +215,12 @@ class AjaxActions {
 				return {allImages: this._parseData(result)};
 			})
 			.catch(parseError);
+	}
+
+	getCollections(sourceParams) {
+		const params = sourceParams ? {...sourceParams} : {limit: 0};
+		return this._ajaxGet(`${API_URL}collections/`, params)
+			.then(result => this._parseData(result));
 	}
 }
 

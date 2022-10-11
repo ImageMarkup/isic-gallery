@@ -13,6 +13,7 @@ import authService from "../auth";
 import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import searchButtonModel from "./searchButtonModel";
+import collectionsModel from "../../models/collectionsModel";
 
 const layoutHeightAfterHide = 1;
 const layoutHeightAfterShow = 32;
@@ -88,6 +89,7 @@ class GalleryService {
 					filtersInfo.push();
 					let params = webix.copy(element.config.filtersChangedData);
 					params.remove = 0;
+					params.optionId = element.config.attributes.dataOptionId;
 					filtersInfo.push(params);
 				}
 			}
@@ -129,6 +131,7 @@ class GalleryService {
 		this._view.$scope.setParam("name", searchValue, true);
 		appliedFilterModel.setFilterByName(true);
 		this._view.showProgress();
+		// TODO: will be uncomment after study endpoint will be implemented in new API
 
 		ajax.searchImages(sourceParams)
 			.then((foundImages) => {
@@ -545,15 +548,17 @@ class GalleryService {
 		this._allPagesTemplate.define("onClick", {
 			"gallery-select-all-images-on-all-pages": () => {
 				let isNeedShowAlert = true;
-				let countSelectedFiltredImages = 0;
+				let countSelectedFilteredImages = 0;
 				let filter = appliedFilterModel.getConditionsForApi();
+				const collections = collectionsModel.getAppliedCollectionsForApi();
 				let imagesLimit = constants.MAX_COUNT_IMAGES_SELECTION;
 				let arrayOfImagesLength = selectedImages.countForStudies();
 				const sourceParams = {
 					limit: imagesLimit,
 					sort: "name",
 					detail: "false",
-					filter
+					filter,
+					collections
 				};
 				if (arrayOfImagesLength === imagesLimit) {
 					webix.alert({
@@ -595,7 +600,7 @@ class GalleryService {
 						.then((allImagesData) => {
 							allImagesData.forEach((imageObj) => {
 								if (selectedImages.isSelectedInStudies(imageObj.isic_id)) {
-									countSelectedFiltredImages++;
+									countSelectedFilteredImages++;
 									return;
 								}
 								if (selectedImages.countForStudies() < constants.MAX_COUNT_IMAGES_SELECTION) {
@@ -616,7 +621,7 @@ class GalleryService {
 									});
 								}
 							});
-							if (countSelectedFiltredImages === imagesLimit) {
+							if (countSelectedFilteredImages === imagesLimit) {
 								webix.alert({
 									text: "All filtered images have been selected"
 								});
@@ -868,6 +873,20 @@ class GalleryService {
 			state.imagesTotalCounts = {};
 			state.imagesTotalCounts.passedFilters = {};
 			const images = await ajax.getImages();
+			const allCollectionsOptions = {
+				limit: 0
+			};
+			const pinnedCollectionOptions = {
+				limit: 0,
+				pinned: true
+			};
+			const allCollectionsData = await ajax.getCollections(allCollectionsOptions);
+			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
+			collectionsModel.clearAllCollections();
+			collectionsModel.clearPinnedCollections();
+			collectionsModel.setAllCollectionsData(allCollectionsData);
+			collectionsModel.setPinnedCollections(pinnedCollectionsData);
+
 			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
 			this._updateContentHeaderTemplate(
 				{
@@ -923,6 +942,7 @@ class GalleryService {
 		this._createFilters(appliedFiltersArray);
 		this._updateCounts();
 		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
+		// set params to url
 		this._view.$scope.setParam("filter", paramFilters, true);
 		this._updateImagesDataview(offset, limit); // load images first time
 	}
@@ -936,8 +956,10 @@ class GalleryService {
 	async _updateCounts() {
 		try {
 			const filterQuery = appliedFilterModel.getConditionsForApi();
+			const appliedCollections = collectionsModel.getAppliedCollectionsForApi();
 			const params = {};
 			params.conditions = filterQuery;
+			params.collections = appliedCollections;
 			const facets = await ajax.getFacets(params);
 			filterService.updateFiltersCounts(facets);
 		}
@@ -1028,15 +1050,17 @@ class GalleryService {
 				return;
 			}
 			const filter = appliedFilterModel.getConditionsForApi();
+			const collections = collectionsModel.getAppliedCollectionsForApi();
 			const images = url
 				? await ajax.getImagesByUrl(url)
 				: await ajax.getImages({
 					limit,
-					filter
+					filter,
+					collections
 				});
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
-			if (filter) {
+			if (filter || collections) {
 				state.imagesTotalCounts.passedFilters.filtered = true;
 				state.imagesTotalCounts.passedFilters.currentCount = images.count;
 				this._updateContentHeaderTemplate({
@@ -1197,7 +1221,7 @@ class GalleryService {
 				this._createStudyButton.hide();
 			}
 		}
-		// TODO: uncomment when donwload will be implemented
+		// TODO: uncomment when download will be implemented
 		// else {
 		// 	toShow ? this._downloadingMenu.show() : this._downloadingMenu.hide();
 		// }

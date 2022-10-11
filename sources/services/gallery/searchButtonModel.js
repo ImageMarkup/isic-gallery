@@ -9,7 +9,7 @@ function removeTootipDiv(elementNode, tooltipClassName) {
 }
 
 function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName, tooltipText) {
-	elementNodeForTooltip.addEventListener("mouseover", function () {
+	function mouseOverHandler() {
 		const title = this.title;
 		this.setAttribute("tooltip", title);
 		const tooltipWrap = document.createElement("div"); // creates div
@@ -25,7 +25,8 @@ function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName,
 		const tooltipProps = tooltipWrap.getBoundingClientRect();
 		const topPos = linkProps.top - (tooltipProps.height + padding);
 		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;`);
-	});
+	}
+	elementNodeForTooltip.addEventListener("mouseover", mouseOverHandler);
 	elementNodeForTooltip.addEventListener("mouseout", () => {
 		removeTootipDiv(elementNodeForTooltip, tooltipClassName);
 	});

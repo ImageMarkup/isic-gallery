@@ -13,12 +13,14 @@ const body = {
 			autoheight: true,
 			borderless: true,
 			onClick: {
+				// eslint-disable-next-line func-names
 				"wizzard-upload-btn": function () {
 					if (auth.canCreateDataset()) {
 						this.getTopParentView().hide();
 						state.app.show(constants.PATH_WIZZARD_UPLOADER);
 					}
 				},
+				// eslint-disable-next-line func-names
 				"batch-upload-btn": function () {
 					if (auth.canCreateDataset()) {
 						this.getTopParentView().hide();

@@ -1,4 +1,5 @@
-import filterService from "../services/gallery/filter";
+import constants from "../constants";
+import util from "../utils/util";
 import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
@@ -58,10 +59,12 @@ function prepareDataForList() {
 function processNewFilters(data) {
 	if (Array.isArray(data)) {
 		data.forEach((item) => {
+			// eslint-disable-next-line no-use-before-define
 			processNewFilter(item);
 		});
 	}
 	else if (data) {
+		// eslint-disable-next-line no-use-before-define
 		processNewFilter(data);
 	}
 }
@@ -80,7 +83,7 @@ function processNewFilter(filter) {
 		case "checkbox":
 		case "rangeCheckbox":
 		{
-			let checkboxId = filterService.getOptionId(filter.key, filter.value);
+			let checkboxId = util.getOptionId(filter.key, filter.optionId ?? filter.value);
 			if (filter.remove) {
 				if (appliedFilters.exists(checkboxId)) {
 					appliedFilters.remove(checkboxId);
@@ -123,7 +126,7 @@ function _prepareOptionNameForApi(name, key) {
 		}
 		default:
 		{
-			if (name === filterService.NULL_OPTION_VALUE) {
+			if (name === constants.NULL_OPTION_VALUE) {
 				return "__null__";
 			}
 		}
@@ -298,11 +301,11 @@ function _prepareCondition(filter) {
 function getConditionsForApi() {
 	const conditions = {};
 	conditions.operands = [];
-	const groupedFilters = _groupFiltersByKey();
+	const groupedFilters = _groupFiltersByKey().filter(groupedFilter => groupedFilter.key !== "collections");
 	if (groupedFilters.length !== 0) {
 		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
 		groupedFilters.forEach((groupedFilter) => {
-			conditions.operands.push(...(_prepareCondition(groupedFilter)));
+			conditions.operands.push(..._prepareCondition(groupedFilter));
 		});
 	}
 	let query = "";
@@ -354,7 +357,7 @@ function getFiltersFromURL(filtersArray) {
 			const filterId = typeof filter === "object" ? filter.id : filter;
 			const control = $$(filterId);
 			const data = control.config.filtersChangedData;
-			data.id = filterService.getOptionId(data.key, data.value);
+			data.id = util.getOptionId(data.key, data.value);
 			data.remove = false;
 			return data;
 		});

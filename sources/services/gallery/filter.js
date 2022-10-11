@@ -1,3 +1,5 @@
+import collectionsModel from "../../models/collectionsModel";
+import util from "../../utils/util";
 import state from "../../models/state";
 
 const NULL_OPTION_VALUE = "unknown";
@@ -28,7 +30,17 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
 		// eslint-disable-next-line max-len
-		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		if (key === "collections") {
+			const pinnedCollections = collectionsModel.getPinnedCollections();
+			foundItem = facets.buckets.find((element) => {
+				const collection = pinnedCollections.find(item => element.key === item.id);
+				return valueThatLookingFor === collection.name;
+			});
+		}
+		else {
+			// eslint-disable-next-line max-len
+			foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		}
 	}
 	return foundItem ? foundItem.doc_count : null;
 }
@@ -55,10 +67,6 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	controlView.refresh();
 }
 
-function getOptionId(filterId, optionValue) {
-	return `${filterId || ""}|${optionValue || ""}`;
-}
-
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -67,7 +75,7 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
-			const controlId = getOptionId(data.key, data.value);
+			const controlId = util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
 			// we do not need to call onChange event for the control. so we block event
 			control.blockEvent();
@@ -104,7 +112,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				else {
 					currentCount = value.doc_count;
 				}
-				const controlId = getOptionId(filterKey, prepareOptionName(value.key, filterKey));
+				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
 					_setFilterCounts(controlView, value.doc_count, currentCount);
@@ -118,6 +126,5 @@ export default {
 	NULL_OPTION_VALUE,
 	prepareOptionName,
 	updateFiltersCounts,
-	getOptionId,
 	updateFiltersFormControl
 };

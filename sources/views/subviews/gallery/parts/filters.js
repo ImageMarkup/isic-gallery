@@ -1,4 +1,7 @@
+import collectionsModel from "../../../../models/collectionsModel";
 import filterService from "../../../../services/gallery/filter";
+import util from "../../../../utils/util";
+import constants from "../../../../constants";
 
 function getLabelUI(label) {
 	return {
@@ -11,6 +14,7 @@ function getLabelUI(label) {
 
 function getCheckboxUI(data) {
 	const view = {
+		id: `checkboxUI-${data.id}`,
 		rows: [
 			{
 				view: "template",
@@ -26,18 +30,19 @@ function getCheckboxUI(data) {
 		]
 	};
 
-	function handleAgregateButton(controlData, elements, newValue, app) {
+	function handleAggregateButton(controlData, elements, newValue, app) {
 		const filtersInfo = [];
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlName = filterService.getOptionId(controlData.id, option);
+			const controlName = util.getOptionId(controlData.id, option);
 			const control = elements[controlName];
 			control.blockEvent(); // block events for checkbox
 			control.setValue(newValue);
 			control.unblockEvent();
 			filtersInfo.push();
 			let params = webix.copy(control.config.filtersChangedData);
+			params.optionId = currentOption.optionId;
 			params.remove = !newValue;
 			filtersInfo.push(params);
 		});
@@ -49,9 +54,10 @@ function getCheckboxUI(data) {
 		borderless: true,
 		height: 22,
 		onClick: {
+			// eslint-disable-next-line func-names
 			"select-all-label": function () {
 				const elements = this.getFormView().elements;
-				handleAgregateButton(data, elements, 1, this.getTopParentView().$scope.app);
+				handleAggregateButton(data, elements, 1, this.getTopParentView().$scope.app);
 			}
 		}
 	};
@@ -62,9 +68,10 @@ function getCheckboxUI(data) {
 		borderless: true,
 		height: 22,
 		onClick: {
+			// eslint-disable-next-line func-names
 			"select-none-label": function () {
 				const elements = this.getFormView().elements;
-				handleAgregateButton(data, elements, 0, this.getTopParentView().$scope.app);
+				handleAggregateButton(data, elements, 0, this.getTopParentView().$scope.app);
 			}
 		}
 	};
@@ -73,8 +80,20 @@ function getCheckboxUI(data) {
 	view.rows[1].rows.push(selectNoneLabel);
 
 	data?.options?.forEach((currentOption) => {
+		if (data.id === "collections") {
+			if (!currentOption.updated) {
+				const pinnedCollections = collectionsModel
+					.getPinnedCollections()
+					.map(collection => ({name: collection.name, id: collection.id}));
+				const currentCollection = pinnedCollections
+					.find(collection => collection.id === currentOption.key);
+				currentOption.updated = true;
+				currentOption.optionId = currentCollection.id;
+				currentOption.key = currentCollection.name;
+			}
+		}
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
-		const id = filterService.getOptionId(data.id, optionName);
+		const id = util.getOptionId(data.id, optionName);
 		const filtersChangedData = {
 			view: data.type,
 			datatype: data.datatype,
@@ -87,36 +106,91 @@ function getCheckboxUI(data) {
 			filtersChangedData.to = currentOption.to;
 			filtersChangedData.from = currentOption.from;
 		}
-		view.rows[1].rows.push(
-			{
-				id,
-				view: "checkbox",
-				css: "checkbox-ctrl",
-				label: "",
-				labelRight: `${optionName} (0)`,
-				value: 0,
-				name: id,
-				height: 28,
-				attributes: {
-					title: `${optionName} (0)`
-				},
-				labelWidth: 0,
-				filtersChangedData,
-				on: {
-					onChange(status) {
-						if (currentOption && data.type === "rangeCheckbox") {
-							webix.extend(this.config.filtersChangedData, {
-								to: currentOption.to,
-								from: currentOption.from
-							});
+		if (data.id === "collections") {
+			view.rows[1].rows.push(
+				{
+					cols: [
+						{
+							id,
+							view: "checkbox",
+							css: "checkbox-ctrl",
+							label: "",
+							labelRight: `${optionName} (0)`,
+							value: 0,
+							name: id,
+							height: 28,
+							gravity: 3,
+							attributes: {
+								title: `${optionName} (0)`,
+								dataOptionId: `${currentOption.optionId}`
+							},
+							labelWidth: 0,
+							filtersChangedData,
+							on: {
+								onChange(status) {
+									if (currentOption && data.type === "rangeCheckbox") {
+										webix.extend(this.config.filtersChangedData, {
+											to: currentOption.to,
+											from: currentOption.from
+										});
+									}
+									let params = webix.copy(this.config.filtersChangedData);
+									params.remove = !status;
+									params.optionId = currentOption.optionId;
+									this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
+								}
+							}
+						},
+						{
+							id: `${id}-link`,
+							view: "button",
+							type: "icon",
+							gravity: 2,
+							css: "to-collection",
+							icon: "fas fa-arrow-right",
+							label: "To Collection",
+							click: () => {
+								util.openInNewTab(`${constants.URL_COLLECTIONS}${currentOption.optionId}`);
+							}
 						}
-						let params = webix.copy(this.config.filtersChangedData);
-						params.remove = !status;
-						this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
+					]
+				}
+			);
+		}
+		else {
+			view.rows[1].rows.push(
+				{
+					id,
+					view: "checkbox",
+					css: "checkbox-ctrl",
+					label: "",
+					labelRight: `${optionName} (0)`,
+					value: 0,
+					name: id,
+					height: 28,
+					attributes: {
+						title: `${optionName} (0)`,
+						dataOptionId: `${currentOption.optionId}`
+					},
+					labelWidth: 0,
+					filtersChangedData,
+					on: {
+						onChange(status) {
+							if (currentOption && data.type === "rangeCheckbox") {
+								webix.extend(this.config.filtersChangedData, {
+									to: currentOption.to,
+									from: currentOption.from
+								});
+							}
+							let params = webix.copy(this.config.filtersChangedData);
+							params.remove = !status;
+							params.optionId = currentOption.optionId;
+							this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
+						}
 					}
 				}
-			}
-		);
+			);
+		}
 	});
 	return view;
 }

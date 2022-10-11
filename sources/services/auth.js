@@ -7,6 +7,7 @@ import gallerySelectedImages from "../models/selectedGalleryImages";
 import appliedFilters from "../models/appliedFilters";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
 import util from "../utils/util";
+import logger from "../utils/logger";
 
 const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
@@ -35,7 +36,7 @@ class OAuthISIC {
 					}
 				})
 				.catch(() => {
-					console.error("Authentication: Something went wrong");
+					logger.error("Authentication: Something went wrong");
 				});
 		}
 	}

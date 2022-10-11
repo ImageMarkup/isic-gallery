@@ -73,6 +73,7 @@ const list = {
 		}
 	},
 	onClick: {
+		// eslint-disable-next-line func-names
 		"remove-user": function (e, id) {
 			if (this.data.count() > 1) {
 				this.remove(id);
