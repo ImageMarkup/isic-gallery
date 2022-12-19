@@ -1,4 +1,15 @@
-{
+const xbsEslint = require("eslint-config-xbsoftware");
+const {INDENT, QUOTES, PLUGINS} = require("eslint-config-xbsoftware/constants");
+
+module.exports = {
+	"extends": [
+		xbsEslint({
+			config: {
+				indent: INDENT.TABS,
+				quotes: QUOTES.DOUBLE
+			}
+		})
+	],
 	"env": {
 		"browser": true,
 		"es6": true,
@@ -11,7 +22,6 @@
 		"PRODUCTION": true,
 		"$$": true
 	},
-	"extends": "./node_modules/eslint-config-xbsoftware/1__double_quotes_and_tabs.js",
 	"parserOptions": {
 		"sourceType": "module",
 		"ecmaVersion": "latest"
@@ -33,5 +43,5 @@
 			  	]
 			}
 		}
-	}
-}
+	}	
+};
