@@ -231,7 +231,7 @@ export default class GalleryView extends JetView {
 							id: CONTENT_HEADER_ID,
 							template(obj) {
 								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
-								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
+								const totalAmountHtml = `Total number of images: <b>${obj.totalCount || ""}</b>.`;
 								const filteredAmountHtml = `Filtered images: <b>${obj.currentCount || 0}</b>`;
 								let result = "";
 								if (obj.filtered) {
