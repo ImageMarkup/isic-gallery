@@ -4,8 +4,8 @@
 | - | - |
 | **Members:** {colspan=2} | |
 | Liam Caffery, PhD (Co-leader) | The University of Queensland, Brisbane, Australia |
-| Aideen McInerney-Leo (Co-leader) | The University of Queensland, Brisbane, Australia |
-| H. Peter Soyer, MD | The University of Queensland, Brisbane, Australia |
+| H. Peter Soyer, MD (Co-leader) | The University of Queensland, Brisbane, Australia |
+| Aideen McInerney-Leo | The University of Queensland, Brisbane, Australia |
 
 **Goals:** As in all other medical applications, frameworks are needed to ensure the appropriate use of dermatology with respect to patient confidentiality associated with dermatology images. The nudity associated with overview dermatology images adds an additional privacy concern. The goal of the ISIC Privacy Group is to develop a framework that provides guidance to clinicians and researchers on the appropriate use of dermatology imaging, and to promote dissemination of the same. The scope of the framework includes legal, regulatory, ethical, consumer expectations, consent, and technological safeguards.
 
