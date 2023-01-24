@@ -3,8 +3,9 @@
 | | |
 | - | - |
 | **Members:** {colspan=2} | |
-| Clara Curiel, MD (Co-leader) | University of Arizona Cancer Center, Tucson, AZ, USA |
 | H. Peter Soyer, MD (Co-leader) | The University of Queensland, Brisbane, Australia |
+| Matilda Nicholas, MD, PhD (Co-leader) | Duke Health |
+| Clara Curiel, MD | University of Arizona Cancer Center, Tucson, AZ, USA |
 | Ivo Abraham, PhD, RN | The University of Arizona College of Pharmacy, Tuscon, AZ, USA |
 | Dennis DaSilva, BS | Canfield Scientific Inc., Fairfield, NJ, USA |
 | Whitney High, MD, JD, MEng | University of Colorado, Aurora, CO, USA |
