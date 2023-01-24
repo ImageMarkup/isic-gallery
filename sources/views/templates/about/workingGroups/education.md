@@ -3,8 +3,8 @@
 | | |
 | - | - |
 | **Members:** {colspan=2} | |
-| Kelly Nelson, MD | MD Anderson Cancer Center, Houston, TX, USA |
-| Ralph Braun, MD, PhD | University Hospital Zürich, Zürich, Switzerland |
+| Kelly Nelson, MD (Co-leader) | MD Anderson Cancer Center, Houston, TX, USA |
+| Ralph Braun, MD, PhD (Co-leader) | University Hospital Zürich, Zürich, Switzerland |
 | Ashfaq Marghoob, MD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
 
 
