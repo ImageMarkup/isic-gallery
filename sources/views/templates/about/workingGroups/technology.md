@@ -3,6 +3,7 @@
 | | |
 | - | - |
 | **Members:** {colspan=2} | |
+| Josep Malvehy, MD (Leader) | Hospital Clinic of Barcelona, Barcelona, Spain |
 | Liam Caffery, PhD | The University of Queensland, Brisbane, Australia |
 | Doug Canfield, BS | Canfield Scientific Inc., Fairfield, NJ, USA |
 | M. Emre Celebi, PhD | University of Central Arkansas, Conway, AR, USA |
@@ -11,7 +12,6 @@
 | Rafael Garcia, PhD | University of Girona, Spain |
 | Miron Josipovic | Derma Medical Systems, Austria |
 | Peter Klar | Visiomed AG, Bielefeld, Germany |
-| Josep Malvehy, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
 | Andreas Mayer | FotoFinder Systems, Inc., Bad Birnbach, Germany |
 | Ferdinand Mayer | FotoFinder Systems, Inc., Bad Birnbach, Germany |
 | Nizar Mullani, BSc | 3GEN LLC and TransLite LLC, USA |

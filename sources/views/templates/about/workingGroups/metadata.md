@@ -3,8 +3,8 @@
 | | |
 | - | - |
 | **Members:** {colspan=2} | |
-| Liam Caffery, PhD (Co-leader) | The University of Queensland, Brisbane, Australia |
-| Josep Malvehy, MD (Co-leader) | Hospital Clinic of Barcelona, Barcelona, Spain |
+| Liam Caffery, PhD (Leader) | The University of Queensland, Brisbane, Australia |
+| Josep Malvehy, MD | Hospital Clinic of Barcelona, Barcelona, Spain |
 | Pascale Guitera, MD | Royal Prince Alfred Hospital, Sydney, Australia |
 | Kelly Nelson, MD | MD Anderson Cancer Center, Houston, TX, USA |
 | Veronica Rotemberg, MD, PhD | Memorial Sloan Kettering Cancer Center, New York, NY, USA |
