@@ -1,17 +1,17 @@
 import "wheelzoom";
-import ajax from "../ajaxActions";
-import metadataPart from "../../views/subviews/gallery/parts/metadata";
-import filtersData from "../../models/imagesFilters";
-import filtersFormElements from "../../views/subviews/gallery/parts/filtersFormElements";
-import state from "../../models/state";
-import filterService from "./filter";
-import appliedFilterModel from "../../models/appliedFilters";
-import selectedImages from "../../models/selectedGalleryImages";
 import constants from "../../constants";
-import util from "../../utils/util";
-import authService from "../auth";
-import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
+import appliedFilterModel from "../../models/appliedFilters";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
+import filtersData from "../../models/imagesFilters";
+import selectedImages from "../../models/selectedGalleryImages";
+import state from "../../models/state";
+import util from "../../utils/util";
+import filtersFormElements from "../../views/subviews/gallery/parts/filtersFormElements";
+import metadataPart from "../../views/subviews/gallery/parts/metadata";
+import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
+import ajax from "../ajaxActions";
+import authService from "../auth";
+import filterService from "./filter";
 import searchButtonModel from "./searchButtonModel";
 
 const layoutHeightAfterHide = 1;
@@ -41,7 +41,10 @@ class GalleryService {
 		clearAllFiltersTemplate,
 		allPagesTemplate,
 		filterScrollView,
-		galleryLeftPanel
+		galleryLeftPanel,
+		galleryContextMenu,
+		downloadSelectedImagesButton,
+		downloadFilteredImagesButton
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -61,6 +64,9 @@ class GalleryService {
 		this._allPagesTemplate = allPagesTemplate;
 		this._filterScrollView = filterScrollView;
 		this._galleryLeftPanel = galleryLeftPanel;
+		this._galleryContextMenu = galleryContextMenu;
+		this._downloadSelectedImagesButton = downloadSelectedImagesButton;
+		this._downloadFilteredImagesButton = downloadFilteredImagesButton;
 		this._init();
 	}
 
@@ -488,6 +494,19 @@ class GalleryService {
 		};
 		webix.extend(this._view, webix.ProgressBar);
 
+		this._imagesDataview.on_click["batch-icon"] = async (e, id) => {
+			const currentItem = this._imagesDataview.getItem(id);
+			const currentItemId = currentItem.isic_id;
+			const url = await ajax.getDownloadUrl(
+				constants.DOWNLOAD_ZIP_SINGLE_IMAGE,
+				`isic_id:${currentItemId}`,
+				currentItemId
+			);
+			if (url) {
+				util.downloadByLink(url, `${currentItemId}.zip`);
+			}
+		};
+
 		// -->add onClick property for template
 		this._imagesSelectionTemplate.define("onClick", {
 			"unselect-images-link": () => {
@@ -667,6 +686,7 @@ class GalleryService {
 
 		this._clearAllFiltersTemplate.define("onClick", {
 			"clear-all-filters": () => {
+				this._downloadFilteredImagesButton.hide();
 				this._appliedFiltersList.clearAll();
 				appliedFilterModel.clearAll();
 				this._reload();
@@ -827,6 +847,38 @@ class GalleryService {
 				this._resizeButtonsLayout(layoutHeightAfterHide, studyFlag, false);
 			}
 		});
+
+		this._galleryContextMenu.attachEvent("onItemClick", function (id) {
+			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
+				const context = this.getContext();
+				const contextView = context.obj;
+				const dataviewId = context.id;
+				const currentItem = contextView.getItem(dataviewId);
+				const fullFileUrl = currentItem.files?.full?.url;
+				const fileName = currentItem.isic_id;
+				if (fullFileUrl) {
+					util.downloadByLink(fullFileUrl, fileName);
+				}
+			}
+		});
+
+		this._downloadSelectedImagesButton.attachEvent("onItemClick", async () => {
+			const selectedItems = selectedImages.getSelectedImagesForDownload();
+			const query = selectedItems.map(item => `isic_id:${item.isic_id}`)
+				.join(" OR ");
+			const url = await ajax.getDownloadUrl(constants.DOWNLOAD_SELECTED_IMAGES, query);
+			if (url) {
+				util.downloadByLink(url, "isic_data.zip");
+			}
+		});
+
+		this._downloadFilteredImagesButton.attachEvent("onItemClick", async () => {
+			const query = appliedFilterModel.getConditionsForApi();
+			const url = await ajax.getDownloadUrl(constants.DOWNLOAD_FILTERED_IMAGES, query);
+			if (url) {
+				util.downloadByLink(url, "isic_data.zip");
+			}
+		});
 	}
 
 	_prepareAnnotatedImagesList(studies) {
@@ -842,26 +894,6 @@ class GalleryService {
 		}
 		return result;
 	}
-
-	// TODO uncomment after implementation
-	// downloadZip(type, onlySelected) {
-	// 	let url = `${ajax.getBaseApiUrl()}image/download?include=${type}`;
-	// 	if (onlySelected) {
-	// 		if (!selectedImages.count()) {
-	// 			webix.alert({
-	// 				text: "There are no images selected for downloading",
-	// 				type: "alert-error"
-	// 			});
-	// 			return;
-	// 		}
-	// 		const checkedIds = selectedImages.getURIEncoded();
-	// 		url += `&imageIds=${checkedIds}`;
-	// 	}
-	// 	else if (appliedFilterModel.count()) {
-	// 		url += `&filter=${appliedFilterModel.getConditionsForApi()}`;
-	// 	}
-	// 	util.downloadByLink(url, `${type}.zip`);
-	// }
 
 	async load() {
 		try {
@@ -963,6 +995,12 @@ class GalleryService {
 	_updateAppliedFiltersList(data) {
 		this._appliedFiltersList.clearAll();
 		this._appliedFiltersList.parse(data);
+		if (data.length > 0) {
+			this._downloadFilteredImagesButton.show();
+		}
+		else {
+			this._downloadFilteredImagesButton.hide();
+		}
 	}
 
 	// expandedFilters - array of filter that should be initially expanded

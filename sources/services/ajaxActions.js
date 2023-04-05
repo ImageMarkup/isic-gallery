@@ -214,6 +214,33 @@ class AjaxActions {
 			})
 			.catch(parseError);
 	}
+
+	async getDownloadUrl(type, query) {
+		try {
+			const params = {
+				query
+			};
+			const headers = await getAuthHeaders();
+			const resp = await this._ajax()
+				.headers(headers)
+				.post(`${API_URL}zip-download/url/`, params);
+			const url = this._parseData(resp);
+			return url;
+		}
+		catch (err) {
+			await parseError(err);
+			return null;
+		}
+	}
+
+	downloadImage(url, name) {
+		if (url) {
+			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {
+				webix.html.download(blob, `${name}`);
+			});
+		}
+		return null;
+	}
 }
 
 const instance = new AjaxActions();
