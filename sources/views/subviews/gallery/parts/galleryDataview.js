@@ -1,8 +1,8 @@
 import "../../../components/activeDataview";
+import constants from "../../../../constants";
+import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import selectedImages from "../../../../models/selectedGalleryImages";
 import state from "../../../../models/state";
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import constants from "../../../../constants";
 import util from "../../../../utils/util";
 
 function resizeButtonsLayout(layout, height) {
@@ -87,6 +87,7 @@ const dataview = {
 	css: "gallery-images-dataview",
 	scroll: false,
 	datathrottle: 500,
+	onContext: {},
 	template(obj, common) {
 		const imageIconDimensions = util.getImageIconDimensions();
 		let flagForStudies = selectedImages.getStudyFlag();
@@ -141,6 +142,14 @@ const dataview = {
 										</svg>
 									</span>
 									<span class="tooltip-block tooltip-block-top">Metadata</span>
+								</div>
+								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
+									<span class="gallery-images-button batch-icon tooltip-title">
+										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
+										</svg>
+									</span>
+									<span class="tooltip-block tooltip-block-top">Download ZIP</span>
 								</div>
 								${diagnosisIcon}
 							</div>

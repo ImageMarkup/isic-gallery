@@ -20,7 +20,7 @@ function downloadByLink(url, name) {
 	document.body.appendChild(a);
 	a.setAttribute("href", url);
 	a.setAttribute("target", "_blank");
-	a.download = name || "download";
+	a.setAttribute("rel", "noopener noreferrer")
 	a.click();
 	a.parentNode.removeChild(a);
 }

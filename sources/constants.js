@@ -7,7 +7,7 @@ export default {
 
 	TEXT_PASSWORD_REQUIREMENTS: "Password must contain at least 6 characters, must not include spaces.",
 
-	MAX_COUNT_IMAGES_SELECTION: 300,
+	MAX_COUNT_IMAGES_SELECTION: 50,
 
 	SELECTED_BY_ALL_ON_PAGE: "allOnPage",
 	SELECTED_BY_ON_ALL_PAGES: "onAllPages",
@@ -51,10 +51,17 @@ export default {
 	ID_GALLERY_RICHSELECT: "gallery-richselect-viewid",
 	ID_GALLERY_ACTIVE_CART_LIST: "active-cart-list-id",
 	ID_GALLERY_LEFT_PANEL: "gallery-left-panel",
+	ID_GALLERY_RIGHT_PANEL: "gallery-right-panel",
 
 	NEW_STUDY_BUTTON_ID: "create-new-study-button-id",
 	DOWNLOAD_MENU_ID: "download-menu",
 	DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID: "gallery-buttons-layout-id",
+	DOWNLOAD_ZIP_SINGLE_IMAGE: "download-zip-single-image",
+	DOWNLOAD_FULL_RESOLUTION_IMAGE: "download-full-resolution-image",
+	DOWNLOAD_SELECTED_IMAGES: "download-selected-images",
+	DOWNLOAD_FILTERED_IMAGES: "download-filtered-images",
+
+	ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE: "Save image",
 
 	PYTHON_MENU_ID: "Python",
 	R_MENU_ID: "R",

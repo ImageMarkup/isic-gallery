@@ -5,7 +5,10 @@ import util from "../../utils/util";
  */
 
 function changeDataviewItemDimensions(collapsedView) {
-	if (collapsedView.config.id === "gallery-left-panel" || collapsedView.config.id === "active-cart-list-id") {
+	if (
+		collapsedView.config.id === constants.ID_GALLERY_LEFT_PANEL
+		|| collapsedView.config.id === constants.ID_GALLERY_RIGHT_PANEL
+	) {
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
 		let dataviewSelectionId = util.getDataviewSelectionId();
 		const doNotCallUpdatePager = true;
@@ -38,7 +41,7 @@ function getConfig(collapsedViewId, config) {
 						thisCollapsedButton.hide();
 						$$(BTN_CLOSED_STATE_ID).show();
 						webix.ui.resize();
-						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
+						if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
 							util.setHiddenGalleryCartList(true);
 						}
 						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
@@ -65,7 +68,7 @@ function getConfig(collapsedViewId, config) {
 						thisCollapsedButton.hide();
 						$$(BTN_OPENED_STATE_ID).show();
 						webix.ui.resize();
-						if (collapsedViewId === constants.ID_GALLERY_ACTIVE_CART_LIST) {
+						if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
 							util.setHiddenGalleryCartList(false);
 						}
 						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
