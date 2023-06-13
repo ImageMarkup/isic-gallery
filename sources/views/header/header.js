@@ -29,6 +29,7 @@ export default class Header extends JetView {
 			width: 935,
 			borderless: true,
 			data: [
+				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
 				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
 				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
 				{
@@ -74,7 +75,10 @@ export default class Header extends JetView {
 						}
 					]
 				},
+				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
+				{id: constants.ID_HEADER_MENU_DERMO, value: "Dermoscopedia"},
 				{id: constants.ID_HEADER_MENU_ARCHIVE, value: "Contribute to Archive"},
+				{id: constants.ID_HEADER_MENU_DOWNLOAD, value: "Download Data"},
 				{id: constants.ID_HEADER_MENU_DASHBOARD, value: "Dashboard"}
 			],
 			type: {
@@ -92,6 +96,10 @@ export default class Header extends JetView {
 						this.hideItem("dashboard");
 						this.hideItem("forum");
 					}
+					this.hideItem("about");
+					this.hideItem("studies");
+					this.hideItem("dermoscopedia");
+					this.hideItem("download data");
 					headerMenu.disableItem(constants.ID_HEADER_MENU_STUDIES);
 				},
 				onMenuItemClick: (id) => {
