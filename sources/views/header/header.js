@@ -96,6 +96,10 @@ export default class Header extends JetView {
 						this.hideItem("dashboard");
 						this.hideItem("forum");
 					}
+					this.hideItem("about");
+					this.hideItem("studies");
+					this.hideItem("dermo");
+					this.hideItem("download");
 					headerMenu.disableItem(constants.ID_HEADER_MENU_STUDIES);
 				},
 				onMenuItemClick: (id) => {
