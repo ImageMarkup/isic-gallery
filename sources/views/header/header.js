@@ -29,7 +29,6 @@ export default class Header extends JetView {
 			width: 935,
 			borderless: true,
 			data: [
-				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
 				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
 				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
 				{
@@ -75,10 +74,7 @@ export default class Header extends JetView {
 						}
 					]
 				},
-				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
-				{id: constants.ID_HEADER_MENU_DERMO, value: "Dermoscopedia"},
 				{id: constants.ID_HEADER_MENU_ARCHIVE, value: "Contribute to Archive"},
-				{id: constants.ID_HEADER_MENU_DOWNLOAD, value: "Download Data"},
 				{id: constants.ID_HEADER_MENU_DASHBOARD, value: "Dashboard"}
 			],
 			type: {
@@ -101,11 +97,6 @@ export default class Header extends JetView {
 				onMenuItemClick: (id) => {
 					const headerMenu = $$(BASE_MENU_ID);
 					switch (id) {
-						case constants.ID_HEADER_MENU_ABOUT:
-						{
-							menuHandlerService.clickAbout();
-							break;
-						}
 						case constants.ID_HEADER_MENU_FORUM:
 						{
 							menuHandlerService.clickForum();
@@ -122,17 +113,6 @@ export default class Header extends JetView {
 							menuHandlerService.clickChallenges(id);
 							break;
 						}
-						case constants.ID_HEADER_MENU_STUDIES:
-						{
-							menuHandlerService.clickStudies();
-							break;
-						}
-						case constants.ID_HEADER_MENU_DERMO:
-						{
-							menuHandlerService.clickDermoscopedia();
-							headerMenu.unselect(id);
-							break;
-						}
 						case constants.ID_HEADER_MENU_DASHBOARD:
 						{
 							menuHandlerService.clickDashboard();
@@ -141,11 +121,6 @@ export default class Header extends JetView {
 						case constants.ID_HEADER_MENU_ARCHIVE:
 						{
 							menuHandlerService.clickUpload();
-							break;
-						}
-						case constants.ID_HEADER_MENU_DOWNLOAD:
-						{
-							menuHandlerService.clickAPI();
 							break;
 						}
 						default: {
