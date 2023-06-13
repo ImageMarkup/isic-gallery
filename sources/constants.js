@@ -135,7 +135,7 @@ export default {
 	PATH_DOWNLOAD_PDF_TERMS_OF_USE: "/sources/filesForDownload/termsOfUse.pdf",
 	PATH_DOWNLOAD_TXT_TERMS_OF_USE: "/sources/filesForDownload/termsOfUse.txt",
 
-	URL_ISIC_LANDING_PAGE: "https://isic-archive.com/",
+	URL_ISIC_LANDING_PAGE: "https://www.isic-archive.com/",
 	URL_DERMOSCOPEDIA: "https://dermoscopedia.org/Main_Page",
 	URL_CHALLENGES: "https://challenge.isic-archive.com",
 	URL_CHALLENGES_STATS: "https://challenge.isic-archive.com/stats",
