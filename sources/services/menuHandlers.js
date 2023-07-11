@@ -63,7 +63,7 @@ export default {
 	},
 
 	clickHome() {
-		state.app.show(constants.PATH_MAIN);
+		window.open(constants.URL_ISIC_LANDING_PAGE, "_self");
 	},
 
 	clickAPI() {
