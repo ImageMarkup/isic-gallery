@@ -1,5 +1,4 @@
 import constants from "../../../../constants";
-import collectionsModel from "../../../../models/collectionsModel";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
@@ -76,20 +75,6 @@ function getCheckboxUI(data) {
 	view.rows[1].rows.push(selectNoneLabel);
 
 	data?.options?.forEach((currentOption) => {
-		if (data.id === "collections") {
-			if (!currentOption.updated) {
-				const pinnedCollections = collectionsModel
-					.getPinnedCollections()
-					.map(collection => ({name: collection.name, id: collection.id}));
-				const currentCollection = pinnedCollections
-					.find(collection => collection.id === currentOption.key);
-				if (currentCollection) {
-					currentOption.updated = true;
-					currentOption.optionId = currentCollection.id;
-					currentOption.key = currentCollection.name;
-				}
-			}
-		}
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
 		const id = filterService.getOptionId(data.id, optionName);
 		const filtersChangedData = {

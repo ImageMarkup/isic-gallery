@@ -1,7 +1,6 @@
 import "wheelzoom";
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
-import collectionsModel from "../../models/collectionsModel";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import selectedImages from "../../models/selectedGalleryImages";
