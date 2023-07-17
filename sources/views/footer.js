@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import Constants from "../constants";
 import menuHandlerService from "../services/menuHandlers";
 import template from "./templates/footer.html";

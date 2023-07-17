@@ -1,6 +1,7 @@
 import "wheelzoom";
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
+import collectionsModel from "../../models/collectionsModel";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import selectedImages from "../../models/selectedGalleryImages";
@@ -178,9 +179,11 @@ class GalleryService {
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
 		this._imageTemplate = $$(imageWindow.getViewerId());
 		this._imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
-		[this._imageWindowZoomPlusButtons, this._imageZoomMunusButtons] = this._imageWindow.$view.getElementsByClassName("zoom-btn");
-		this._imageWindowMetadataLayout = this._imageWindow.$view.getElementsByClassName("metadata-layout");
-		this._activeCartList = this._view.$scope.getActiveGalleryCartList();
+		if (this._imageWindow) {
+			[this._imageWindowZoomPlusButtons, this._imageZoomMunusButtons] = this._imageWindow?.$view.getElementsByClassName("zoom-btn");
+		}
+		this._imageWindowMetadataLayout = this._imageWindow?.$view.getElementsByClassName("metadata-layout");
+		this._activeCartList = this._view.$scope.getGalleryCartList();
 		this._toggleButton = this._view.$scope.getToggleButton();
 		this._buttonsLayout = $$(constants.DOWNLOAD_AND_CREATE_STUDY_BUTTON_LAYOUT_ID);
 		this._leftPanelToggleButton = this._view.$scope.getLeftPanelToggleButton();
@@ -219,7 +222,7 @@ class GalleryService {
 			});
 			let studyFlag = selectedImages.getStudyFlag();
 			this._resizeButtonsLayout(layoutHeightAfterShow, studyFlag, true);
-			this._imagesSelectionTemplate.refresh();
+			this._imagesSelectionTemplate?.refresh();
 		}
 
 		this._searchEventsMethods(this._searchHandlerByFilter.bind(this));
@@ -276,7 +279,7 @@ class GalleryService {
 			this._searchInput.setValue(nameParam);
 		}
 
-		this._toggleButton.attachEvent("onChange", (value, oldValue) => {
+		this._toggleButton?.attachEvent("onChange", (value, oldValue) => {
 			if (value !== oldValue) {
 				if (value) {
 					this._onChangeForStudy();
@@ -293,23 +296,23 @@ class GalleryService {
 
 		let dataviewSelectionId = util.getDataviewSelectionId()
 			? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
-		this._dataviewYCountSelection.blockEvent();
-		this._dataviewYCountSelection.setValue(dataviewSelectionId);
-		this._dataviewYCountSelection.unblockEvent();
+		this._dataviewYCountSelection?.blockEvent();
+		this._dataviewYCountSelection?.setValue(dataviewSelectionId);
+		this._dataviewYCountSelection?.unblockEvent();
 
 		const resizeHandler = util.debounce((event) => {
 			const contentWidth = event[0].contentRect.width;
 			const minCurrentTargetInnerWidth = searchButtonModel.getMinCurrentTargetInnerWidth();
 			if (contentWidth >= minCurrentTargetInnerWidth) {
 				dataviewSelectionId = util.getDataviewSelectionId();
-				this._dataviewYCountSelection.callEvent("onChange", [dataviewSelectionId]);
+				this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
 			}
 		});
 		const resizeObserver = new ResizeObserver(resizeHandler);
 		const galleryNode = this._view.getNode();
 		resizeObserver.observe(galleryNode);
 
-		this._dataviewYCountSelection.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
+		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
 			let newItemWidth;
 			let newImageWidth;
 			let newInnerImageNameSize;
@@ -376,7 +379,7 @@ class GalleryService {
 			this._imagesDataview.hideOverlay();
 		});
 
-		this._downloadingMenu.attachEvent("onMenuItemClick", (id) => {
+		this._downloadingMenu?.attachEvent("onMenuItemClick", (id) => {
 			switch (id) {
 				case constants.ID_MENU_DOWNLOAD_SEL_IMAGES_METADATA: {
 					this.downloadZip("all", true);
@@ -432,29 +435,36 @@ class GalleryService {
 			}
 		});
 
-		this._imageWindow.getNode().addEventListener("keyup", (e) => {
+		this._imageWindow?.getNode().addEventListener("keyup", (e) => {
 			this._keyPressed(e.keyCode);
 		});
 
-		this._imageWindow.attachEvent("onKeyPress", (keyCode) => {
+		this._imageWindow?.attachEvent("onKeyPress", (keyCode) => {
 			this._keyPressed(keyCode);
 		});
 
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {
 			const currentItem = this._imagesDataview.getItem(id);
 			this._setImageWindowValues(currentItem);
-			this._eventForHideMessages(this._imageWindow);
-			this._imageWindow.show();
-			this._imageTemplate.attachEvent("onAfterRender", () => {
+			if (this._imageWindow) {
+				this._eventForHideMessages(this._imageWindow);
+				this._imageWindow.show();
+			}
+			this._imageTemplate?.attachEvent("onAfterRender", () => {
 				if (this._imageInstance) {
 					this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
 				}
-				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+				if (this._imageWindow) {
+					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+				}
+				else {
+					// TODO: implement
+				}
 				window.wheelzoom(this._imageInstance);
 			});
 		};
 
-		this._imageTemplate.define("onClick", {
+		this._imageTemplate?.define("onClick", {
 			next: () => {
 				this._showNextImage();
 			},
@@ -463,7 +473,7 @@ class GalleryService {
 			}
 		});
 
-		this._imageWindowZoomButtons.define("onClick", {
+		this._imageWindowZoomButtons?.define("onClick", {
 			"btn-plus": () => {
 				this._zoomImage("plus");
 			},
@@ -476,9 +486,16 @@ class GalleryService {
 			try {
 				const currentItem = this._imagesDataview.getItem(id);
 				const image = await ajax.getImageItem(currentItem.isic_id);
-				webix.ui([metadataPart.getConfig("metadata-window-metadata", image, currentItem)], this._metadataWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
-				this._eventForHideMessages(this._metadataWindow);
-				this._metadataWindow.show();
+				if (this._metadataWindowMetadata) {
+					webix.ui([metadataPart.getConfig("metadata-window-metadata", image, currentItem)], this._metadataWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
+				}
+				else {
+					webix.ui([metadataPart.getConfig("metadata-window-metadata", image, currentItem)]); // [] - because we rebuild only rows of this._imageWindowMetadata
+				}
+				if (this._metadataWindow) {
+					this._eventForHideMessages(this._metadataWindow);
+					this._metadataWindow.show();
+				}
 			}
 			catch (error) {
 				if (!this._view.$destructed) {
@@ -508,7 +525,7 @@ class GalleryService {
 		};
 
 		// -->add onClick property for template
-		this._imagesSelectionTemplate.define("onClick", {
+		this._imagesSelectionTemplate?.define("onClick", {
 			"unselect-images-link": () => {
 				this._resizeButtonsLayout(layoutHeightAfterHide, false, false);
 				this._clearActiveListData();
@@ -546,7 +563,9 @@ class GalleryService {
 						this._imagesDataview.refresh();
 						this._view.$scope.app.callEvent("changedSelectedImagesCount");
 					}
-					this._removeTooltipForDataview(this._imagesSelectionTemplate);
+					if (this._imagesSelectionTemplate) {
+						this._removeTooltipForDataview(this._imagesSelectionTemplate);
+					}
 					this._view.hideProgress();
 				});
 			}
@@ -561,7 +580,7 @@ class GalleryService {
 			});
 		});
 
-		this._allPagesTemplate.define("onClick", {
+		this._allPagesTemplate?.define("onClick", {
 			"gallery-select-all-images-on-all-pages": () => {
 				let isNeedShowAlert = true;
 				let countSelectedFiltredImages = 0;
@@ -604,7 +623,9 @@ class GalleryService {
 							this._imagesDataview.refresh();
 							this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
 						}
-						this._removeTooltipForDataview(this._allPagesTemplate);
+						if (this._allPagesTemplate) {
+							this._removeTooltipForDataview(this._allPagesTemplate);
+						}
 						this._view.hideProgress();
 					});
 				}
@@ -647,7 +668,9 @@ class GalleryService {
 								this._imagesDataview.refresh();
 								this._imagesDataview.callEvent("onAfterSelectAllChanged", [1]);
 								this._view.$scope.app.callEvent("changedAllSelectedImagesCount");
-								this._removeTooltipForDataview(this._allPagesTemplate);
+								if (this._allPagesTemplate) {
+									this._removeTooltipForDataview(this._allPagesTemplate);
+								}
 							}
 							this._view.hideProgress();
 						})
@@ -665,11 +688,11 @@ class GalleryService {
 		});
 
 		this._view.$scope.on(this._view.$scope.app, "changedSelectedImagesCount", () => {
-			this._imagesSelectionTemplate.refresh();
+			this._imagesSelectionTemplate?.refresh();
 		});
 
 		this._view.$scope.on(this._view.$scope.app, "changedAllSelectedImagesCount", () => {
-			this._allPagesTemplate.refresh();
+			this._allPagesTemplate?.refresh();
 		});
 		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data/* , selectNone */) => {
 			// add (or remove) filters data to model
@@ -693,7 +716,7 @@ class GalleryService {
 			}
 		});
 
-		this._createStudyButton.attachEvent("onItemClick", () => {
+		this._createStudyButton?.attachEvent("onItemClick", () => {
 			let studyImagesCount = selectedImages.countForStudies();
 			if (studyImagesCount > 0) {
 				let appliedFiltersConditionsForApi = appliedFilterModel.getConditionsForApi();
@@ -961,8 +984,8 @@ class GalleryService {
 
 	_updateContentHeaderTemplate(ranges) {
 		const values = webix.copy(ranges);
-		this._contentHeaderTemplate.setValues(values, true); // true -> unchange existing values
-		this._contentHeaderTemplate.refresh();
+		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values
+		this._contentHeaderTemplate?.refresh();
 	}
 
 	async _updateCounts() {
@@ -1141,20 +1164,33 @@ class GalleryService {
 	_toggleHeaders(forStudies) {
 		this._resizeButtonsLayout(layoutHeightAfterHide, !forStudies, false);
 		if (!forStudies) {
-			this._disableTemplateByCss(this._allPagesTemplate);
-			this._enableTemplateByCss(this._imagesSelectionTemplate);
+			if (this._allPagesTemplate) {
+				this._disableTemplateByCss(this._allPagesTemplate);
+			}
+			if (this._imagesSelectionTemplate) {
+				this._enableTemplateByCss(this._imagesSelectionTemplate);
+			}
 		}
 		else {
-			this._disableTemplateByCss(this._imagesSelectionTemplate);
-			this._enableTemplateByCss(this._allPagesTemplate);
+			if (this._imagesSelectionTemplate) {
+				this._disableTemplateByCss(this._imagesSelectionTemplate);
+			}
+			if (this._allPagesTemplate) {
+				this._enableTemplateByCss(this._allPagesTemplate);
+			}
 		}
 	}
 
 	async _setImageWindowValues(currentItem) {
 		this._currentItem = currentItem;
-		this._imageWindowViewer.setValues({imageId: currentItem.isic_id});
+		this._imageWindowViewer?.setValues({imageId: currentItem.isic_id});
 		const image = await ajax.getImageItem(currentItem.isic_id);
-		webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
+		if (this._imageWindowMetadata) {
+			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
+		}
+		else {
+			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)]); // [] - because we rebuild only rows of this._imageWindowMetadata
+		}
 	}
 
 	_showNextImage() {
@@ -1225,19 +1261,19 @@ class GalleryService {
 	}
 
 	_resizeButtonsLayout(height, studyFlag, toShow) {
-		this._buttonsLayout.define("height", height);
-		this._buttonsLayout.resize();
+		this._buttonsLayout?.define("height", height);
+		this._buttonsLayout?.resize();
 		if (studyFlag) {
 			if (toShow) {
-				this._createStudyButton.show();
+				this._createStudyButton?.show();
 			}
 			else {
-				this._createStudyButton.hide();
+				this._createStudyButton?.hide();
 			}
 		}
 		// TODO: uncomment when donwload will be implemented
 		// else {
-		// 	toShow ? this._downloadingMenu.show() : this._downloadingMenu.hide();
+		// 	toShow ? this._downloadingMenu?.show() : this._downloadingMenu?.hide();
 		// }
 	}
 

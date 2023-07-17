@@ -1,5 +1,6 @@
-import ajaxActions from "../ajaxActions";
+import logger from "../../utils/logger";
 import util from "../../utils/util";
+import ajaxActions from "../ajaxActions";
 
 class ManagementUsersService {
 	constructor(view, listOfUsers, sortAZButton, listPager, richselectFilter) {

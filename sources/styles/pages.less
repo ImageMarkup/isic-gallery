@@ -115,6 +115,15 @@
   }
 }
 
+.webix_pager.mobile-pager {
+  .webix_pager_item {
+    width: 48%;
+    .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right{
+      font-size: 40px;
+    }
+  }
+}
+
 
 
 /*=====
@@ -904,6 +913,10 @@
   background-color: @dark-main-bg;
 }
 
+.mobile-gallery-main {
+  width: 100%
+}
+
 .gallery-main-header {
   line-height: 38px;
   overflow: visible;
@@ -1076,7 +1089,7 @@
   }
 }
 
-.gallery-images-container {
+.gallery-images-container, .gallery-images-container-mobile {
   position: relative;
   cursor: pointer;
   height: 100%;
@@ -1132,6 +1145,85 @@
   }
 }
 
+.gallery-images-container-mobile {
+  background-color: transparent;
+  border-radius: 5px;
+}
+
+/* gallery-images-dataview-mobile */
+.gallery-images-dataview-mobile {
+  .webix_dataview_item {
+    overflow: visible !important;
+    border: none;
+    cursor: default;
+    padding: 5px;
+  };
+  .gallery-images-container-mobile {
+    position: relative;
+    cursor: pointer;
+    height: 100%;
+    background: transparent;
+    .border-radius(3px);
+    text-align: center;
+
+    .gallery-image {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, -50%);
+    }
+
+    .gallery-images-info {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      /*opacity: 0;
+      .transition(all 0.2s linear 0s);*/
+      display: none;
+    }
+
+    .gallery-images-star-icon {
+      position: absolute;
+      bottom: 13px;
+      right: 13px;
+      color: yellow;
+    }
+
+    &:hover {
+      .gallery-images-info {
+        /*opacity: 1;
+        .transition-delay(0.35s);*/
+        display: inline-block;
+
+        .diagnosis-icon {
+          pointer-events: none;
+          opacity: 0.5;
+          background: #CCC;
+        }
+      }
+    }
+
+    > .is-checked {
+      .box-shadow(0 0 1px 4px @select-color2);
+    }
+
+    > .check-layout {
+      background: @main-bg;
+    }
+  }
+}
+
+/* mobile-gallery-images-info */
+.mobile-gallery-images-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 30px;
+}
+
 /* gallery-images-container */
 .gallery-images-header {
   padding-bottom: 5px;
@@ -1169,6 +1261,7 @@
   bottom: 0px;
   width: 100%;
 }
+
 .gallery-images-button-elem  {
   display: inline-block;
   vertical-align: top;
@@ -1211,7 +1304,16 @@
   }
 }
 
+.gallery-images-footer {
 
+}
+
+.gallery-header-name-panel {
+  font-size: 24px;
+  padding-left: 20px;
+  padding-top: 5px;
+  font-weight: bold;
+}
 
 /*=====
 === DASHBOARD page ===

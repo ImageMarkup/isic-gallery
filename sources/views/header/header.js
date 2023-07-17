@@ -1,14 +1,29 @@
 import {JetView} from "webix-jet";
+
 import constants from "../../constants";
+import authService from "../../services/auth";
 import HeaderService from "../../services/header/headerServices";
 import menuHandlerService from "../../services/menuHandlers";
-import authService from "../../services/auth";
 import uploadWindow from "./windows/uploadTypeWindow";
+// import state from "../../models/state";
 
 const LOGIN_MENU_ID = "login-menu";
 const LOGOUT_PANEL_ID = "logout-panel";
 const LOGIN_PANEL_ID = "login-panel";
 const BASE_MENU_ID = "base-menu";
+
+const MenuIDs = Object.freeze({
+	About: constants.ID_HEADER_MENU_ABOUT,
+	Isic: constants.ID_HEADER_MENU_MAIN,
+	Forum: constants.ID_HEADER_MENU_FORUM,
+	Gallery: constants.ID_HEADER_MENU_GALLERY,
+	Challenger: constants.ID_HEADER_MENU_CHALLENGES,
+	Studies: constants.ID_HEADER_MENU_STUDIES,
+	Dermo: constants.ID_HEADER_MENU_DERMO,
+	Archive: constants.ID_HEADER_MENU_ARCHIVE,
+	Download: constants.ID_HEADER_MENU_DOWNLOAD,
+	Dashboard: constants.ID_HEADER_MENU_DASHBOARD
+});
 
 export default class Header extends JetView {
 	config() {
@@ -29,11 +44,11 @@ export default class Header extends JetView {
 			width: 935,
 			borderless: true,
 			data: [
-				{id: constants.ID_HEADER_MENU_ABOUT, value: "About"},
-				{id: constants.ID_HEADER_MENU_FORUM, value: "Forum"},
-				{id: constants.ID_HEADER_MENU_GALLERY, value: "Gallery"},
+				{id: MenuIDs.About, value: "About"},
+				{id: MenuIDs.Forum, value: "Forum"},
+				{id: MenuIDs.Gallery, value: "Gallery"},
 				{
-					id: constants.ID_HEADER_MENU_CHALLENGES,
+					id: MenuIDs.Challenger.id,
 					value: "Challenges",
 					$css: "menu-with-sub",
 					submenu: [
@@ -75,11 +90,11 @@ export default class Header extends JetView {
 						}
 					]
 				},
-				{id: constants.ID_HEADER_MENU_STUDIES, value: "Studies"},
-				{id: constants.ID_HEADER_MENU_DERMO, value: "Dermoscopedia"},
-				{id: constants.ID_HEADER_MENU_ARCHIVE, value: "Contribute to Archive"},
-				{id: constants.ID_HEADER_MENU_DOWNLOAD, value: "Download Data"},
-				{id: constants.ID_HEADER_MENU_DASHBOARD, value: "Dashboard"}
+				{id: MenuIDs.Studies, value: "Studies"},
+				{id: MenuIDs.Dermo, value: "Dermoscopedia"},
+				{id: MenuIDs.Archive, value: "Contribute to Archive"},
+				{id: MenuIDs.Download, value: "Download Data"},
+				{id: MenuIDs.Dashboard, value: "Dashboard"}
 			],
 			type: {
 				subsign: true,
@@ -89,65 +104,65 @@ export default class Header extends JetView {
 				onBeforeRender() {
 					const headerMenu = $$(BASE_MENU_ID);
 					if (authService.isLoggedin()) {
-						this.showItem("dashboard");
-						this.showItem("forum");
+						this.showItem(MenuIDs.Dashboard);
+						this.showItem(MenuIDs.Forum);
 					}
 					else {
-						this.hideItem("dashboard");
-						this.hideItem("forum");
+						this.hideItem(MenuIDs.Dashboard);
+						this.hideItem(MenuIDs.Forum);
 					}
-					this.hideItem("about");
-					this.hideItem("studies");
-					this.hideItem("dermo");
-					this.hideItem("download");
-					headerMenu.disableItem(constants.ID_HEADER_MENU_STUDIES);
+					this.hideItem(MenuIDs.About);
+					this.hideItem(MenuIDs.Studies);
+					this.hideItem(MenuIDs.Dermo);
+					this.hideItem(MenuIDs.Download);
+					headerMenu.disableItem(MenuIDs.Studies);
 				},
 				onMenuItemClick: (id) => {
 					const headerMenu = $$(BASE_MENU_ID);
 					switch (id) {
-						case constants.ID_HEADER_MENU_ABOUT:
+						case MenuIDs.About:
 						{
 							menuHandlerService.clickAbout();
 							break;
 						}
-						case constants.ID_HEADER_MENU_FORUM:
+						case MenuIDs.Forum:
 						{
 							menuHandlerService.clickForum();
 							// to fix bug with css selection
 							break;
 						}
-						case constants.ID_HEADER_MENU_GALLERY:
+						case MenuIDs.Gallery:
 						{
 							menuHandlerService.clickGallery();
 							break;
 						}
-						case constants.ID_HEADER_MENU_CHALLENGES:
+						case MenuIDs.Challenger:
 						{
 							menuHandlerService.clickChallenges(id);
 							break;
 						}
-						case constants.ID_HEADER_MENU_STUDIES:
+						case MenuIDs.Studies:
 						{
 							menuHandlerService.clickStudies();
 							break;
 						}
-						case constants.ID_HEADER_MENU_DERMO:
+						case MenuIDs.Dermo:
 						{
 							menuHandlerService.clickDermoscopedia();
 							headerMenu.unselect(id);
 							break;
 						}
-						case constants.ID_HEADER_MENU_DASHBOARD:
+						case MenuIDs.Dashboard:
 						{
 							menuHandlerService.clickDashboard();
 							break;
 						}
-						case constants.ID_HEADER_MENU_ARCHIVE:
+						case MenuIDs.Archive:
 						{
 							menuHandlerService.clickUpload();
 							break;
 						}
-						case constants.ID_HEADER_MENU_DOWNLOAD:
+						case MenuIDs.Download:
 						{
 							menuHandlerService.clickAPI();
 							break;

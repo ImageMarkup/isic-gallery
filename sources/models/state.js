@@ -29,7 +29,8 @@ const state = {
 			toolbarValues: {}
 		};
 	},
-	imagesOffset: 0
+	imagesOffset: 0,
+	mobileSelectedImage: null // id of selected image in mobile gallery
 };
 
 export default state;

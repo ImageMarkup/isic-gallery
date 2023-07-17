@@ -1,7 +1,7 @@
+import galleryImageUrl from "../../../../models/galleryImagesUrls";
+import ajax from "../../../../services/ajaxActions";
 import windowWithHeader from "../../../components/windowWithHeader";
 import "../../../components/slideButton";
-import ajax from "../../../../services/ajaxActions";
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
 
 
 const templateViewer = {

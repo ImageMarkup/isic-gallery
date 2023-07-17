@@ -77,6 +77,7 @@ export default {
 	PATH_MAIN: "/topWithHeader/wideContentTop/main",
 	PATH_STUDIES: "/topWithHeader/tightDarkContentTop/studies",
 	PATH_GALLERY: "/topWithHeader/onlyHeaderTop/gallery",
+	PATH_GALLERY_MOBILE: "/mobileTop/onlyHeaderTop/mobileGallery",
 	PATH_MEDICAL_DISCLAIMER: "/topWithHeader/tightDarkContentTop/medicalDisclaimer",
 	PATH_PRIVACY_POLICY: "/topWithHeader/tightDarkContentTop/privacyPolicy",
 	PATH_TERMS_OF_USE: "/topWithHeader/tightDarkContentTop/termsOfUse",

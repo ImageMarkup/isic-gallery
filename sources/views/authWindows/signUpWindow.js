@@ -1,8 +1,8 @@
-import windowWithHeader from "../components/windowWithHeader";
+import constants from "../../constants";
 import ajax from "../../services/ajaxActions";
 import "../components/passwordInput";
-import constants from "../../constants";
 import validationRules from "../../utils/validationRule";
+import windowWithHeader from "../components/windowWithHeader";
 
 const signupForm = {
 	view: "form",

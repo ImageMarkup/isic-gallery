@@ -1,53 +1,28 @@
 import "@babel/polyfill";
 import {JetApp} from "webix-jet";
+
 import "./styles/app.less";
 import "./utils/polyfills";
-import state from "./models/state";
 import constants from "./constants";
+import state from "./models/state";
 import auth from "./services/auth";
 import manageLocalStorageByAppVersion from "./services/localStorageManager";
-
-import MainView from "./views/subviews/main";
-import WideContentTop from "./views/wideContentTop";
-import TightContentTop from "./views/tightContentTop";
-import TightDarkContentTop from "./views/tightDarkContentTop";
-import TopWithHeader from "./views/topWithHeader";
+import MobileHeader from "./views/header/mobileHeader";
+import MobileTop from "./views/mobileTop";
 import OnlyHeaderTop from "./views/onlyHeaderTop";
-import AboutView from "./views/subviews/about/about";
-import DatasetView from "./views/subviews/dataset/dataset";
-import FeaturesetView from "./views/subviews/featureset/featureset";
-import GalleryView from "./views/subviews/gallery/gallery";
-import TermOfUse from "./views/subviews/termOfUse/termOfUse";
-import MedicalDisclaimer from "./views/subviews/medicalDisclaimer/medicalDisclaimer";
-import PrivacyPolicy from "./views/subviews/privacyPolicy/privacyPolicy";
-import Dashboard from "./views/subviews/dashboard/dashboard";
-import UserAccount from "./views/subviews/userAccount/userAccount";
-import CreateDataset from "./views/subviews/createDataset/createDataset";
-import UploadData from "./views/subviews/uploadData/uploadData";
-import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
-import BatchUpload from "./views/subviews/batchUpload/batchUpload";
-import ApplyMetadata from "./views/subviews/applyMetadata/applyMetadata";
-import RegisterMetadata from "./views/subviews/registerMetadata/registerMetadata";
-import CreateStudy from "./views/subviews/createStudy/createStudyPage";
-import ErrorPage from "./views/subviews/errorPage/errorPage";
-import APIDocumentation from "./views/subviews/apiDocumentation/apiDocumentation";
 // about pages
-import AboutIsicOverview from "./views/subviews/about/subviews/aboutIsic/overview";
+import AboutView from "./views/subviews/about/about";
 import AboutIsicBackground from "./views/subviews/about/subviews/aboutIsic/background";
 import AboutIsicGoals from "./views/subviews/about/subviews/aboutIsic/goals";
 import AboutIsicOrganization from "./views/subviews/about/subviews/aboutIsic/organization";
+import AboutIsicOverview from "./views/subviews/about/subviews/aboutIsic/overview";
 import AboutIsicSponsorsAndPartners from "./views/subviews/about/subviews/aboutIsic/sponsorsAndPartners";
-import WorkingGroupsTechnology from "./views/subviews/about/subviews/workingGroups/technology";
-import WorkingGroupsTechnique from "./views/subviews/about/subviews/workingGroups/technique";
-import WorkingGroupsTerminology from "./views/subviews/about/subviews/workingGroups/terminology";
-import WorkingGroupsPrivacy from "./views/subviews/about/subviews/workingGroups/privacy";
-import WorkingGroupsMetadata from "./views/subviews/about/subviews/workingGroups/metadata";
-import WorkingGroupsAI from "./views/subviews/about/subviews/workingGroups/artificialIntelligence";
-import WorkingGroupsEducation from "./views/subviews/about/subviews/workingGroups/education";
-import IsicArchiveGoals from "./views/subviews/about/subviews/isicArchive/goals";
+import ContactInfo from "./views/subviews/about/subviews/contactInfo";
+import FAQ from "./views/subviews/about/subviews/faq";
 import IsicArchiveContent from "./views/subviews/about/subviews/isicArchive/contentAndLayout";
-import IsicArchiveInfrastructure from "./views/subviews/about/subviews/isicArchive/infrastructure";
 import IsicArchiveDataDictionary from "./views/subviews/about/subviews/isicArchive/dataDictionary";
+import IsicArchiveGoals from "./views/subviews/about/subviews/isicArchive/goals";
+import IsicArchiveInfrastructure from "./views/subviews/about/subviews/isicArchive/infrastructure";
 import IsicChallengesGoals from "./views/subviews/about/subviews/isicChallenges/goals";
 import IsicChallengesGrandVLive from "./views/subviews/about/subviews/isicChallenges/grandVLive";
 import IsicChallengesHistory from "./views/subviews/about/subviews/isicChallenges/historyOfChallenges";
@@ -55,15 +30,46 @@ import IsicChallengesPlanned from "./views/subviews/about/subviews/isicChallenge
 import IsicMeetingsGroups from "./views/subviews/about/subviews/isicMeetings/groups";
 import IsicMeetingsWorkshops from "./views/subviews/about/subviews/isicMeetings/workshops";
 import IsicPublications from "./views/subviews/about/subviews/isicPublications";
-import FAQ from "./views/subviews/about/subviews/faq";
-import ContactInfo from "./views/subviews/about/subviews/contactInfo";
+import WorkingGroupsAI from "./views/subviews/about/subviews/workingGroups/artificialIntelligence";
+import WorkingGroupsEducation from "./views/subviews/about/subviews/workingGroups/education";
+import WorkingGroupsMetadata from "./views/subviews/about/subviews/workingGroups/metadata";
+import WorkingGroupsPrivacy from "./views/subviews/about/subviews/workingGroups/privacy";
+import WorkingGroupsTechnique from "./views/subviews/about/subviews/workingGroups/technique";
+import WorkingGroupsTechnology from "./views/subviews/about/subviews/workingGroups/technology";
+import WorkingGroupsTerminology from "./views/subviews/about/subviews/workingGroups/terminology";
+import APIDocumentation from "./views/subviews/apiDocumentation/apiDocumentation";
+import ApplyMetadata from "./views/subviews/applyMetadata/applyMetadata";
+import BatchUpload from "./views/subviews/batchUpload/batchUpload";
+import CreateDataset from "./views/subviews/createDataset/createDataset";
+import CreateStudy from "./views/subviews/createStudy/createStudyPage";
+import Dashboard from "./views/subviews/dashboard/dashboard";
+import DatasetView from "./views/subviews/dataset/dataset";
+import ErrorPage from "./views/subviews/errorPage/errorPage";
+import FeaturesetView from "./views/subviews/featureset/featureset";
+import GalleryView from "./views/subviews/gallery/gallery";
+import GalleryMobileView from "./views/subviews/gallery/galleryMobile";
+import MainView from "./views/subviews/main";
+import MedicalDisclaimer from "./views/subviews/medicalDisclaimer/medicalDisclaimer";
+import PrivacyPolicy from "./views/subviews/privacyPolicy/privacyPolicy";
+import RegisterMetadata from "./views/subviews/registerMetadata/registerMetadata";
+import TermOfUse from "./views/subviews/termOfUse/termOfUse";
+import UploadData from "./views/subviews/uploadData/uploadData";
+import UserAccount from "./views/subviews/userAccount/userAccount";
+import WizzardUploader from "./views/subviews/wizzardUploader/wizzardUploader";
+import TightContentTop from "./views/tightContentTop";
+import TightDarkContentTop from "./views/tightDarkContentTop";
+import TopWithHeader from "./views/topWithHeader";
+import WideContentTop from "./views/wideContentTop";
 
 webix.ready(() => {
 	manageLocalStorageByAppVersion();
+	const startPath = /Android|iPhone/i.test(navigator.userAgent)
+		? constants.PATH_GALLERY_MOBILE
+		: constants.PATH_GALLERY;
 	const app = new JetApp({
 		id: APPNAME,
 		version: VERSION,
-		start: constants.PATH_MAIN,
+		start: startPath,
 		views: {
 			main: MainView,
 			error: ErrorPage,
@@ -72,10 +78,13 @@ webix.ready(() => {
 			tightDarkContentTop: TightDarkContentTop,
 			onlyHeaderTop: OnlyHeaderTop,
 			topWithHeader: TopWithHeader,
+			mobileTop: MobileTop,
+			mobileHeader: MobileHeader,
 			about: AboutView,
 			dataset: DatasetView,
 			featureset: FeaturesetView,
 			gallery: GalleryView,
+			mobileGallery: GalleryMobileView,
 			termsOfUse: TermOfUse,
 			medicalDisclaimer: MedicalDisclaimer,
 			privacyPolicy: PrivacyPolicy,
@@ -133,7 +142,9 @@ webix.ready(() => {
 			auth.refreshUserInfo();
 		}
 		const root = app.getRoot();
-		root.scrollTo(0, 0);
+		if (typeof (root.scrollTo) === "function") {
+			root.scrollTo(0, 0);
+		}
 	});
 
 	// selection by shift in dataviews
