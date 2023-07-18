@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
+
 import "../../components/templateWithImages";
-import mdTemplate from "../../templates/privacyPolicy.md";
 import mdLoader from "../../../services/mdLoader";
+import mdTemplate from "../../templates/privacyPolicy.md";
 
 export default class PrivacyPolicyView extends JetView {
 	config() {

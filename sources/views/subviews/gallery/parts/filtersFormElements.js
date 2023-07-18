@@ -1,5 +1,5 @@
-import filtersViewHelper from "./filters";
 import appliedFilters from "../../../../models/appliedFilters";
+import filtersViewHelper from "./filters";
 
 const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
 
@@ -19,8 +19,9 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 				this.config.isRowsVisible = true;
 				controls.show();
 				// scroll into collapsed controls
-				const filtersNode = controls.getParentView().getNode();
-				filtersNode.scrollIntoView();
+				// TODO: fix mobile view
+				// const filtersNode = controls.getParentView().getNode();
+				// filtersNode.scrollIntoView();
 				showedFiltersCollection.add({
 					id: dataForCreatingControl.id
 				});

@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
+
 import "app-components/templateWithImages";
 import BreadcrumbsManager from "app-services/breadcrumbs";
-import mdTemplate from "app-templates/about/aboutIsic/organization.md";
 import mdLoader from "app-services/mdLoader";
+import mdTemplate from "app-templates/about/aboutIsic/organization.md";
 
 export default class AboutIsicOrganization extends JetView {
 	config() {

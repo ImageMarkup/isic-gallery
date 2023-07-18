@@ -1,7 +1,7 @@
-import LargeImageWindow from "../../views/subviews/gallery/windows/imageWindow";
+import createStudyModel from "../../models/createStudyModel";
 import selectedGalleryImages from "../../models/selectedGalleryImages";
 import imageSelectionWindow from "../../views/subviews/createStudy/windows/imagesSelectionWindow";
-import createStudyModel from "../../models/createStudyModel";
+import LargeImageWindow from "../../views/subviews/gallery/windows/imageWindow";
 
 const IMAGE_WINDOW_ID = "study-creation-image-window-id";
 let featureSetListItemsCount;

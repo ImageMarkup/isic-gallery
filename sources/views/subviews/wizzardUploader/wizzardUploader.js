@@ -1,13 +1,15 @@
 import {JetView} from "webix-jet";
+
 import termsOfUseDownloadingPanel from "jet-views/parts/termsOfUseLinks";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
-import WizzardUploadService from "../../../services/wizzardUploader/wizzardUploader";
-import auth from "../../../services/auth";
-import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
+
 import constants from "../../../constants";
+import wizardUploaderStorage from "../../../models/wizardUploaderStorage";
+import auth from "../../../services/auth";
+import BreadcrumbsManager from "../../../services/breadcrumbs";
+import mdLoader from "../../../services/mdLoader";
+import WizzardUploadService from "../../../services/wizzardUploader/wizzardUploader";
 import "../../components/templateWithImages";
 import termsOfUseMD from "../../templates/termsOfUse.md";
-import mdLoader from "../../../services/mdLoader";
 
 const MARGIN_FORM = 15;
 

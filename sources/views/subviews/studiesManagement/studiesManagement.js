@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
+
+import constants from "../../../constants";
+import state from "../../../models/state";
 import authService from "../../../services/auth";
 import "../../components/activeDatatable";
-import state from "../../../models/state";
-import constants from "../../../constants";
 import StudiesManagementService from "../../../services/studiesManagement/studiesManagement";
 
 const STUDIES_MANAGEMENT_ACCORDION_ID = "studies-management-accordion-id";

@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
+
 import "../../components/templateWithImages";
-import mdTemplate from "../../templates/termsOfUse.md";
 import mdLoader from "../../../services/mdLoader";
+import mdTemplate from "../../templates/termsOfUse.md";
 
 export default class TermsOfUseView extends JetView {
 	config() {

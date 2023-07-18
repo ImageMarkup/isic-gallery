@@ -1,9 +1,10 @@
 import {JetView/* , plugins */} from "webix-jet";
-import authService from "../../../services/auth";
-import accessControlWindow from "./windows/accessControl";
+
 import constants from "../../../constants";
 import state from "../../../models/state";
+import authService from "../../../services/auth";
 import DatasetViewService from "../../../services/dataset/dataset";
+import accessControlWindow from "./windows/accessControl";
 
 const DATASET_ACCORDION_ID = "dataset-accordion-id";
 const PAGER_ID = "pager-id";

@@ -1,5 +1,6 @@
 import axios from "../../node_modules/axios/dist/axios.min";
 import state from "../models/state";
+import logger from "../utils/logger";
 
 const API_URL = process.env.ISIC_NEW_API_URL;
 
@@ -28,7 +29,7 @@ function parseError(xhr) {
 			}
 			catch (e) {
 				message = xhr.response;
-				console.log(`Not JSON response for request to ${xhr.responseURL}`);
+				logger.info(`Not JSON response for request to ${xhr.responseURL}`);
 			}
 			const regexForId = /".*?" /;
 			let messageToShow = message.replace(regexForId, "");

@@ -94,6 +94,7 @@ class GalleryService {
 					filtersInfo.push();
 					let params = webix.copy(element.config.filtersChangedData);
 					params.remove = 0;
+					params.optionId = element.config.attributes.dataOptionId;
 					filtersInfo.push(params);
 				}
 			}
@@ -582,7 +583,7 @@ class GalleryService {
 		this._allPagesTemplate?.define("onClick", {
 			"gallery-select-all-images-on-all-pages": () => {
 				let isNeedShowAlert = true;
-				let countSelectedFiltredImages = 0;
+				let countSelectedFilteredImages = 0;
 				let filter = appliedFilterModel.getConditionsForApi();
 				let imagesLimit = constants.MAX_COUNT_IMAGES_SELECTION;
 				let arrayOfImagesLength = selectedImages.countForStudies();
@@ -634,7 +635,7 @@ class GalleryService {
 						.then((allImagesData) => {
 							allImagesData.forEach((imageObj) => {
 								if (selectedImages.isSelectedInStudies(imageObj.isic_id)) {
-									countSelectedFiltredImages++;
+									countSelectedFilteredImages++;
 									return;
 								}
 								if (selectedImages.countForStudies() < constants.MAX_COUNT_IMAGES_SELECTION) {
@@ -655,7 +656,7 @@ class GalleryService {
 									});
 								}
 							});
-							if (countSelectedFiltredImages === imagesLimit) {
+							if (countSelectedFilteredImages === imagesLimit) {
 								webix.alert({
 									text: "All filtered images have been selected"
 								});

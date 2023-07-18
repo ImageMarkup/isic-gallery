@@ -179,6 +179,7 @@ export default {
 	LIST_ANNOTATIONS_ID: "listAnnotations",
 	DETAILS_ANNOTATIONS_ID: "detailsAnnotations",
 	DOWNLOAD_ANNOTATIONS_ID: "downloadAnnotations",
+	NULL_OPTION_VALUE: "unknown",
 
 	DEFAULT_GALLERY_IMAGE_ICON_WIDTH: 18,
 	DEFAULT_GALLERY_IMAGE_ICON_HEIGHT: 18,

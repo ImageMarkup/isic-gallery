@@ -1,7 +1,7 @@
 import {plugins} from "webix-jet";
 import state from "../../models/state";
-import authService from "../auth";
 import utils from "../../utils/util";
+import authService from "../auth";
 
 class StudiesService {
 	constructor(view, dataview, toolbar, progressChart) {

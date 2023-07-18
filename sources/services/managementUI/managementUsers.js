@@ -14,7 +14,7 @@ class ManagementUsersService {
 
 	_init() {
 		this._listOfUsers.on_click["management-user-title"] = (e, id) => {
-			console.log(e, id);
+			logger.info(e, id);
 		};
 
 		this._sortAZButton.attachEvent("onItemClick", () => {

@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
+
 import "../../components/templateWithImages";
-import mdTemplate from "../../templates/medicalDisclaimer.md";
 import mdLoader from "../../../services/mdLoader";
+import mdTemplate from "../../templates/medicalDisclaimer.md";
 
 export default class MedicalDisclaimerView extends JetView {
 	config() {

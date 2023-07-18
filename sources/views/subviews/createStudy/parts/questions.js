@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import createStudyModel from "../../../../models/createStudyModel";
 import "../../../components/activeList";
 

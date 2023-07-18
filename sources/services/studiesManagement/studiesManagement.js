@@ -1,10 +1,9 @@
 import {plugins} from "webix-jet";
 import constants from "../../constants";
-import studiesManagementModel from "../../models/studiesForManagement";
-
-import accordionView from "../../views/subviews/studiesManagement/parts/accordionView";
 import state from "../../models/state";
+import studiesManagementModel from "../../models/studiesForManagement";
 import util from "../../utils/util";
+import accordionView from "../../views/subviews/studiesManagement/parts/accordionView";
 
 class StudiesManagementService {
 	constructor(view, pager, clonePager, headerTemplate, accordion) {
@@ -128,8 +127,6 @@ class StudiesManagementService {
 			sort: "name",
 			sortdir: 1
 		};
-		/* after finish data loading we set total count for pager,
-		   clone it to displaying it bottom and build accordion */
 		studiesManagementModel.load(params).then(() => {
 			const pager = this._pager;
 			const clonePager = this._clonePager;

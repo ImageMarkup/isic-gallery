@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import "../../components/types/sideBarType";
 import constants from "../../../constants";
 

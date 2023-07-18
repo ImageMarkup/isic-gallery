@@ -1,5 +1,5 @@
-import util from "../../utils/util";
 import storage from "../../models/wizardUploaderStorage";
+import util from "../../utils/util";
 
 class WizzardUploaderService {
 	constructor(

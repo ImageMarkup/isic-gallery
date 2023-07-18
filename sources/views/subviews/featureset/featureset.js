@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
+
 import featuresetModel from "../../../models/featureset";
-import dates from "../../../utils/formats";
 import authService from "../../../services/auth";
+import BreadcrumbsManager from "../../../services/breadcrumbs";
+import dates from "../../../utils/formats";
 import util from "../../../utils/util";
 
 const FEATURESET_ACCORDION_ID = "featureset-accordion-id";

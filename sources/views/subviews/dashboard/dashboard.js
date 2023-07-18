@@ -1,12 +1,13 @@
 import {JetView, plugins} from "webix-jet";
+
+import constants from "../../../constants";
+import state from "../../../models/state";
 import authService from "../../../services/auth";
+import BreadcrumbsManager from "../../../services/breadcrumbs";
 import DashboardService from "../../../services/dashboard/dashboard";
+import StudiesService from "../../../services/studies/studies";
 import Dataset from "../dataset/dataset";
 import StudiesManagement from "../studiesManagement/studiesManagement";
-import StudiesService from "../../../services/studies/studies";
-import constants from "../../../constants";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
-import state from "../../../models/state";
 
 const ID_BUTTON_INVITE_USER = "invite-user-button";
 

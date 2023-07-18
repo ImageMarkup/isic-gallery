@@ -117,7 +117,9 @@
 
 .webix_pager.mobile-pager {
   .webix_pager_item {
-    width: 48%;
+    border-radius: 100%;
+    width: 55px;
+    height: 55px;
     .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right{
       font-size: 40px;
     }
@@ -1034,6 +1036,33 @@
   }
 }
 
+.mobile-applied-filters-list {
+  border-color: @lines-color;
+
+  .webix_list_item {
+    background-color: @select-color;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+    padding-right: 38px;
+    position: relative;
+    border-radius: 7px;
+  }
+
+  .applied-filters-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .remove-filter-icon {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    margin-top: -14px;
+  }
+}
+
 .gallery-sidebar-attr {
   border-color: @lines-color;
 }
@@ -1222,6 +1251,7 @@
   display: flex;
   justify-content: space-between;
   padding: 5px 30px;
+  border-width: 0px;
 }
 
 /* gallery-images-container */

@@ -1,10 +1,10 @@
 import {plugins} from "webix-jet";
 import constants from "../../constants";
+import createDatasetModel from "../../models/createDatasetModel";
 import datasetModel from "../../models/dataset";
 import state from "../../models/state";
-import accView from "../../views/subviews/dataset/parts/accordionView";
-import createDatasetModel from "../../models/createDatasetModel";
 import util from "../../utils/util";
+import accView from "../../views/subviews/dataset/parts/accordionView";
 
 class DatasetViewService {
 	constructor(view, pager, clonePager, headerTemplate, accordion, setAccessWindow) {

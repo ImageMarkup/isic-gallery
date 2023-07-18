@@ -1,7 +1,8 @@
 import {JetView} from "webix-jet";
+
+import constants from "../../../constants";
 import authService from "../../../services/auth";
 import RegisterMetadataService from "../../../services/registerMetadata/registerMetadata";
-import constants from "../../../constants";
 
 const ID_TEMPLATE_DATASET_INFO = "register-metadata-dataset-info-template";
 const ID_UPLOADER = "register-metadata-uploader";

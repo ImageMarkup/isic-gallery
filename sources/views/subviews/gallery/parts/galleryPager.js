@@ -51,14 +51,14 @@ const pager = {
 
 const mobilePager = {
 	view: "pager",
-	height: 100,
+	height: 60,
 	width: 0,
 	master: false,
 	css: "mobile-pager",
 	template(obj, common) {
 		// return `${common.pages(obj)} <span class="pager-info-panel">${obj.page + 1} of ${obj.limit}</span>`;
 		// return `${common.pages(obj)} <span class="pager-info-panel">${obj.page + 1} of ${obj.limit}</span>`;
-		return `${common.prev()} ${common.next()}`;
+		return `<div style="display: flex; justify-content: space-between">${common.prev()} <div></div> ${common.next()}</div>`;
 	},
 	on: {
 		onItemClick(id/* , e, node */) {

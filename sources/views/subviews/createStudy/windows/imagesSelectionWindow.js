@@ -1,12 +1,13 @@
 import {JetView} from "webix-jet";
-import ajax from "../../../../services/ajaxActions";
+
+import constants from "../../../../constants";
+import appliedFiltersModel from "../../../../models/appliedFilters";
+import galleryImageUrl from "../../../../models/galleryImagesUrls";
+import selectedImages from "../../../../models/selectedGalleryImages";
 import state from "../../../../models/state";
+import ajax from "../../../../services/ajaxActions";
 import "../../../components/activeDataview";
 import util from "../../../../utils/util";
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import constants from "../../../../constants";
-import selectedImages from "../../../../models/selectedGalleryImages";
-import appliedFiltersModel from "../../../../models/appliedFilters";
 
 const DATAVIEW_ID = "popUpDataviewId";
 
@@ -64,6 +65,8 @@ export default class ImagesSelectionWindow extends JetView {
 			id: DATAVIEW_ID,
 			minWidth: 800,
 			template(obj, common) {
+				// const IMAGE_HEIGHT = util.getDataviewItemHeight() - 10;
+				// const IMAGE_WIDTH = util.getDataviewItemWidth();
 				let flagForStudies = selectedImages.getStudyFlag();
 				if (flagForStudies) {
 					// eslint-disable-next-line array-callback-return

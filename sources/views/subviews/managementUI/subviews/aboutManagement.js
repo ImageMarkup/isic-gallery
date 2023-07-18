@@ -1,7 +1,8 @@
 /* eslint-disable arrow-body-style */
 import {JetView} from "webix-jet";
-import authService from "../../../../services/auth";
+
 import constants from "../../../../constants";
+import authService from "../../../../services/auth";
 
 export default class ManagementUIAbout extends JetView {
 	config() {
