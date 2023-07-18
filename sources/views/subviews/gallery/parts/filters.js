@@ -1,5 +1,4 @@
 import constants from "../../../../constants";
-import collectionsModel from "../../../../models/collectionsModel";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 

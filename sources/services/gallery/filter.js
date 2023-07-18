@@ -1,4 +1,3 @@
-import collectionsModel from "../../models/collectionsModel";
 import state from "../../models/state";
 import util from "../../utils/util";
 
