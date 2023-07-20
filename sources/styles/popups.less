@@ -41,8 +41,38 @@
   }
 }
 
+.mobile-window-close-button {
+  position: absolute;
+  right: 5px;
+  button {
+    background: none;
+    border: none;
+    .box-shadow(none);
+  }
+  .close-icon-svg,
+  .close-icon-svg-use {
+    width: 26px;
+    height: 26px;
+  }
+  .close-icon-svg-use {
+    fill: @popup-close-icon;
+    .transition(all .3s ease-in-out);
+  }
+  button {
+    &:hover, &:focus, &:active {
+      background: none;
+      .box-shadow(none);
+
+      .close-icon-svg-use {
+        fill: @btn-hover;
+      }
+    }
+  }
+}
+
 /* mobile-window */
-.mobile-window-with-header{
+.mobile-window {
+  width: 90%;
   left: 10px;
   right: 10px;
   .mobile-window-header-toolbar{

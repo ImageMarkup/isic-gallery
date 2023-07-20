@@ -1,13 +1,15 @@
 import IsicClient from "@isic/client";
-import state from "../models/state";
-import ajax from "./ajaxActions";
+
 import constants from "../constants";
-import termOfUseWindow from "../views/authWindows/termOfUse";
-import gallerySelectedImages from "../models/selectedGalleryImages";
 import appliedFilters from "../models/appliedFilters";
+import gallerySelectedImages from "../models/selectedGalleryImages";
+import state from "../models/state";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
-import util from "../utils/util";
 import logger from "../utils/logger";
+import util from "../utils/util";
+import mobileTermOfUseWindow from "../views/authWindows/mobileTermOfUse";
+import termOfUseWindow from "../views/authWindows/termOfUse";
+import ajax from "./ajaxActions";
 
 const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
@@ -108,6 +110,13 @@ class OAuthISIC {
 	showTermOfUse(okCallback) {
 		let win = $$(constants.ID_WINDOW_TERMS_OF_USE)
 			|| webix.ui(termOfUseWindow.getConfig(constants.ID_WINDOW_TERMS_OF_USE));
+		win.show();
+		win.okCallback = okCallback;
+	}
+
+	showMobileTermOfUse(okCallback) {
+		let win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
+			|| webix.ui(mobileTermOfUseWindow.getConfig(constants.ID_MOBILE_WINDOW_TERMS_OF_USE));
 		win.show();
 		win.okCallback = okCallback;
 	}

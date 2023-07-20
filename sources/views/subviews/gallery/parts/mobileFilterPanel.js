@@ -80,7 +80,7 @@ function getConfig(config) {
 	const clearAllFiltersTemplate = {
 		id: ID_CLEAR_ALL_FILTERS_TEMPLATE,
 		name: NAME_CLEAR_ALL_FILTERS_TEMPLATE,
-		template: "<span class='link clear-all-filters fas fa-trash-alt'></span>",
+		template: "<span class='link clear-all-filters clear-all-filters-button fas fa-trash-alt'></span>",
 		autoheight: true,
 		borderless: true
 	};
@@ -124,12 +124,12 @@ function getConfig(config) {
 						cols: [
 							{width: 10},
 							appliedFiltersTemplate,
-							{gravity: 1},
 							clearAllFiltersTemplate,
 							{width: 10}
 						]
 					},
 					// appliedFiltersList.getMobileConfig(ID_APPLIED_FILTERS_LIST)
+					{height: 10},
 					appliedFiltersView
 				]
 			},

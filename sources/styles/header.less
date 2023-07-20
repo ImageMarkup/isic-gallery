@@ -136,6 +136,17 @@
 .login-menu-mobile {
   background: @mobile-header-bg;
   color: white;
+  .login-menu-item {
+    &.menu-sign-up {
+      color: #ffffff;
+
+      &:hover {
+        background-color: @mobile-header-bg;
+        color: #ffffff;
+        text-shadow: 0.6px 0 0 #ffffff;
+      }
+    }
+  }
 }
 
 /* userbar */

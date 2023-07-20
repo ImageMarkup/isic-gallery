@@ -29,6 +29,8 @@ const ID_MOBILE_GALLERY_CONTEXT_MENU = `mobile-gallery-context-menu-id-${webix.u
 const ID_CLONED_PAGER_FOR_NAME_SEARCH = `cloned-pager-for-name-search-id-${webix.uid()}`;
 const ID_IMAGE_WINDOW = `mobile-image-window-${webix.uid()}`;
 const ID_METADATA_LAYOUT = `metadata-layout-${webix.uid()}`;
+const ID_OPEN_FILTERS_BUTTON = `open-filters-button-id-${webix.uid()}`;
+const ID_METADATA_HEADER = `metadata-header-id-${webix.uid()}`;
 
 export default class GalleryMobileView extends JetView {
 	config() {
@@ -46,17 +48,24 @@ export default class GalleryMobileView extends JetView {
 		const galleryHeaderName = {
 			template: "Gallery",
 			borderless: true,
-			css: "gallery-header-name-panel",
+			css: "gallery-header-name-panel"
 		};
 
 		const filterHeaderName = {
-			template: "Filter",
+			template: "Filters",
+			borderless: true,
+			css: "gallery-header-name-panel"
+		};
+
+		const metadataHeaderName = {
+			template: "Metadata",
 			borderless: true,
 			css: "gallery-header-name-panel"
 		};
 
 		const openFilterButton = {
 			view: "button",
+			id: ID_OPEN_FILTERS_BUTTON,
 			type: "icon",
 			icon: "fas fa-filter",
 			click: () => {
@@ -83,6 +92,20 @@ export default class GalleryMobileView extends JetView {
 			}
 		};
 
+		const closeMetadataButton = {
+			view: "button",
+			type: "icon",
+			icon: "fas fa-times-circle",
+			click: () => {
+				const galleryMultiview = this.getGalleryMultiview();
+				galleryMultiview.setValue(ID_GALLERY);
+				const galleryHeader = this.getGalleryHeader();
+				const metadataHeader = this.getMetadataHeader();
+				metadataHeader.hide();
+				galleryHeader.show(false, true);
+			}
+		};
+
 		const galleryHeader = {
 			id: ID_MOBILE_GALLERY_HEADER,
 			cols: [
@@ -99,6 +122,16 @@ export default class GalleryMobileView extends JetView {
 				filterHeaderName,
 				{gravity: 2},
 				closeFilterButton
+			]
+		};
+
+		const metadataHeader = {
+			id: ID_METADATA_HEADER,
+			hidden: true,
+			cols: [
+				metadataHeaderName,
+				{gravity: 2},
+				closeMetadataButton
 			]
 		};
 
@@ -176,6 +209,10 @@ export default class GalleryMobileView extends JetView {
 						const currentItem = galleryDataview.getSelectedItem();
 						const image = await ajax.getImageItem(currentItem.isic_id);
 						const metadataLayout = this.getMetadataLayout();
+						const galleryHeaderView = this.getGalleryHeader();
+						galleryHeaderView.hide();
+						const metadataHeaderView = this.getMetadataHeader();
+						metadataHeaderView.show();
 						if (metadataLayout) {
 							webix.ui([metadataPart.getConfig("metadata-window-metadata", image, currentItem)], metadataLayout); // [] - because we rebuild only rows of this._imageWindowMetadata
 						}
@@ -205,10 +242,34 @@ export default class GalleryMobileView extends JetView {
 						util.downloadByLink(url, `${currentItemId}.zip`);
 					}
 				},
-				"share-icon": (/* e, id */) => {
-					const galleryDataview = this.getGalleryDataview();
-					const currentItem = galleryDataview.getSelectedItem();
-					// TODO: implement
+				"share-icon": async (/* e, id */) => {
+					if (navigator.share) {
+						const galleryDataview = this.getGalleryDataview();
+						const currentItem = galleryDataview.getSelectedItem();
+						const currentItemId = currentItem.isic_id;
+						const url = await ajax.getDownloadUrl(
+							constants.DOWNLOAD_ZIP_SINGLE_IMAGE,
+							`isic_id:${currentItemId}`,
+							currentItemId
+						);
+						if (url) { // Web Share API is supported
+							navigator.share({
+								title: `Share image ${currentItem.isic_id}`,
+								url: "https://gallery.isic-archive.com"
+							}).then(() => {
+								webix.message("Successful share", "info", 5000);
+							}).catch((error) => {
+								webix.message(`Error sharing: ${error}`, "error", 5000);
+							});
+						}
+						else {
+							webix.message("Do not have link to shame image", "info", 5000);
+						}
+					}
+					else {
+						// Fallback
+						webix.message("Share is not supported", "info", 5000);
+					}
 				}
 			}
 		};
@@ -224,7 +285,7 @@ export default class GalleryMobileView extends JetView {
 		const leftPanel = {
 			id: ID_FILTER_LAYOUT,
 			cols: [
-				filterPanel.getConfig(leftPanelConfig),
+				filterPanel.getConfig(leftPanelConfig)
 			]
 		};
 		const rightPanel = cartList.getConfig({cartListID: ID_RIGHT_PANEL});
@@ -252,7 +313,7 @@ export default class GalleryMobileView extends JetView {
 					); // to prevent sending query more than 1 time
 				}
 				return `<div class="gallery-images-container-mobile gallery-images-container-mobile2">
-					<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height="${util.getImageHeight()}"/>
+					<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image-mobile" height="${util.getImageHeight()}"/>
 					${starHtml}
 				</div>`;
 			},
@@ -263,56 +324,24 @@ export default class GalleryMobileView extends JetView {
 			},
 			onClick: {
 				"gallery-images-container-mobile": function (ev, id) {
-					this.unselectAll();
-					this.select(id);
+					const selectedItem = this.getSelectedItem();
 					const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
-					const imageName = this.getItem(id)?.isic_id;
-					currentGalleryFooter.parse({isic_id: imageName, id});
-					if (state.mobileSelectedImage === imageName) {
-						if (currentGalleryFooter.isVisible()) {
-							currentGalleryFooter.hide();
-						}
-						else {
-							currentGalleryFooter.show();
-						}
+					if (selectedItem?.id.toString() === id.toString()) {
+						this.unselectAll();
+						state.mobileSelectedImage = null;
+						currentGalleryFooter.hide();
 					}
 					else {
-						state.mobileSelectedImage = this.getItem(id)?.isic_id;
-						this.refresh(id);
+						this.select(id);
+						const imageName = this.getItem(id)?.isic_id;
+						state.mobileSelectedImage = imageName;
+						currentGalleryFooter.parse({isic_id: imageName, id});
 						if (!currentGalleryFooter.isVisible()) {
 							currentGalleryFooter.show();
 						}
 					}
 				}
 			}
-			// activeContent: {
-			// 	markCheckbox: {
-			// 		view: "checkbox",
-			// 		css: "checkbox-ctrl",
-			// 		width: 20,
-			// 		height: 30,
-			// 		on: {
-			// 			onChange(value, oldValue) {
-			// 				let studyFlag = selectedImages.getStudyFlag();
-			// 				const datav = $$(dataview.id);
-			// 				const item = datav.getItem(this.config.$masterId);
-			// 				if (value
-			// 						&& (
-			// 							selectedImages.count() >= constants.MAX_COUNT_IMAGES_SELECTION
-			// 							|| selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION
-			// 						)
-			// 				) {
-			// 					datav.updateItem(item.id, {markCheckbox: oldValue});
-			// 					webix.alert({
-			// 						text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
-			// 					});
-			// 					return;
-			// 				}
-			// 				changeSelectedItem(item, value, datav, studyFlag);
-			// 			}
-			// 		}
-			// 	}
-			// }
 		};
 
 		const gallery = {
@@ -346,6 +375,7 @@ export default class GalleryMobileView extends JetView {
 				{height: 10},
 				galleryHeader,
 				filterHeader,
+				metadataHeader,
 				{height: 5},
 				{
 					id: ID_MOBILE_GALLERY_BODY,
@@ -386,45 +416,6 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	init(view) {
-		// TODO: implement
-		// const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
-		// // this.listCollapsedView = this.getCartListCollapsedView();
-		// // this.imageWindow = this.ui(imageWindow.getConfig(ID_IMAGE_WINDOW));
-		// this.imageWindow = null;
-		// // this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
-		// this.metadataView = null;
-		// const contextMenuConfig = contextMenu.getConfig(ID_MOBILE_GALLERY_CONTEXT_MENU);
-		// this.galleryContextMenu = this.ui(contextMenuConfig);
-		// // this.allPagesTemplate = this.getSelectAllImagesOnAllPagesTemplate();
-		// // this.allPagesSelector = this.getAllPagesSelector();
-		// // this.galleryHeader = this.getGalleryHeader();
-		// // this.createStudyButton = this.getCreateStudyButton();
-		// // this.imagesSelectionTemplate = $$(ID_IMAGES_SELECTION_TEMPLATE);
-		// this.imagesSelectionTemplate = null;
-		// // this.dataviewYCountSelection = this.getDataviewYCountSelection();
-		// // this.activeGalleryList = this.getActiveGalleryCartList();
-		// this.galleryList = this.getGalleryCartList();
-		// // this.toggleButton = this.getToggleButton();
-		// this.filterPanelSearchField = view.queryView({name: filterPanel.getSearchFieldName()});
-		// const filtersForm = view.queryView({name: filterPanel.getFiltersFormName()});
-		// TODO: mobile service
-		// this._galleryService = new GalleryMobileService(
-		// 	view,
-		// 	$$(ID_PAGER),
-		// 	$$(ID_DATAVIEW),
-		// 	this.metadataView,
-		// 	$$(metadataWindow.getMetadataLayoutId()),
-		// 	filtersForm,
-		// 	$$(appliedFiltersList.getIdFromConfig()),
-		// 	this.imagesSelectionTemplate,
-		// 	this.filterPanelSearchField,
-		// 	this.allPagesTemplate,
-		// 	filterScrollView,
-		// 	$$(ID_FILTER_PANEL),
-		// 	$$(ID_MOBILE_GALLERY_CONTEXT_MENU)
-		// );
-
-		// general variation
 		const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 		this.listCollapsedView = this.getCartListCollapsedView();
 		// this.imageWindow = this.ui(imageWindow.getConfig(ID_IMAGE_WINDOW));
@@ -445,15 +436,17 @@ export default class GalleryMobileView extends JetView {
 		this.filterPanelSearchField = view.queryView({name: filterPanel.getSearchFieldName()});
 		const filtersForm = view.queryView({name: filterPanel.getFiltersFormName()});
 		const clearAllFiltersTemplate = this.getClearAllFiltersTemplate();
+		const appliedFiltersLayout = this.getAppliedFiltersLayout();
 		const downloadSelectedImagesButton = this.getDownloadSelectedImagesButton();
 		const downloadFilteredImagesButton = this.getFilteredImagesButton();
+		const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
 		// TODO: service
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
 			$$(ID_DATAVIEW),
 			null, // contentHeaderTemplate
-			null, // imageWindowInstance
+			this.imageWindow, // imageWindowInstance
 			null, // imageWindowViewer
 			null, // imageWindowMetadata
 			null, // metadataWindow
@@ -469,45 +462,69 @@ export default class GalleryMobileView extends JetView {
 			$$(ID_FILTER_PANEL),
 			$$(ID_MOBILE_GALLERY_CONTEXT_MENU), // galleryContextMenu
 			downloadSelectedImagesButton,
-			downloadFilteredImagesButton
+			downloadFilteredImagesButton,
+			appliedFiltersLayout,
+			imageWindowZoomButtons
 		);
 
 		const appliedFiltersListView = $$(filterPanel.getAppliedFiltersLisID());
 		const appliedFiltersLayoutView = $$(filterPanel.getAppliedFiltersLayoutID());
+		// TODO: move handler to function
 		appliedFiltersListView.data.attachEvent("onAfterDelete", () => {
 			if (filterPanel.isAppliedFiltersListEmpty()) {
 				appliedFiltersLayoutView?.hide();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.remove("filtered");
 			}
 			else {
 				appliedFiltersLayoutView?.show();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.add("filtered");
 			}
 		});
 
 		appliedFiltersListView.attachEvent("onAfterLoad", () => {
 			if (filterPanel.isAppliedFiltersListEmpty()) {
 				appliedFiltersLayoutView?.hide();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.remove("filtered");
 			}
 			else {
 				appliedFiltersLayoutView?.show();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.add("filtered");
 			}
 		});
 
-		appliedFiltersListView.data.attachEvent("onAfterAdd", () => {
-			const appliedFiltersLayout = $$(filterPanel.getAppliedFiltersLayoutID());
-			if (!filterPanel.isAppliedFiltersListEmpty()) {
-				appliedFiltersLayout.show();
+		appliedFiltersListView.data.attachEvent("onDataUpdate", () => {
+			if (filterPanel.isAppliedFiltersListEmpty()) {
+				appliedFiltersLayoutView?.hide();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.remove("filtered");
+			}
+			else {
+				appliedFiltersLayoutView?.show();
+				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+				openFiltersButtonNode.classList.add("filtered");
 			}
 		});
 
-		const filtersFormView = this.getFiltersForm();
+		const currentPager = $$(ID_PAGER);
+		const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
+		currentPager.attachEvent("onItemClick", (id) => {
+			// TODO: implement
+			switch (id) {
+				case "prev":
+				case "next":
+					$$(ID_DATAVIEW).unselectAll();
+					currentGalleryFooter.hide();
+					break;
+				default:
+			}
+		});
 	}
 
 	ready() {
-		// TODO: implement
-		// const dataviewYCountSelection = this.getDataviewYCountSelection();
-		// const yCountSelectionValue = dataviewYCountSelection.getValue();
-		// const doNotCallUpdatePager = true;
-		// dataviewYCountSelection.callEvent("onChange", [yCountSelectionValue, null, doNotCallUpdatePager]);
 		const initial = true;
 		this.updatePagerSize(initial);
 		const hiddenLeftPanel = util.getHiddenGalleryLeftPanel();
@@ -520,16 +537,12 @@ export default class GalleryMobileView extends JetView {
 			this._galleryService.load();
 		}
 		else {
-			authService.showTermOfUse(() => {
+			authService.showMobileTermOfUse(() => {
 				this._galleryService.load();
 			});
 		}
 		if (authService.isLoggedin()) {
 			this.dataviewYCountSelection.show();
-			// this.imagesSelectionTemplate.define("maxWidth", 235);
-			// TODO uncomment when study will be implemented
-			// this.allPagesTemplate.show();
-			// this.toggleButton.show();
 		}
 	}
 
@@ -546,22 +559,18 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	getSelectAllImagesOnAllPagesTemplate() {
-		// return this.getRoot().queryView({name: NAME_SELECT_ALL_IMAGES_ON_ALL_PAGES_TEMPLATE});
 		return null;
 	}
 
 	getCreateStudyButton() {
-		// return this.getRoot().queryView({name: "createStudyButtonName"});
 		return null;
 	}
 
 	getDataviewYCountSelection() {
-		// return this.getRoot().queryView({name: "dataviewYCountSelctionName"});
 		return null;
 	}
 
 	getAllPagesSelector() {
-		// return this.getRoot().queryView({name: "allPagesSelector"});
 		return null;
 	}
 
@@ -570,12 +579,10 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	getGalleryCartList() {
-		// return this.getRoot().queryView({name: "activeGalleryCartListName"});
 		return this.getRoot().queryView({name: cartList.getCartListName()});
 	}
 
 	getToggleButton() {
-		// return this.getRoot().queryView({name: "toggleSelectAllButtonName"});
 		return null;
 	}
 
@@ -588,12 +595,10 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	getCartListCollapsedView() {
-		// return this.getRoot().queryView({name: "cartListViewCollapsed"});
 		return null;
 	}
 
 	getLeftPanelWithCollapser() {
-		// return this.getRoot().queryView({name: "leftPanelWithCollapser"});
 		return null;
 	}
 
@@ -602,7 +607,6 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	getGalleryEmptySpace() {
-		// return this.getRoot().queryView({name: "content-empty-space"});
 		return null;
 	}
 
@@ -642,8 +646,20 @@ export default class GalleryMobileView extends JetView {
 		return this.getRoot().queryView({id: ID_FILTER_HEADER});
 	}
 
+	getMetadataHeader() {
+		return this.getRoot().queryView({id: ID_METADATA_HEADER});
+	}
+
 	getFiltersForm() {
-		return this.getRoot().queryView({name: filterPanel.getFiltersFormName()})
+		return this.getRoot().queryView({name: filterPanel.getFiltersFormName()});
+	}
+
+	getAppliedFiltersLayout() {
+		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersLayoutID()});
+	}
+
+	isAppliedFilterListEmpty() {
+
 	}
 
 	updatePagerSize(initial) {
@@ -652,8 +668,6 @@ export default class GalleryMobileView extends JetView {
 		const galleryDataViewWidth = dataWindowView.$width;
 		const galleryDataviewHeight = dataWindowView.$height;
 		const cols = 3;
-		// const multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
-		// 	/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
 		const maxImageWidth = Math.floor(dataWindowView.$width / cols);
 		const maxDataviewHeight = galleryDataviewHeight;
 		const maxImageHeight = maxImageWidth;

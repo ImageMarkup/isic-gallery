@@ -44,7 +44,9 @@ class GalleryService {
 		galleryLeftPanel,
 		galleryContextMenu,
 		downloadSelectedImagesButton,
-		downloadFilteredImagesButton
+		downloadFilteredImagesButton,
+		appliedFiltersLayout,
+		imageWindowZoomButtons
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -67,6 +69,8 @@ class GalleryService {
 		this._galleryContextMenu = galleryContextMenu;
 		this._downloadSelectedImagesButton = downloadSelectedImagesButton;
 		this._downloadFilteredImagesButton = downloadFilteredImagesButton;
+		this._appliedFiltersLayout = appliedFiltersLayout;
+		this._imageWindowZoomButtons = imageWindowZoomButtons;
 		this._init();
 	}
 
@@ -167,6 +171,7 @@ class GalleryService {
 			})
 			.catch(() => {
 				if (!this._view.$destructed) {
+					webix.alert(`Image with name "${searchValue}" was not found`);
 					webix.message("Search Images: Something went wrong");
 					this._view.hideProgress();
 				}
@@ -707,10 +712,12 @@ class GalleryService {
 			this._reload(0, this._pager.data.size);
 		});
 
-		this._clearAllFiltersTemplate.define("onClick", {
+		this._clearAllFiltersTemplate?.define("onClick", {
 			"clear-all-filters": () => {
 				this._downloadFilteredImagesButton.hide();
 				this._appliedFiltersList.clearAll();
+				this._appliedFiltersList.callEvent("onAfterLoad");
+				this._appliedFiltersLayout?.hide();
 				appliedFilterModel.clearAll();
 				this._reload();
 			}
@@ -805,9 +812,8 @@ class GalleryService {
 				itemId = params.id;
 			}
 			else {
-				this.deleteButton = $$(params);
-				itemId = this.deleteButton.config.$masterId;
-				item = this._activeCartList.getItem(itemId);
+				itemId = params;
+				item = this._activeCartList.getItem(params);
 			}
 			if (item.imageShown) {
 				item.imageShown = false;
@@ -1271,7 +1277,7 @@ class GalleryService {
 				this._createStudyButton?.hide();
 			}
 		}
-		// TODO: uncomment when donwload will be implemented
+		// TODO: uncomment when download will be implemented
 		// else {
 		// 	toShow ? this._downloadingMenu?.show() : this._downloadingMenu?.hide();
 		// }

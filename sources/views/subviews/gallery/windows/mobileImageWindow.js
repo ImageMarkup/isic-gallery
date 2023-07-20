@@ -1,6 +1,7 @@
+import windowWithHeader from "app-components/mobileWindow";
+
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import ajax from "../../../../services/ajaxActions";
-import windowWithHeader from "../../../components/mobileWindowWithHeader";
 import "../../../components/slideButton";
 
 
@@ -29,17 +30,36 @@ const zoomButtonsTemplate = {
   				<button class="zoom-btn btn-minus fas fa-search-minus"></button>`
 };
 
+const closeButton = {
+	view: "button",
+	css: "mobile-window-close-button",
+	label: '<svg viewBox="0 0 26 26" class="close-icon-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use></svg>',
+	type: "htmlbutton",
+	width: 30,
+	align: "right",
+	on: {
+		onItemClick() {
+			this.getTopParentView().hide();
+		}
+	}
+};
+
 const windowBody = {
-	css: "metadata-window-body",
-	paddingX: 35,
-	width: 0,
+	css: "mobile-image-window-body",
 	height: 0,
 	type: "clean",
 	rows: [
+		{
+			cols: [
+				{gravity: 1},
+				closeButton
+			]
+		},
 		templateViewer,
 		{height: 10},
 		{
 			type: "clean",
+			height: 30,
 			cols: [
 				zoomButtonsTemplate,
 				{}
@@ -70,8 +90,13 @@ function getViewerId() {
 	return templateViewer.id;
 }
 
+function getZoomButtonTemplateId() {
+	return zoomButtonsTemplate.id;
+}
+
 export default {
 	getConfig,
 	getIdFromConfig,
 	getViewerId,
+	getZoomButtonTemplateId
 };
