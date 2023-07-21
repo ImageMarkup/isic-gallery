@@ -639,10 +639,6 @@ export default class GalleryMobileView extends JetView {
 		return this.getRoot().queryView({id: ID_METADATA_LAYOUT});
 	}
 
-	getGalleryHeader() {
-		return this.getRoot().queryView({id: ID_MOBILE_GALLERY_HEADER});
-	}
-
 	getFilterHeader() {
 		return this.getRoot().queryView({id: ID_FILTER_HEADER});
 	}
