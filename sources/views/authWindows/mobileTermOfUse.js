@@ -1,6 +1,6 @@
 import state from "../../models/state";
 import mdLoader from "../../services/mdLoader";
-import windowWithHeader from "../components/windowWithHeader";
+import windowWithHeader from "../components/mobileWindowWithHeader";
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
 import mdTemplate from "../templates/termsOfUse.md";
 

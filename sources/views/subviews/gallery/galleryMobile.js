@@ -2,7 +2,6 @@ import {JetView} from "webix-jet";
 
 import constants from "../../../constants";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
-import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
@@ -201,6 +200,18 @@ export default class GalleryMobileView extends JetView {
 						const templateViewer = $$(mobileImageWindow.getViewerId());
 						templateViewer?.setValues({imageId: currentItem.isic_id});
 						this.imageWindow.show();
+						this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
+							if (this._imageInstance) {
+								this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
+							}
+							if (this._imageWindow) {
+								this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+							}
+							else {
+								// TODO: implement
+							}
+							window.wheelzoom(this._imageInstance);
+						});
 					}
 				},
 				"info-icon": async (/* e, id */) => {
@@ -255,11 +266,11 @@ export default class GalleryMobileView extends JetView {
 						if (url) { // Web Share API is supported
 							navigator.share({
 								title: `Share image ${currentItem.isic_id}`,
-								url: "https://gallery.isic-archive.com"
+								url
 							}).then(() => {
 								webix.message("Successful share", "info", 5000);
 							}).catch((error) => {
-								webix.message(`Error sharing: ${error}`, "error", 5000);
+								webix.message(`${error}`, "info", 5000);
 							});
 						}
 						else {
@@ -291,7 +302,6 @@ export default class GalleryMobileView extends JetView {
 		const rightPanel = cartList.getConfig({cartListID: ID_RIGHT_PANEL});
 
 		const mobileDataview = {
-			// view: "activeDataview",
 			view: "dataview",
 			id: ID_DATAVIEW,
 			name: "mobileGalleryImagesDataviewName",
@@ -300,11 +310,6 @@ export default class GalleryMobileView extends JetView {
 			datathrottle: 500,
 			onContext: {},
 			template(obj/* , common */) {
-				// let checkedClass = obj.isic_id === state.mobileSelectedImage ? "is-checked" : "";
-				// const checkedClass = "";
-				// const checkboxInput = obj.markCheckbox
-				// 	? '<input type="checkbox" id="scales" name="scales" style="visibility: hidden; width: 0px; height: 0px;" checked>'
-				// 	: '<input type="checkbox" id="scales" name="scales" style="visibility: hidden;width: 0px; height: 0px;">';
 				const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 				if (typeof galleryImagesUrls.getPreviewImageUrl(obj.isic_id) === "undefined") {
 					galleryImagesUrls.setPreviewImageUrl(
@@ -328,13 +333,11 @@ export default class GalleryMobileView extends JetView {
 					const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
 					if (selectedItem?.id.toString() === id.toString()) {
 						this.unselectAll();
-						state.mobileSelectedImage = null;
 						currentGalleryFooter.hide();
 					}
 					else {
 						this.select(id);
 						const imageName = this.getItem(id)?.isic_id;
-						state.mobileSelectedImage = imageName;
 						currentGalleryFooter.parse({isic_id: imageName, id});
 						if (!currentGalleryFooter.isVisible()) {
 							currentGalleryFooter.show();
@@ -381,23 +384,12 @@ export default class GalleryMobileView extends JetView {
 					id: ID_MOBILE_GALLERY_BODY,
 					view: "multiview",
 					cells: [
-						// dataview.getConfig(ID_DATAVIEW, true),
-						// mobileDataview,
 						gallery,
 						leftPanel,
 						rightPanel,
 						metadataLayout
 					]
 				}
-				// galleryFooter,
-				// {
-				// 	cols: [
-				// 		{width: 10},
-				// 		pager.getConfig(ID_PAGER, ID_DATAVIEW, true),
-				// 		clonePagerForNameFilter,
-				// 		{width: 10}
-				// 	]
-				// }
 			]
 		};
 
@@ -408,7 +400,6 @@ export default class GalleryMobileView extends JetView {
 					cols: [
 						multiview
 					]
-					// galleryFooter
 				}
 			]
 		};
@@ -418,9 +409,7 @@ export default class GalleryMobileView extends JetView {
 	init(view) {
 		const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 		this.listCollapsedView = this.getCartListCollapsedView();
-		// this.imageWindow = this.ui(imageWindow.getConfig(ID_IMAGE_WINDOW));
 		this.imageWindow = webix.ui(mobileImageWindow.getConfig(ID_IMAGE_WINDOW));
-		// this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
 		this.metadataWindow = this.getMetadataLayout();
 		const contextMenuConfig = contextMenu.getConfig(ID_MOBILE_GALLERY_CONTEXT_MENU);
 		this.galleryContextMenu = this.ui(contextMenuConfig);
@@ -440,7 +429,7 @@ export default class GalleryMobileView extends JetView {
 		const downloadSelectedImagesButton = this.getDownloadSelectedImagesButton();
 		const downloadFilteredImagesButton = this.getFilteredImagesButton();
 		const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
-		// TODO: service
+		this.imageWindowTemplate = $$(mobileImageWindow.getViewerId());
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -464,7 +453,8 @@ export default class GalleryMobileView extends JetView {
 			downloadSelectedImagesButton,
 			downloadFilteredImagesButton,
 			appliedFiltersLayout,
-			imageWindowZoomButtons
+			imageWindowZoomButtons,
+			this.imageWindowTemplate
 		);
 
 		const appliedFiltersListView = $$(filterPanel.getAppliedFiltersLisID());
@@ -512,7 +502,6 @@ export default class GalleryMobileView extends JetView {
 		const currentPager = $$(ID_PAGER);
 		const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
 		currentPager.attachEvent("onItemClick", (id) => {
-			// TODO: implement
 			switch (id) {
 				case "prev":
 				case "next":
@@ -521,6 +510,18 @@ export default class GalleryMobileView extends JetView {
 					break;
 				default:
 			}
+		});
+		this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
+			}
+			if (this.imageWindow) {
+				this._imageInstance = this.imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			else {
+				// TODO: implement
+			}
+			window.wheelzoom(this._imageInstance);
 		});
 	}
 

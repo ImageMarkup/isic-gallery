@@ -24,6 +24,7 @@ export default {
 	ID_WINDOW_API: "api-info-window",
 	ID_WINDOW_ACCESS_REQUEST: "create-dataset-access-request-window",
 	ID_WINDOW_TERMS_OF_USE: "term-of-use-window",
+	ID_MOBILE_WINDOW_TERMS_OF_USE: "mobile-term-of-use-window",
 
 	ID_MENU_DOWNLOAD_SEL_IMAGES_METADATA: "download-selected-images-metadata",
 	ID_MENU_DOWNLOAD_SEL_IMAGES: "download-selected-images",

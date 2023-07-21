@@ -7,7 +7,9 @@ import "../../../components/slideButton";
 
 const templateViewer = {
 	view: "template",
-	css: "absolute-centered-image-template",
+	css: "absolute-centered-image-template-mobile",
+	autoHeight: true,
+	gravity: 1,
 	template(obj) {
 		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
 			ajax.getImageItem(obj.imageId).then((item) => {
@@ -15,9 +17,13 @@ const templateViewer = {
 				$$(templateViewer.id).refresh();
 			});
 		}
+		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) ?? "";
 
-		return `<div class="image-zoom-container">
-  					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
+		return `<div class="mobile-window-close-button">
+							<svg viewBox="0 0 26 26" class="close-icon-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-btn close-icon-svg-use"></use></svg>',
+						</div>
+				<div class="image-zoom-container">
+  					<img class= 'zoomable-image' src="${imageUrl}"/>
 				</div>
 				`;
 	},
@@ -26,14 +32,16 @@ const templateViewer = {
 
 const zoomButtonsTemplate = {
 	view: "template",
-	template: `<button class="zoom-btn btn-plus fas fa-search-plus"></button>
-  				<button class="zoom-btn btn-minus fas fa-search-minus"></button>`
+	css: {background: "transparent"},
+	height: 0,
+	template: `<button class="zoom-btn btn-plus fas fa-search-plus" style="left:10px"></button>
+  				<button class="zoom-btn btn-minus fas fa-search-minus" style="left:45px"></button>`
 };
 
 const closeButton = {
 	view: "button",
 	css: "mobile-window-close-button",
-	label: '<svg viewBox="0 0 26 26" class="close-icon-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use></svg>',
+	label: '<svg viewBox="0 0 26 26" class="close-icon-svg" style="width:30px"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use></svg>',
 	type: "htmlbutton",
 	width: 30,
 	align: "right",
@@ -49,23 +57,16 @@ const windowBody = {
 	height: 0,
 	type: "clean",
 	rows: [
-		{
-			cols: [
-				{gravity: 1},
-				closeButton
-			]
-		},
 		templateViewer,
-		{height: 10},
 		{
+			gravity: 0,
 			type: "clean",
-			height: 30,
+			height: 0,
+			css: {position: "absolute", "z-index": "99", height: "40px"},
 			cols: [
-				zoomButtonsTemplate,
-				{}
+				zoomButtonsTemplate
 			]
-		},
-		{height: 10}
+		}
 	]
 };
 
@@ -78,8 +79,7 @@ function refreshTemplate() {
 function getConfig(id) {
 	templateViewer.id = `viewer-${webix.uid()}`;
 	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
-	const windowTitle = "";
-	return windowWithHeader.getConfig(id, windowBody, windowTitle);
+	return windowWithHeader.getConfig(id, windowBody);
 }
 
 function getIdFromConfig() {

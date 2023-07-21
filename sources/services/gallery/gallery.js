@@ -46,7 +46,8 @@ class GalleryService {
 		downloadSelectedImagesButton,
 		downloadFilteredImagesButton,
 		appliedFiltersLayout,
-		imageWindowZoomButtons
+		imageWindowZoomButtons,
+		imageWindowTemplate
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -71,6 +72,7 @@ class GalleryService {
 		this._downloadFilteredImagesButton = downloadFilteredImagesButton;
 		this._appliedFiltersLayout = appliedFiltersLayout;
 		this._imageWindowZoomButtons = imageWindowZoomButtons;
+		this._imageWindowTemplate = imageWindowTemplate;
 		this._init();
 	}
 
@@ -183,7 +185,6 @@ class GalleryService {
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
 		this._imageTemplate = $$(imageWindow.getViewerId());
-		this._imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
 		if (this._imageWindow) {
 			[this._imageWindowZoomPlusButtons, this._imageZoomMunusButtons] = this._imageWindow?.$view.getElementsByClassName("zoom-btn");
 		}
@@ -374,8 +375,8 @@ class GalleryService {
 			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
-			state.imagesOffset = 0;
 			if (!doNotCallUpdatePager) {
+				state.imagesOffset = 0;
 				this._imagesDataview.$scope.updatePagerSize();
 			}
 		});
@@ -462,19 +463,19 @@ class GalleryService {
 				if (this._imageWindow) {
 					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 				}
-				else {
-					// TODO: implement
-				}
 				window.wheelzoom(this._imageInstance);
 			});
 		};
 
-		this._imageTemplate?.define("onClick", {
+		this._imageWindowTemplate?.define("onClick", {
 			next: () => {
 				this._showNextImage();
 			},
 			prev: () => {
 				this._showPrevImage();
+			},
+			"mobile-window-close-button": function () {
+				this.getTopParentView().hide();
 			}
 		});
 
@@ -1331,10 +1332,13 @@ class GalleryService {
 
 	_zoomImage(buttonIcon) {
 		const eventWheel = new CustomEvent("wheel");
-		const offsetTop = this._imageInstance.getBoundingClientRect().top;
-		const offsetLeft = this._imageInstance.getBoundingClientRect().left;
-		const imageWidth = this._imageInstance.clientWidth;
-		const imageHeight = this._imageInstance.clientHeight;
+		const imageInstance = this._imageInstance
+			? this._imageInstance
+			: this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+		const offsetTop = imageInstance.getBoundingClientRect().top;
+		const offsetLeft = imageInstance.getBoundingClientRect().left;
+		const imageWidth = imageInstance.clientWidth;
+		const imageHeight = imageInstance.clientHeight;
 		const pageY = Math.floor(offsetTop + imageHeight / 2);
 		const pageX = Math.floor(offsetLeft + imageWidth / 2);
 		eventWheel.pageX = pageX;
@@ -1347,7 +1351,7 @@ class GalleryService {
 			eventWheel.deltaY = 100;
 			eventWheel.wheelDelta = -120;
 		}
-		this._imageInstance.dispatchEvent(eventWheel);
+		imageInstance.dispatchEvent(eventWheel);
 	}
 
 	_removeTooltipForDataview(templateView) {

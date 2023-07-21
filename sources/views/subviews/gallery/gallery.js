@@ -335,6 +335,7 @@ export default class GalleryView extends JetView {
 		const downloadSelectedImagesButton = this.getDownloadSelectedImagesButton();
 		const downloadFilteredImagesButton = this.getFilteredImagesButton();
 		const imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
+		const imageWindowTemplate = $$(imageWindow.getViewerId());
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -358,7 +359,8 @@ export default class GalleryView extends JetView {
 			downloadSelectedImagesButton,
 			downloadFilteredImagesButton,
 			null,
-			imageWindowZoomButtons
+			imageWindowZoomButtons,
+			imageWindowTemplate
 		);
 	}
 
