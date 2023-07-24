@@ -1,7 +1,9 @@
 import {JetView} from "webix-jet";
+import WZoom from "vanilla-js-wheel-zoom";
 
 import constants from "../../../constants";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
+import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
@@ -65,7 +67,9 @@ export default class GalleryMobileView extends JetView {
 		const openFilterButton = {
 			view: "button",
 			id: ID_OPEN_FILTERS_BUTTON,
+			css: "gallery-header-mobile-button",
 			type: "icon",
+			width: 40,
 			icon: "fas fa-filter",
 			click: () => {
 				const galleryMultiview = this.getGalleryMultiview();
@@ -80,7 +84,9 @@ export default class GalleryMobileView extends JetView {
 		const closeFilterButton = {
 			view: "button",
 			type: "icon",
+			css: "gallery-header-mobile-button",
 			icon: "fas fa-times-circle",
+			width: 40,
 			click: () => {
 				const galleryMultiview = this.getGalleryMultiview();
 				galleryMultiview.setValue(ID_GALLERY);
@@ -94,7 +100,9 @@ export default class GalleryMobileView extends JetView {
 		const closeMetadataButton = {
 			view: "button",
 			type: "icon",
+			css: "gallery-header-mobile-button",
 			icon: "fas fa-times-circle",
+			width: 40,
 			click: () => {
 				const galleryMultiview = this.getGalleryMultiview();
 				galleryMultiview.setValue(ID_GALLERY);
@@ -109,7 +117,6 @@ export default class GalleryMobileView extends JetView {
 			id: ID_MOBILE_GALLERY_HEADER,
 			cols: [
 				galleryHeaderName,
-				{gravity: 2},
 				openFilterButton
 			]
 		};
@@ -119,7 +126,6 @@ export default class GalleryMobileView extends JetView {
 			hidden: true,
 			cols: [
 				filterHeaderName,
-				{gravity: 2},
 				closeFilterButton
 			]
 		};
@@ -129,7 +135,6 @@ export default class GalleryMobileView extends JetView {
 			hidden: true,
 			cols: [
 				metadataHeaderName,
-				{gravity: 2},
 				closeMetadataButton
 			]
 		};
@@ -199,7 +204,6 @@ export default class GalleryMobileView extends JetView {
 					if (this.imageWindow) {
 						const templateViewer = $$(mobileImageWindow.getViewerId());
 						templateViewer?.setValues({imageId: currentItem.isic_id});
-						this.imageWindow.show();
 						this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
 							if (this._imageInstance) {
 								this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
@@ -207,11 +211,9 @@ export default class GalleryMobileView extends JetView {
 							if (this._imageWindow) {
 								this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 							}
-							else {
-								// TODO: implement
-							}
 							window.wheelzoom(this._imageInstance);
 						});
+						this.imageWindow.show();
 					}
 				},
 				"info-icon": async (/* e, id */) => {
@@ -407,6 +409,7 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	init(view) {
+		const dataviewInstance = $$(ID_DATAVIEW);
 		const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 		this.listCollapsedView = this.getCartListCollapsedView();
 		this.imageWindow = webix.ui(mobileImageWindow.getConfig(ID_IMAGE_WINDOW));
@@ -419,7 +422,6 @@ export default class GalleryMobileView extends JetView {
 		this.createStudyButton = null;
 		this.imagesSelectionTemplate = null;
 		this.dataviewYCountSelection = null;
-		// this.activeGalleryList = this.getActiveGalleryCartList();
 		this.galleryList = this.getGalleryCartList();
 		this.toggleButton = this.getToggleButton();
 		this.filterPanelSearchField = view.queryView({name: filterPanel.getSearchFieldName()});
@@ -513,15 +515,26 @@ export default class GalleryMobileView extends JetView {
 		});
 		this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
 			if (this._imageInstance) {
-				this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
+				this._galleryService.wzoom.destroy();
 			}
 			if (this.imageWindow) {
 				this._imageInstance = this.imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 			}
-			else {
-				// TODO: implement
+			const wzoomOptions = {
+				type: "image",
+				maxScale: 5,
+			};
+			this._galleryService.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+			// this._galleryService.wzoom.transform(0, 0, 1);
+			setTimeout(() => {
+				this._galleryService.wzoom.transform(0, 0, 1);
+			});
+		});
+		dataviewInstance.attachEvent("onAfterLoad", () => {
+			const selectItem = dataviewInstance.getSelectedItem();
+			if (!selectItem) {
+				currentGalleryFooter.hide();
 			}
-			window.wheelzoom(this._imageInstance);
 		});
 	}
 
@@ -545,22 +558,18 @@ export default class GalleryMobileView extends JetView {
 		if (authService.isLoggedin()) {
 			this.dataviewYCountSelection.show();
 		}
+		const that = this;
+		const resizeHandler = util.debounce(() => {
+			const dataWindowView = that.getGalleryDataview();
+			state.imagesOffset = 0;
+			dataWindowView.unselectAll();
+			dataWindowView.$scope.updatePagerSize();
+		});
+		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 	}
 
 	destroy() {
 		webix.eventRemove(this.windowResizeEvent);
-	}
-
-	showList() {
-		// TODO: implement
-	}
-
-	showFilters() {
-		// TODO: implement
-	}
-
-	getSelectAllImagesOnAllPagesTemplate() {
-		return null;
 	}
 
 	getCreateStudyButton() {
@@ -655,10 +664,6 @@ export default class GalleryMobileView extends JetView {
 		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersLayoutID()});
 	}
 
-	isAppliedFilterListEmpty() {
-
-	}
-
 	updatePagerSize(initial) {
 		const currentPager = this.$$(ID_PAGER);
 		const dataWindowView = this.getGalleryDataview();
@@ -673,8 +678,8 @@ export default class GalleryMobileView extends JetView {
 		const elementHeight = Math.round(galleryDataviewHeight / rows);
 		dataWindowView.define("type", {width: elementWidth, height: elementHeight});
 		util.setDataviewItemDimensions(elementWidth, elementHeight);
-		const imageWidth = util.getImageWidth();
-		const imageHeight = util.getImageHeight();
+		const imageWidth = galleryDataViewWidth / cols - 15;
+		const imageHeight = imageWidth;
 		this._galleryService._setDataviewColumns(
 			elementWidth,
 			elementHeight,

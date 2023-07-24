@@ -1,4 +1,5 @@
 import {plugins} from "webix-jet";
+
 import constants from "../../constants";
 import state from "../../models/state";
 import studiesManagementModel from "../../models/studiesForManagement";

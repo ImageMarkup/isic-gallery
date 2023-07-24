@@ -14,9 +14,9 @@ const templateViewer = {
 				$$(templateViewer.id).refresh();
 			});
 		}
-
+		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-  					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
+					<img class= 'zoomable-image' src="${imageUrl}"/>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>

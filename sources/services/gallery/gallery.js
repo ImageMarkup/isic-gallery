@@ -1,4 +1,6 @@
 import "wheelzoom";
+import WZoom from "vanilla-js-wheel-zoom";
+
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
@@ -458,12 +460,12 @@ class GalleryService {
 			}
 			this._imageTemplate?.attachEvent("onAfterRender", () => {
 				if (this._imageInstance) {
-					this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
+					this.wzoom.destroy();
 				}
 				if (this._imageWindow) {
 					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 				}
-				window.wheelzoom(this._imageInstance);
+				this.wzoom = WZoom.create(this._imageInstance, {type: "image", minScale: 0.5, maxScale: 5, speed: 1.2});
 			});
 		};
 
@@ -986,6 +988,7 @@ class GalleryService {
 		this._updateCounts();
 		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
 		this._view.$scope.setParam("filter", paramFilters, true);
+		this._filterScrollView.resize();
 		this._updateImagesDataview(offset, limit); // load images first time
 	}
 
@@ -1331,27 +1334,12 @@ class GalleryService {
 	}
 
 	_zoomImage(buttonIcon) {
-		const eventWheel = new CustomEvent("wheel");
-		const imageInstance = this._imageInstance
-			? this._imageInstance
-			: this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-		const offsetTop = imageInstance.getBoundingClientRect().top;
-		const offsetLeft = imageInstance.getBoundingClientRect().left;
-		const imageWidth = imageInstance.clientWidth;
-		const imageHeight = imageInstance.clientHeight;
-		const pageY = Math.floor(offsetTop + imageHeight / 2);
-		const pageX = Math.floor(offsetLeft + imageWidth / 2);
-		eventWheel.pageX = pageX;
-		eventWheel.pageY = pageY;
 		if (buttonIcon === "plus") {
-			eventWheel.deltaY = -100;
-			eventWheel.wheelDelta = 120;
+			this.wzoom.zoomUp();
 		}
 		else if (buttonIcon === "minus") {
-			eventWheel.deltaY = 100;
-			eventWheel.wheelDelta = -120;
+			this.wzoom.zoomDown();
 		}
-		imageInstance.dispatchEvent(eventWheel);
 	}
 
 	_removeTooltipForDataview(templateView) {

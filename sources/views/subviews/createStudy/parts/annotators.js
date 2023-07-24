@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import "../../../components/activeList";
 import utils from "../../../../utils/util";
 

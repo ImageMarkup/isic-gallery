@@ -48,7 +48,7 @@ export default class Header extends JetView {
 				{id: MenuIDs.Forum, value: "Forum"},
 				{id: MenuIDs.Gallery, value: "Gallery"},
 				{
-					id: MenuIDs.Challenger.id,
+					id: MenuIDs.Challenger,
 					value: "Challenges",
 					$css: "menu-with-sub",
 					submenu: [
@@ -115,6 +115,9 @@ export default class Header extends JetView {
 					this.hideItem(MenuIDs.Studies);
 					this.hideItem(MenuIDs.Dermo);
 					this.hideItem(MenuIDs.Download);
+					this.hideItem(MenuIDs.Archive);
+					this.hideItem(MenuIDs.Challenger);
+					this.hideItem(MenuIDs.Gallery);
 					headerMenu.disableItem(MenuIDs.Studies);
 				},
 				onMenuItemClick: (id) => {

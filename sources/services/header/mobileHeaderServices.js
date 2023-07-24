@@ -23,7 +23,8 @@ export default class MobileHeaderService {
 
 	showLogoutPanel() {
 		const user = authService.getUserInfo();
-		const cols = logoutPanelCols.createConfig(user.first_name, user.last_name);
+		const config = {css: "logout-mobile-name"};
+		const cols = logoutPanelCols.createConfig(user.first_name, user.last_name, config);
 		webix.ui(cols, this._logoutPanel);
 		this._logoutPanel.show(false, false);
 	}

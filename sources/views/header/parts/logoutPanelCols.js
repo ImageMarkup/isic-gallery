@@ -7,7 +7,7 @@ function calcUserMenuWidth(str) {
 	return nameWidth <= 150 ? nameWidth : 150;
 }
 
-function createConfig(firstName, lastName) {
+function createConfig(firstName, lastName, config) {
 	const name = `${firstName || ""} ${lastName || ""}`;
 	const cols = [
 		{},
@@ -30,6 +30,7 @@ function createConfig(firstName, lastName) {
 					data: [
 						{
 							id: "name",
+							css: config.css,
 							value: `<span style="margin-left: -10px; width: ${calcUserMenuWidth(name)}px;" title="${firstName} ${lastName}"}>${name}</span>`,
 							submenu: [
 								{id: "logout", value: "<span class='webix_icon fas fa-arrow-right'></span> Logout"}

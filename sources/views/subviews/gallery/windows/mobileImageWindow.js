@@ -38,20 +38,6 @@ const zoomButtonsTemplate = {
   				<button class="zoom-btn btn-minus fas fa-search-minus" style="left:45px"></button>`
 };
 
-const closeButton = {
-	view: "button",
-	css: "mobile-window-close-button",
-	label: '<svg viewBox="0 0 26 26" class="close-icon-svg" style="width:30px"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use></svg>',
-	type: "htmlbutton",
-	width: 30,
-	align: "right",
-	on: {
-		onItemClick() {
-			this.getTopParentView().hide();
-		}
-	}
-};
-
 const windowBody = {
 	css: "mobile-image-window-body",
 	height: 0,
@@ -70,15 +56,14 @@ const windowBody = {
 	]
 };
 
-function refreshTemplate() {
-	// eslint-disable-next-line no-use-before-define
-	let imageTemplate = $$(getViewerId());
-	imageTemplate.refresh();
-}
-
 function getConfig(id) {
 	templateViewer.id = `viewer-${webix.uid()}`;
 	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
+	const windowWidth = window.innerWidth * 0.9;
+	const windowHeight = window.innerHeight * 0.9;
+	const windowSize = windowWidth < windowHeight ? windowWidth : windowHeight;
+	windowBody.width = windowSize;
+	windowBody.height = windowSize;
 	return windowWithHeader.getConfig(id, windowBody);
 }
 

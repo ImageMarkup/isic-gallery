@@ -44,18 +44,15 @@
 .mobile-window-close-button {
   position: absolute;
   right: 5px;
-  button {
-    background: none;
-    border: none;
-    .box-shadow(none);
-  }
-  .close-icon-svg,
+  width: 26px;
+  top: -40px;
   .close-icon-svg-use {
     width: 26px;
     height: 26px;
   }
   .close-icon-svg-use {
-    fill: @popup-close-icon;
+    background: none;
+    fill: @popup-mobile-close-icon;
     .transition(all .3s ease-in-out);
   }
   button {
@@ -72,18 +69,17 @@
 
 /* mobile-window */
 .webix_view.webix_window.mobile-window {
-  width: 90%;
-  //left: 10px;
-  //right: 10px;
   .mobile-window-header-toolbar{
     background: transparent;
   }
   overflow: visible;
-  //box-shadow()
 }
 
 .absolute-centered-image-template-mobile {
   height: 100%;
+  .webix_template {
+    padding: 0px;
+  }
 }
 
 /* webix_el_slider */
@@ -176,6 +172,11 @@
   }
 }
 
+.image-zoom-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /*========== Metadata popup =============*/
 .metadata-scrollview {

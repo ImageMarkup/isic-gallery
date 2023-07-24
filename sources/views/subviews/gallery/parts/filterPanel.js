@@ -89,7 +89,7 @@ function getConfig(config) {
 		view: "form",
 		paddingX: 7,
 		margin: 0,
-		elements: []// elements will be set after init, in gallery service
+		elements: [] // elements will be set after init, in gallery service
 	};
 
 	const filters = {
