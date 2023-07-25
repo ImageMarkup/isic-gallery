@@ -13,16 +13,12 @@ class HeaderService {
 	_init() {
 		this._view.$scope.on(this._view.$scope.app, "login", () => {
 			this.showLogoutPanel();
-			this._baseMenu.showItem("dashboard");
-			this._baseMenu.showItem("forum");
 		});
 		this._view.$scope.on(this._view.$scope.app, "userInfoChanged", () => {
 			this.showLogoutPanel();
 		});
 		this._view.$scope.on(this._view.$scope.app, "logout", () => {
 			this._loginPanel.show();
-			this._baseMenu.hideItem("dashboard");
-			this._baseMenu.hideItem("forum");
 		});
 		this._view.$scope.on(this._view.$scope.app, "needSelectHeaderItem", (data) => {
 			if (!(data && data.itemName)) {
