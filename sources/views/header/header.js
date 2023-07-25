@@ -43,6 +43,7 @@ export default class Header extends JetView {
 			css: "header-base-menu",
 			width: 935,
 			borderless: true,
+			hidden: true,
 			data: [
 				{id: MenuIDs.About, value: "About"},
 				{id: MenuIDs.Forum, value: "Forum"},
