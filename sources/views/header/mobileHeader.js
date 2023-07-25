@@ -1,10 +1,10 @@
 import {JetView} from "webix-jet";
 
-import authService from "../../services/auth";
-import menuHandlerService from "../../services/menuHandlers";
 import constants from "../../constants";
-import uploadWindow from "jet-views/header/windows/uploadTypeWindow";
-import MobileHeaderService from "app-services/header/mobileHeaderServices";
+import authService from "../../services/auth";
+import MobileHeaderService from "../../services/header/mobileHeaderServices";
+import menuHandlerService from "../../services/menuHandlers";
+import uploadWindow from "./windows/uploadTypeWindow";
 
 const ID_LOGOUT_PANEL = `logout-panel-id-${webix.uid()}`;
 const ID_LOGIN_MENU = `login-menu-id-${webix.uid()}`;

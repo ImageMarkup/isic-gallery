@@ -15,6 +15,7 @@ import pager from "./parts/galleryPager";
 import metadataPart from "./parts/metadata";
 import filterPanel from "./parts/mobileFilterPanel";
 import mobileImageWindow from "./windows/mobileImageWindow";
+import logger from "../../../utils/logger";
 
 const ID_RIGHT_PANEL = `right-panel-id-${webix.uid()}`;
 const ID_PAGER = `gallery-pager-id-${webix.uid()}`;
@@ -270,13 +271,13 @@ export default class GalleryMobileView extends JetView {
 								title: `Share image ${currentItem.isic_id}`,
 								url
 							}).then(() => {
-								webix.message("Successful share", "info", 5000);
+								logger("Successful share");
 							}).catch((error) => {
-								webix.message(`${error}`, "info", 5000);
+								logger(`${error}`);
 							});
 						}
 						else {
-							webix.message("Do not have link to shame image", "info", 5000);
+							webix.message("Do not have link to share image", "info", 5000);
 						}
 					}
 					else {
@@ -523,9 +524,10 @@ export default class GalleryMobileView extends JetView {
 			const wzoomOptions = {
 				type: "image",
 				maxScale: 5,
+				zoomOnClick: false,
+				minScale: 1
 			};
 			this._galleryService.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			// this._galleryService.wzoom.transform(0, 0, 1);
 			setTimeout(() => {
 				this._galleryService.wzoom.transform(0, 0, 1);
 			});

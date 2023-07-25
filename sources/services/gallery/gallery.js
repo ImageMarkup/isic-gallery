@@ -465,7 +465,13 @@ class GalleryService {
 				if (this._imageWindow) {
 					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 				}
-				this.wzoom = WZoom.create(this._imageInstance, {type: "image", minScale: 0.5, maxScale: 5, speed: 1.2});
+				const wzoomOptions = {
+					minScale: 1,
+					type: "image",
+					maxScale: 5,
+					speed: 1.2
+				};
+				this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
 			});
 		};
 

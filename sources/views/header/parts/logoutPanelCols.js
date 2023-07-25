@@ -26,11 +26,11 @@ function createConfig(firstName, lastName, config) {
 				{
 					view: "menu",
 					openAction: "click",
+					css: config?.css ?? "",
 					width: calcUserMenuWidth(name),
 					data: [
 						{
 							id: "name",
-							css: config.css,
 							value: `<span style="margin-left: -10px; width: ${calcUserMenuWidth(name)}px;" title="${firstName} ${lastName}"}>${name}</span>`,
 							submenu: [
 								{id: "logout", value: "<span class='webix_icon fas fa-arrow-right'></span> Logout"}

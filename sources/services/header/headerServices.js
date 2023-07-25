@@ -1,4 +1,3 @@
-import constants from "../../constants";
 import logoutPanelCols from "../../views/header/parts/logoutPanelCols";
 import authService from "../auth";
 
@@ -36,10 +35,6 @@ class HeaderService {
 				this._baseMenu.select(data.itemName);
 			}
 		});
-		// TODO: fix menu
-		// const challengesSubMenu = this._baseMenu.getSubMenu(constants.ID_HEADER_MENU_CHALLENGES);
-		// challengesSubMenu.define("width", 135);
-		// challengesSubMenu.resize();
 	}
 
 	showLogoutPanel() {
