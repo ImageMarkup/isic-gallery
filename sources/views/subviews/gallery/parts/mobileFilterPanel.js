@@ -33,6 +33,7 @@ function getConfig(config) {
 		value: "Download ZIP",
 		id: ID_DOWNLOAD_FILTERED_IMAGES_BUTTON,
 		name: NAME_DOWNLOAD_FILTERED_IMAGES_BUTTON,
+		hidden: true
 	};
 
 	const searchField = {
