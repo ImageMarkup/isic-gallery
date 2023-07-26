@@ -7,7 +7,7 @@ function calcUserMenuWidth(str) {
 	return nameWidth <= 150 ? nameWidth : 150;
 }
 
-function createConfig(firstName, lastName, config) {
+function createConfig(firstName, lastName) {
 	const name = `${firstName || ""} ${lastName || ""}`;
 	const cols = [
 		{},
@@ -26,7 +26,6 @@ function createConfig(firstName, lastName, config) {
 				{
 					view: "menu",
 					openAction: "click",
-					css: config?.css ?? "",
 					width: calcUserMenuWidth(name),
 					data: [
 						{

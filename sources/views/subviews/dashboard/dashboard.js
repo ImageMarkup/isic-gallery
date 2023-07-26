@@ -290,11 +290,12 @@ export default class DashboardView extends JetView {
 		);
 	}
 
-	urlChange() {
+	async urlChange() {
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_DASHBOARD}]);
 		if (authService.isLoggedin()) {
 			// check term of use
-			if (authService.isTermsOfUseAccepted()) {
+			const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+			if (isTermsOfUseAccepted) {
 				this.dashboardService.load();
 			}
 			else {

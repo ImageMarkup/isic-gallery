@@ -75,19 +75,20 @@ export default class StudiesManagementView extends JetView {
 		);
 	}
 
-	urlChange() {
+	async urlChange() {
 		// for remaining previous state of accordion
 		const parentViewName = this.getParentView().getName();
 		let pageNumber = 0;
 		let selectedAdminStudiesIdsSet;
 		// satadiesManagement may be a part of dashboard page
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
 		if (parentViewName === constants.NAME_VIEW_DASHBOARD) {
 			pageNumber = state.dashboard.adminStudiesPage || 0;
 			selectedAdminStudiesIdsSet = state.dashboard.selectedAdminStudiesIdsSet;
 			this.studiesManagementService.load(pageNumber, selectedAdminStudiesIdsSet);
 		}
 		// then it is separate  page and we should check terms of use
-		else if (authService.isTermsOfUseAccepted()) {
+		else if (isTermsOfUseAccepted) {
 			this.studiesManagementService.load(pageNumber, selectedAdminStudiesIdsSet);
 		}
 		else {

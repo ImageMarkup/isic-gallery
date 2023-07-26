@@ -10,33 +10,6 @@ import manageLocalStorageByAppVersion from "./services/localStorageManager";
 import MobileHeader from "./views/header/mobileHeader";
 import MobileTop from "./views/mobileTop";
 import OnlyHeaderTop from "./views/onlyHeaderTop";
-// about pages
-import AboutView from "./views/subviews/about/about";
-import AboutIsicBackground from "./views/subviews/about/subviews/aboutIsic/background";
-import AboutIsicGoals from "./views/subviews/about/subviews/aboutIsic/goals";
-import AboutIsicOrganization from "./views/subviews/about/subviews/aboutIsic/organization";
-import AboutIsicOverview from "./views/subviews/about/subviews/aboutIsic/overview";
-import AboutIsicSponsorsAndPartners from "./views/subviews/about/subviews/aboutIsic/sponsorsAndPartners";
-import ContactInfo from "./views/subviews/about/subviews/contactInfo";
-import FAQ from "./views/subviews/about/subviews/faq";
-import IsicArchiveContent from "./views/subviews/about/subviews/isicArchive/contentAndLayout";
-import IsicArchiveDataDictionary from "./views/subviews/about/subviews/isicArchive/dataDictionary";
-import IsicArchiveGoals from "./views/subviews/about/subviews/isicArchive/goals";
-import IsicArchiveInfrastructure from "./views/subviews/about/subviews/isicArchive/infrastructure";
-import IsicChallengesGoals from "./views/subviews/about/subviews/isicChallenges/goals";
-import IsicChallengesGrandVLive from "./views/subviews/about/subviews/isicChallenges/grandVLive";
-import IsicChallengesHistory from "./views/subviews/about/subviews/isicChallenges/historyOfChallenges";
-import IsicChallengesPlanned from "./views/subviews/about/subviews/isicChallenges/planned";
-import IsicMeetingsGroups from "./views/subviews/about/subviews/isicMeetings/groups";
-import IsicMeetingsWorkshops from "./views/subviews/about/subviews/isicMeetings/workshops";
-import IsicPublications from "./views/subviews/about/subviews/isicPublications";
-import WorkingGroupsAI from "./views/subviews/about/subviews/workingGroups/artificialIntelligence";
-import WorkingGroupsEducation from "./views/subviews/about/subviews/workingGroups/education";
-import WorkingGroupsMetadata from "./views/subviews/about/subviews/workingGroups/metadata";
-import WorkingGroupsPrivacy from "./views/subviews/about/subviews/workingGroups/privacy";
-import WorkingGroupsTechnique from "./views/subviews/about/subviews/workingGroups/technique";
-import WorkingGroupsTechnology from "./views/subviews/about/subviews/workingGroups/technology";
-import WorkingGroupsTerminology from "./views/subviews/about/subviews/workingGroups/terminology";
 import APIDocumentation from "./views/subviews/apiDocumentation/apiDocumentation";
 import ApplyMetadata from "./views/subviews/applyMetadata/applyMetadata";
 import BatchUpload from "./views/subviews/batchUpload/batchUpload";
@@ -80,7 +53,6 @@ webix.ready(() => {
 			topWithHeader: TopWithHeader,
 			mobileTop: MobileTop,
 			mobileHeader: MobileHeader,
-			about: AboutView,
 			dataset: DatasetView,
 			featureset: FeaturesetView,
 			gallery: GalleryView,
@@ -97,33 +69,7 @@ webix.ready(() => {
 			registerMetadata: RegisterMetadata,
 			createStudy: CreateStudy,
 			apiDocumentation: APIDocumentation,
-			uploadData: UploadData,
-			// about pages
-			aboutIsicOverview: AboutIsicOverview,
-			aboutIsicBackground: AboutIsicBackground,
-			aboutIsicGoals: AboutIsicGoals,
-			aboutIsicOrganization: AboutIsicOrganization,
-			aboutIsicSponsorsAndPartners: AboutIsicSponsorsAndPartners,
-			workingGroupsTechnology: WorkingGroupsTechnology,
-			workingGroupsTechnique: WorkingGroupsTechnique,
-			workingGroupsTerminology: WorkingGroupsTerminology,
-			workingGroupsPrivacy: WorkingGroupsPrivacy,
-			workingGroupsMetadata: WorkingGroupsMetadata,
-			workingGroupsAI: WorkingGroupsAI,
-			workingGroupsEducation: WorkingGroupsEducation,
-			isicArchiveGoals: IsicArchiveGoals,
-			isicArchiveContent: IsicArchiveContent,
-			isicArchiveInfrastructure: IsicArchiveInfrastructure,
-			isicArchiveDataDictionary: IsicArchiveDataDictionary,
-			isicChallengesGoals: IsicChallengesGoals,
-			isicChallengesGrandVLive: IsicChallengesGrandVLive,
-			isicChallengesHistory: IsicChallengesHistory,
-			isicChallengesPlanned: IsicChallengesPlanned,
-			isicMeetingsGroups: IsicMeetingsGroups,
-			isicMeetingsWorkshops: IsicMeetingsWorkshops,
-			isicPublications: IsicPublications,
-			faq: FAQ,
-			contactInfo: ContactInfo
+			uploadData: UploadData
 		}
 	});
 
@@ -137,7 +83,7 @@ webix.ready(() => {
 	});
 
 	app.attachEvent("app:route", () => {
-		let user = auth.getUserInfo();
+		const user = auth.getUserInfo();
 		if (user) {
 			auth.refreshUserInfo();
 		}

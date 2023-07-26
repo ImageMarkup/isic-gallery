@@ -187,11 +187,12 @@ export default class StudiesView extends JetView {
 		);
 	}
 
-	urlChange() {
+	async urlChange() {
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_STUDIES}]);
 		if (authService.isLoggedin()) {
 			// check term of use
-			if (authService.isTermsOfUseAccepted()) {
+			const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+			if (isTermsOfUseAccepted) {
 				this.studiesService.load();
 			}
 			else {

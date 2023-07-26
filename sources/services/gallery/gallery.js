@@ -215,8 +215,6 @@ class GalleryService {
 
 		if (authService.isLoggedin()) {
 			if (authService.getUserInfo()) {
-				// TODO: uncomment in galleryDataview and galaryService when download will be implemented
-				// this._onChangeForDownload(true);
 				selectedImagesArray = selectedImages.getSelectedImagesForDownload();
 			}
 		}

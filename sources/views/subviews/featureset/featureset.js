@@ -285,8 +285,9 @@ export default class FeaturesetView extends JetView {
 		});
 	}
 
-	urlChange() {
-		if (authService.isLoggedin() || authService.isTermsOfUseAccepted()) {
+	async urlChange() {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (authService.isLoggedin() || isTermsOfUseAccepted) {
 			this._load();
 		}
 		else {

@@ -52,8 +52,9 @@ export default {
 		}
 	},
 
-	clickMultirater() {
-		if (authService.isTermsOfUseAccepted()) {
+	async clickMultirater() {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (isTermsOfUseAccepted) {
 			util.openInNewTab(constants.URL_MULTIRATER);
 		}
 		else {

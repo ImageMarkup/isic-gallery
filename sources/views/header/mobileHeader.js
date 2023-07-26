@@ -58,7 +58,7 @@ export default class MobileHeader extends JetView {
 
 		const userPanel = {
 			view: "multiview",
-			css: "userbar userbar-mobile",
+			css: "userbar-mobile userbar",
 			gravity: 1,
 			cells: [
 				loginPanel,

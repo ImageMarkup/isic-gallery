@@ -19,10 +19,12 @@ const client = new IsicClient(
 );
 
 class OAuthISIC {
+	#isLoginRestored;
+
 	constructor() {
 		const isUserInfoExists = this.getUserInfo();
 		if (!isUserInfoExists) {
-			client.maybeRestoreLogin()
+			this.#isLoginRestored = client.maybeRestoreLogin()
 				.then(() => {
 					if (client.isLoggedIn) {
 						return ajax.getUserInfo();
@@ -134,16 +136,19 @@ class OAuthISIC {
 		state.app.callEvent("userInfoChanged");
 	}
 
-	isTermsOfUseAccepted() {
+	async isTermsOfUseAccepted() {
+		if (this.isLoginRestored?.finally) {
+			await this.isLoginRestored.finally();
+		}
 		const user = this.getUserInfo();
-		let termOfUse;
+		let isAccepted;
 		if (user) {
-			termOfUse = !!user.accepted_terms;
+			isAccepted = !!user.accepted_terms;
 		}
 		else {
-			termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
+			isAccepted = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
 		}
-		return termOfUse;
+		return isAccepted;
 	}
 
 	isUserInfoChanged(newData) {
@@ -154,6 +159,10 @@ class OAuthISIC {
 
 	isLoggedin() {
 		return this.getUserInfo();
+	}
+
+	get isLoginRestored() {
+		return this.#isLoginRestored
 	}
 }
 

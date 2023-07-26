@@ -1,5 +1,5 @@
-import authService from "app-services/auth";
-import logoutPanelCols from "jet-views/header/parts/logoutPanelCols";
+import logoutPanelCols from "../../views/header/parts/logoutPanelCols";
+import authService from "../auth";
 
 export default class MobileHeaderService {
 	constructor(view, loginPanel, logoutPanel) {
@@ -23,8 +23,7 @@ export default class MobileHeaderService {
 
 	showLogoutPanel() {
 		const user = authService.getUserInfo();
-		const config = {css: "logout-mobile-name"};
-		const cols = logoutPanelCols.createConfig(user.first_name, user.last_name, config);
+		const cols = logoutPanelCols.createConfig(user.first_name, user.last_name);
 		webix.ui(cols, this._logoutPanel);
 		this._logoutPanel.show(false, false);
 	}

@@ -1,5 +1,5 @@
-import {JetView} from "webix-jet";
 import WZoom from "vanilla-js-wheel-zoom";
+import {JetView} from "webix-jet";
 
 import constants from "../../../constants";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
@@ -7,6 +7,7 @@ import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
+import logger from "../../../utils/logger";
 import util from "../../../utils/util";
 import appliedFiltersList from "./parts/appliedFiltersList";
 import cartList from "./parts/cartList";
@@ -15,7 +16,6 @@ import pager from "./parts/galleryPager";
 import metadataPart from "./parts/metadata";
 import filterPanel from "./parts/mobileFilterPanel";
 import mobileImageWindow from "./windows/mobileImageWindow";
-import logger from "../../../utils/logger";
 
 const ID_RIGHT_PANEL = `right-panel-id-${webix.uid()}`;
 const ID_PAGER = `gallery-pager-id-${webix.uid()}`;
@@ -540,7 +540,7 @@ export default class GalleryMobileView extends JetView {
 		});
 	}
 
-	ready() {
+	async ready() {
 		const initial = true;
 		this.updatePagerSize(initial);
 		const hiddenLeftPanel = util.getHiddenGalleryLeftPanel();
@@ -549,16 +549,14 @@ export default class GalleryMobileView extends JetView {
 			leftPanelCollapser.config.onClick["collapser-btn"](leftPanelCollapser);
 		}
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_GALLERY}]);
-		if (authService.isTermsOfUseAccepted()) {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (isTermsOfUseAccepted) {
 			this._galleryService.load();
 		}
 		else {
 			authService.showMobileTermOfUse(() => {
 				this._galleryService.load();
 			});
-		}
-		if (authService.isLoggedin()) {
-			this.dataviewYCountSelection.show();
 		}
 		const that = this;
 		const resizeHandler = util.debounce(() => {

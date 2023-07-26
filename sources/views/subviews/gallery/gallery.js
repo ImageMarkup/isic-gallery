@@ -364,7 +364,7 @@ export default class GalleryView extends JetView {
 		);
 	}
 
-	ready() {
+	async ready() {
 		const dataviewYCountSelection = this.getDataviewYCountSelection();
 		const yCountSelectionValue = dataviewYCountSelection.getValue();
 		const doNotCallUpdatePager = true;
@@ -377,7 +377,8 @@ export default class GalleryView extends JetView {
 			leftPanelCollapser.config.onClick["collapser-btn"](leftPanelCollapser);
 		}
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_GALLERY}]);
-		if (authService.isTermsOfUseAccepted()) {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (isTermsOfUseAccepted) {
 			this._galleryService.load();
 		}
 		else {
