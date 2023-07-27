@@ -22,7 +22,8 @@ const filtersIds = {
 	sex: "sex",
 	dermoscopicType: "dermoscopic_type",
 	imageType: "image_type",
-	colorTint: "color_tint"
+	colorTint: "color_tint",
+	license: "copyright_license"
 };
 
 function getFiltersDataValues() {
@@ -164,22 +165,16 @@ function getFiltersDataValues() {
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.imageType]
-				}]
+				},
+				{
+					id: filtersIds.license,
+					name: "License",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.license]
+				}
+			]
 		}
-		// TODO: uncomment when collection endpoint will be implemented
-		// this block must be in the end of array
-		// {
-		// 	label: "Database Attributes",
-		// 	data: [
-		// 		{
-		// 			id: filtersIds.datasetTags,
-		// 			name: "Tags",
-		// 			type: "checkbox",
-		// 			datatype: "string",
-		// 			options: state.imagesTotalCounts[filtersIds.datasetTags]
-		// 		}
-		// 	]
-		// }
 	];
 	return filtersDataValues;
 }
@@ -221,26 +216,6 @@ function getFiltersData(forceRebuild) {
 		if (forceRebuild || !filtersData) {
 			filtersData = getFiltersDataValues();
 		}
-		// TODO: uncomment after dataset will be implemented on new API
-		// const DATASET_POSITION = filtersData.length - 1;
-		// const DB_ATTRIBUTE_LABEL = "Database Attributes";
-		// if we have no datasets  we should get them with ajax and add to 'filtersData'
-		// if ((forceRebuild
-		// 	|| filtersData[DATASET_POSITION].label === DB_ATTRIBUTE_LABEL)
-		// 	&& filtersData[DATASET_POSITION].data.length === 1) {
-		// 	ajax.getDataset().then((dataset) => {
-		// 		if (filtersData[DATASET_POSITION].data.length === 1) {
-		// 			filtersData[DATASET_POSITION] = {
-		// 				label: DB_ATTRIBUTE_LABEL,
-		// 				data: filtersData[DATASET_POSITION].data.concat(prepareDatasetFilterData(dataset))
-		// 			};
-		// 		}
-		// 		resolve(filtersData);
-		// 	});
-		// }
-		// else {
-		// 	resolve(filtersData);
-		// }
 		resolve(filtersData);
 	});
 }
