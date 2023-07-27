@@ -461,46 +461,9 @@ export default class GalleryMobileView extends JetView {
 		);
 
 		const appliedFiltersListView = $$(filterPanel.getAppliedFiltersLisID());
-		const appliedFiltersLayoutView = $$(filterPanel.getAppliedFiltersLayoutID());
-		// TODO: move handler to function
-		appliedFiltersListView.data.attachEvent("onAfterDelete", () => {
-			if (filterPanel.isAppliedFiltersListEmpty()) {
-				appliedFiltersLayoutView?.hide();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.remove("filtered");
-			}
-			else {
-				appliedFiltersLayoutView?.show();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.add("filtered");
-			}
-		});
-
-		appliedFiltersListView.attachEvent("onAfterLoad", () => {
-			if (filterPanel.isAppliedFiltersListEmpty()) {
-				appliedFiltersLayoutView?.hide();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.remove("filtered");
-			}
-			else {
-				appliedFiltersLayoutView?.show();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.add("filtered");
-			}
-		});
-
-		appliedFiltersListView.data.attachEvent("onDataUpdate", () => {
-			if (filterPanel.isAppliedFiltersListEmpty()) {
-				appliedFiltersLayoutView?.hide();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.remove("filtered");
-			}
-			else {
-				appliedFiltersLayoutView?.show();
-				const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
-				openFiltersButtonNode.classList.add("filtered");
-			}
-		});
+		appliedFiltersListView.data.attachEvent("onAfterDelete", this.filteredListUpdateHandler);
+		appliedFiltersListView.attachEvent("onAfterLoad", this.filteredListUpdateHandler);
+		appliedFiltersListView.data.attachEvent("onDataUpdate", this.filteredListUpdateHandler);
 
 		const currentPager = $$(ID_PAGER);
 		const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
@@ -662,6 +625,20 @@ export default class GalleryMobileView extends JetView {
 
 	getAppliedFiltersLayout() {
 		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersLayoutID()});
+	}
+
+	filteredListUpdateHandler() {
+		const appliedFiltersLayoutView = $$(filterPanel.getAppliedFiltersLayoutID());
+		if (filterPanel.isAppliedFiltersListEmpty()) {
+			appliedFiltersLayoutView?.hide();
+			const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+			openFiltersButtonNode.classList.remove("filtered");
+		}
+		else {
+			appliedFiltersLayoutView?.show();
+			const openFiltersButtonNode = $$(ID_OPEN_FILTERS_BUTTON).getNode();
+			openFiltersButtonNode.classList.add("filtered");
+		}
 	}
 
 	updatePagerSize(initial) {

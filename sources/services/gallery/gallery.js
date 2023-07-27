@@ -917,20 +917,6 @@ class GalleryService {
 		});
 	}
 
-	_prepareAnnotatedImagesList(studies) {
-		let result = {};
-		if (studies) {
-			studies.forEach((study) => {
-				study.images.forEach((image) => {
-					result[image.isic_id] = {
-						studyId: study._id
-					};
-				});
-			});
-		}
-		return result;
-	}
-
 	async load() {
 		try {
 			state.imagesTotalCounts = {};
@@ -1109,6 +1095,7 @@ class GalleryService {
 					limit,
 					filter
 				});
+			this.resizeFilterScrollView();
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
 			if (filter) {
@@ -1285,10 +1272,6 @@ class GalleryService {
 				this._createStudyButton?.hide();
 			}
 		}
-		// TODO: uncomment when download will be implemented
-		// else {
-		// 	toShow ? this._downloadingMenu?.show() : this._downloadingMenu?.hide();
-		// }
 	}
 
 	_disableTemplateByCss(templateToDisable) {
@@ -1366,6 +1349,20 @@ class GalleryService {
 		const filterScrollViewOffsetTop = this._filterScrollView.$view.offsetTop;
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
 		this._filterScrollView.scrollTo(0, positionToScroll);
+	}
+
+	resizeFilterScrollView() {
+		const filterScrollViewChildren = this._filterScrollView.getChildViews();
+		const scrollViewWidth = this._filterScrollView.$width;
+		let scrollViewHeight = 0;
+		filterScrollViewChildren.forEach((childView) => {
+			scrollViewHeight += childView.$height;
+		});
+		this._filterScrollView.$setSize(
+			scrollViewWidth,
+			scrollViewHeight
+		);
+		this._filterScrollView.resize();
 	}
 }
 

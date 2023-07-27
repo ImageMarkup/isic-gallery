@@ -56,8 +56,6 @@ const mobilePager = {
 	master: false,
 	css: "mobile-pager",
 	template(obj, common) {
-		// return `${common.pages(obj)} <span class="pager-info-panel">${obj.page + 1} of ${obj.limit}</span>`;
-		// return `${common.pages(obj)} <span class="pager-info-panel">${obj.page + 1} of ${obj.limit}</span>`;
 		return `<div style="display: flex; justify-content: space-between">${common.prev()} <div></div> ${common.next()}</div>`;
 	},
 	on: {
