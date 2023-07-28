@@ -1,6 +1,6 @@
+import constants from "../constants";
 import state from "../models/state";
 import util from "../utils/util";
-import constants from "../constants";
 import authService from "./auth";
 
 export default {
@@ -13,7 +13,12 @@ export default {
 	},
 
 	clickGallery() {
-		state.app.show(constants.PATH_GALLERY);
+		if (/Android|iPhone/i.test(navigator.userAgent)) {
+			state.app.show(constants.PATH_GALLERY_MOBILE);
+		}
+		else {
+			state.app.show(constants.PATH_GALLERY);
+		}
 	},
 
 	clickChallenges() {
@@ -47,8 +52,9 @@ export default {
 		}
 	},
 
-	clickMultirater() {
-		if (authService.isTermsOfUseAccepted()) {
+	async clickMultirater() {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (isTermsOfUseAccepted) {
 			util.openInNewTab(constants.URL_MULTIRATER);
 		}
 		else {

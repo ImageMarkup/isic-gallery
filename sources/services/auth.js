@@ -1,12 +1,15 @@
 import IsicClient from "@isic/client";
-import state from "../models/state";
-import ajax from "./ajaxActions";
+
 import constants from "../constants";
-import termOfUseWindow from "../views/authWindows/termOfUse";
-import gallerySelectedImages from "../models/selectedGalleryImages";
 import appliedFilters from "../models/appliedFilters";
+import gallerySelectedImages from "../models/selectedGalleryImages";
+import state from "../models/state";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
+import logger from "../utils/logger";
 import util from "../utils/util";
+import mobileTermOfUseWindow from "../views/authWindows/mobileTermOfUse";
+import termOfUseWindow from "../views/authWindows/termOfUse";
+import ajax from "./ajaxActions";
 
 const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
@@ -16,10 +19,12 @@ const client = new IsicClient(
 );
 
 class OAuthISIC {
+	#isLoginRestored;
+
 	constructor() {
 		const isUserInfoExists = this.getUserInfo();
 		if (!isUserInfoExists) {
-			client.maybeRestoreLogin()
+			this.#isLoginRestored = client.maybeRestoreLogin()
 				.then(() => {
 					if (client.isLoggedIn) {
 						return ajax.getUserInfo();
@@ -35,7 +40,7 @@ class OAuthISIC {
 					}
 				})
 				.catch(() => {
-					console.error("Authentication: Something went wrong");
+					logger.error("Authentication: Something went wrong");
 				});
 		}
 	}
@@ -111,6 +116,13 @@ class OAuthISIC {
 		win.okCallback = okCallback;
 	}
 
+	showMobileTermOfUse(okCallback) {
+		let win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
+			|| webix.ui(mobileTermOfUseWindow.getConfig(constants.ID_MOBILE_WINDOW_TERMS_OF_USE));
+		win.show();
+		win.okCallback = okCallback;
+	}
+
 	showMainPage() {
 		window.location = "/";
 	}
@@ -124,16 +136,19 @@ class OAuthISIC {
 		state.app.callEvent("userInfoChanged");
 	}
 
-	isTermsOfUseAccepted() {
+	async isTermsOfUseAccepted() {
+		if (this.isLoginRestored?.finally) {
+			await this.isLoginRestored.finally();
+		}
 		const user = this.getUserInfo();
-		let termOfUse;
+		let isAccepted;
 		if (user) {
-			termOfUse = !!user.accepted_terms;
+			isAccepted = !!user.accepted_terms;
 		}
 		else {
-			termOfUse = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
+			isAccepted = !!webix.storage.local.get(constants.KEY_ACCEPT_TERMS);
 		}
-		return termOfUse;
+		return isAccepted;
 	}
 
 	isUserInfoChanged(newData) {
@@ -144,6 +159,10 @@ class OAuthISIC {
 
 	isLoggedin() {
 		return this.getUserInfo();
+	}
+
+	get isLoginRestored() {
+		return this.#isLoginRestored
 	}
 }
 

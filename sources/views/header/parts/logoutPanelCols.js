@@ -1,6 +1,6 @@
-import authService from "../../../services/auth";
-import state from "../../../models/state";
 import constants from "../../../constants";
+import state from "../../../models/state";
+import authService from "../../../services/auth";
 
 function calcUserMenuWidth(str) {
 	const nameWidth = str && str.length ? str.length * 20 : 1;

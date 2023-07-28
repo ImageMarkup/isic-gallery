@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
+
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import mdTemplate from "../../../templates/about/contact.md";
 import mdLoader from "../../../../services/mdLoader";
+import mdTemplate from "../../../templates/about/contact.md";
 
 export default class ContactInfoView extends JetView {
 	config() {

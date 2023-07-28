@@ -1,4 +1,5 @@
-import filterService from "../services/gallery/filter";
+import constants from "../constants";
+import util from "../utils/util";
 import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
@@ -80,7 +81,7 @@ function processNewFilter(filter) {
 		case "checkbox":
 		case "rangeCheckbox":
 		{
-			let checkboxId = filterService.getOptionId(filter.key, filter.value);
+			let checkboxId = util.getOptionId(filter.key, filter.optionId ?? filter.value);
 			if (filter.remove) {
 				if (appliedFilters.exists(checkboxId)) {
 					appliedFilters.remove(checkboxId);
@@ -123,7 +124,7 @@ function _prepareOptionNameForApi(name, key) {
 		}
 		default:
 		{
-			if (name === filterService.NULL_OPTION_VALUE) {
+			if (name === constants.NULL_OPTION_VALUE) {
 				return "__null__";
 			}
 		}
@@ -354,7 +355,7 @@ function getFiltersFromURL(filtersArray) {
 			const filterId = typeof filter === "object" ? filter.id : filter;
 			const control = $$(filterId);
 			const data = control.config.filtersChangedData;
-			data.id = filterService.getOptionId(data.key, data.value);
+			data.id = util.getOptionId(data.key, data.value);
 			data.remove = false;
 			return data;
 		});
@@ -383,6 +384,7 @@ export default {
 	convertAppliedFiltersToParams
 };
 
+// TODO: rewrite example
 /* example of conditions for API */
 /*
 var k1 = {

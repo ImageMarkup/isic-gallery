@@ -35,7 +35,7 @@ function getConfig(collapsedViewId, config) {
 				hidden: config && config.closed,
 				onClick: {
 					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this && this.config ? this : thisButton;
+						const thisCollapsedButton = this?.config ? this : thisButton;
 						const collapsedView = $$(collapsedViewId);
 						collapsedView.hide();
 						thisCollapsedButton.hide();
@@ -62,7 +62,7 @@ function getConfig(collapsedViewId, config) {
 				hidden: !(config && config.closed),
 				onClick: {
 					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this.config ? this : thisButton;
+						const thisCollapsedButton = this?.config ? this : thisButton;
 						const collapsedView = $$(collapsedViewId);
 						collapsedView.show();
 						thisCollapsedButton.hide();

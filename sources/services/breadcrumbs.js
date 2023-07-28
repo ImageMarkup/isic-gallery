@@ -242,12 +242,13 @@ export default class BreadcrumbsManager {
 		let linksHandlers = {};
 		let paths = this.getPaths(key);
 		Object.keys(paths).forEach(([currentKey, value]) => {
+			function linkHandler() {
+				this.$scope.app.show(value.path);
+			}
 			let spanClass = `${currentKey}-${CLASS_NAME}`;
 			itemsString = `<span class='${spanClass}'>${value.text}</span>${itemsString}`;
 			// prepare click handlers for webix template
-			linksHandlers[spanClass] = function () {
-				this.$scope.app.show(value.path);
-			};
+			linksHandlers[spanClass] = linkHandler;
 		});
 		return {
 			view: "template",

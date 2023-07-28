@@ -1,6 +1,5 @@
 import logoutPanelCols from "../../views/header/parts/logoutPanelCols";
 import authService from "../auth";
-import constants from "../../constants";
 
 class HeaderService {
 	constructor(view, loginPanel, logoutPanel, baseMenu) {
@@ -14,16 +13,12 @@ class HeaderService {
 	_init() {
 		this._view.$scope.on(this._view.$scope.app, "login", () => {
 			this.showLogoutPanel();
-			this._baseMenu.showItem("dashboard");
-			this._baseMenu.showItem("forum");
 		});
 		this._view.$scope.on(this._view.$scope.app, "userInfoChanged", () => {
 			this.showLogoutPanel();
 		});
 		this._view.$scope.on(this._view.$scope.app, "logout", () => {
 			this._loginPanel.show();
-			this._baseMenu.hideItem("dashboard");
-			this._baseMenu.hideItem("forum");
 		});
 		this._view.$scope.on(this._view.$scope.app, "needSelectHeaderItem", (data) => {
 			if (!(data && data.itemName)) {
@@ -36,9 +31,6 @@ class HeaderService {
 				this._baseMenu.select(data.itemName);
 			}
 		});
-		const challengesSubMenu = this._baseMenu.getSubMenu(constants.ID_HEADER_MENU_CHALLENGES);
-		challengesSubMenu.define("width", 135);
-		challengesSubMenu.resize();
 	}
 
 	showLogoutPanel() {

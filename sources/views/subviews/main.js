@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import menuHandlerService from "../../services/menuHandlers";
 import mainTemplate from "../templates/main.html";
 

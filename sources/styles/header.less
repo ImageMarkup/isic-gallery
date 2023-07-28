@@ -16,8 +16,30 @@
 }
 
 .main-header-logo,
-.login-menu {
+.login-menu,
+.mobile-header-logo {
   background-color: transparent;
+}
+
+/* .mobile-header */
+.mobile-header {
+  background-color: @mobile-header-bg;
+  .box-shadow2(0 4px 10px 0 rgba(0,0,0,0.1), 0 1px 6px 0 rgba(0,0,0,0.1));
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  .mobile-header-logo {
+    color: @white-txt;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 16px;
+    cursor: pointer;
+
+    .webix_template {
+      padding: 21px 5px 22px 0;
+    }
+  }
 }
 
 
@@ -79,7 +101,7 @@
 }
 
 /* login-menu */
-.login-menu {
+.login-menu, .login-menu-mobile {
   .webix_template {
     padding: 0;
   }
@@ -109,6 +131,29 @@
       }
     }
   }
+}
+
+.login-menu-mobile {
+  background: @mobile-header-bg;
+  color: white;
+  .login-menu-item {
+    &.menu-sign-up {
+      color: #ffffff;
+
+      &:hover {
+        background-color: @mobile-header-bg;
+        color: #ffffff;
+        text-shadow: 0.6px 0 0 #ffffff;
+      }
+    }
+  }
+}
+
+.logout-mobile-name {
+  color: white;
+  background: transparent;
+  position: absolute;
+  right: 20px;
 }
 
 /* userbar */
@@ -149,5 +194,11 @@
     .webix_submenu_icon {
       margin-top: 2px;
     }
+  }
+}
+
+.userbar.userbar-mobile {
+  .webix_list_item {
+    color: @white-txt;
   }
 }

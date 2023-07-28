@@ -222,6 +222,10 @@ function getDataviewSelectionId() {
 	return webix.storage.local.get(`dataviewSelectionId-${getUserId()}`);
 }
 
+function getOptionId(filterId, optionValue) {
+	return `${filterId || ""}|${optionValue || ""}`;
+}
+
 function getImageIconDimensions() {
 	const initialIconWidth = constants.DEFAULT_GALLERY_IMAGE_ICON_WIDTH;
 	const initialIconHeight = constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT;
@@ -505,6 +509,7 @@ export default {
 	debounce,
 	getImageWidth,
 	getImageHeight,
-	setImageDimensions
+	setImageDimensions,
+	getOptionId
 };
 

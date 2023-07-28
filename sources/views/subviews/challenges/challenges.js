@@ -1,10 +1,11 @@
 import {JetView} from "webix-jet";
+
 import "../../components/templateWithImages";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
-import util from "../../../utils/util";
 import constants from "../../../constants";
-import mdTemplate from "../../templates/challenges.md";
+import BreadcrumbsManager from "../../../services/breadcrumbs";
 import mdLoader from "../../../services/mdLoader";
+import util from "../../../utils/util";
+import mdTemplate from "../../templates/challenges.md";
 
 export default class aboutView extends JetView {
 	config() {

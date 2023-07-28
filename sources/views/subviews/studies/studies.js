@@ -1,11 +1,12 @@
 import {JetView} from "webix-jet";
+
+import constants from "../../../constants";
+import authService from "../../../services/auth";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
 import "../../components/activeDataview";
 import StudiesService from "../../../services/studies/studies";
-import constants from "../../../constants";
-import studyProgressWindow from "./windows/studyProgressWindow";
-import authService from "../../../services/auth";
 import util from "../../../utils/util";
+import studyProgressWindow from "./windows/studyProgressWindow";
 
 const DATAVIEW_ID = "study-items-dataview";
 const TOOLBAR_ID = "toolbar-id";
@@ -186,11 +187,12 @@ export default class StudiesView extends JetView {
 		);
 	}
 
-	urlChange() {
+	async urlChange() {
 		this.app.callEvent("needSelectHeaderItem", [{itemName: constants.ID_HEADER_MENU_STUDIES}]);
 		if (authService.isLoggedin()) {
 			// check term of use
-			if (authService.isTermsOfUseAccepted()) {
+			const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+			if (isTermsOfUseAccepted) {
 				this.studiesService.load();
 			}
 			else {

@@ -56,6 +56,7 @@
     "openseadragon": "^2.4.2",
     "promise-file-reader": "^1.0.3",
     "util": "^0.12.4",
+    "vanilla-js-wheel-zoom": "^8.0.0",
     "webix": "6.2.0",
     "webix-jet": "^1.5.3",
     "wheelzoom": "^4.0.1"

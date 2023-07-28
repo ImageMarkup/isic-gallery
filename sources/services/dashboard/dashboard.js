@@ -1,9 +1,9 @@
 // import ajaxActions from "../ajaxActions";
-import auth from "../auth";
 import constants from "../../constants";
-import state from "../../models/state";
 import dashboardStats from "../../dashboardStats/dashboardStats.json";
+import state from "../../models/state";
 import util from "../../utils/util";
+import auth from "../auth";
 
 const colsElementsCount = 8;
 

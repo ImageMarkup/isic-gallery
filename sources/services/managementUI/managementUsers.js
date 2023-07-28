@@ -1,5 +1,6 @@
-import ajaxActions from "../ajaxActions";
+import logger from "../../utils/logger";
 import util from "../../utils/util";
+import ajaxActions from "../ajaxActions";
 
 class ManagementUsersService {
 	constructor(view, listOfUsers, sortAZButton, listPager, richselectFilter) {
@@ -13,7 +14,7 @@ class ManagementUsersService {
 
 	_init() {
 		this._listOfUsers.on_click["management-user-title"] = (e, id) => {
-			console.log(e, id);
+			logger.info(e, id);
 		};
 
 		this._sortAZButton.attachEvent("onItemClick", () => {

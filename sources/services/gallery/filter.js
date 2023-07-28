@@ -1,4 +1,5 @@
 import state from "../../models/state";
+import util from "../../utils/util";
 
 const NULL_OPTION_VALUE = "unknown";
 
@@ -55,10 +56,6 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	controlView.refresh();
 }
 
-function getOptionId(filterId, optionValue) {
-	return `${filterId || ""}|${optionValue || ""}`;
-}
-
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -67,7 +64,7 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
-			const controlId = getOptionId(data.key, data.value);
+			const controlId = util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
 			// we do not need to call onChange event for the control. so we block event
 			control.blockEvent();
@@ -104,7 +101,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				else {
 					currentCount = value.doc_count;
 				}
-				const controlId = getOptionId(filterKey, prepareOptionName(value.key, filterKey));
+				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
 					_setFilterCounts(controlView, value.doc_count, currentCount);
@@ -118,6 +115,5 @@ export default {
 	NULL_OPTION_VALUE,
 	prepareOptionName,
 	updateFiltersCounts,
-	getOptionId,
 	updateFiltersFormControl
 };

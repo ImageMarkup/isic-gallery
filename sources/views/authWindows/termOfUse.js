@@ -1,8 +1,8 @@
-import windowWithHeader from "../components/windowWithHeader";
 import state from "../../models/state";
+import mdLoader from "../../services/mdLoader";
+import windowWithHeader from "../components/windowWithHeader";
 import termsOfUseDownloadingPanel from "../parts/termsOfUseLinks";
 import mdTemplate from "../templates/termsOfUse.md";
-import mdLoader from "../../services/mdLoader";
 
 const body = {
 	width: 700,

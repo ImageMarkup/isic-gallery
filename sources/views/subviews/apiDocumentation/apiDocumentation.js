@@ -1,67 +1,49 @@
 import {JetView} from "webix-jet";
 
-import isicArchiveHTML from "./htmlTemplate/isicArchive.html";
-import terminologyHTML from "./htmlTemplate/terminology.html";
-import librariesHTML from "./htmlTemplate/libraries.html";
-import authenticationHTML from "./htmlTemplate/authentication.html";
-
-import imagesListHTML from "./htmlTemplate/images/imagesList.html";
-import imagesDetailsHTML from "./htmlTemplate/images/imagesDetails.html";
-import imagesDownloadHTML from "./htmlTemplate/images/imagesDownload.html";
-
-import studiesListHTML from "./htmlTemplate/studies/studiesList.html";
-import studiesDetailsHTML from "./htmlTemplate/studies/studiesDetails.html";
-
-import superpixelsHTML from "./htmlTemplate/superpixels.html";
-
-import segmentationsListHTML from "./htmlTemplate/segmentation/segmentationsList.html";
-import segmentationsDetailsHTML from "./htmlTemplate/segmentation/segmentationDetails.html";
-import segmentationsDownloadHTML from "./htmlTemplate/segmentation/segmentationDownload.html";
-
-import annotationsListHTML from "./htmlTemplate/annotations/annotationsList.html";
+import constants from "../../../constants";
+import ApiDocumentationService from "../../../services/apiDocumentation/apiDocumentation";
 import annotationsDetailsHTML from "./htmlTemplate/annotations/annotationsDetails.html";
 import annotationsDownloadHTML from "./htmlTemplate/annotations/annotationsDownload.html";
-
-import pythonAuthenticationHTML from "./htmlTemplate/codeSamples/python/pythonAuthentication.html";
-
-import pythonImagesListHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesList.html";
-import pythonImagesDetailsHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesDetails.html";
-import pythonImagesDownloadHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesDownload.html";
-
-import pythonStudiesListHTML from "./htmlTemplate/codeSamples/python/studies/pythonStudiesList.html";
-import pythonStudiesDetailsHTML from "./htmlTemplate/codeSamples/python/studies/pythonStudiesDetails.html";
-
-import pythonSuperpixelsHTML from "./htmlTemplate/codeSamples/python/pythonSuperpixels.html";
-
-import pythonSegmentationsListHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationsList.html";
-import pythonSegmentationsDetailsHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationDetails.html";
-import pythonSegmentationsDownloadHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationDownload.html";
-
-import pythonAnnotationsListHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsList.html";
-import pythonAnnotationsDetailsHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsDetails.html";
-import pythonAnnotationsDownloadHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsDownload.html";
-
+import annotationsListHTML from "./htmlTemplate/annotations/annotationsList.html";
+import authenticationHTML from "./htmlTemplate/authentication.html";
 import RAuthenticationHTML from "./htmlTemplate/codeSamples/R/RAuthentication.html";
-
-import RImagesListHTML from "./htmlTemplate/codeSamples/R/images/RImagesList.html";
-import RImagesDetailsHTML from "./htmlTemplate/codeSamples/R/images/RImagesDetails.html";
-import RImagesDownloadHTML from "./htmlTemplate/codeSamples/R/images/RImagesDownload.html";
-
-import RStudiesListHTML from "./htmlTemplate/codeSamples/R/studies/RStudiesList.html";
-import RStudiesDetailsHTML from "./htmlTemplate/codeSamples/R/studies/RStudiesDetails.html";
-
 import RSuperpixelsHTML from "./htmlTemplate/codeSamples/R/RSuperpixels.html";
-
-import RSegmentationsListHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationsList.html";
-import RSegmentationsDetailsHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationDetails.html";
-import RSegmentationsDownloadHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationDownload.html";
-
-import RAnnotationsListHTML from "./htmlTemplate/codeSamples/R/annotations/RAnnotationsList.html";
 import RAnnotationsDetailsHTML from "./htmlTemplate/codeSamples/R/annotations/RAnnotationsDetails.html";
 import RAnnotationsDownloadHTML from "./htmlTemplate/codeSamples/R/annotations/RAnnotationsDownload.html";
-
-import ApiDocumentationService from "../../../services/apiDocumentation/apiDocumentation";
-import constants from "../../../constants";
+import RAnnotationsListHTML from "./htmlTemplate/codeSamples/R/annotations/RAnnotationsList.html";
+import RImagesDetailsHTML from "./htmlTemplate/codeSamples/R/images/RImagesDetails.html";
+import RImagesDownloadHTML from "./htmlTemplate/codeSamples/R/images/RImagesDownload.html";
+import RImagesListHTML from "./htmlTemplate/codeSamples/R/images/RImagesList.html";
+import RSegmentationsDetailsHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationDetails.html";
+import RSegmentationsDownloadHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationDownload.html";
+import RSegmentationsListHTML from "./htmlTemplate/codeSamples/R/segmentation/RSegmentationsList.html";
+import RStudiesDetailsHTML from "./htmlTemplate/codeSamples/R/studies/RStudiesDetails.html";
+import RStudiesListHTML from "./htmlTemplate/codeSamples/R/studies/RStudiesList.html";
+import pythonAnnotationsDetailsHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsDetails.html";
+import pythonAnnotationsDownloadHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsDownload.html";
+import pythonAnnotationsListHTML from "./htmlTemplate/codeSamples/python/annotations/pythonAnnotationsList.html";
+import pythonImagesDetailsHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesDetails.html";
+import pythonImagesDownloadHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesDownload.html";
+import pythonImagesListHTML from "./htmlTemplate/codeSamples/python/images/pythonImagesList.html";
+import pythonAuthenticationHTML from "./htmlTemplate/codeSamples/python/pythonAuthentication.html";
+import pythonSuperpixelsHTML from "./htmlTemplate/codeSamples/python/pythonSuperpixels.html";
+import pythonSegmentationsDetailsHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationDetails.html";
+import pythonSegmentationsDownloadHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationDownload.html";
+import pythonSegmentationsListHTML from "./htmlTemplate/codeSamples/python/segmentation/pythonSegmentationsList.html";
+import pythonStudiesDetailsHTML from "./htmlTemplate/codeSamples/python/studies/pythonStudiesDetails.html";
+import pythonStudiesListHTML from "./htmlTemplate/codeSamples/python/studies/pythonStudiesList.html";
+import imagesDetailsHTML from "./htmlTemplate/images/imagesDetails.html";
+import imagesDownloadHTML from "./htmlTemplate/images/imagesDownload.html";
+import imagesListHTML from "./htmlTemplate/images/imagesList.html";
+import isicArchiveHTML from "./htmlTemplate/isicArchive.html";
+import librariesHTML from "./htmlTemplate/libraries.html";
+import segmentationsDetailsHTML from "./htmlTemplate/segmentation/segmentationDetails.html";
+import segmentationsDownloadHTML from "./htmlTemplate/segmentation/segmentationDownload.html";
+import segmentationsListHTML from "./htmlTemplate/segmentation/segmentationsList.html";
+import studiesDetailsHTML from "./htmlTemplate/studies/studiesDetails.html";
+import studiesListHTML from "./htmlTemplate/studies/studiesList.html";
+import superpixelsHTML from "./htmlTemplate/superpixels.html";
+import terminologyHTML from "./htmlTemplate/terminology.html";
 
 export default class APIDocumentationPage extends JetView {
 	config() {

@@ -34,8 +34,13 @@ function getMetadataLayoutId() {
 	return layoutForMetadata.id;
 }
 
+function getMetadataBody() {
+	return windowBody;
+}
+
 export default {
 	getConfig,
 	getIdFromConfig,
-	getMetadataLayoutId
+	getMetadataLayoutId,
+	getMetadataBody
 };

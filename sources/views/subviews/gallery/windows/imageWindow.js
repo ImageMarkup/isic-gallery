@@ -1,7 +1,7 @@
+import galleryImageUrl from "../../../../models/galleryImagesUrls";
+import ajax from "../../../../services/ajaxActions";
 import windowWithHeader from "../../../components/windowWithHeader";
 import "../../../components/slideButton";
-import ajax from "../../../../services/ajaxActions";
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
 
 
 const templateViewer = {
@@ -14,9 +14,9 @@ const templateViewer = {
 				$$(templateViewer.id).refresh();
 			});
 		}
-
+		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-  					<img class= 'zoomable-image' src="${galleryImageUrl.getNormalImageUrl(obj.imageId) || ""}"/>
+					<img class= 'zoomable-image' src="${imageUrl}"/>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>

@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import selectedGalleryImages from "../../../../models/selectedGalleryImages";
 

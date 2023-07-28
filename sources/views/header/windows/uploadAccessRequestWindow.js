@@ -1,10 +1,9 @@
-import windowWithHeader from "../../components/windowWithHeader";
 import auth from "../../../services/auth";
+import windowWithHeader from "../../components/windowWithHeader";
 
 const user = auth.getUserInfo();
 let isRequestSend = webix.storage.session.get(`contribute-to-archive-request-${user ? user._id : ""}`);
 
-// TODO: uncomment if requestCreateDatasetPermission will be implemented
 function requestContributeAccess() {}
 
 const body = {

@@ -1,9 +1,13 @@
 import {JetView/* , plugins */} from "webix-jet";
-import authService from "../../../services/auth";
-import accessControlWindow from "./windows/accessControl";
+
+// import BreadcrumbsManager from "../../../services/breadcrumbs";
 import constants from "../../../constants";
 import state from "../../../models/state";
+import authService from "../../../services/auth";
 import DatasetViewService from "../../../services/dataset/dataset";
+import accessControlWindow from "./windows/accessControl";
+// import datasetModel from "../../../models/dataset";
+// import accView from "./parts/accordionView";
 
 const DATASET_ACCORDION_ID = "dataset-accordion-id";
 const PAGER_ID = "pager-id";
@@ -78,7 +82,7 @@ export default class DatasetView extends JetView {
 		);
 	}
 
-	urlChange() {
+	async urlChange() {
 		// remain previous state of accordion
 		const parentViewName = this.getParentView().getName();
 		let pageNumber = 0;
@@ -90,7 +94,8 @@ export default class DatasetView extends JetView {
 			this.datasetViewService.load(pageNumber, selectedDatasetIdsSet);
 		}
 		// then it is separate dataset page and we should check terms of use
-		else if (authService.isTermsOfUseAccepted()) {
+		const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+		if (isTermsOfUseAccepted) {
 			this.datasetViewService.load(pageNumber, selectedDatasetIdsSet);
 		}
 		else {

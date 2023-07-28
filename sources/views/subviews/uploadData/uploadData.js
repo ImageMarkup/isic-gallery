@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
+
 import "../../components/templateWithImages";
-import mdTemplate from "../../templates/uploadData.md";
-import mdLoader from "../../../services/mdLoader";
 import constants from "../../../constants";
+import mdLoader from "../../../services/mdLoader";
+import mdTemplate from "../../templates/uploadData.md";
 
 export default class UploadData extends JetView {
 	config() {

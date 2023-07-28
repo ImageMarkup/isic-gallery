@@ -1,6 +1,9 @@
 import {JetView} from "webix-jet";
+
 import ManagementUsersService from "../../../../services/managementUI/managementUsers";
 import dates from "../../../../utils/formats";
+import logger from "../../../../utils/logger";
+// import ajax from "../../../../services/ajaxActions";
 
 const USER_PAGER_ID = "management-ui-user-pager-id";
 const USER_SORT_BUTTON_NAME = "userSortAZButtonName";
@@ -62,7 +65,7 @@ export default class ManagementUsersView extends JetView {
 					},
 					on: {
 						onAfterSelect(id) {
-							console.log(id);
+							logger.info(id);
 						}
 					},
 					dataFeed(/* text */) {

@@ -1,7 +1,7 @@
-import windowWithHeader from "../../components/windowWithHeader";
 import constants from "../../../constants";
-import auth from "../../../services/auth";
 import state from "../../../models/state";
+import auth from "../../../services/auth";
+import windowWithHeader from "../../components/windowWithHeader";
 import template from "../../templates/uploadTypeBtns.html";
 
 const body = {

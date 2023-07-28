@@ -1,4 +1,5 @@
 import {JetView, plugins} from "webix-jet";
+
 import authService from "../../../services/auth";
 
 const MENU_ID = "managementMenu";

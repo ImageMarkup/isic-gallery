@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import errorHTMl from "../../../../error.html";
 
 export default class ErrorPageView extends JetView {

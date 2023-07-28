@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import Footer from "./footer";
 
 export default class wideContentTopView extends JetView {

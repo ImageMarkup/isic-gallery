@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
-import authService from "../../../services/auth";
-import ApplyMetadataService from "../../../services/applyMetadata/applyMetadata";
-import formats from "../../../utils/formats";
+
 import constants from "../../../constants";
+import ApplyMetadataService from "../../../services/applyMetadata/applyMetadata";
+import authService from "../../../services/auth";
+import formats from "../../../utils/formats";
 
 const ID_TEMPLATE_DATASET_INFO = "dataset-info-template";
 const ID_PANEL_VALIDATION_RESULTS = "validation-results-panel";

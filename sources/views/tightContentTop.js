@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
-import Footer from "./footer";
+
 import Constants from "../constants";
+import Footer from "./footer";
 
 export default class tightContentTopView extends JetView {
 	config() {

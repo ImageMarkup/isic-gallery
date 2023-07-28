@@ -1,8 +1,9 @@
 import {JetView} from "webix-jet";
+
 import "../../../components/templateWithImages";
 import BreadcrumbsManager from "../../../../services/breadcrumbs";
-import mdTemplate from "../../../templates/about/faq.md";
 import mdLoader from "../../../../services/mdLoader";
+import mdTemplate from "../../../templates/about/faq.md";
 
 export default class FAQ extends JetView {
 	config() {

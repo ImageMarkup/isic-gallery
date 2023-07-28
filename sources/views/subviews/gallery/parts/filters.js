@@ -1,4 +1,6 @@
+import constants from "../../../../constants";
 import filterService from "../../../../services/gallery/filter";
+import util from "../../../../utils/util";
 
 function getLabelUI(label) {
 	return {
@@ -11,6 +13,7 @@ function getLabelUI(label) {
 
 function getCheckboxUI(data) {
 	const view = {
+		id: `checkboxUI-${data.id}`,
 		rows: [
 			{
 				view: "template",
@@ -26,18 +29,19 @@ function getCheckboxUI(data) {
 		]
 	};
 
-	function handleAgregateButton(controlData, elements, newValue, app) {
+	function handleAggregateButton(controlData, elements, newValue, app) {
 		const filtersInfo = [];
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlName = filterService.getOptionId(controlData.id, option);
+			const controlName = util.getOptionId(controlData.id, option);
 			const control = elements[controlName];
 			control.blockEvent(); // block events for checkbox
 			control.setValue(newValue);
 			control.unblockEvent();
 			filtersInfo.push();
 			let params = webix.copy(control.config.filtersChangedData);
+			params.optionId = currentOption.optionId;
 			params.remove = !newValue;
 			filtersInfo.push(params);
 		});
@@ -51,7 +55,7 @@ function getCheckboxUI(data) {
 		onClick: {
 			"select-all-label": function () {
 				const elements = this.getFormView().elements;
-				handleAgregateButton(data, elements, 1, this.getTopParentView().$scope.app);
+				handleAggregateButton(data, elements, 1, this.getTopParentView().$scope.app);
 			}
 		}
 	};
@@ -62,9 +66,10 @@ function getCheckboxUI(data) {
 		borderless: true,
 		height: 22,
 		onClick: {
+			// eslint-disable-next-line func-names
 			"select-none-label": function () {
 				const elements = this.getFormView().elements;
-				handleAgregateButton(data, elements, 0, this.getTopParentView().$scope.app);
+				handleAggregateButton(data, elements, 0, this.getTopParentView().$scope.app);
 			}
 		}
 	};
@@ -74,7 +79,7 @@ function getCheckboxUI(data) {
 
 	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
-		const id = filterService.getOptionId(data.id, optionName);
+		const id = util.getOptionId(data.id, optionName);
 		const filtersChangedData = {
 			view: data.type,
 			datatype: data.datatype,

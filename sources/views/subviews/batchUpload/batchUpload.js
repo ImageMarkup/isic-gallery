@@ -1,12 +1,13 @@
 import {JetView} from "webix-jet";
-import authService from "../../../services/auth";
-import Breadcrumbs from "../../../services/breadcrumbs";
-import BatchUploadService from "../../../services/batchUpload/batchUpload";
-import termsOfUseMD from "../../templates/termsOfUse.md";
-import mdLoader from "../../../services/mdLoader";
-import termsOfUseDownloadingPanel from "../../parts/termsOfUseLinks";
+
 import constants from "../../../constants";
 import createDatasetModel from "../../../models/createDatasetModel";
+import authService from "../../../services/auth";
+import BatchUploadService from "../../../services/batchUpload/batchUpload";
+import Breadcrumbs from "../../../services/breadcrumbs";
+import mdLoader from "../../../services/mdLoader";
+import termsOfUseDownloadingPanel from "../../parts/termsOfUseLinks";
+import termsOfUseMD from "../../templates/termsOfUse.md";
 
 const ID_DATASET_INFO_PANEL = "batch-dataset-info";
 const ID_UPLOADER = "batch-uploader";
