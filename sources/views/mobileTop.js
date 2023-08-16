@@ -9,7 +9,6 @@ export default class MobileTopView extends JetView {
 			scroll: false,
 			body: {
 				rows: [
-					MobileHeader,
 					{$subview: true}
 				]
 			}

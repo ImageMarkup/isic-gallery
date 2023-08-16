@@ -4,6 +4,16 @@ import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import ajax from "../../../../services/ajaxActions";
 import "../../../components/slideButton";
 
+const closeArea = {
+	view: "template",
+	gravity: 0,
+	template: "<div class=\"mobile-window-close-area close-window\"></div>",
+	onClick: {
+		"close-window": function() {
+			this.getTopParentView().hide();
+		}
+	}
+};
 
 const templateViewer = {
 	view: "template",
@@ -19,13 +29,9 @@ const templateViewer = {
 		}
 		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) ?? "";
 
-		return `<div class="mobile-window-close-button">
-							<svg viewBox="0 0 26 26" class="close-icon-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-btn close-icon-svg-use"></use></svg>',
-						</div>
-				<div class="image-zoom-container">
+		return `<div class="image-zoom-container">
   					<img class= 'zoomable-image' src="${imageUrl}"/>
-				</div>
-				`;
+				</div>`;
 	},
 	borderless: true
 };
@@ -35,7 +41,7 @@ const zoomButtonsTemplate = {
 	css: {background: "transparent"},
 	height: 0,
 	template: `<button class="zoom-btn btn-plus fas fa-search-plus" style="left:10px"></button>
-  				<button class="zoom-btn btn-minus fas fa-search-minus" style="left:45px"></button>`
+  				<button class="zoom-btn btn-minus fas fa-search-minus" style="left:65px"></button>`
 };
 
 const windowBody = {
@@ -43,12 +49,13 @@ const windowBody = {
 	height: 0,
 	type: "clean",
 	rows: [
+		closeArea,
 		templateViewer,
 		{
 			gravity: 0,
 			type: "clean",
 			height: 0,
-			css: {position: "absolute", "z-index": "99", height: "40px"},
+			css: {position: "absolute", "z-index": "99", height: "60px"},
 			cols: [
 				zoomButtonsTemplate
 			]

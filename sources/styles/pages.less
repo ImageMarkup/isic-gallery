@@ -1355,16 +1355,20 @@
 
 }
 
-.gallery-header-name-panel {
+.mobile-gallery-header-logo {
+  cursor: pointer;
+}
+
+.gallery-header-name-panel, .mobile-gallery-header-logo {
   font-size: 24px;
-  padding-left: 20px;
   padding-top: 5px;
   font-weight: bold;
 }
 
-.gallery-header-mobile-button {
-  position: absolute;
-  right: 20px;
+.gallery-header-mobile-context {
+  .webix_template {
+    position: relative;
+  }
 }
 
 .webix_view.webix_control.webix_el_button.filtered .webix_img_btn .fas.fa-filter{
@@ -2049,6 +2053,7 @@
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
+  margin: 10px;
   //box-shadow: 0 2px #999;
   &.btn-plus {
     left: 100px;

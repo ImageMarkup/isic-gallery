@@ -28,6 +28,7 @@ const ID_IMAGES_SELECTION_TEMPLATE = "gallery-images-selection-template";
 const ID_DOWNLOADING_MENU = constants.DOWNLOAD_MENU_ID;
 const ID_RIGHT_PANEL = constants.ID_GALLERY_RIGHT_PANEL;
 const ID_GALLERY_CONTEXT_MENU = "gallery-context-menu";
+const ID_ENLARGE_CONTEXT_MENU = `enlarge-context-menu-id-${webix.uid()}`;
 const NAME_GALLERY_HEADER = `galleryHeaderName-${webix.uid()}`;
 const NAME_SELECT_ALL_IMAGES_ON_ALL_PAGES_TEMPLATE = `selectAllImagesOnAllPagesTemplateName-${webix.uid()}`;
 const NAME_CLONED_PAGER_FOR_NAME_SEARCH = "clonedPagerForNameSearchName";
@@ -324,6 +325,8 @@ export default class GalleryView extends JetView {
 		this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
 		const contextMenuConfig = contextMenu.getConfig(ID_GALLERY_CONTEXT_MENU);
 		this.galleryContextMenu = this.ui(contextMenuConfig);
+		const enlargeContextMenuConfig = contextMenu.getConfig(ID_ENLARGE_CONTEXT_MENU);
+		this.enlargeContextMenu = this.ui(enlargeContextMenuConfig);
 		this.allPagesTemplate = this.getSelectAllImagesOnAllPagesTemplate();
 		this.allPagesSelector = this.getAllPagesSelector();
 		this.createStudyButton = this.getCreateStudyButton();
@@ -360,7 +363,8 @@ export default class GalleryView extends JetView {
 			downloadFilteredImagesButton,
 			null,
 			imageWindowZoomButtons,
-			imageWindowTemplate
+			imageWindowTemplate,
+			this.enlargeContextMenu
 		);
 	}
 
@@ -418,6 +422,33 @@ export default class GalleryView extends JetView {
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 		const galleryDataview = this.getGalleryDataview();
 		this.galleryContextMenu.attachTo(galleryDataview);
+		const image = this.getRoot().$scope.getParam("image");
+		if (/Android|iPhone/i.test(navigator.userAgent)) {
+			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${image}`);
+		}
+		else if (image) {
+			if (this.imageWindow) {
+				const templateViewer = $$(imageWindow.getViewerId());
+				templateViewer?.setValues({imageId: image});
+				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
+					if (this._imageInstance) {
+						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
+					}
+					if (this._imageWindow) {
+						this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+					}
+					window.wheelzoom(this._imageInstance);
+				});
+				this.imageWindow.show();
+			}
+		}
+		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()}).$view;
+		this.enlargeContextMenu.attachTo(imgTemplateView);
+		this.enlargeContextMenu.setContext(
+			{
+				obj: this.imageWindowTemplate
+			}
+		);
 		// this.galleryContextMenu.attachTo(galleryDataview.$view);
 	}
 

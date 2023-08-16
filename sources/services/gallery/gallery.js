@@ -49,7 +49,8 @@ class GalleryService {
 		downloadFilteredImagesButton,
 		appliedFiltersLayout,
 		imageWindowZoomButtons,
-		imageWindowTemplate
+		imageWindowTemplate,
+		enlargeContextMenu
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -75,6 +76,7 @@ class GalleryService {
 		this._appliedFiltersLayout = appliedFiltersLayout;
 		this._imageWindowZoomButtons = imageWindowZoomButtons;
 		this._imageWindowTemplate = imageWindowTemplate;
+		this._enlargeContextMenu = enlargeContextMenu;
 		this._init();
 	}
 
@@ -482,6 +484,9 @@ class GalleryService {
 			},
 			"mobile-window-close-button": function () {
 				this.getTopParentView().hide();
+			},
+			"close-window": function () {
+				this.getTopParentView().hide();
 			}
 		});
 
@@ -721,7 +726,7 @@ class GalleryService {
 
 		this._clearAllFiltersTemplate?.define("onClick", {
 			"clear-all-filters": () => {
-				this._downloadFilteredImagesButton.hide();
+				this._downloadFilteredImagesButton?.hide();
 				this._appliedFiltersList.clearAll();
 				this._appliedFiltersList.callEvent("onAfterLoad");
 				this._appliedFiltersLayout?.hide();
@@ -884,15 +889,30 @@ class GalleryService {
 			}
 		});
 
-		this._galleryContextMenu.attachEvent("onItemClick", function (id) {
+		this._galleryContextMenu?.attachEvent("onItemClick", function (id) {
 			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
 				const context = this.getContext();
 				const contextView = context.obj;
-				const dataviewId = context.id;
-				const currentItem = contextView.getItem(dataviewId);
+				const itemId = context.id;
+				const currentItem = contextView.getItem(itemId);
 				const fullFileUrl = currentItem.files?.full?.url;
 				const fileName = currentItem.isic_id;
 				if (fullFileUrl) {
+					// TODO: alternative
+					// ajax.downloadImage(fullFileUrl, fileName);
+					util.downloadByLink(fullFileUrl, fileName);
+				}
+			}
+		});
+
+		this._enlargeContextMenu?.attachEvent("onItemClick", (id) => {
+			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
+				const obj = this._imageWindowTemplate.getValues();
+				const fullFileUrl = obj.fullFileUrl;
+				const fileName = obj.imageId;
+				if (fullFileUrl) {
+					// TODO: alternative
+					// ajax.downloadImage(fullFileUrl, fileName);
 					util.downloadByLink(fullFileUrl, fileName);
 				}
 			}
@@ -908,7 +928,7 @@ class GalleryService {
 			}
 		});
 
-		this._downloadFilteredImagesButton.attachEvent("onItemClick", async () => {
+		this._downloadFilteredImagesButton?.attachEvent("onItemClick", async () => {
 			const query = appliedFilterModel.getConditionsForApi();
 			const url = await ajax.getDownloadUrl(constants.DOWNLOAD_FILTERED_IMAGES, query);
 			if (url) {
@@ -1019,10 +1039,10 @@ class GalleryService {
 		this._appliedFiltersList.clearAll();
 		this._appliedFiltersList.parse(data);
 		if (data.length > 0) {
-			this._downloadFilteredImagesButton.show();
+			this._downloadFilteredImagesButton?.show();
 		}
 		else {
-			this._downloadFilteredImagesButton.hide();
+			this._downloadFilteredImagesButton?.hide();
 		}
 	}
 
@@ -1184,7 +1204,10 @@ class GalleryService {
 
 	async _setImageWindowValues(currentItem) {
 		this._currentItem = currentItem;
-		this._imageWindowViewer?.setValues({imageId: currentItem.isic_id});
+		this._imageWindowViewer?.setValues({
+			imageId: currentItem.isic_id,
+			fullFileUrl: currentItem.files?.full?.url
+		});
 		const image = await ajax.getImageItem(currentItem.isic_id);
 		if (this._imageWindowMetadata) {
 			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
