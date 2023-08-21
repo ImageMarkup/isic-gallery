@@ -534,7 +534,6 @@ export default class GalleryMobileView extends JetView {
 		const clearAllFiltersTemplate = this.getClearAllFiltersTemplate();
 		const appliedFiltersLayout = this.getAppliedFiltersLayout();
 		const downloadSelectedImagesButton = this.getDownloadSelectedImagesButton();
-		const downloadFilteredImagesButton = this.getFilteredImagesButton();
 		const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
 		this.imageWindowTemplate = $$(mobileImageWindow.getViewerId());
 		this._galleryService = new GalleryService(

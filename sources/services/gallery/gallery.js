@@ -899,6 +899,9 @@ class GalleryService {
 				const fileName = currentItem.isic_id;
 				if (fullFileUrl) {
 					// TODO: alternative
+					if (!/iPhone/i.test(navigator.userAgent)) {
+						ajax.downloadImage(fullFileUrl, fileName);
+					}
 					// ajax.downloadImage(fullFileUrl, fileName);
 					util.downloadByLink(fullFileUrl, fileName);
 				}
@@ -913,6 +916,9 @@ class GalleryService {
 				if (fullFileUrl) {
 					// TODO: alternative
 					// ajax.downloadImage(fullFileUrl, fileName);
+					if (!/iPhone/i.test(navigator.userAgent)) {
+						ajax.downloadImage(fullFileUrl, fileName);
+					}
 					util.downloadByLink(fullFileUrl, fileName);
 				}
 			}
