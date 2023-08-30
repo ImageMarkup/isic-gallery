@@ -224,7 +224,7 @@ class AjaxActions {
 			const headers = await getAuthHeaders();
 			const resp = await this._ajax()
 				.headers(headers)
-				.post(`${API_URL}zip-download/url/`, params);
+				.post(`${API_URL}zip-download/url/`, JSON.stringify(params));
 			const url = this._parseData(resp);
 			return url;
 		}
