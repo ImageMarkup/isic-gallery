@@ -16,9 +16,10 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	template.onClick = {
 		"collapssible-filter": function () {
 			const currentPortrait = util.isPortrait();
-			const children = currentPortrait
-				? this.getParentView().getChildViews()
-				: this.getParentView().getParentView().getChildViews();
+			const currentMobile = util.isMobilePhone();
+			const children = !currentPortrait && currentMobile
+				? this.getParentView().getParentView().getChildViews()
+				: this.getParentView().getChildViews();
 			const labelObject = children[0];
 			const controls = children[1];
 			if (!controls.isVisible()) {
