@@ -1,6 +1,7 @@
 import axios from "../../node_modules/axios/dist/axios.min";
 import state from "../models/state";
 import logger from "../utils/logger";
+import util from "../utils/util";
 
 const API_URL = process.env.ISIC_NEW_API_URL;
 
@@ -235,7 +236,11 @@ class AjaxActions {
 	}
 
 	downloadImage(url, name) {
-		if (url) {
+		if (util.isiPhone()) {
+			const title = `Download image ${name}`;
+			util.shareUrl(title, url);
+		}
+		else if (url) {
 			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {
 				webix.html.download(blob, `${name}`);
 			});

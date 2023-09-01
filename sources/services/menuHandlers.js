@@ -13,7 +13,7 @@ export default {
 	},
 
 	clickGallery() {
-		if (/Android|iPhone/i.test(navigator.userAgent)) {
+		if (util.isMobilePhone()) {
 			state.app.show(constants.PATH_GALLERY_MOBILE);
 		}
 		else {

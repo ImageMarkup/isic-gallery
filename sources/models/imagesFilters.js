@@ -2,7 +2,6 @@ import state from "./state";
 
 let filtersData;
 
-
 const filtersIds = {
 	benignMelignant: "benign_malignant",
 	lesionDiagnosis: "diagnosis",

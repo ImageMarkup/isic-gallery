@@ -117,15 +117,26 @@
 
 .webix_pager.mobile-pager {
   .webix_pager_item {
-    border-radius: 100%;
-    width: 55px;
-    height: 55px;
-    .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right{
+    border-radius: 20px;
+    border-color: @dark-bg;
+    background: transparent;
+    width: 50%;
+    height: 105px;
+    .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right {
       font-size: 40px;
+      color: @dark-bg;
     }
   }
 }
 
+.gallery-pager-button {
+  .webix_img_btn {
+    .webix_icon_btn.fa-chevron-left, .webix_icon_btn.fa-chevron-right {
+        font-size: 40px;
+        color: @dark-bg;
+    }
+  }
+}
 
 
 /*=====
@@ -1117,6 +1128,10 @@
   cursor: pointer;
 }
 
+.back-to-gallery-button .webix_el_box .webix_img_btn {
+  font-size: 16px;
+}
+
 
 /* gallery-images-dataview */
 .gallery-images-dataview {
@@ -1265,6 +1280,7 @@
 
 /* mobile-gallery-images-info */
 .mobile-gallery-images-info {
+  font-size: 20px;
   display: flex;
   justify-content: space-between;
   padding: 5px 30px;
@@ -2041,7 +2057,7 @@
 }
 
 /* Style the button and place it in the middle of the container/image */
-.zoom-btn {
+.zoom-btn, .land-zoom-btn {
   vertical-align: middle;
   position: absolute;
   font-size: 18px;
@@ -2072,6 +2088,20 @@
   &:active {
     box-shadow: 0 1px #666;
     transform: translateY(1px);
+  }
+}
+
+.land-zoom-btn {
+  border-radius: 3%;
+  border: none;
+  width: 100px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0px;
+  span {
+    font-size: 20px;
+    line-height: 20px;
   }
 }
 

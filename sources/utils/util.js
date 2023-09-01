@@ -477,6 +477,40 @@ function debounce(func, timeout = 300) {
 	};
 }
 
+function isiPhone() {
+	return /iPhone/i.test(navigator.userAgent)
+}
+
+function isMobilePhone() {
+	return /Android|iPhone/i.test(navigator.userAgent)
+}
+
+/**
+ *
+ * @param title - A string representing a title to be shared.
+ * @param url - A string representing a URL to be shared.
+ */
+function shareUrl(title, url) {
+	if (navigator.share) {
+		navigator.share({
+			title,
+			url
+		}).then(() => {
+			logger("Successful share");
+		}).catch((error) => {
+			logger(`${error}`);
+		})
+	}
+	else {
+		// Fallback
+		webix.message("Share is not supported")
+	}
+}
+
+function isPortrait() {
+	return window.matchMedia("(orientation: portrait)").matches;
+}
+
 export default {
 	openInNewTab,
 	downloadByLink,
@@ -510,6 +544,10 @@ export default {
 	getImageWidth,
 	getImageHeight,
 	setImageDimensions,
-	getOptionId
+	getOptionId,
+	isiPhone,
+	isMobilePhone,
+	shareUrl,
+	isPortrait
 };
 

@@ -9,7 +9,6 @@ import GalleryService from "../../../services/gallery/gallery";
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
 import util from "../../../utils/util";
 import collapser from "../../components/collapser";
-import appliedFiltersList from "./parts/appliedFiltersList";
 import cartList from "./parts/cartList";
 import contextMenu from "./parts/contextMenu";
 import filterPanel from "./parts/filterPanel";
@@ -321,7 +320,11 @@ export default class GalleryView extends JetView {
 	init(view) {
 		const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 		this.listCollapsedView = this.getCartListCollapsedView();
-		this.imageWindow = this.ui(imageWindow.getConfig(ID_IMAGE_WINDOW));
+		this.imageWindow = this.ui(imageWindow.getConfig(
+			ID_IMAGE_WINDOW,
+			null,
+			this.removeParam.bind(this)
+		));
 		this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
 		const contextMenuConfig = contextMenu.getConfig(ID_GALLERY_CONTEXT_MENU);
 		this.galleryContextMenu = this.ui(contextMenuConfig);
@@ -339,6 +342,7 @@ export default class GalleryView extends JetView {
 		const downloadFilteredImagesButton = this.getFilteredImagesButton();
 		const imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
 		const imageWindowTemplate = $$(imageWindow.getViewerId());
+		const imageWindowTemplateWithoutControls = $$(imageWindow.getViewerWithoutControlsId());
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -350,7 +354,7 @@ export default class GalleryView extends JetView {
 			this.metadataWindow,
 			$$(metadataWindow.getMetadataLayoutId()),
 			filtersForm,
-			$$(appliedFiltersList.getIdFromConfig()),
+			this.getAppliedFiltersList(),
 			this.imagesSelectionTemplate,
 			$$(ID_DOWNLOADING_MENU),
 			this.filterPanelSearchField,
@@ -363,12 +367,19 @@ export default class GalleryView extends JetView {
 			downloadFilteredImagesButton,
 			null,
 			imageWindowZoomButtons,
+			null, // leftLandImageWindowZoomButton
+			null, // rightLandImageWindowZoomButton
 			imageWindowTemplate,
+			imageWindowTemplateWithoutControls,
 			this.enlargeContextMenu
 		);
 	}
 
 	async ready() {
+		const image = this.getRoot().$scope.getParam("image");
+		if (util.isMobilePhone()) {
+			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${image}`);
+		}
 		const dataviewYCountSelection = this.getDataviewYCountSelection();
 		const yCountSelectionValue = dataviewYCountSelection.getValue();
 		const doNotCallUpdatePager = true;
@@ -385,7 +396,7 @@ export default class GalleryView extends JetView {
 		if (isTermsOfUseAccepted) {
 			this._galleryService.load();
 		}
-		else {
+		else if (!util.isMobilePhone()) {
 			authService.showTermOfUse(() => {
 				this._galleryService.load();
 			});
@@ -422,8 +433,7 @@ export default class GalleryView extends JetView {
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 		const galleryDataview = this.getGalleryDataview();
 		this.galleryContextMenu.attachTo(galleryDataview);
-		const image = this.getRoot().$scope.getParam("image");
-		if (/Android|iPhone/i.test(navigator.userAgent)) {
+		if (util.isMobilePhone()) {
 			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${image}`);
 		}
 		else if (image) {
@@ -526,6 +536,14 @@ export default class GalleryView extends JetView {
 
 	getFilteredImagesButton() {
 		return this.getRoot().queryView({name: filterPanel.getDownloadFilteredImagesButtonName()});
+	}
+
+	getAppliedFiltersList() {
+		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersListID()});
+	}
+
+	getFiltersForm() {
+		return this.getRoot().queryView({name: filterPanel.getFiltersFormName()});
 	}
 
 	showList(afterInit) {
@@ -636,6 +654,13 @@ export default class GalleryView extends JetView {
 			if (!initial) {
 				this._galleryService._updateImagesDataview(newOffset, currentPager.data.size);
 			}
+		}
+	}
+
+	removeParam() {
+		const image = this.getParam("image");
+		if (image) {
+			this.setParam("image", "", true);
 		}
 	}
 }

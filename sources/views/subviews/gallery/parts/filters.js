@@ -1,4 +1,3 @@
-import constants from "../../../../constants";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
@@ -12,24 +11,9 @@ function getLabelUI(label) {
 }
 
 function getCheckboxUI(data) {
-	const view = {
-		id: `checkboxUI-${data.id}`,
-		rows: [
-			{
-				view: "template",
-				css: "checkbox-label",
-				autoheight: true,
-				template: data.name,
-				borderless: true
-			},
-			{
-				paddingX: 20,
-				rows: []
-			}
-		]
-	};
-
-	function handleAggregateButton(controlData, elements, newValue, app) {
+	const isPortrait = util.isPortrait();
+	const isMobile = util.isMobilePhone();
+	const handleAggregateButton = function (controlData, elements, newValue, app) {
 		const filtersInfo = [];
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
@@ -45,8 +29,9 @@ function getCheckboxUI(data) {
 			params.remove = !newValue;
 			filtersInfo.push(params);
 		});
+
 		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
-	}
+	};
 	const selectAllLabel = {
 		view: "template",
 		template: "<span class='select-all-label'>Select All</span>",
@@ -74,8 +59,53 @@ function getCheckboxUI(data) {
 		}
 	};
 
-	view.rows[1].rows.push(selectAllLabel);
-	view.rows[1].rows.push(selectNoneLabel);
+	const view = !isPortrait && isMobile
+		? {
+			id: `checkboxUI-${data.id}`,
+			rows: [
+				{
+					cols: [
+						{
+							view: "template",
+							css: "checkbox-label",
+							autoheight: true,
+							template: data.name,
+							borderless: true
+						},
+						{width: 10},
+						selectAllLabel,
+						{width: 10},
+						selectNoneLabel,
+						{gravity: 1}
+					]
+				},
+				{
+					paddingX: 20,
+					rows: []
+				}
+			]
+		}
+		: {
+			id: `checkboxUI-${data.id}`,
+			rows: [
+				{
+					view: "template",
+					css: "checkbox-label",
+					autoheight: true,
+					template: data.name,
+					borderless: true
+				},
+				{
+					paddingX: 20,
+					rows: []
+				}
+			]
+		};
+
+	if (isPortrait) {
+		view.rows[1].rows.push(selectAllLabel);
+		view.rows[1].rows.push(selectNoneLabel);
+	}
 
 	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);

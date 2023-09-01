@@ -49,7 +49,10 @@ class GalleryService {
 		downloadFilteredImagesButton,
 		appliedFiltersLayout,
 		imageWindowZoomButtons,
+		leftLandImageWindowZoomButton,
+		rightLandImageWindowZoomButton,
 		imageWindowTemplate,
+		imageWindowTemplateWithoutControls,
 		enlargeContextMenu
 	) {
 		this._view = view;
@@ -75,7 +78,10 @@ class GalleryService {
 		this._downloadFilteredImagesButton = downloadFilteredImagesButton;
 		this._appliedFiltersLayout = appliedFiltersLayout;
 		this._imageWindowZoomButtons = imageWindowZoomButtons;
+		this._leftLandImageWindowZoomButton = leftLandImageWindowZoomButton;
+		this._rightLandImageWindowZoomButton = rightLandImageWindowZoomButton;
 		this._imageWindowTemplate = imageWindowTemplate;
+		this._imageWindowTemplateWithoutControls = imageWindowTemplateWithoutControls;
 		this._enlargeContextMenu = enlargeContextMenu;
 		this._init();
 	}
@@ -451,28 +457,74 @@ class GalleryService {
 			this._keyPressed(keyCode);
 		});
 
+		this._imageWindowTemplate?.attachEvent("onBeforeRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageWindowTemplate.refresh();
+			}
+			return true;
+		});
+
+		this._imageTemplate?.attachEvent("onBeforeRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageTemplate.refresh();
+			}
+			return true;
+		});
+
+		this._imageTemplate?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				minScale: 1,
+				type: "image",
+				maxScale: 5,
+				speed: 1.2
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+		});
+
+		this._imageWindowTemplateWithoutControls?.attachEvent("onBeforeRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageWindowTemplateWithoutControls?.refresh();
+			}
+			return true;
+		});
+
+		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				minScale: 1,
+				type: "image",
+				maxScale: 5,
+				speed: 1.2
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+		});
+
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {
+			this._imageWindowTemplateWithoutControls?.hide();
+			this._imageWindowTemplate?.show();
 			const currentItem = this._imagesDataview.getItem(id);
 			this._setImageWindowValues(currentItem);
 			if (this._imageWindow) {
 				this._eventForHideMessages(this._imageWindow);
 				this._imageWindow.show();
 			}
-			this._imageTemplate?.attachEvent("onAfterRender", () => {
-				if (this._imageInstance) {
-					this.wzoom.destroy();
-				}
-				if (this._imageWindow) {
-					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-				}
-				const wzoomOptions = {
-					minScale: 1,
-					type: "image",
-					maxScale: 5,
-					speed: 1.2
-				};
-				this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			});
 		};
 
 		this._imageWindowTemplate?.define("onClick", {
@@ -495,6 +547,24 @@ class GalleryService {
 				this._zoomImage("plus");
 			},
 			"btn-minus": () => {
+				this._zoomImage("minus");
+			}
+		});
+
+		this._leftLandImageWindowZoomButton?.define("onClick", {
+			"land-btn-plus": () => {
+				this._zoomImage("plus");
+			},
+			"land-btn-minus": () => {
+				this._zoomImage("minus");
+			}
+		});
+
+		this._rightLandImageWindowZoomButton?.define("onClick", {
+			"land-btn-plus": () => {
+				this._zoomImage("plus");
+			},
+			"land-btn-minus": () => {
 				this._zoomImage("minus");
 			}
 		});
@@ -898,8 +968,7 @@ class GalleryService {
 				const fullFileUrl = currentItem.files?.full?.url;
 				const fileName = currentItem.isic_id;
 				if (fullFileUrl) {
-					// TODO: alternative
-					if (!/iPhone/i.test(navigator.userAgent)) {
+					if (util.isiPhone()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
 					// ajax.downloadImage(fullFileUrl, fileName);
@@ -910,15 +979,15 @@ class GalleryService {
 
 		this._enlargeContextMenu?.attachEvent("onItemClick", (id) => {
 			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
-				const obj = this._imageWindowTemplate.getValues();
+				const obj = this._imageWindowTemplate?.getValues();
 				const fullFileUrl = obj.fullFileUrl;
 				const fileName = obj.imageId;
 				if (fullFileUrl) {
-					// TODO: alternative
-					// ajax.downloadImage(fullFileUrl, fileName);
-					if (!/iPhone/i.test(navigator.userAgent)) {
+					if (util.isiPhone()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
+					// TODO: alternative
+					// ajax.downloadImage(fullFileUrl, fileName);
 					util.downloadByLink(fullFileUrl, fileName);
 				}
 			}
@@ -940,6 +1009,11 @@ class GalleryService {
 			if (url) {
 				util.downloadByLink(url, "isic_data.zip");
 			}
+		});
+
+		window.matchMedia("(orientation: portrait)").addEventListener("change", (e) => {
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
 		});
 	}
 
@@ -986,6 +1060,16 @@ class GalleryService {
 					}); // create filters form controls from config
 			}
 			filterService.updateFiltersCounts();
+			const image = this._view.$scope.getParam("image");
+			if (image) {
+				const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+				if (this._imageWindow && isTermsOfUseAccepted) {
+					this._imageWindowTemplate?.hide();
+					this._imageWindowTemplateWithoutControls?.show();
+					this._imageWindowTemplateWithoutControls?.setValues({imageId: image});
+					this._imageWindow.show();
+				}
+			}
 			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
 		catch (error) {
@@ -1042,6 +1126,7 @@ class GalleryService {
 	}
 
 	_updateAppliedFiltersList(data) {
+		this._appliedFiltersList = this._view.$scope.getAppliedFiltersList();
 		this._appliedFiltersList.clearAll();
 		this._appliedFiltersList.parse(data);
 		if (data.length > 0) {
@@ -1060,6 +1145,7 @@ class GalleryService {
 		}
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
+			this._filtersForm = this._view.$scope.getFiltersForm();
 			webix.ui(elements, this._filtersForm);
 			const firstItemToScroll = filtersBySearchCollection.getItem(
 				filtersBySearchCollection.getFirstId()

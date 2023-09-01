@@ -160,6 +160,10 @@ function getDownloadFilteredImagesButtonName() {
 	return NAME_DOWNLOAD_FILTERED_IMAGES_BUTTON;
 }
 
+function getAppliedFiltersListID() {
+	return ID_APPLIED_FILTERS_LIST;
+}
+
 export default {
 	getConfig,
 	getFilterScrollViewName,
@@ -167,5 +171,6 @@ export default {
 	getSearchFieldName,
 	getFiltersFormName,
 	getClearAllFiltersTemplateName,
-	getDownloadFilteredImagesButtonName
+	getDownloadFilteredImagesButtonName,
+	getAppliedFiltersListID
 };

@@ -201,7 +201,7 @@ function createConfig(data) {
 						{
 							css: "metadata-layout-image-name main-subtitle3",
 							template: data.isic_id,
-							autoheight: true,
+							height: 40,
 							borderless: true
 						},
 						{

@@ -1,5 +1,4 @@
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import ajax from "../../../../services/ajaxActions";
+import galleryImagesUrls from "../../../../models/galleryImagesUrls";
 import windowWithHeader from "../../../components/windowWithHeader";
 import "../../../components/slideButton";
 
@@ -8,18 +7,26 @@ const templateViewer = {
 	view: "template",
 	css: "absolute-centered-image-template",
 	template(obj) {
-		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
-			ajax.getImageItem(obj.imageId).then((item) => {
-				galleryImageUrl.setNormalImageUrl(obj.imageId, item.files.full.url);
-				$$(templateViewer.id).refresh();
-			});
-		}
-		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) || "";
+		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
 					<img class= 'zoomable-image' src="${imageUrl}"/>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>
+				`;
+	},
+	borderless: true
+};
+
+const templateViewerWithoutControls = {
+	view: "template",
+	css: "absolute-centered-image-template",
+	hidden: true,
+	template(obj) {
+		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
+		return `<div class="image-zoom-container">
+					<img class= 'zoomable-image' src="${imageUrl}"/>
+				</div>
 				`;
 	},
 	borderless: true
@@ -81,6 +88,7 @@ const windowBody = {
 			type: "clean",
 			cols: [
 				templateViewer,
+				templateViewerWithoutControls,
 				metadataContainer
 			]
 		},
@@ -103,9 +111,10 @@ function refreshTemplate() {
 	imageTemplate.refresh();
 }
 
-function getConfig(id, studyImage) {
+function getConfig(id, studyImage, closeCallback) {
 	let windowTitle;
 	templateViewer.id = `viewer-${webix.uid()}`;
+	templateViewerWithoutControls.id = `viewer-without-controls-${webix.uid()}`;
 	slideButton.id = `slidebutton-${webix.uid()}`;
 	layoutForMetadata.id = `layout-for-metadata-${webix.uid()}`;
 	metadataContainer.id = `metadata-container-${webix.uid()}`;
@@ -116,7 +125,7 @@ function getConfig(id, studyImage) {
 	else {
 		windowTitle = studyImage;
 	}
-	return windowWithHeader.getConfig(id, windowBody, windowTitle);
+	return windowWithHeader.getConfig(id, windowBody, windowTitle, closeCallback);
 }
 
 function getIdFromConfig() {
@@ -125,6 +134,10 @@ function getIdFromConfig() {
 
 function getViewerId() {
 	return templateViewer.id;
+}
+
+function getViewerWithoutControlsId() {
+	return templateViewerWithoutControls.id;
 }
 
 function getSliderButtonId() {
@@ -143,6 +156,7 @@ export default {
 	getConfig,
 	getIdFromConfig,
 	getViewerId,
+	getViewerWithoutControlsId,
 	getSliderButtonId,
 	getMetadataLayoutId,
 	getZoomButtonTemplateId
