@@ -90,6 +90,7 @@ function getConfig(config) {
 	};
 
 	const appliedFiltersTemplate = {
+		gravity: 3,
 		template: "APPLIED FILTERS",
 		css: "mobile-gallery-sidebar-title",
 		autoheight: true,
@@ -197,6 +198,7 @@ function getConfig(config) {
 				hidden: true,
 				cols: [
 					{
+						gravity: 1.5,
 						rows: [
 							landscapeFilters,
 							landscapeDownloadFilteredImagesButton
@@ -246,6 +248,14 @@ function getFiltersFormName() {
 function getClearAllFiltersTemplateName() {
 	const portrait = window.matchMedia("(orientation: portrait)").matches;
 	return portrait ? NAME_CLEAR_ALL_FILTERS_TEMPLATE : NAME_LANDSCAPE_CLEAR_ALL_FILTERS_TEMPLATE;
+}
+
+function getPortraitClearAllFiltersTemplateName() {
+	return NAME_CLEAR_ALL_FILTERS_TEMPLATE;
+}
+
+function getLandscapeClearAllFiltersTemplateName() {
+	return NAME_LANDSCAPE_CLEAR_ALL_FILTERS_TEMPLATE;
 }
 
 function getDownloadFilteredImagesButtonName() {
@@ -299,6 +309,8 @@ export default {
 	getSearchFieldName,
 	getFiltersFormName,
 	getClearAllFiltersTemplateName,
+	getPortraitClearAllFiltersTemplateName,
+	getLandscapeClearAllFiltersTemplateName,
 	getDownloadFilteredImagesButtonName,
 	getAppliedFiltersListID,
 	getAppliedFiltersLayoutID,

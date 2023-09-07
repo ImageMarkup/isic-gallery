@@ -1,5 +1,6 @@
 import constants from "../constants";
 import state from "../models/state";
+import logger from "./logger";
 
 const FileSaver = require("../../node_modules/file-saver/FileSaver");
 
@@ -496,9 +497,9 @@ function shareUrl(title, url) {
 			title,
 			url
 		}).then(() => {
-			logger("Successful share");
+			logger.info("Successful share");
 		}).catch((error) => {
-			logger(`${error}`);
+			logger.error(`${error}`);
 		})
 	}
 	else {

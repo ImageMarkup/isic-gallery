@@ -67,7 +67,7 @@ const body = {
 };
 
 function getConfig(id) {
-	return windowWithHeader.getConfig(id, body, "Terms of Use", state.auth.showMainPage);
+	return windowWithHeader.getConfig(id, body, "Terms of Use", state.auth.reloadPage);
 }
 
 function getIdFromConfig() {

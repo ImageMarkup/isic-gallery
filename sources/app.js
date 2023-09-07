@@ -6,6 +6,7 @@ import "./utils/polyfills";
 import constants from "./constants";
 import state from "./models/state";
 import auth from "./services/auth";
+import util from "./utils/util";
 import manageLocalStorageByAppVersion from "./services/localStorageManager";
 import MobileHeader from "./views/header/mobileHeader";
 import MobileTop from "./views/mobileTop";
@@ -36,7 +37,7 @@ import WideContentTop from "./views/wideContentTop";
 
 webix.ready(() => {
 	manageLocalStorageByAppVersion();
-	const startPath = /Android|iPhone/i.test(navigator.userAgent)
+	const startPath = util.isMobilePhone()
 		? constants.PATH_GALLERY_MOBILE
 		: constants.PATH_GALLERY;
 	const app = new JetApp({

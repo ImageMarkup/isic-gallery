@@ -1,7 +1,6 @@
 import windowWithHeader from "app-components/mobileWindow";
 
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import ajax from "../../../../services/ajaxActions";
 import "../../../components/slideButton";
 
 const closeArea = {
@@ -16,12 +15,6 @@ const templateViewer = {
 	autoHeight: true,
 	gravity: 1,
 	template(obj) {
-		if (typeof galleryImageUrl.getNormalImageUrl(obj.imageId) === "undefined") {
-			ajax.getImageItem(obj.imageId).then((item) => {
-				galleryImageUrl.setNormalImageUrl(obj.imageId, item.files.full.url);
-				$$(templateViewer.id).refresh();
-			});
-		}
 		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) ?? "";
 
 		return `<div class="image-zoom-container">

@@ -121,7 +121,7 @@
     border-color: @dark-bg;
     background: transparent;
     width: 50%;
-    height: 105px;
+    height: 55px;
     .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right {
       font-size: 40px;
       color: @dark-bg;
@@ -1121,11 +1121,21 @@
   }
 }
 
+.select-all-template,
+.select-none-template {
+  .webix_template {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .select-all-label,
 .select-none-label {
   border-bottom: 1px dashed @select-color;
   display: inline-block;
   cursor: pointer;
+  text-transform: none;
+  vertical-align: middle;
 }
 
 .back-to-gallery-button .webix_el_box .webix_img_btn {

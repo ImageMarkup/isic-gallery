@@ -4,6 +4,7 @@ import constants from "../../../constants";
 import "../../components/activeList";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import selectedImages from "../../../models/selectedGalleryImages";
+import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
@@ -371,15 +372,13 @@ export default class GalleryView extends JetView {
 			null, // rightLandImageWindowZoomButton
 			imageWindowTemplate,
 			imageWindowTemplateWithoutControls,
-			this.enlargeContextMenu
+			this.enlargeContextMenu,
+			null, // portraitClearAllFiltersTemplate
+			null // landscapeClearAllFiltersTemplate
 		);
 	}
 
 	async ready() {
-		const image = this.getRoot().$scope.getParam("image");
-		if (util.isMobilePhone()) {
-			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${image}`);
-		}
 		const dataviewYCountSelection = this.getDataviewYCountSelection();
 		const yCountSelectionValue = dataviewYCountSelection.getValue();
 		const doNotCallUpdatePager = true;
@@ -433,13 +432,15 @@ export default class GalleryView extends JetView {
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 		const galleryDataview = this.getGalleryDataview();
 		this.galleryContextMenu.attachTo(galleryDataview);
+
+		const isicId = this.getRoot().$scope.getParam("image");
 		if (util.isMobilePhone()) {
-			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${image}`);
+			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${isicId}`);
 		}
-		else if (image) {
+		else if (isicId && isTermsOfUseAccepted) {
 			if (this.imageWindow) {
-				const templateViewer = $$(imageWindow.getViewerId());
-				templateViewer?.setValues({imageId: image});
+				const currentImage = await ajax.getImageItem(isicId);
+				this._galleryService._setImageWindowValues(currentImage);
 				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
 					if (this._imageInstance) {
 						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
@@ -452,13 +453,15 @@ export default class GalleryView extends JetView {
 				this.imageWindow.show();
 			}
 		}
-		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()}).$view;
-		this.enlargeContextMenu.attachTo(imgTemplateView);
-		this.enlargeContextMenu.setContext(
-			{
-				obj: this.imageWindowTemplate
-			}
-		);
+		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()})?.$view;
+		if (imgTemplateView) {
+			this.enlargeContextMenu.attachTo(imgTemplateView);
+			this.enlargeContextMenu.setContext(
+				{
+					obj: this.imageWindowTemplate
+				}
+			);
+		}
 		// this.galleryContextMenu.attachTo(galleryDataview.$view);
 	}
 

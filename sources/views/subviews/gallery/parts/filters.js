@@ -34,6 +34,7 @@ function getCheckboxUI(data) {
 	};
 	const selectAllLabel = {
 		view: "template",
+		css: "select-all-template",
 		template: "<span class='select-all-label'>Select All</span>",
 		borderless: true,
 		height: 22,
@@ -47,6 +48,7 @@ function getCheckboxUI(data) {
 
 	const selectNoneLabel = {
 		view: "template",
+		css: "select-none-template",
 		template: "<span class='select-none-label'>Select None</span>",
 		borderless: true,
 		height: 22,
@@ -59,7 +61,7 @@ function getCheckboxUI(data) {
 		}
 	};
 
-	const view = !isPortrait && isMobile
+	const view = isMobile
 		? {
 			id: `checkboxUI-${data.id}`,
 			rows: [
@@ -75,8 +77,7 @@ function getCheckboxUI(data) {
 						{width: 10},
 						selectAllLabel,
 						{width: 10},
-						selectNoneLabel,
-						{gravity: 1}
+						selectNoneLabel
 					]
 				},
 				{

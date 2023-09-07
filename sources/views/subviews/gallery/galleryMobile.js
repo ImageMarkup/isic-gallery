@@ -159,14 +159,17 @@ export default class GalleryMobileView extends JetView {
 				const filtersHeader = this.getFilterHeader();
 				filtersHeader.hide();
 				galleryHeader.show(false, true);
+				this.updatePagerSize();
 			}
 		};
 
 		const closeMetadataButton = {
 			view: "button",
 			type: "icon",
-			css: "gallery-header-mobile-button",
-			icon: "fas fa-times-circle",
+			width: 150,
+			css: "gallery-header-mobile-button back-to-gallery-button",
+			icon: "fas fa-long-arrow-alt-left",
+			label: "Back to Gallery",
 			click: () => {
 				const galleryMultiview = this.getGalleryMultiview();
 				galleryMultiview.setValue(ID_GALLERY);
@@ -174,6 +177,7 @@ export default class GalleryMobileView extends JetView {
 				const metadataHeader = this.getMetadataHeader();
 				metadataHeader.hide();
 				galleryHeader.show(false, true);
+				this.updatePagerSize();
 			}
 		};
 
@@ -220,20 +224,18 @@ export default class GalleryMobileView extends JetView {
 			id: ID_METADATA_HEADER,
 			hidden: true,
 			cols: [
-				{width: 20},
-				logo,
+				{
+					cols: [
+						closeMetadataButton
+					]
+				},
 				{
 					cols: [
 						{gravity: 0.5},
 						metadataHeaderName
 					]
 				},
-				{
-					cols: [
-						{gravity: 1},
-						closeMetadataButton
-					]
-				}
+				{width: 20}
 			]
 		};
 
@@ -381,7 +383,7 @@ export default class GalleryMobileView extends JetView {
 					); // to prevent sending query more than 1 time
 				}
 				return `<div class="gallery-images-container-mobile">
-					<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image-mobile" height="${util.getImageHeight()}"/>
+					<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image-mobile" height="${util.getImageHeight()}" width="${util.getImageWidth()}"/>
 					${starHtml}
 				</div>`;
 			},
@@ -446,10 +448,8 @@ export default class GalleryMobileView extends JetView {
 				{
 					id: ID_GALLERY_PAGER_LAYOUT,
 					cols: [
-						{gravity: 0.5},
 						pager.getConfig(ID_PAGER, ID_DATAVIEW, true),
-						clonePagerForNameFilter,
-						{gravity: 0.5}
+						clonePagerForNameFilter
 					]
 				}
 			]
@@ -500,7 +500,10 @@ export default class GalleryMobileView extends JetView {
 		const dataviewInstance = $$(ID_DATAVIEW);
 		const filterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 		this.listCollapsedView = this.getCartListCollapsedView();
-		this.imageWindow = webix.ui(mobileImageWindow.getConfig(ID_IMAGE_WINDOW));
+		this.imageWindow = webix.ui(mobileImageWindow.getConfig(
+			ID_IMAGE_WINDOW,
+			this.removeParam.bind(this)
+		));
 		this.metadataWindow = this.getMetadataLayout();
 		const contextMenuConfig = contextMenu.getConfig(ID_MOBILE_GALLERY_CONTEXT_MENU);
 		this.contextMenu = this.ui(contextMenuConfig);
@@ -516,7 +519,9 @@ export default class GalleryMobileView extends JetView {
 		this.toggleButton = this.getToggleButton();
 		this.filterPanelSearchField = view.queryView({name: filterPanel.getSearchFieldName()});
 		const filtersForm = view.queryView({name: filterPanel.getFiltersFormName()});
-		const clearAllFiltersTemplate = this.getClearAllFiltersTemplate();
+		const clearAllFiltersTemplate = this.getPortraitClearAllFiltersTemplate();
+		const portraitClearAllFiltersTemplate = this.getPortraitClearAllFiltersTemplate();
+		const landscapeClearAllFiltersTemplate = this.getLandscapeClearAllFiltersTemplate();
 		const appliedFiltersLayout = this.getAppliedFiltersLayout();
 		const downloadSelectedImagesButton = this.getDownloadSelectedImagesButton();
 		const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
@@ -529,7 +534,7 @@ export default class GalleryMobileView extends JetView {
 			$$(ID_DATAVIEW),
 			$$(ID_CONTENT_HEADER), // contentHeaderTemplate
 			this.imageWindow, // imageWindowInstance
-			null, // imageWindowViewer
+			$$(mobileImageWindow.getViewerId()), // imageWindowViewer
 			null, // imageWindowMetadata
 			null, // metadataWindow
 			null, // metadataWindowMetadata
@@ -549,9 +554,11 @@ export default class GalleryMobileView extends JetView {
 			imageWindowZoomButtons,
 			leftLandImageZoomButton,
 			rightLandImageZoomButton,
-			this.imageWindowTemplate,
 			null,
-			this.enlargeContextMenu
+			this.imageWindowTemplate,
+			this.enlargeContextMenu,
+			portraitClearAllFiltersTemplate,
+			landscapeClearAllFiltersTemplate
 		);
 
 		this.heaaderService = new MobileHeaderService(
@@ -587,59 +594,11 @@ export default class GalleryMobileView extends JetView {
 			}
 		});
 
-		this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this._galleryService.wzoom.destroy();
-			}
-			if (this.imageWindow) {
-				this._imageInstance = this.imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			const wzoomOptions = {
-				type: "image",
-				maxScale: 5,
-				zoomOnClick: false,
-				minScale: 1
-			};
-			this._galleryService.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			setTimeout(() => {
-				this._galleryService.wzoom.transform(0, 0, 1);
-			});
-		});
-
-		this.imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this._galleryService.wzoom.destroy();
-			}
-			if (this.imageWindow) {
-				this._imageInstance = this.imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			const wzoomOptions = {
-				type: "image",
-				maxScale: 5,
-				zoomOnClick: false,
-				minScale: 1
-			};
-			this._galleryService.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			setTimeout(() => {
-				this._galleryService.wzoom.transform(0, 0, 1);
-			});
-		});
-
 		dataviewInstance.attachEvent("onAfterLoad", () => {
 			const selectItem = dataviewInstance.getSelectedItem();
 			if (!selectItem) {
 				currentGalleryFooter.hide();
 			}
-		});
-
-		this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
-			}
-			if (this._imageWindow) {
-				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			window.wheelzoom(this._imageInstance);
 		});
 
 		contentHeader.attachEvent("onBeforeRender", (obj) => {
@@ -691,6 +650,7 @@ export default class GalleryMobileView extends JetView {
 				this._galleryService.load();
 			});
 		}
+
 		const that = this;
 		const resizeHandler = util.debounce(() => {
 			const dataWindowView = that.getGalleryDataview();
@@ -699,32 +659,25 @@ export default class GalleryMobileView extends JetView {
 			dataWindowView.$scope.updatePagerSize();
 		});
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
-		const image = this.getRoot().$scope.getParam("image");
-		if (!util.isMobilePhone()) {
-			this.app.show(`${constants.PATH_GALLERY}?image=${image}`);
-		}
-		else if (image) {
-			if (this.imageWindow) {
-				const templateViewer = $$(mobileImageWindow.getViewerId());
-				templateViewer?.setValues({imageId: image});
-				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
-					if (this._imageInstance) {
-						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
-					}
-					if (this._imageWindow) {
-						this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-					}
-					window.wheelzoom(this._imageInstance);
-				});
-				this.imageWindow.show();
-			}
-		}
+
 		const galleryDataview = this.getGalleryDataview();
 		this.contextMenu.attachTo(galleryDataview);
 		const imgWindowTemplateView = this.imageWindow.queryView({id: mobileImageWindow.getViewerId()})
 			.$view;
 		this.enlargeContextMenu.attachTo(imgWindowTemplateView);
 		this.enlargeContextMenu.setContext({obj: this.imageWindowTemplate});
+
+		const isicId = this.getRoot().$scope.getParam("image");
+		if (!util.isMobilePhone()) {
+			this.app.show(`${constants.PATH_GALLERY}?image=${isicId}`);
+		}
+		else if (isicId && isTermsOfUseAccepted) {
+			if (this.imageWindow) {
+				const currentImage = await ajax.getImageItem(isicId);
+				this._galleryService._setImageWindowValues(currentImage);
+				this.imageWindow.show();
+			}
+		}
 	}
 
 	destroy() {
@@ -783,8 +736,12 @@ export default class GalleryMobileView extends JetView {
 		return this.getRoot().queryView({id: ID_MOBILE_GALLERY_CONTEXT_MENU});
 	}
 
-	getClearAllFiltersTemplate() {
-		return this.getRoot().queryView({name: filterPanel.getClearAllFiltersTemplateName()});
+	getPortraitClearAllFiltersTemplate() {
+		return this.getRoot().queryView({name: filterPanel.getPortraitClearAllFiltersTemplateName()});
+	}
+
+	getLandscapeClearAllFiltersTemplate() {
+		return this.getRoot().queryView({name: filterPanel.getLandscapeClearAllFiltersTemplateName()});
 	}
 
 	getDownloadSelectedImagesButton() {
@@ -853,7 +810,8 @@ export default class GalleryMobileView extends JetView {
 		const maxDataviewHeight = galleryDataviewHeight;
 		const maxImageHeight = maxImageWidth;
 		const rows = Math.floor(maxDataviewHeight / maxImageHeight);
-		const elementWidth = Math.round(galleryDataViewWidth / cols);
+		// we use minus 1 to fix image load bug
+		const elementWidth = Math.round(galleryDataViewWidth / cols) - 1;
 		const elementHeight = Math.round(galleryDataviewHeight / rows);
 		dataWindowView.define("type", {width: elementWidth, height: elementHeight});
 		util.setDataviewItemDimensions(elementWidth, elementHeight);
@@ -925,5 +883,13 @@ export default class GalleryMobileView extends JetView {
 			landscapeFiltersLayout.show();
 		}
 		galleryDataview.refresh();
+		this.imageWindowTemplate.refresh();
+	}
+
+	removeParam() {
+		const image = this.getParam("image");
+		if (image) {
+			this.setParam("image", "", true);
+		}
 	}
 }

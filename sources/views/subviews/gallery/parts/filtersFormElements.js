@@ -8,19 +8,19 @@ const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
 // and then we attach the handler for its click event to hide or show the other children
 function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	const collapsibleFilter = webix.copy(filter);
-	const isPortrait = util.isPortrait();
 	const isMobile = util.isMobilePhone();
-	const template = !isPortrait && isMobile
+	const template = isMobile
 		? collapsibleFilter.rows[0].cols[0]
 		: collapsibleFilter.rows[0];
 	template.onClick = {
 		"collapssible-filter": function () {
-			const currentPortrait = util.isPortrait();
 			const currentMobile = util.isMobilePhone();
-			const children = !currentPortrait && currentMobile
+			const children = currentMobile
 				? this.getParentView().getParentView().getChildViews()
 				: this.getParentView().getChildViews();
-			const labelObject = children[0];
+			const labelObject = currentMobile
+				? children[0].getChildViews()[0]
+				: children[0];
 			const controls = children[1];
 			if (!controls.isVisible()) {
 				webix.html.addCss(labelObject.getNode(), "showed-filter");

@@ -53,7 +53,9 @@ class GalleryService {
 		rightLandImageWindowZoomButton,
 		imageWindowTemplate,
 		imageWindowTemplateWithoutControls,
-		enlargeContextMenu
+		enlargeContextMenu,
+		portraitClearAllFiltersTemplate,
+		landscapeClearAllFiltersTemplate
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -83,6 +85,8 @@ class GalleryService {
 		this._imageWindowTemplate = imageWindowTemplate;
 		this._imageWindowTemplateWithoutControls = imageWindowTemplateWithoutControls;
 		this._enlargeContextMenu = enlargeContextMenu;
+		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
+		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
 		this._init();
 	}
 
@@ -466,6 +470,26 @@ class GalleryService {
 			return true;
 		});
 
+		this._imageWindowTemplate?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				type: "image",
+				maxScale: 5,
+				zoomOnClick: false,
+				minScale: 1
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+			// TODO: check this
+			setTimeout(() => {
+				this.wzoom.transform(0, 0, 1);
+			});
+		});
+
 		this._imageTemplate?.attachEvent("onBeforeRender", async (obj) => {
 			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
 				const item = await ajax.getImageItem(obj.imageId);
@@ -492,7 +516,7 @@ class GalleryService {
 		});
 
 		this._imageWindowTemplateWithoutControls?.attachEvent("onBeforeRender", async (obj) => {
-			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+			if (obj.imageId && typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
 				const item = await ajax.getImageItem(obj.imageId);
 				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
 				this._imageWindowTemplateWithoutControls?.refresh();
@@ -781,7 +805,7 @@ class GalleryService {
 		this._view.$scope.on(this._view.$scope.app, "changedAllSelectedImagesCount", () => {
 			this._allPagesTemplate?.refresh();
 		});
-		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data/* , selectNone */) => {
+		this._view.$scope.on(this._view.$scope.app, "filtersChanged", async (data/* , selectNone */) => {
 			// add (or remove) filters data to model
 			appliedFilterModel.processNewFilters(data);
 			// refresh data in list
@@ -791,18 +815,34 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			this._reload(0, this._pager.data.size);
+			await this._reload(0, this._pager.data.size);
+			// Fix scrollView
+			this.resizeFilterScrollView();
+			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			if (element) {
+				this._scrollToFilterFormElement(element);
+			}
 		});
 
+		const clearAllFilters = () => {
+			this._downloadFilteredImagesButton?.hide();
+			this._appliedFiltersList.clearAll();
+			this._appliedFiltersList.callEvent("onAfterLoad");
+			this._appliedFiltersLayout?.hide();
+			appliedFilterModel.clearAll();
+			this._reload();
+		};
+
 		this._clearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": () => {
-				this._downloadFilteredImagesButton?.hide();
-				this._appliedFiltersList.clearAll();
-				this._appliedFiltersList.callEvent("onAfterLoad");
-				this._appliedFiltersLayout?.hide();
-				appliedFilterModel.clearAll();
-				this._reload();
-			}
+			"clear-all-filters": clearAllFilters
+		});
+
+		this._portraitClearAllFiltersTemplate?.define("onClick", {
+			"clear-all-filters": clearAllFilters
+		});
+
+		this._landscapeClearAllFiltersTemplate?.define("onClick", {
+			"clear-all-filters": clearAllFilters
 		});
 
 		this._createStudyButton?.attachEvent("onItemClick", () => {
@@ -1011,9 +1051,11 @@ class GalleryService {
 			}
 		});
 
-		window.matchMedia("(orientation: portrait)").addEventListener("change", (e) => {
-			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-			this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+		window.matchMedia("(orientation: portrait)").addEventListener("change", async (e) => {
+			if (await state.auth.isTermsOfUseAccepted()) {
+				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+			}
 		});
 	}
 
@@ -1079,17 +1121,19 @@ class GalleryService {
 		}
 	}
 
-	_reload(offsetSource, limitSource) {
-		let limit = limitSource || this._pager.data.size;
-		let offset = offsetSource || 0;
-		state.imagesOffset = offset;
-		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		this._createFilters(appliedFiltersArray);
-		this._updateCounts();
-		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
-		this._view.$scope.setParam("filter", paramFilters, true);
-		this._filterScrollView.resize();
-		this._updateImagesDataview(offset, limit); // load images first time
+	async _reload(offsetSource, limitSource) {
+		if (await state.auth.isTermsOfUseAccepted()) {
+			let limit = limitSource || this._pager.data.size;
+			let offset = offsetSource || 0;
+			state.imagesOffset = offset;
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			this._createFilters(appliedFiltersArray);
+			this._updateCounts();
+			const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
+			// set params to url
+			this._view.$scope.setParam("filter", paramFilters, true);
+			await this._updateImagesDataview(offset, limit); // load images first time
+		}
 	}
 
 	_updateContentHeaderTemplate(ranges) {
@@ -1207,7 +1251,6 @@ class GalleryService {
 					limit,
 					filter
 				});
-			this.resizeFilterScrollView();
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
 			if (filter) {
@@ -1303,9 +1346,6 @@ class GalleryService {
 		const image = await ajax.getImageItem(currentItem.isic_id);
 		if (this._imageWindowMetadata) {
 			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
-		}
-		else {
-			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)]); // [] - because we rebuild only rows of this._imageWindowMetadata
 		}
 	}
 
