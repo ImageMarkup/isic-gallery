@@ -508,6 +508,19 @@ function shareUrl(title, url) {
 	}
 }
 
+async function shareFile(title, data, fileName) {
+		const file = new File(data, fileName, {type: "image/png"});
+		try {
+				await navigator.share({
+						title: title,
+						files: [file]
+				})
+		}
+		catch (err) {
+				console.error("Download failed:", err.message);
+		}
+}
+
 function isPortrait() {
 	return window.matchMedia("(orientation: portrait)").matches;
 }
@@ -549,6 +562,7 @@ export default {
 	isiPhone,
 	isMobilePhone,
 	shareUrl,
-	isPortrait
+	isPortrait,
+	shareFile
 };
 

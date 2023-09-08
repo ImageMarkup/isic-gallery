@@ -238,7 +238,8 @@ class AjaxActions {
 	downloadImage(url, name) {
 		if (util.isiPhone()) {
 			const title = `Download image ${name}`;
-			util.shareUrl(title, url);
+			const blob = webix.ajax().response("blob").get(`${url}`);
+			util.shareFile(title, blob, name);
 		}
 		else if (url) {
 			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {

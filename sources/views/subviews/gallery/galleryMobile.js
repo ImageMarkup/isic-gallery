@@ -254,7 +254,7 @@ export default class GalleryMobileView extends JetView {
 						? `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
 									<span class="gallery-images-button download-icon tooltip-title">
 										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
+											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#download-icon" class="gallery-icon-use"></use>
 										</svg>
 									</span>
 									<span class="tooltip-block tooltip-block-top">Download</span>
