@@ -509,16 +509,15 @@ function shareUrl(title, url) {
 }
 
 async function shareFile(title, data, fileName) {
-		const file = new File(data, fileName, {type: "image/png"});
-		try {
-				await navigator.share({
-						title: title,
-						files: [file]
-				})
-		}
-		catch (err) {
-				console.error("Download failed:", err.message);
-		}
+	const file = new File([data], `${fileName}.jpeg`, {type: data.type});
+	navigator.share({
+		title: title,
+		files: [file]
+	}).then(() => {
+		logger.info("Successful download");
+	}).catch ((err) => {
+		console.error("Download failed:", err.message);
+	});
 }
 
 function isPortrait() {
