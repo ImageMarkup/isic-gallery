@@ -815,13 +815,13 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			await this._reload(0, this._pager.data.size);
 			// Fix scrollView
 			this.resizeFilterScrollView();
 			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
 			if (element) {
 				this._scrollToFilterFormElement(element);
 			}
+			await this._reload(0, this._pager.data.size);
 		});
 
 		const clearAllFilters = () => {

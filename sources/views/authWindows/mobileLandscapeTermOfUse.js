@@ -26,11 +26,10 @@ const body = {
 				}
 			}
 		},
-		termsOfUseDownloadingPanel.getDownloadingPanel(),
 		{
 			paddingY: 10,
 			cols: [
-				{},
+				termsOfUseDownloadingPanel.getDownloadingPanel(),
 				{
 					view: "button",
 					css: "btn-contour",

@@ -11,7 +11,6 @@ function getLabelUI(label) {
 }
 
 function getCheckboxUI(data) {
-	const isPortrait = util.isPortrait();
 	const isMobile = util.isMobilePhone();
 	const handleAggregateButton = function (controlData, elements, newValue, app) {
 		const filtersInfo = [];
@@ -102,11 +101,6 @@ function getCheckboxUI(data) {
 				}
 			]
 		};
-
-	if (isPortrait) {
-		view.rows[1].rows.push(selectAllLabel);
-		view.rows[1].rows.push(selectNoneLabel);
-	}
 
 	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
