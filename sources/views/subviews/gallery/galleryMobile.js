@@ -876,6 +876,9 @@ export default class GalleryMobileView extends JetView {
 		const rightLandscapeImageWindowZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
 		const currentFilterPanel = $$(ID_FILTER_PANEL);
 		const galleryDataview = $$(ID_DATAVIEW);
+		const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
+		galleryDataview.unselectAll();
+		currentGalleryFooter.hide();
 		const galleryDataviewLeftButton = $$(ID_DATAVIEW_LEFT_BUTTON);
 		const galleryDataviewRightButton = $$(ID_DATAVIEW_RIGHT_BUTTON);
 		const galleryPagerLayout = $$(ID_GALLERY_PAGER_LAYOUT);
