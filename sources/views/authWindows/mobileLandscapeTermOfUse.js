@@ -13,7 +13,7 @@ const body = {
 			align: "absolute",
 			body: {
 				view: "scrollview",
-				height: 200,
+				height: 0,
 				body: {
 					rows: [
 						{
