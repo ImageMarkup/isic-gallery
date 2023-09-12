@@ -821,7 +821,7 @@ class GalleryService {
 			if (element) {
 				this._scrollToFilterFormElement(element);
 			}
-			await this._reload(0, this._pager.data.size);
+			await this._reload(0, this._pager?.data?.size || 10);
 		});
 
 		const clearAllFilters = () => {
@@ -1011,6 +1011,7 @@ class GalleryService {
 					if (util.isiPhone()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
+					// TODO: alternative
 					// ajax.downloadImage(fullFileUrl, fileName);
 					util.downloadByLink(fullFileUrl, fileName);
 				}
@@ -1068,7 +1069,7 @@ class GalleryService {
 			this._updateContentHeaderTemplate(
 				{
 					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
+					rangeFinish: this._pager?.data?.size || 10,
 					totalCount: state.imagesTotalCounts.passedFilters.count
 				}
 			);
@@ -1510,13 +1511,15 @@ class GalleryService {
 		const filterScrollViewChildren = this._filterScrollView.getChildViews();
 		const scrollViewWidth = this._filterScrollView.$width;
 		let scrollViewHeight = 0;
-		filterScrollViewChildren.forEach((childView) => {
+		filterScrollViewChildren?.forEach((childView) => {
 			scrollViewHeight += childView.$height;
 		});
-		this._filterScrollView.$setSize(
-			scrollViewWidth,
-			scrollViewHeight
-		);
+		if (scrollViewHeight && scrollViewWidth) {
+			this._filterScrollView?.$setSize(
+				scrollViewWidth,
+				scrollViewHeight
+			);
+		}
 		this._filterScrollView.resize();
 	}
 }

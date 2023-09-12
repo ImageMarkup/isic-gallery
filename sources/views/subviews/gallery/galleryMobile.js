@@ -1,4 +1,3 @@
-import WZoom from "vanilla-js-wheel-zoom";
 import {JetView} from "webix-jet";
 
 import MobileHeaderService from "app-services/header/mobileHeaderServices";
@@ -10,6 +9,7 @@ import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
+import logger from "../../../utils/logger";
 import util from "../../../utils/util";
 import cartList from "./parts/cartList";
 import contextMenu from "./parts/contextMenu";
@@ -366,7 +366,7 @@ export default class GalleryMobileView extends JetView {
 							ajax.downloadImage(fullFileUrl, fileName);
 						}
 						else {
-							webix.message("Cannot download image", "info", 5000);
+							webix.message("Do not have link to share image", "info", 5000);
 						}
 					}
 				}
@@ -648,11 +648,12 @@ export default class GalleryMobileView extends JetView {
 		const portrait = window.matchMedia("(orientation: portrait)").matches;
 		this.showOrHideElementsOnOrientation(portrait);
 
-		window.matchMedia("(orientation: portrait)").addEventListener("change", (e) => {
-			const currentPortrait = e.matches;
+		const rotateHandler = util.debounce((landscape) => {
+			const currentPortrait = !landscape;
 			this.showOrHideElementsOnOrientation(currentPortrait);
 			this.updatePagerSize();
-		});
+		}, 1000);
+		webix.attachEvent("onRotate", rotateHandler);
 	}
 
 	async ready() {
@@ -833,6 +834,17 @@ export default class GalleryMobileView extends JetView {
 		const maxDataviewHeight = galleryDataviewHeight;
 		const maxImageHeight = maxImageWidth;
 		const rows = Math.floor(maxDataviewHeight / maxImageHeight) || 1;
+		const portrait = window.matchMedia("(orientation: portrait)").matches;
+		if (portrait && rows <= 1) {
+			dataWindowView.getTopParentView().resize();
+			this.showOrHideElementsOnOrientation(portrait);
+			return;
+		}
+		else if (!portrait && rows > 2) {
+			dataWindowView.getTopParentView().resize();
+			this.showOrHideElementsOnOrientation(portrait);
+			return;
+		}
 		// we use minus 1 to fix image load bug
 		const elementWidth = Math.round(galleryDataViewWidth / cols) - 1;
 		const elementHeight = Math.round(galleryDataviewHeight / rows);
@@ -871,45 +883,53 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	showOrHideElementsOnOrientation(portrait) {
-		const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
-		const leftLandscapeImageWindowZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
-		const rightLandscapeImageWindowZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
-		const currentFilterPanel = $$(ID_FILTER_PANEL);
-		const galleryDataview = $$(ID_DATAVIEW);
-		const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
-		galleryDataview.unselectAll();
-		currentGalleryFooter.hide();
-		const galleryDataviewLeftButton = $$(ID_DATAVIEW_LEFT_BUTTON);
-		const galleryDataviewRightButton = $$(ID_DATAVIEW_RIGHT_BUTTON);
-		const galleryPagerLayout = $$(ID_GALLERY_PAGER_LAYOUT);
-		const portraitFiltersLayout = currentFilterPanel.queryView({
-			id: filterPanel.getPortraitFiltersLayoutID()
-		});
-		const landscapeFiltersLayout = currentFilterPanel.queryView({
-			id: filterPanel.getLandscapeFiltersLayoutID()
-		});
-		if (portrait) {
-			galleryDataviewLeftButton.hide();
-			galleryDataviewRightButton.hide();
-			galleryPagerLayout.show();
-			imageWindowZoomButtons.show();
-			leftLandscapeImageWindowZoomButton.hide();
-			rightLandscapeImageWindowZoomButton.hide();
-			portraitFiltersLayout.show();
-			landscapeFiltersLayout.hide();
+		try {
+			const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
+			const leftLandscapeImageWindowZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
+			const rightLandscapeImageWindowZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
+			const currentFilterPanel = $$(ID_FILTER_PANEL);
+			const galleryDataview = $$(ID_DATAVIEW);
+			const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);
+			galleryDataview.unselectAll();
+			currentGalleryFooter.hide();
+			const galleryDataviewLeftButton = $$(ID_DATAVIEW_LEFT_BUTTON);
+			const galleryDataviewRightButton = $$(ID_DATAVIEW_RIGHT_BUTTON);
+			const galleryPagerLayout = $$(ID_GALLERY_PAGER_LAYOUT);
+			const portraitFiltersLayout = currentFilterPanel.queryView({
+				id: filterPanel.getPortraitFiltersLayoutID()
+			});
+			const landscapeFiltersLayout = currentFilterPanel.queryView({
+				id: filterPanel.getLandscapeFiltersLayoutID()
+			});
+			if (portrait) {
+				galleryDataviewLeftButton.hide();
+				galleryDataviewRightButton.hide();
+				galleryPagerLayout.show();
+				imageWindowZoomButtons.show();
+				leftLandscapeImageWindowZoomButton.hide();
+				rightLandscapeImageWindowZoomButton.hide();
+				portraitFiltersLayout.show();
+				landscapeFiltersLayout.hide();
+			}
+			else {
+				galleryDataviewLeftButton.show();
+				galleryDataviewRightButton.show();
+				galleryPagerLayout.hide();
+				imageWindowZoomButtons.hide();
+				leftLandscapeImageWindowZoomButton.show();
+				rightLandscapeImageWindowZoomButton.show();
+				portraitFiltersLayout.hide();
+				landscapeFiltersLayout.show();
+			}
+			galleryDataview.refresh();
+			this.imageWindowTemplate.refresh();
 		}
-		else {
-			galleryDataviewLeftButton.show();
-			galleryDataviewRightButton.show();
-			galleryPagerLayout.hide();
-			imageWindowZoomButtons.hide();
-			leftLandscapeImageWindowZoomButton.show();
-			rightLandscapeImageWindowZoomButton.show();
-			portraitFiltersLayout.hide();
-			landscapeFiltersLayout.show();
+		catch (e) {
+			logger.error(e);
 		}
-		galleryDataview.refresh();
-		this.imageWindowTemplate.refresh();
+		finally {
+			this.updatePagerSize();
+		}
 	}
 
 	removeParam() {

@@ -561,7 +561,7 @@ export default {
 	isiPhone,
 	isMobilePhone,
 	shareUrl,
-	isPortrait,
-	shareFile
+	shareFile,
+	isPortrait
 };
 

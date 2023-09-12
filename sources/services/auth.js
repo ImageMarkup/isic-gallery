@@ -138,6 +138,7 @@ class OAuthISIC {
 			landWin.show();
 		}
 		win.okCallback = okCallback;
+		landWin.okCallback = okCallback;
 	}
 
 	showMainPage() {
