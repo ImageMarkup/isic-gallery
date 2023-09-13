@@ -835,12 +835,12 @@ export default class GalleryMobileView extends JetView {
 		const maxImageHeight = maxImageWidth;
 		const rows = Math.floor(maxDataviewHeight / maxImageHeight) || 1;
 		const portrait = window.matchMedia("(orientation: portrait)").matches;
-		if (portrait && rows <= 1) {
+		if (portrait && rows <= 1 && dataWindowView.isVisible()) {
 			dataWindowView.getTopParentView().resize();
 			this.showOrHideElementsOnOrientation(portrait);
 			return;
 		}
-		else if (!portrait && rows > 2) {
+		else if (!portrait && rows > 2 && dataWindowView.isVisible()) {
 			dataWindowView.getTopParentView().resize();
 			this.showOrHideElementsOnOrientation(portrait);
 			return;
