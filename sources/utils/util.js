@@ -478,12 +478,12 @@ function debounce(func, timeout = 300) {
 	};
 }
 
-function isiPhone() {
-	return /iPhone/i.test(navigator.userAgent)
+function isIOS() {
+	return /iPad|iPhone|iPod/i.test(navigator.userAgent)
 }
 
 function isMobilePhone() {
-	return /Android|iPhone/i.test(navigator.userAgent)
+	return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 }
 
 /**
@@ -508,7 +508,7 @@ function shareUrl(title, url) {
 	}
 }
 
-async function shareFile(title, data, fileName) {
+function shareFile(title, data, fileName) {
 	const file = new File([data], `${fileName}.jpeg`, {type: data.type});
 	navigator.share({
 		title: title,
@@ -558,7 +558,7 @@ export default {
 	getImageHeight,
 	setImageDimensions,
 	getOptionId,
-	isiPhone,
+	isIOS,
 	isMobilePhone,
 	shareUrl,
 	shareFile,

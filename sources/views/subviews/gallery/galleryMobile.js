@@ -250,7 +250,7 @@ export default class GalleryMobileView extends JetView {
 				hidden: true,
 				template(obj) {
 					const imageIconDimensions = util.getImageIconDimensions();
-					const downloadIcon = util.isiPhone()
+					const downloadIcon = util.isIOS()
 						? `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
 									<span class="gallery-images-button download-icon tooltip-title">
 										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
@@ -685,7 +685,9 @@ export default class GalleryMobileView extends JetView {
 		this.windowResizeEvent = webix.event(window, "resize", resizeHandler);
 
 		const galleryDataview = this.getGalleryDataview();
-		this.contextMenu.attachTo(galleryDataview);
+		if (!util.isIOS()) {
+			this.contextMenu.attachTo(galleryDataview);
+		}
 		const imgWindowTemplateView = this.imageWindow.queryView({id: mobileImageWindow.getViewerId()})
 			.$view;
 		this.enlargeContextMenu.attachTo(imgWindowTemplateView);

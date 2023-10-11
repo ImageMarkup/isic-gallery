@@ -13,6 +13,7 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 		? collapsibleFilter.rows[0].cols[0]
 		: collapsibleFilter.rows[0];
 	template.onClick = {
+		// eslint-disable-next-line func-names
 		"collapssible-filter": function () {
 			const currentMobile = util.isMobilePhone();
 			const children = currentMobile

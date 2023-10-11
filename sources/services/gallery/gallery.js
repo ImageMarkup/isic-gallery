@@ -1008,7 +1008,7 @@ class GalleryService {
 				const fullFileUrl = currentItem.files?.full?.url;
 				const fileName = currentItem.isic_id;
 				if (fullFileUrl) {
-					if (util.isiPhone()) {
+					if (util.isIOS()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
 					// TODO: alternative
@@ -1024,7 +1024,7 @@ class GalleryService {
 				const fullFileUrl = obj.fullFileUrl;
 				const fileName = obj.imageId;
 				if (fullFileUrl) {
-					if (util.isiPhone()) {
+					if (util.isIOS()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
 					// TODO: alternative
@@ -1524,14 +1524,14 @@ class GalleryService {
 		this._filterScrollView.resize();
 	}
 
-		clearFilterForm() {
-				const elements = this._filtersForm.getChildViews();
-				for (let i = 0; i < elements.length - 1; i++) {
-						let element = elements[i];
-						i--;
-						this._filtersForm.removeView(element);
-				}
+	clearFilterForm() {
+		const elements = this._filtersForm.getChildViews();
+		for (let i = 0; i < elements.length - 1; i++) {
+			let element = elements[i];
+			i--;
+			this._filtersForm.removeView(element);
 		}
+	}
 }
 
 export default GalleryService;

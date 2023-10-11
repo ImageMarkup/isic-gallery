@@ -236,7 +236,7 @@ class AjaxActions {
 	}
 
 	async downloadImage(url, name) {
-		if (util.isiPhone()) {
+		if (util.isIOS()) {
 			const title = `Download image ${name}`;
 			const blob = await webix.ajax().response("blob").get(`${url}`);
 			util.shareFile(title, blob, name);
