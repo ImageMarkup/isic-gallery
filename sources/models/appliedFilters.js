@@ -59,10 +59,12 @@ function prepareDataForList() {
 function processNewFilters(data) {
 	if (Array.isArray(data)) {
 		data.forEach((item) => {
+			// eslint-disable-next-line no-use-before-define
 			processNewFilter(item);
 		});
 	}
 	else if (data) {
+		// eslint-disable-next-line no-use-before-define
 		processNewFilter(data);
 	}
 }
@@ -210,7 +212,7 @@ function _prepareRangeCondition(filter, result) {
 					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
 					operator: "OR",
 					openingBracket: "",
-					closingBracket: ")",
+					closingBracket: "",
 					type: filter.datatype
 				});
 			}
