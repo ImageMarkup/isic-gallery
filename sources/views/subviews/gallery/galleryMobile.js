@@ -690,8 +690,11 @@ export default class GalleryMobileView extends JetView {
 		}
 		const imgWindowTemplateView = this.imageWindow.queryView({id: mobileImageWindow.getViewerId()})
 			.$view;
-		this.enlargeContextMenu.attachTo(imgWindowTemplateView);
-		this.enlargeContextMenu.setContext({obj: this.imageWindowTemplate});
+
+		if (util.isIOS()) {
+			this.enlargeContextMenu.attachTo(imgWindowTemplateView);
+			this.enlargeContextMenu.setContext({obj: this.imageWindowTemplate});
+		}
 
 		const isicId = this.getRoot().$scope.getParam("image");
 		if (!util.isMobilePhone()) {
