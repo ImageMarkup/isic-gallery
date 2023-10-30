@@ -1044,9 +1044,11 @@ class GalleryService {
 					if (util.isIOS()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
+					else {
+						util.downloadByLink(fullFileUrl, fileName);
+					}
 					// TODO: alternative
 					// ajax.downloadImage(fullFileUrl, fileName);
-					util.downloadByLink(fullFileUrl, fileName);
 				}
 			}
 		});
