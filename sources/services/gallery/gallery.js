@@ -1002,18 +1002,34 @@ class GalleryService {
 		this._galleryContextMenu?.attachEvent("onItemClick", function (id) {
 			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
 				const context = this.getContext();
-				const contextView = context.obj;
-				const itemId = context.id;
-				const currentItem = contextView.getItem(itemId);
-				const fullFileUrl = currentItem.files?.full?.url;
-				const fileName = currentItem.isic_id;
-				if (fullFileUrl) {
+				if (context.isic_id) {
+					const fileName = context.isic_id;
+					const fullFileUrl = context.files.full.url;
 					if (util.isIOS()) {
 						ajax.downloadImage(fullFileUrl, fileName);
 					}
+					else {
+						util.downloadByLink(fullFileUrl, fileName);
+					}
 					// TODO: alternative
 					// ajax.downloadImage(fullFileUrl, fileName);
-					util.downloadByLink(fullFileUrl, fileName);
+				}
+				else {
+					const contextView = context.obj;
+					const itemId = context.id;
+					const currentItem = contextView.getItem(itemId);
+					const fullFileUrl = currentItem.files?.full?.url;
+					const fileName = currentItem.isic_id;
+					if (fullFileUrl) {
+						if (util.isIOS()) {
+							ajax.downloadImage(fullFileUrl, fileName);
+						}
+						else {
+							util.downloadByLink(fullFileUrl, fileName);
+						}
+						// TODO: alternative
+						// ajax.downloadImage(fullFileUrl, fileName);
+					}
 				}
 			}
 		});

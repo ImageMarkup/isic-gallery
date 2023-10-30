@@ -686,14 +686,27 @@ export default class GalleryMobileView extends JetView {
 
 		const galleryDataview = this.getGalleryDataview();
 		if (!util.isIOS()) {
-			this.contextMenu.attachTo(galleryDataview);
+			this.contextMenu?.attachTo(galleryDataview);
 		}
 		const imgWindowTemplateView = this.imageWindow.queryView({id: mobileImageWindow.getViewerId()})
 			.$view;
 
+		if (!util.isIOS()) {
+			this.enlargeContextMenu?.attachTo(imgWindowTemplateView);
+			this.enlargeContextMenu?.setContext({obj: this.imageWindowTemplate});
+		}
+
 		if (util.isIOS()) {
-			this.enlargeContextMenu.attachTo(imgWindowTemplateView);
-			this.enlargeContextMenu.setContext({obj: this.imageWindowTemplate});
+			const galleryContextMenu = this.contextMenu;
+			galleryDataview?.attachEvent("onLongTouch", (context) => {
+				if (context?.target?.tagName === "IMG") {
+					galleryDataview?.select(context.target.parentNode.parentNode.getAttribute("webix_l_id"));
+					galleryContextMenu?.setPosition(context.x, context.y);
+					const newContext = galleryDataview.getSelectedItem();
+					galleryContextMenu?.setContext(newContext);
+					galleryContextMenu?.show();
+				}
+			});
 		}
 
 		const isicId = this.getRoot().$scope.getParam("image");
@@ -762,7 +775,8 @@ export default class GalleryMobileView extends JetView {
 	}
 
 	getGalleryContextMenu() {
-		return this.getRoot().queryView({id: ID_MOBILE_GALLERY_CONTEXT_MENU});
+		return this.getRoot().queryView({id: ID_MOBILE_GALLERY_CONTEXT_MENU})
+			?? this.$$(ID_MOBILE_GALLERY_CONTEXT_MENU);
 	}
 
 	getPortraitClearAllFiltersTemplate() {
