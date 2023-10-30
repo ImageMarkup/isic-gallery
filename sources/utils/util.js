@@ -524,6 +524,10 @@ function isPortrait() {
 	return window.matchMedia("(orientation: portrait)").matches;
 }
 
+function isSafari() {
+	return navigator.userAgent.indexOf("Safari") > -1;
+}
+
 export default {
 	openInNewTab,
 	downloadByLink,
@@ -562,6 +566,7 @@ export default {
 	isMobilePhone,
 	shareUrl,
 	shareFile,
-	isPortrait
+	isPortrait,
+	isSafari
 };
 

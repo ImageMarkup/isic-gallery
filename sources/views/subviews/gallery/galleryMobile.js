@@ -250,16 +250,6 @@ export default class GalleryMobileView extends JetView {
 				hidden: true,
 				template(obj) {
 					const imageIconDimensions = util.getImageIconDimensions();
-					const downloadIcon = util.isIOS()
-						? `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button download-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#download-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top">Download</span>
-								</div>`
-						: "";
 					const diagnosisIcon = obj.hasAnnotations
 						? `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
 									<span class="gallery-images-button diagnosis-icon tooltip-title">
@@ -298,8 +288,7 @@ export default class GalleryMobileView extends JetView {
 									<span class="tooltip-block tooltip-block-top">Share</span>
 								</div>
 								${diagnosisIcon}
-								${downloadIcon}
-									</div>
+								</div>
 								</div>`;
 					return html;
 				},
@@ -352,18 +341,6 @@ export default class GalleryMobileView extends JetView {
 						if (url) { // Web Share API is supported
 							const title = `Share image ${currentItem.isic_id}`;
 							util.shareUrl(title, url);
-						}
-						else {
-							webix.message("Do not have link to share image", "info", 5000);
-						}
-					},
-					"download-icon": async (/* e, id */) => {
-						const galleryDataview = this.getGalleryDataview();
-						const currentItem = galleryDataview.getSelectedItem();
-						const fullFileUrl = currentItem.files?.full?.url;
-						const fileName = currentItem.isic_id;
-						if (fullFileUrl) { // Web Share API is supported
-							ajax.downloadImage(fullFileUrl, fileName);
 						}
 						else {
 							webix.message("Do not have link to share image", "info", 5000);
