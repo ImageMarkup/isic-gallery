@@ -1036,7 +1036,8 @@ class GalleryService {
 
 		this._enlargeContextMenu?.attachEvent("onItemClick", (id) => {
 			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
-				const obj = this._imageWindowTemplate?.getValues();
+				const obj = this._imageWindowTemplate?.getValues()
+					?? this._imageWindowTemplateWithoutControls?.getValues();
 				const fullFileUrl = obj.fullFileUrl;
 				const fileName = obj.imageId;
 				if (fullFileUrl) {
@@ -1125,7 +1126,11 @@ class GalleryService {
 				if (this._imageWindow && isTermsOfUseAccepted) {
 					this._imageWindowTemplate?.hide();
 					this._imageWindowTemplateWithoutControls?.show();
-					this._imageWindowTemplateWithoutControls?.setValues({imageId: image});
+					const item = await ajax.getImageItem(image);
+					this._imageWindowTemplateWithoutControls?.setValues({
+						imageId: image,
+						fullFileUrl: item.files.full.url
+					});
 					this._imageWindow.show();
 				}
 			}
