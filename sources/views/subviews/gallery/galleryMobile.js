@@ -577,7 +577,7 @@ export default class GalleryMobileView extends JetView {
 			imageWindowZoomButtons,
 			leftLandImageZoomButton,
 			rightLandImageZoomButton,
-			null,
+			null, // imageWindowTemplate
 			this.imageWindowTemplate,
 			this.enlargeContextMenu,
 			portraitClearAllFiltersTemplate,
@@ -694,6 +694,14 @@ export default class GalleryMobileView extends JetView {
 		if (!util.isIOS()) {
 			this.enlargeContextMenu?.attachTo(imgWindowTemplateView);
 			this.enlargeContextMenu?.setContext({obj: this.imageWindowTemplate});
+		}
+		else {
+			this.imageWindowTemplate?.attachEvent("onLongTouch", (context) => {
+				if (context?.target?.tagName === "IMG") {
+					this.enlargeContextMenu?.setPosition(context.x, context.y);
+					this.enlargeContextMenu?.show();
+				}
+			});
 		}
 
 		if (util.isIOS()) {
