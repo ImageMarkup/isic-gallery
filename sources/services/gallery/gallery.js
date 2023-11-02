@@ -1005,14 +1005,7 @@ class GalleryService {
 				if (context.isic_id) {
 					const fileName = context.isic_id;
 					const fullFileUrl = context.files.full.url;
-					if (util.isIOS()) {
-						ajax.downloadImage(fullFileUrl, fileName);
-					}
-					else {
-						util.downloadByLink(fullFileUrl, fileName);
-					}
-					// TODO: alternative
-					// ajax.downloadImage(fullFileUrl, fileName);
+					this.downloadImage(fullFileUrl, fileName);
 				}
 				else {
 					const contextView = context.obj;
@@ -1020,16 +1013,7 @@ class GalleryService {
 					const currentItem = contextView.getItem(itemId);
 					const fullFileUrl = currentItem.files?.full?.url;
 					const fileName = currentItem.isic_id;
-					if (fullFileUrl) {
-						if (util.isIOS()) {
-							ajax.downloadImage(fullFileUrl, fileName);
-						}
-						else {
-							util.downloadByLink(fullFileUrl, fileName);
-						}
-						// TODO: alternative
-						// ajax.downloadImage(fullFileUrl, fileName);
-					}
+					this.downloadImage(fullFileUrl, fileName);
 				}
 			}
 		});
@@ -1040,16 +1024,7 @@ class GalleryService {
 					?? this._imageWindowTemplateWithoutControls?.getValues();
 				const fullFileUrl = obj.fullFileUrl;
 				const fileName = obj.imageId;
-				if (fullFileUrl) {
-					if (util.isIOS()) {
-						ajax.downloadImage(fullFileUrl, fileName);
-					}
-					else {
-						util.downloadByLink(fullFileUrl, fileName);
-					}
-					// TODO: alternative
-					// ajax.downloadImage(fullFileUrl, fileName);
-				}
+				this.downloadImage(fullFileUrl, fileName);
 			}
 		});
 
@@ -1097,6 +1072,10 @@ class GalleryService {
 			const ids = Object.keys(facets);
 			ids.forEach((id) => {
 				state.imagesTotalCounts[id] = facets[id].buckets;
+				state.imagesTotalCounts[id].push({
+					key: constants.MISSING_KEY_VALUE,
+					doc_count: facets[id]?.meta?.missing_count
+				});
 			});
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
@@ -1553,6 +1532,19 @@ class GalleryService {
 			let element = elements[i];
 			i--;
 			this._filtersForm.removeView(element);
+		}
+	}
+
+	downloadImage(fullFileUrl, fileName) {
+		if (fullFileUrl) {
+			if (util.isIOS()) {
+				ajax.downloadImage(fullFileUrl, fileName);
+			}
+			else {
+				util.downloadByLink(fullFileUrl, fileName);
+			}
+			// TODO: alternative
+			// ajax.downloadImage(fullFileUrl, fileName);
 		}
 	}
 }

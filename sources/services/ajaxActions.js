@@ -130,7 +130,7 @@ class AjaxActions {
 
 	// New API
 	searchImages(sourceParams) {
-		const conditions = sourceParams.conditions;
+		const conditions = sourceParams.conditions || "";
 		const params = {
 			limit: sourceParams.limit || 0,
 			query: conditions

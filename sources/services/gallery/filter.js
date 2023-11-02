@@ -1,3 +1,5 @@
+import constants from "../../constants";
+import appliedFiltersModel from "../../models/appliedFilters";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -85,14 +87,35 @@ function updateFiltersFormControl(data) {
 	}
 }
 
+function _setLabelCount(foundCurrentCount, docCount) {
+	const appliedFiltersArray = appliedFiltersModel.getFiltersArray();
+	const filtersKeys = [];
+	appliedFiltersArray.forEach((filter) => {
+		if (!filtersKeys.includes(filter.key)) {
+			filtersKeys.push(filter.key);
+		}
+	});
+	filtersKeys.forEach((filterKey) => {
+		const labelView = $$(util.getFilterLabelId(filterKey));
+		const template = labelView.config.template();
+		const newTemplate = `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		labelView.define("template", newTemplate);
+		labelView.refresh();
+	});
+}
+
 // if countsAfterFiltration == undefined that we have all applied filters
 // and current counts are the same as counts without filtration
 function updateFiltersCounts(countsAfterFiltration) {
 	//  state.imagesTotalCounts has been init after getting facets(data with counts) response
 	const filterKeys = Object.keys(state.imagesTotalCounts);
+	const filteredCounts = {};
+	const docCounts = {};
 	filterKeys.forEach((filterKey) => {
 		if (filterKey !== "passedFilters") {
-			let values = state.imagesTotalCounts[filterKey];
+			const values = state.imagesTotalCounts[filterKey];
+			filteredCounts[filterKey] = 0;
+			docCounts[filterKey] = 0;
 			values.forEach((value) => {
 				let currentCount;
 				if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
@@ -101,6 +124,10 @@ function updateFiltersCounts(countsAfterFiltration) {
 				else {
 					currentCount = value.doc_count;
 				}
+				filteredCounts[filterKey] += currentCount;
+				docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
+					? value.doc_count
+					: 0;
 				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
@@ -109,6 +136,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 			});
 		}
 	});
+	_setLabelCount(filteredCounts, docCounts);
 }
 
 export default {

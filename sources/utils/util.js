@@ -227,6 +227,10 @@ function getOptionId(filterId, optionValue) {
 	return `${filterId || ""}|${optionValue || ""}`;
 }
 
+function getFilterLabelId(filterId) {
+	return `filter-label-${filterId || ""}`
+}
+
 function getImageIconDimensions() {
 	const initialIconWidth = constants.DEFAULT_GALLERY_IMAGE_ICON_WIDTH;
 	const initialIconHeight = constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT;
@@ -567,6 +571,7 @@ export default {
 	shareUrl,
 	shareFile,
 	isPortrait,
+	getFilterLabelId,
 	isSafari
 };
 

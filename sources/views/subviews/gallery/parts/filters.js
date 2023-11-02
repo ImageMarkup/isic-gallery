@@ -1,6 +1,9 @@
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
+const NAME_SELECT_ALL_FILTERS = "filter-images-select-all-name";
+const NAME_SELECT_NONE_FILTERS = "filter-images-select-none-name";
+
 function getLabelUI(label) {
 	return {
 		view: "label",
@@ -31,13 +34,17 @@ function getCheckboxUI(data) {
 
 		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
 	};
+
 	const selectAllLabel = {
 		view: "template",
+		name: isMobile ? NAME_SELECT_ALL_FILTERS : "",
 		css: "select-all-template",
 		template: "<span class='select-all-label'>Select All</span>",
 		borderless: true,
+		hidden: isMobile,
 		height: 22,
 		onClick: {
+			// eslint-disable-next-line func-names
 			"select-all-label": function () {
 				const elements = this.getFormView().elements;
 				handleAggregateButton(data, elements, 1, this.getTopParentView().$scope.app);
@@ -47,9 +54,11 @@ function getCheckboxUI(data) {
 
 	const selectNoneLabel = {
 		view: "template",
+		name: isMobile ? NAME_SELECT_NONE_FILTERS : "",
 		css: "select-none-template",
 		template: "<span class='select-none-label'>Select None</span>",
 		borderless: true,
+		hidden: isMobile,
 		height: 22,
 		onClick: {
 			// eslint-disable-next-line func-names
@@ -67,6 +76,7 @@ function getCheckboxUI(data) {
 				{
 					cols: [
 						{
+							id: util.getFilterLabelId(data.id),
 							view: "template",
 							css: "checkbox-label",
 							autoheight: true,
@@ -89,6 +99,7 @@ function getCheckboxUI(data) {
 			id: `checkboxUI-${data.id}`,
 			rows: [
 				{
+					id: util.getFilterLabelId(data.id),
 					view: "template",
 					css: "checkbox-label",
 					autoheight: true,
@@ -97,10 +108,18 @@ function getCheckboxUI(data) {
 				},
 				{
 					paddingX: 20,
-					rows: []
+					rows: [
+						selectAllLabel,
+						selectNoneLabel
+					]
 				}
 			]
 		};
+
+	if (!isMobile) {
+		view.rows[1].rows.push(selectAllLabel);
+		view.rows[1].rows.push(selectNoneLabel);
+	}
 
 	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
@@ -257,7 +276,17 @@ function getRangeSliderUI(data) {
 };
 */
 
+function getSelectAllFilersName() {
+	return NAME_SELECT_ALL_FILTERS;
+}
+
+function getSelectNoneFiltersName() {
+	return NAME_SELECT_NONE_FILTERS;
+}
+
 export default {
 	getLabelUI,
-	getCheckboxUI
+	getCheckboxUI,
+	getSelectAllFilersName,
+	getSelectNoneFiltersName
 };

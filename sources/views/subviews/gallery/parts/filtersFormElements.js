@@ -3,7 +3,8 @@ import util from "../../../../utils/util";
 import filtersViewHelper from "./filters";
 
 const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
-
+const NAME_SELECT_ALL_FILTER = filtersViewHelper.getSelectAllFilersName();
+const NAME_SELECT_NONE_FILTER = filtersViewHelper.getSelectNoneFiltersName();
 // we assume that the first child of any filter will be a label
 // and then we attach the handler for its click event to hide or show the other children
 function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
@@ -16,6 +17,8 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 		// eslint-disable-next-line func-names
 		"collapssible-filter": function () {
 			const currentMobile = util.isMobilePhone();
+			const selectAllFiltersButton = this.getParentView().queryView({name: NAME_SELECT_ALL_FILTER});
+			const selectNoneFiltersButton = this.getParentView().queryView({name: NAME_SELECT_NONE_FILTER});
 			const children = currentMobile
 				? this.getParentView().getParentView().getChildViews()
 				: this.getParentView().getChildViews();
@@ -24,6 +27,8 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 				: children[0];
 			const controls = children[1];
 			if (!controls.isVisible()) {
+				selectAllFiltersButton?.show();
+				selectNoneFiltersButton?.show();
 				webix.html.addCss(labelObject.getNode(), "showed-filter");
 				webix.html.removeCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = true;
@@ -37,6 +42,8 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 				});
 			}
 			else {
+				selectAllFiltersButton?.hide();
+				selectNoneFiltersButton?.hide();
 				webix.html.removeCss(labelObject.getNode(), "showed-filter");
 				webix.html.addCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = false;

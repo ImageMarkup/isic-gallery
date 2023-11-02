@@ -528,6 +528,14 @@ export default class GalleryMobileView extends JetView {
 		const leftLandImageZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
 		const rightLandImageZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
 		this.imageWindowTemplate = $$(mobileImageWindow.getViewerId());
+		const scrollUpButton = view.queryView({id: filterPanel.getScrollUpButtonID()});
+		const scrollDownButton = view.queryView({id: filterPanel.getScrollDownButtonID()});
+		const scrollUpLandscapeButton = view.queryView({
+			id: filterPanel.getScrollLandscapeUpButtonID()
+		});
+		const scrollDownLandscapeButton = view.queryView({
+			id: filterPanel.getScrollLandscapeDownButtonID()
+		});
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -631,6 +639,84 @@ export default class GalleryMobileView extends JetView {
 			this.updatePagerSize();
 		}, 1000);
 		webix.attachEvent("onRotate", rotateHandler);
+
+		const showOrHideScrollButtons = function() {
+			const scrollState = this.getScrollState();
+			const scrollBodyHeight = filterScrollView.getBody()?.$height ?? 0;
+			console.log(scrollState);
+			if (scrollState.y === scrollBodyHeight - filterScrollView.$height) {
+				if (util.isPortrait()) {
+					scrollDownButton.hide();
+				}
+				else {
+					scrollDownLandscapeButton.hide();
+				}
+			}
+
+			if (scrollState.y !== 0) {
+				if (util.isPortrait()) {
+					scrollUpButton.show();
+				}
+				else {
+					scrollUpLandscapeButton.show();
+				}
+			}
+
+			if (scrollState.y < scrollBodyHeight - filterScrollView.$height) {
+				if (util.isPortrait()) {
+					scrollDownButton.show();
+				}
+				else {
+					scrollDownLandscapeButton.show();
+				}
+			}
+
+			if (scrollState.y === 0) {
+				if (util.isPortrait()) {
+					scrollUpButton.hide();
+				}
+				else {
+					scrollUpLandscapeButton.hide();
+				}
+				if (scrollBodyHeight > filterScrollView.$height) {
+					if (util.isPortrait()) {
+						scrollDownButton.show();
+					}
+					else {
+						scrollDownLandscapeButton.show();
+					}
+				}
+			}
+			scrollDownButton.refresh();
+			scrollUpButton.refresh();
+		};
+
+		const scrollDownButtonID = filterPanel.getScrollDownButtonID();
+		const scrollUpButtonID = filterPanel.getScrollUpButtonID();
+		const moveScroll = function (id) {
+			if (id === scrollDownButtonID) {
+				const scrollBodyHeight = filterScrollView.getBody()?.$height ?? 0;
+				const filterScrollViewHeight = filterScrollView.$height ?? 0;
+				filterScrollView.scrollTo(0, scrollBodyHeight - filterScrollViewHeight);
+				scrollDownButton.hide();
+				scrollUpButton.show();
+			}
+			else if (id === scrollUpButtonID) {
+				filterScrollView.scrollTo(0, 0);
+				scrollDownButton.show();
+				scrollUpButton.hide();
+			}
+			scrollDownButton.refresh();
+			scrollUpButton.refresh();
+		};
+
+		filterScrollView.attachEvent("onViewShow", showOrHideScrollButtons);
+
+		filterScrollView.attachEvent("onAfterScroll", showOrHideScrollButtons);
+
+		scrollDownButton.attachEvent("onItemClick", moveScroll);
+
+		scrollUpButton.attachEvent("onItemClick", moveScroll);
 	}
 
 	async ready() {

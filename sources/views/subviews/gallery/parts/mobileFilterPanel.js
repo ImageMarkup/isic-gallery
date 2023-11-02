@@ -13,6 +13,10 @@ const ID_FILTERS_FORM = `filters-form-id-${webix.uid()}`;
 const ID_LANDSCAPE_FILTERS_FORM = `landscape-filters-form-id-${webix.uid()}`;
 const ID_APPLIED_FILTERS_LAYOUT = `applied-filters-layout-id-${webix.uid()}`;
 const ID_LANDSCAPE_APPLIED_FILTERS_LAYOUT = `landscape-applied-filters-layout-id-${webix.uid()}`;
+const ID_SCROLL_UP_BUTTON = `scroll-up-button-id-${webix.uid()}`;
+const ID_SCROLL_DOWN_BUTTON = `scroll-down-button-id-${webix.uid()}`;
+const ID_SCROLL_LANDSCAPE_UP_BUTTON = `scroll-landscape-up-button-id-${webix.uid()}`;
+const ID_SCROLL_LANDSCAPE_DOWN_BUTTON = `scroll-landscape-down-button-id-${webix.uid()}`;
 const NAME_FILTER_SCROLL_VIEW = `filterScrollViewName-${webix.uid()}`;
 const NAME_LANDSCAPE_FILTER_SCROLL_VIEW = `landscapeFilterScrollViewName-${webix.uid()}`;
 const NAME_SWITCH_BUTTON = `switchButtonName-${webix.uid()}`;
@@ -122,6 +126,28 @@ function getConfig(config) {
 		elements: [] // elements will be set after init, in gallery service
 	};
 
+	const scrollUpButton = {
+		view: "button",
+		width: 60,
+		height: 60,
+		css: "filter-scroll-button",
+		id: ID_SCROLL_UP_BUTTON,
+		type: "icon",
+		icon: "fas fa-angle-up",
+		hidden: true
+	};
+
+	const scrollDownButton = {
+		view: "button",
+		width: 60,
+		height: 60,
+		css: "filter-scroll-button",
+		id: ID_SCROLL_DOWN_BUTTON,
+		type: "icon",
+		icon: "fas fa-angle-down",
+		hidden: true
+	};
+
 	const filters = {
 		view: "scrollview",
 		scroll: "y",
@@ -142,6 +168,22 @@ function getConfig(config) {
 		paddingX: 7,
 		margin: 0,
 		elements: [] // elements will be set after init, in gallery service
+	};
+
+	const scrollLandscapeUpButton = {
+		view: "button",
+		id: ID_SCROLL_LANDSCAPE_UP_BUTTON,
+		height: 30,
+		type: "icon",
+		icon: "fas fa-angle-up"
+	};
+
+	const scrollLandscapeDownButton = {
+		view: "button",
+		id: ID_SCROLL_LANDSCAPE_DOWN_BUTTON,
+		height: 30,
+		type: "icon",
+		icon: "fas fa-angle-down"
 	};
 
 	const landscapeFilters = {
@@ -189,7 +231,21 @@ function getConfig(config) {
 							appliedFiltersView
 						]
 					},
+					{
+						height: 60,
+						cols: [
+							{gravity: 1},
+							scrollUpButton
+						]
+					},
 					filters,
+					{
+						height: 60,
+						cols: [
+							{gravity: 1},
+							scrollDownButton
+						]
+					},
 					downloadFilteredImagesButton
 				]
 			},
@@ -200,7 +256,9 @@ function getConfig(config) {
 					{
 						gravity: 1.5,
 						rows: [
+							scrollLandscapeUpButton,
 							landscapeFilters,
+							scrollLandscapeDownButton,
 							landscapeDownloadFilteredImagesButton
 						]
 					},
@@ -302,6 +360,22 @@ function getLandscapeFiltersLayoutID() {
 	return ID_LANDSCAPE_FILTERS_LAYOUT;
 }
 
+function getScrollUpButtonID() {
+	return ID_SCROLL_UP_BUTTON;
+}
+
+function getScrollDownButtonID() {
+	return ID_SCROLL_DOWN_BUTTON;
+}
+
+function getScrollLandscapeUpButtonID() {
+	return ID_SCROLL_LANDSCAPE_UP_BUTTON;
+}
+
+function getScrollLandscapeDownButtonID() {
+	return ID_SCROLL_LANDSCAPE_DOWN_BUTTON;
+}
+
 export default {
 	getConfig,
 	getFilterScrollViewName,
@@ -318,5 +392,9 @@ export default {
 	getPortraitFiltersLayoutID,
 	getLandscapeFiltersLayoutID,
 	getPortraitFiltersListID,
-	getLandscapeFiltersListID
+	getLandscapeFiltersListID,
+	getScrollUpButtonID,
+	getScrollDownButtonID,
+	getScrollLandscapeUpButtonID,
+	getScrollLandscapeDownButtonID
 };
