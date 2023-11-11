@@ -17,8 +17,12 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 		// eslint-disable-next-line func-names
 		"collapssible-filter": function () {
 			const currentMobile = util.isMobilePhone();
-			const selectAllFiltersButton = this.getParentView().queryView({name: NAME_SELECT_ALL_FILTER});
-			const selectNoneFiltersButton = this.getParentView().queryView({name: NAME_SELECT_NONE_FILTER});
+			const selectAllFiltersButton = this.getParentView().queryView({
+				name: NAME_SELECT_ALL_FILTER
+			});
+			const selectNoneFiltersButton = this.getParentView().queryView({
+				name: NAME_SELECT_NONE_FILTER
+			});
 			const children = currentMobile
 				? this.getParentView().getParentView().getChildViews()
 				: this.getParentView().getChildViews();
@@ -27,8 +31,9 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 				: children[0];
 			const controls = children[1];
 			if (!controls.isVisible()) {
-				selectAllFiltersButton?.show();
-				selectNoneFiltersButton?.show();
+				selectAllFiltersButton.show();
+				selectNoneFiltersButton.show();
+				showOrHideAggregateButton(filter, dataForCreatingControl, this);
 				webix.html.addCss(labelObject.getNode(), "showed-filter");
 				webix.html.removeCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = true;
@@ -80,10 +85,18 @@ function transformToFormFormat(data, expandedFilters) {
 			for (let i = 0; i < data[key].data.length; i++) {
 				let filtersConfig = null;
 				const dataForCreatingControl = data[key].data[i];
+				let collapsed = true;
+				const indexOfDataForCreatingControl = expandedFilters.indexOf(dataForCreatingControl.id);
+				const foundFilterCollection = showedFiltersCollection.find(
+					showedFilter => dataForCreatingControl.id === showedFilter.id
+				);
+				if (indexOfDataForCreatingControl !== -1 || foundFilterCollection.length !== 0) {
+					collapsed = false;
+				}
 				switch (data[key].data[i].type) {
 					case "checkbox":
 					case "rangeCheckbox":
-						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl);
+						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl, collapsed);
 						break;
 					/* case "range_slider":
 						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
@@ -93,19 +106,33 @@ function transformToFormFormat(data, expandedFilters) {
 						break;
 					}
 				}
-				let collapsed = true;
-				const indexOfDataForCreatingControl = expandedFilters.indexOf(dataForCreatingControl.id);
-				const foundFilterCollection = showedFiltersCollection.find(
-					showedFilter => dataForCreatingControl.id === showedFilter.id
-				);
-				if (indexOfDataForCreatingControl !== -1 || foundFilterCollection.length !== 0) {
-					collapsed = false;
-				}
 				elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
 			}
 		}
 	});
 	return elems;
+}
+
+function showOrHideAggregateButton(filter, dataForCreatingControl, view) {
+	const selectAllFiltersButton = view.getTopParentView().queryView({
+		name: NAME_SELECT_ALL_FILTER
+	});
+	const selectNoneFiltersButton = view.getTopParentView().queryView({
+		name: NAME_SELECT_NONE_FILTER
+	});
+	const filtersArray = appliedFilters.getFiltersArray();
+	const filtersCount = filtersArray.reduce((count, filterFromFilterArray) => {
+		if (filter.id.includes(filterFromFilterArray.key)) {
+			return ++count;
+		}
+		return count;
+	}, 0);
+	if (filtersCount === 0) {
+		selectNoneFiltersButton.hide();
+	}
+	if (filtersCount === dataForCreatingControl.options.length) {
+		selectAllFiltersButton.hide();
+	}
 }
 
 export default {

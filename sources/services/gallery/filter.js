@@ -98,7 +98,9 @@ function _setLabelCount(foundCurrentCount, docCount) {
 	filtersKeys.forEach((filterKey) => {
 		const labelView = $$(util.getFilterLabelId(filterKey));
 		const template = labelView.config.template();
-		const newTemplate = `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		const newTemplate = filterKey === constants.MISSING_KEY_VALUE
+			? `${template} (${docCount[filterKey]})`
+			: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
 		labelView.define("template", newTemplate);
 		labelView.refresh();
 	});
@@ -124,7 +126,9 @@ function updateFiltersCounts(countsAfterFiltration) {
 				else {
 					currentCount = value.doc_count;
 				}
-				filteredCounts[filterKey] += currentCount;
+				if (value.key !== constants.MISSING_KEY_VALUE) {
+					filteredCounts[filterKey] += currentCount;
+				}
 				docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
 					? value.doc_count
 					: 0;

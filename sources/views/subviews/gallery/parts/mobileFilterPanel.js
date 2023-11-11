@@ -17,8 +17,14 @@ const ID_SCROLL_UP_BUTTON = `scroll-up-button-id-${webix.uid()}`;
 const ID_SCROLL_DOWN_BUTTON = `scroll-down-button-id-${webix.uid()}`;
 const ID_SCROLL_LANDSCAPE_UP_BUTTON = `scroll-landscape-up-button-id-${webix.uid()}`;
 const ID_SCROLL_LANDSCAPE_DOWN_BUTTON = `scroll-landscape-down-button-id-${webix.uid()}`;
+const ID_APPLIED_FILTERS_UP_MARK = `applied-filters-up-mark-id-${webix.uid()}`;
+const ID_APPLIED_FILTERS_DOWN_MARK = `applied-filters-down-mark-id-${webix.uid()}`;
+const ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE = `applied-filters-up-mark-landscape-id-${webix.uid()}`;
+const ID_APPLIED_FILTERS_DOWN_MARK_LANDSCAPE = `applied-filters-down-mark-landscape-id-${webix.uid()}`;
 const NAME_FILTER_SCROLL_VIEW = `filterScrollViewName-${webix.uid()}`;
 const NAME_LANDSCAPE_FILTER_SCROLL_VIEW = `landscapeFilterScrollViewName-${webix.uid()}`;
+const NAME_APPLIED_FILTERS_SCROLL_VIEW = `appliedFiltersScrollViewName-${webix.uid()}`;
+const NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW = `appliedFiltersScrollLandscapeViewName-${webix.uid()}`;
 const NAME_SWITCH_BUTTON = `switchButtonName-${webix.uid()}`;
 const NAME_SEARCH_FIELD = `searchFieldName-${webix.uid()}`;
 const NAME_FILTERS_FORM = `filterFormName-${webix.uid()}`;
@@ -126,6 +132,38 @@ function getConfig(config) {
 		elements: [] // elements will be set after init, in gallery service
 	};
 
+	const showUpButton = {
+		view: "template",
+		id: ID_APPLIED_FILTERS_UP_MARK,
+		height: 20,
+		template: "<span class='fas fa-angle-up'></span>",
+		css: "applied-filters-mark"
+	};
+
+	const showDownButton = {
+		view: "template",
+		id: ID_APPLIED_FILTERS_DOWN_MARK,
+		height: 20,
+		template: "<span class='fas fa-angle-down'></span>",
+		css: "applied-filters-mark"
+	};
+
+	const showUpLandscapeButton = {
+		view: "template",
+		id: ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE,
+		height: 20,
+		template: "<span class='fas fa-angle-up'></span>",
+		css: "applied-filters-mark"
+	};
+
+	const showDownLandscapeButton = {
+		view: "template",
+		id: ID_APPLIED_FILTERS_DOWN_MARK_LANDSCAPE,
+		height: 20,
+		template: "<span class='fas fa-angle-down'></span>",
+		css: "applied-filters-mark"
+	};
+
 	const scrollUpButton = {
 		view: "button",
 		width: 60,
@@ -227,8 +265,9 @@ function getConfig(config) {
 									{width: 10}
 								]
 							},
-							{height: 10},
-							appliedFiltersView
+							showUpButton,
+							appliedFiltersView,
+							showDownButton
 						]
 					},
 					{
@@ -276,7 +315,9 @@ function getConfig(config) {
 								]
 							},
 							{height: 10},
-							landscapeAppliedFiltersView
+							showUpLandscapeButton,
+							landscapeAppliedFiltersView,
+							showDownLandscapeButton
 						]
 					}
 				]
@@ -288,6 +329,27 @@ function getConfig(config) {
 function getFilterScrollViewName() {
 	const portrait = window.matchMedia("(orientation: portrait)").matches;
 	return portrait ? NAME_FILTER_SCROLL_VIEW : NAME_LANDSCAPE_FILTER_SCROLL_VIEW;
+}
+
+function getPortraitFilterScrollViewName() {
+	return NAME_FILTER_SCROLL_VIEW;
+}
+
+function getLandscapeFilterScrollViewName() {
+	return NAME_LANDSCAPE_FILTER_SCROLL_VIEW;
+}
+
+function getAppliedFiltersScrollViewName() {
+	const portrait = window.matchMedia("(orientation: portrait)").matches;
+	return portrait ? NAME_APPLIED_FILTERS_SCROLL_VIEW : NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW;
+}
+
+function getPortraitAppliedFiltersScrollviewName() {
+	return NAME_APPLIED_FILTERS_SCROLL_VIEW;
+}
+
+function getLandscapeAppliedFiltersScrollviewName() {
+	return NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW;
 }
 
 function getSwitchButtonName() {
@@ -376,9 +438,30 @@ function getScrollLandscapeDownButtonID() {
 	return ID_SCROLL_LANDSCAPE_DOWN_BUTTON;
 }
 
+function getAppliedFiltersUpMarkID() {
+	return ID_APPLIED_FILTERS_UP_MARK;
+}
+
+function getAppliedFiltersDownMarkID() {
+	return ID_APPLIED_FILTERS_DOWN_MARK;
+}
+
+function getAppliedFiltersUpLandscapeMarkID() {
+	return ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE;
+}
+
+function getAppliedFiltersDownLandscapeMarkID() {
+	return ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE;
+}
+
 export default {
 	getConfig,
 	getFilterScrollViewName,
+	getPortraitFilterScrollViewName,
+	getLandscapeFilterScrollViewName,
+	getAppliedFiltersScrollViewName,
+	getPortraitAppliedFiltersScrollviewName,
+	getLandscapeAppliedFiltersScrollviewName,
 	getSwitchButtonName,
 	getSearchFieldName,
 	getFiltersFormName,
@@ -396,5 +479,9 @@ export default {
 	getScrollUpButtonID,
 	getScrollDownButtonID,
 	getScrollLandscapeUpButtonID,
-	getScrollLandscapeDownButtonID
+	getScrollLandscapeDownButtonID,
+	getAppliedFiltersUpMarkID,
+	getAppliedFiltersDownMarkID,
+	getAppliedFiltersUpLandscapeMarkID,
+	getAppliedFiltersDownLandscapeMarkID
 };

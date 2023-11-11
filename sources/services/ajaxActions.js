@@ -223,6 +223,7 @@ class AjaxActions {
 				query
 			};
 			const headers = await getAuthHeaders();
+			headers["Content-Type"] = "application/json";
 			const resp = await this._ajax()
 				.headers(headers)
 				.post(`${API_URL}zip-download/url/`, params);

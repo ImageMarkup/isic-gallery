@@ -1,8 +1,12 @@
+import constants from "../../../../constants";
+import appliedFilters from "../../../../models/appliedFilters";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
 const NAME_SELECT_ALL_FILTERS = "filter-images-select-all-name";
+const NAME_SELECT_ALL_FILTERS_MOBILE = "filter-images-select-all-mobile-name";
 const NAME_SELECT_NONE_FILTERS = "filter-images-select-none-name";
+const NAME_SELECT_NONE_FILTERS_MOBILE = "filter-images-select-none-mobile-name";
 
 function getLabelUI(label) {
 	return {
@@ -13,7 +17,7 @@ function getLabelUI(label) {
 	};
 }
 
-function getCheckboxUI(data) {
+function getCheckboxUI(data, collapsed) {
 	const isMobile = util.isMobilePhone();
 	const handleAggregateButton = function (controlData, elements, newValue, app) {
 		const filtersInfo = [];
@@ -35,37 +39,73 @@ function getCheckboxUI(data) {
 		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
 	};
 
+	const showOrHideSelectAllButton = function() {
+		const currentFiltersArray = appliedFilters.getFiltersArray();
+		const currentFiltersCount = currentFiltersArray.reduce((count, filterFromFilterArray) => {
+			if (data.id.includes(filterFromFilterArray.key)) {
+				return ++count;
+			}
+			return count;
+		}, 0);
+		if (currentFiltersCount === data?.options?.length) {
+			this.hide();
+		}
+	};
+
 	const selectAllLabel = {
 		view: "template",
-		name: isMobile ? NAME_SELECT_ALL_FILTERS : "",
+		name: isMobile ? NAME_SELECT_ALL_FILTERS_MOBILE : NAME_SELECT_ALL_FILTERS,
 		css: "select-all-template",
 		template: "<span class='select-all-label'>Select All</span>",
 		borderless: true,
-		hidden: isMobile,
+		hidden: collapsed,
 		height: 22,
 		onClick: {
 			// eslint-disable-next-line func-names
 			"select-all-label": function () {
+				this.hide();
 				const elements = this.getFormView().elements;
 				handleAggregateButton(data, elements, 1, this.getTopParentView().$scope.app);
 			}
+		},
+		on: {
+			onViewShow: showOrHideSelectAllButton,
+			onAfterRender: showOrHideSelectAllButton
+		}
+	};
+
+	const showOrHideSelectNoneButton = function () {
+		const currentFiltersArray = appliedFilters.getFiltersArray();
+		const currentFiltersCount = currentFiltersArray.reduce((count, filterFromFilterArray) => {
+			if (data.id.includes(filterFromFilterArray.key)) {
+				return ++count;
+			}
+			return count;
+		}, 0);
+		if (currentFiltersCount === data?.options?.length) {
+			this.hide();
 		}
 	};
 
 	const selectNoneLabel = {
 		view: "template",
-		name: isMobile ? NAME_SELECT_NONE_FILTERS : "",
+		name: isMobile ? NAME_SELECT_NONE_FILTERS_MOBILE : NAME_SELECT_NONE_FILTERS,
 		css: "select-none-template",
 		template: "<span class='select-none-label'>Select None</span>",
 		borderless: true,
-		hidden: isMobile,
+		hidden: collapsed,
 		height: 22,
 		onClick: {
 			// eslint-disable-next-line func-names
 			"select-none-label": function () {
+				this.hide();
 				const elements = this.getFormView().elements;
 				handleAggregateButton(data, elements, 0, this.getTopParentView().$scope.app);
 			}
+		},
+		on: {
+			onViewShow: showOrHideSelectNoneButton,
+			onAfterRender: showOrHideSelectNoneButton
 		}
 	};
 
@@ -116,11 +156,6 @@ function getCheckboxUI(data) {
 			]
 		};
 
-	if (!isMobile) {
-		view.rows[1].rows.push(selectAllLabel);
-		view.rows[1].rows.push(selectNoneLabel);
-	}
-
 	data?.options?.forEach((currentOption) => {
 		const optionName = filterService.prepareOptionName(currentOption, data.id);
 		const id = util.getOptionId(data.id, optionName);
@@ -153,13 +188,13 @@ function getCheckboxUI(data) {
 				filtersChangedData,
 				on: {
 					onChange(status) {
+						let params = webix.copy(this.config.filtersChangedData);
 						if (currentOption && data.type === "rangeCheckbox") {
 							webix.extend(this.config.filtersChangedData, {
 								to: currentOption.to,
 								from: currentOption.from
 							});
 						}
-						let params = webix.copy(this.config.filtersChangedData);
 						params.remove = !status;
 						this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
 					}
@@ -277,11 +312,13 @@ function getRangeSliderUI(data) {
 */
 
 function getSelectAllFilersName() {
-	return NAME_SELECT_ALL_FILTERS;
+	const isMobile = util.isMobilePhone();
+	return isMobile ? NAME_SELECT_ALL_FILTERS_MOBILE : NAME_SELECT_ALL_FILTERS;
 }
 
 function getSelectNoneFiltersName() {
-	return NAME_SELECT_NONE_FILTERS;
+	const isMobile = util.isMobilePhone();
+	return isMobile ? NAME_SELECT_NONE_FILTERS_MOBILE : NAME_SELECT_NONE_FILTERS;
 }
 
 export default {
