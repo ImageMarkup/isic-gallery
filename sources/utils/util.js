@@ -23,11 +23,12 @@ function openImageInNewTab(url, name) {
 		</head>
 		<body>
 			<img src="${url}" alt="${name}" style="
-			display: block;
-			max-width: 100%;
-			max-height: 100%;
-			margin-left:  auto;
-			margin-right: auto;>
+				display: block;
+				max-width: 100%;
+				max-height: 100%;
+				margin-left:  auto;
+				margin-right: auto;>
+			">
 		</body>
 		</html>
 	`);
