@@ -15,16 +15,21 @@ function openInNewTab(url) {
 	otherWindow.location = url;
 }
 
-function openImageInNewTab(url) {
+function openImageInNewTab(url, name) {
 	const image_window = window.open("", "_blank")
 	image_window.document.write(`
 	<html>
 		<head>
 		</head>
 		<body>
-		  <img src="${url}" alt="Example" height="100%" width="100%">
+			<img src="${url}" alt="${name}" style="
+			display: block;
+			max-width: 100%;
+			max-height: 100%;
+			margin-left:  auto;
+			margin-right: auto;>
 		</body>
-	  </html>
+		</html>
 	`);
 }
 

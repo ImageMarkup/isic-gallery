@@ -238,7 +238,7 @@ class AjaxActions {
 
 	async downloadImage(url, name) {
 		if (util.isIOS()) {
-			util.openImageInNewTab(url);
+			util.openImageInNewTab(url, name);
 		}
 		else if (url) {
 			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {
