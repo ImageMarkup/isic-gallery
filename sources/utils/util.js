@@ -15,6 +15,19 @@ function openInNewTab(url) {
 	otherWindow.location = url;
 }
 
+function openImageInNewTab(url) {
+	const image_window = window.open("", "_blank")
+	image_window.document.write(`
+	<html>
+		<head>
+		</head>
+		<body>
+		  <img src="${url}" alt="Example" height="100%" width="100%">
+		</body>
+	  </html>
+	`);
+}
+
 function downloadByLink(url, name) {
 	let a = document.createElement("a");
 	a.setAttribute("style", "display: none");
@@ -534,6 +547,7 @@ function isSafari() {
 
 export default {
 	openInNewTab,
+	openImageInNewTab,
 	downloadByLink,
 	isChrome,
 	exportCsv,

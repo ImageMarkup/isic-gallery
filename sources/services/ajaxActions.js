@@ -238,14 +238,7 @@ class AjaxActions {
 
 	async downloadImage(url, name) {
 		if (util.isIOS()) {
-			if (util.isSafari()) {
-				const title = `Download image ${name}`;
-				const blob = await webix.ajax().response("blob").get(`${url}`);
-				util.shareFile(title, blob, name);
-			}
-			else {
-				util.openInNewTab(url);
-			}
+			util.openImageInNewTab(url);
 		}
 		else if (url) {
 			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {
