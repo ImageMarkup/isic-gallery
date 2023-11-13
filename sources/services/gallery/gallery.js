@@ -195,6 +195,7 @@ class GalleryService {
 	}
 
 	_init() {
+		const self = this;
 		webix.extend(this._imagesDataview, webix.OverlayBox);
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
@@ -1005,7 +1006,7 @@ class GalleryService {
 				if (context.isic_id) {
 					const fileName = context.isic_id;
 					const fullFileUrl = context.files.full.url;
-					this.downloadImage(fullFileUrl, fileName);
+					self.downloadImage(fullFileUrl, fileName);
 				}
 				else {
 					const contextView = context.obj;
@@ -1013,7 +1014,7 @@ class GalleryService {
 					const currentItem = contextView.getItem(itemId);
 					const fullFileUrl = currentItem.files?.full?.url;
 					const fileName = currentItem.isic_id;
-					this.downloadImage(fullFileUrl, fileName);
+					self.downloadImage(fullFileUrl, fileName);
 				}
 			}
 		});

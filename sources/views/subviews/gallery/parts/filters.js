@@ -82,7 +82,7 @@ function getCheckboxUI(data, collapsed) {
 			}
 			return count;
 		}, 0);
-		if (currentFiltersCount === data?.options?.length) {
+		if (currentFiltersCount === 0) {
 			this.hide();
 		}
 	};
