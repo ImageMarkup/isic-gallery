@@ -182,7 +182,8 @@ function getCheckboxUI(data, collapsed) {
 				name: id,
 				height: 28,
 				attributes: {
-					title: `${optionName} (0)`
+					title: `${optionName} (0)`,
+					dataOptionId: `${currentOption.optionId}`
 				},
 				labelWidth: 0,
 				filtersChangedData,
@@ -196,6 +197,7 @@ function getCheckboxUI(data, collapsed) {
 							});
 						}
 						params.remove = !status;
+						params.optionId = currentOption.optionId;
 						this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
 					}
 				}

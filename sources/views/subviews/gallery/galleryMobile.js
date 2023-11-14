@@ -656,9 +656,10 @@ export default class GalleryMobileView extends JetView {
 		webix.attachEvent("onRotate", rotateHandler);
 
 		const showOrHideScrollButtons = function () {
+			const currentFilterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 			const scrollState = this.getScrollState();
-			const scrollBodyHeight = filterScrollView.getBody()?.$height ?? 0;
-			if (scrollState.y === scrollBodyHeight - filterScrollView.$height) {
+			const scrollBodyHeight = currentFilterScrollView.getBody()?.$height ?? 0;
+			if (scrollState.y === scrollBodyHeight - currentFilterScrollView.$height) {
 				if (util.isPortrait()) {
 					scrollDownButton.hide();
 				}
@@ -676,7 +677,7 @@ export default class GalleryMobileView extends JetView {
 				}
 			}
 
-			if (scrollState.y < scrollBodyHeight - filterScrollView.$height) {
+			if (scrollState.y < scrollBodyHeight - currentFilterScrollView.$height) {
 				if (util.isPortrait()) {
 					scrollDownButton.show();
 				}
@@ -692,7 +693,7 @@ export default class GalleryMobileView extends JetView {
 				else {
 					scrollUpLandscapeButton.hide();
 				}
-				if (scrollBodyHeight > filterScrollView.$height) {
+				if (scrollBodyHeight > currentFilterScrollView.$height) {
 					if (util.isPortrait()) {
 						scrollDownButton.show();
 					}
@@ -709,16 +710,37 @@ export default class GalleryMobileView extends JetView {
 
 		const scrollDownButtonID = filterPanel.getScrollDownButtonID();
 		const scrollUpButtonID = filterPanel.getScrollUpButtonID();
+		const scrollDownLandscapeButtonID = filterPanel.getScrollLandscapeDownButtonID();
+		const scrollUpLandscapeButtonID = filterPanel.getScrollLandscapeUpButtonID();
+		const portraitFilterScrollView = view.queryView({
+			name: filterPanel.getPortraitFilterScrollViewName()
+		});
+		const landscapeFilterScrollView = view.queryView({
+			name: filterPanel.getLandscapeFilterScrollViewName()
+		});
 		const moveScroll = function (id) {
+			const currentFilterScrollView = view.queryView({name: filterPanel.getFilterScrollViewName()});
 			if (id === scrollDownButtonID) {
-				const scrollBodyHeight = filterScrollView.getBody()?.$height ?? 0;
-				const filterScrollViewHeight = filterScrollView.$height ?? 0;
-				filterScrollView.scrollTo(0, scrollBodyHeight - filterScrollViewHeight);
+				const scrollBodyHeight = currentFilterScrollView.getBody()?.$height ?? 0;
+				const filterScrollViewHeight = currentFilterScrollView.$height ?? 0;
+				currentFilterScrollView.scrollTo(0, scrollBodyHeight - filterScrollViewHeight);
 				scrollDownButton.hide();
 				scrollUpButton.show();
 			}
 			else if (id === scrollUpButtonID) {
-				filterScrollView.scrollTo(0, 0);
+				currentFilterScrollView.scrollTo(0, 0);
+				scrollDownButton.show();
+				scrollUpButton.hide();
+			}
+			if (id === scrollDownLandscapeButtonID) {
+				const scrollBodyHeight = currentFilterScrollView.getBody()?.$height ?? 0;
+				const filterScrollViewHeight = currentFilterScrollView.$height ?? 0;
+				currentFilterScrollView.scrollTo(0, scrollBodyHeight - filterScrollViewHeight);
+				scrollDownLandscapeButton.hide();
+				scrollUpLandscapeButton.show();
+			}
+			if (id === scrollUpLandscapeButtonID) {
+				currentFilterScrollView.scrollTo(0, 0);
 				scrollDownButton.show();
 				scrollUpButton.hide();
 			}
@@ -726,52 +748,69 @@ export default class GalleryMobileView extends JetView {
 			scrollUpButton.refresh();
 		};
 
+		const portraitAppliedFiltersList = view.queryView({
+			id: filterPanel.getPortraitAppliedFiltersListID()
+		});
+
+		const landscapeAppliedFiltersList = view.queryView({
+			id: filterPanel.getLandscapeAppliedFiltersListID()
+		});
+
 		const showOrHideAppliedFiltersMarks = function () {
 			const currentAppliedFiltersView = view.queryView({
 				id: filterPanel.getAppliedFiltersListID()
 			});
 			const scrollState = this.getScrollState();
-			const scrollBodyHeight = currentAppliedFiltersView?.$height ?? 0;
-			if (scrollState.y === scrollBodyHeight - currentAppliedFiltersView.$height) {
+			const scrollBodyHeight = currentAppliedFiltersView.getNode().childNodes[0].clientHeight - 5
+				?? 0;
+
+			if (
+				currentAppliedFiltersView.getVisibleCount() >= currentAppliedFiltersView.count()
+			) {
 				if (util.isPortrait()) {
 					appliedFiltersDownMark.hide();
-				}
-				else {
-					appliedFiltersDownLandscapeMark.hide();
-				}
-			}
-
-			if (scrollState.y !== 0) {
-				if (util.isPortrait()) {
-					appliedFiltersUpMark.show();
-				}
-				else {
-					appliedFiltersUpLandscapeMark.show();
-				}
-			}
-
-			if (scrollState.y < scrollBodyHeight - currentAppliedFiltersView.$height) {
-				if (util.isPortrait()) {
-					appliedFiltersDownMark.show();
-				}
-				else {
-					appliedFiltersDownLandscapeMark.show();
-				}
-			}
-
-			if (scrollState.y === 0) {
-				if (util.isPortrait()) {
 					appliedFiltersUpMark.hide();
 				}
 				else {
+					appliedFiltersDownLandscapeMark.hide();
 					appliedFiltersUpLandscapeMark.hide();
 				}
-				if (scrollBodyHeight > currentAppliedFiltersView.$height) {
+			}
+
+			else {
+				if (scrollState.y >= scrollBodyHeight - currentAppliedFiltersView.$height) {
+					if (util.isPortrait()) {
+						appliedFiltersDownMark.hide();
+					}
+					else {
+						appliedFiltersDownLandscapeMark.hide();
+					}
+				}
+
+				if (scrollState.y !== 0) {
+					if (util.isPortrait()) {
+						appliedFiltersUpMark.show();
+					}
+					else {
+						appliedFiltersUpLandscapeMark.show();
+					}
+				}
+
+				if (scrollState.y < scrollBodyHeight - currentAppliedFiltersView.$height) {
 					if (util.isPortrait()) {
 						appliedFiltersDownMark.show();
 					}
 					else {
 						appliedFiltersDownLandscapeMark.show();
+					}
+				}
+
+				if (scrollState.y === 0) {
+					if (util.isPortrait()) {
+						appliedFiltersUpMark.hide();
+					}
+					else {
+						appliedFiltersUpLandscapeMark.hide();
 					}
 				}
 			}
@@ -781,17 +820,29 @@ export default class GalleryMobileView extends JetView {
 			appliedFiltersUpLandscapeMark.refresh();
 		};
 
-		filterScrollView.attachEvent("onViewShow", showOrHideScrollButtons);
+		portraitFilterScrollView.attachEvent("onViewShow", showOrHideScrollButtons);
 
-		filterScrollView.attachEvent("onAfterScroll", showOrHideScrollButtons);
+		portraitFilterScrollView.attachEvent("onAfterScroll", showOrHideScrollButtons);
+
+		landscapeFilterScrollView.attachEvent("onViewShow", showOrHideScrollButtons);
+
+		landscapeFilterScrollView.attachEvent("onAfterScroll", showOrHideScrollButtons);
 
 		scrollDownButton.attachEvent("onItemClick", moveScroll);
 
 		scrollUpButton.attachEvent("onItemClick", moveScroll);
 
-		appliedFiltersList.attachEvent("onViewShow", showOrHideAppliedFiltersMarks);
+		portraitAppliedFiltersList.attachEvent("onViewShow", showOrHideAppliedFiltersMarks);
 
-		appliedFiltersList.attachEvent("onAfterScroll", showOrHideAppliedFiltersMarks);
+		portraitAppliedFiltersList.attachEvent("onAfterScroll", showOrHideAppliedFiltersMarks);
+
+		portraitAppliedFiltersList.attachEvent("onAfterLoad", showOrHideAppliedFiltersMarks);
+
+		landscapeAppliedFiltersList.attachEvent("onViewShow", showOrHideAppliedFiltersMarks);
+
+		landscapeAppliedFiltersList.attachEvent("onAfterScroll", showOrHideAppliedFiltersMarks);
+
+		landscapeAppliedFiltersList.attachEvent("onAfterLoad", showOrHideAppliedFiltersMarks);
 	}
 
 	async ready() {

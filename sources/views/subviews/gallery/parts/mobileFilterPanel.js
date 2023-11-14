@@ -23,8 +23,6 @@ const ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE = `applied-filters-up-mark-landscape-
 const ID_APPLIED_FILTERS_DOWN_MARK_LANDSCAPE = `applied-filters-down-mark-landscape-id-${webix.uid()}`;
 const NAME_FILTER_SCROLL_VIEW = `filterScrollViewName-${webix.uid()}`;
 const NAME_LANDSCAPE_FILTER_SCROLL_VIEW = `landscapeFilterScrollViewName-${webix.uid()}`;
-const NAME_APPLIED_FILTERS_SCROLL_VIEW = `appliedFiltersScrollViewName-${webix.uid()}`;
-const NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW = `appliedFiltersScrollLandscapeViewName-${webix.uid()}`;
 const NAME_SWITCH_BUTTON = `switchButtonName-${webix.uid()}`;
 const NAME_SEARCH_FIELD = `searchFieldName-${webix.uid()}`;
 const NAME_FILTERS_FORM = `filterFormName-${webix.uid()}`;
@@ -265,24 +263,33 @@ function getConfig(config) {
 									{width: 10}
 								]
 							},
-							showUpButton,
+							{
+								cols: [
+									{gravity: 1, height: 20},
+									showUpButton,
+									{gravity: 1, height: 20}
+								]
+							},
 							appliedFiltersView,
-							showDownButton
+							{
+								cols: [
+									{gravity: 1, height: 20},
+									showDownButton,
+									{gravity: 1, height: 20}
+								]
+							}
 						]
 					},
 					{
-						height: 60,
 						cols: [
-							{gravity: 1},
-							scrollUpButton
-						]
-					},
-					filters,
-					{
-						height: 60,
-						cols: [
-							{gravity: 1},
-							scrollDownButton
+							filters,
+							{
+								rows: [
+									scrollUpButton,
+									{width: 60},
+									scrollDownButton
+								]
+							}
 						]
 					},
 					downloadFilteredImagesButton
@@ -295,9 +302,21 @@ function getConfig(config) {
 					{
 						gravity: 1.5,
 						rows: [
-							scrollLandscapeUpButton,
+							{
+								cols: [
+									{gravity: 1, height: 20},
+									scrollLandscapeUpButton,
+									{gravity: 1, height: 20}
+								]
+							},
 							landscapeFilters,
-							scrollLandscapeDownButton,
+							{
+								cols: [
+									{gravity: 1, height: 20},
+									scrollLandscapeDownButton,
+									{gravity: 1, height: 20}
+								]
+							},
 							landscapeDownloadFilteredImagesButton
 						]
 					},
@@ -315,9 +334,21 @@ function getConfig(config) {
 								]
 							},
 							{height: 10},
-							showUpLandscapeButton,
+							{
+								cols: [
+									{height: 20, gravity: 1},
+									showUpLandscapeButton,
+									{height: 20, gravity: 1}
+								]
+							},
 							landscapeAppliedFiltersView,
-							showDownLandscapeButton
+							{
+								cols: [
+									{height: 20, gravity: 1},
+									showDownLandscapeButton,
+									{height: 20, gravity: 1}
+								]
+							}
 						]
 					}
 				]
@@ -339,19 +370,6 @@ function getLandscapeFilterScrollViewName() {
 	return NAME_LANDSCAPE_FILTER_SCROLL_VIEW;
 }
 
-function getAppliedFiltersScrollViewName() {
-	const portrait = window.matchMedia("(orientation: portrait)").matches;
-	return portrait ? NAME_APPLIED_FILTERS_SCROLL_VIEW : NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW;
-}
-
-function getPortraitAppliedFiltersScrollviewName() {
-	return NAME_APPLIED_FILTERS_SCROLL_VIEW;
-}
-
-function getLandscapeAppliedFiltersScrollviewName() {
-	return NAME_APPLIED_FILTERS_SCROLL_LANDSCAPE_VIEW;
-}
-
 function getSwitchButtonName() {
 	return NAME_SWITCH_BUTTON;
 }
@@ -363,6 +381,14 @@ function getSearchFieldName() {
 function getFiltersFormName() {
 	const portrait = window.matchMedia("(orientation: portrait)").matches;
 	return portrait ? NAME_FILTERS_FORM : NAME_LANDSCAPE_FILTERS_FORM;
+}
+
+function getPortraitFiltersFormName() {
+	return NAME_FILTERS_FORM;
+}
+
+function getLandscapeFiltersFormName() {
+	return NAME_LANDSCAPE_FILTERS_FORM;
 }
 
 function getClearAllFiltersTemplateName() {
@@ -399,6 +425,14 @@ function isAppliedFiltersListEmpty() {
 function getAppliedFiltersListID() {
 	const portrait = window.matchMedia("(orientation: portrait)").matches;
 	return portrait ? ID_APPLIED_FILTERS_LIST : ID_LANDSCAPE_APPLIED_FILTERS_LIST;
+}
+
+function getPortraitAppliedFiltersListID() {
+	return ID_APPLIED_FILTERS_LIST;
+}
+
+function getLandscapeAppliedFiltersListID() {
+	return ID_LANDSCAPE_APPLIED_FILTERS_LIST;
 }
 
 function getPortraitFiltersListID() {
@@ -451,7 +485,7 @@ function getAppliedFiltersUpLandscapeMarkID() {
 }
 
 function getAppliedFiltersDownLandscapeMarkID() {
-	return ID_APPLIED_FILTERS_UP_MARK_LANDSCAPE;
+	return ID_APPLIED_FILTERS_DOWN_MARK_LANDSCAPE;
 }
 
 export default {
@@ -459,17 +493,18 @@ export default {
 	getFilterScrollViewName,
 	getPortraitFilterScrollViewName,
 	getLandscapeFilterScrollViewName,
-	getAppliedFiltersScrollViewName,
-	getPortraitAppliedFiltersScrollviewName,
-	getLandscapeAppliedFiltersScrollviewName,
 	getSwitchButtonName,
 	getSearchFieldName,
 	getFiltersFormName,
+	getPortraitFiltersFormName,
+	getLandscapeFiltersFormName,
 	getClearAllFiltersTemplateName,
 	getPortraitClearAllFiltersTemplateName,
 	getLandscapeClearAllFiltersTemplateName,
 	getDownloadFilteredImagesButtonName,
 	getAppliedFiltersListID,
+	getPortraitAppliedFiltersListID,
+	getLandscapeAppliedFiltersListID,
 	getAppliedFiltersLayoutID,
 	isAppliedFiltersListEmpty,
 	getPortraitFiltersLayoutID,

@@ -27,10 +27,10 @@ function openImageInNewTab(url, name) {
 				max-width: 100%;
 				max-height: 100%;
 				margin-left:  auto;
-				margin-right: auto;>
+				margin-right: auto;
 			">
 		</body>
-		</html>
+	</html>
 	`);
 }
 
