@@ -1529,7 +1529,7 @@ class GalleryService {
 
 	clearFilterForm() {
 		const elements = this._filtersForm.getChildViews();
-		for (let i = 0; i < elements.length - 1; i++) {
+		for (let i = 0; i < elements.length; i++) {
 			let element = elements[i];
 			i--;
 			this._filtersForm.removeView(element);
