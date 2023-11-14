@@ -1,4 +1,5 @@
-import axios from "../../node_modules/axios/dist/axios.min";
+import axios from "axios";
+
 import state from "../models/state";
 import logger from "../utils/logger";
 import util from "../utils/util";
