@@ -834,16 +834,37 @@ class GalleryService {
 			this._reload();
 		};
 
+		// this._clearAllFiltersTemplate?.define("onClick", {
+		// 	"clear-all-filters": clearAllFilters
+		// });
+
+		// this._portraitClearAllFiltersTemplate?.define("onClick", {
+		// 	"clear-all-filters": clearAllFilters
+		// });
+
+		// this._landscapeClearAllFiltersTemplate?.define("onClick", {
+		// 	"clear-all-filters": clearAllFilters
+		// });
+
 		this._clearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": clearAllFilters
+			"clear-all-filters": () => {
+				webix.message("call clear filter");
+				clearAllFilters();
+			}
 		});
 
 		this._portraitClearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": clearAllFilters
+			"clear-all-filters": () => {
+				webix.message("call clear filter from portrait mode");
+				clearAllFilters();
+			}
 		});
 
 		this._landscapeClearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": clearAllFilters
+			"clear-all-filters": () => {
+				webix.message("call clear filter from landscape mode");
+				clearAllFilters();
+			}
 		});
 
 		this._createStudyButton?.attachEvent("onItemClick", () => {
