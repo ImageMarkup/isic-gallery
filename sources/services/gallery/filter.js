@@ -32,7 +32,7 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 	if (Array.isArray(facets.buckets)) {
 		// eslint-disable-next-line max-len
 		if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
-			return facets.meta.missing_count;
+			return facets?.meta?.missing_count;
 		}
 		// eslint-disable-next-line max-len
 		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
