@@ -847,25 +847,12 @@ class GalleryService {
 		// });
 
 		this._clearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": () => {
-				webix.message("call clear filter");
-				clearAllFilters();
-			}
+			"clear-all-filters": clearAllFilters
 		});
 
-		this._portraitClearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": () => {
-				webix.message("call clear filter from portrait mode");
-				clearAllFilters();
-			}
-		});
+		this._portraitClearAllFiltersTemplate?.attachEvent("onTouchEnd", clearAllFilters);
 
-		this._landscapeClearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": () => {
-				webix.message("call clear filter from landscape mode");
-				clearAllFilters();
-			}
-		});
+		this._landscapeClearAllFiltersTemplate?.attachEvent("onTouchEnd", clearAllFilters);
 
 		this._createStudyButton?.attachEvent("onItemClick", () => {
 			let studyImagesCount = selectedImages.countForStudies();

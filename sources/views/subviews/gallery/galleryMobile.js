@@ -519,7 +519,6 @@ export default class GalleryMobileView extends JetView {
 		this.toggleButton = this.getToggleButton();
 		this.filterPanelSearchField = view.queryView({name: filterPanel.getSearchFieldName()});
 		const filtersForm = view.queryView({name: filterPanel.getFiltersFormName()});
-		const clearAllFiltersTemplate = this.getPortraitClearAllFiltersTemplate();
 		const portraitClearAllFiltersTemplate = this.getPortraitClearAllFiltersTemplate();
 		const landscapeClearAllFiltersTemplate = this.getLandscapeClearAllFiltersTemplate();
 		const appliedFiltersLayout = this.getAppliedFiltersLayout();
@@ -566,7 +565,7 @@ export default class GalleryMobileView extends JetView {
 			null, // unselectLink
 			null, // downloadingMenu
 			this.filterPanelSearchField,
-			clearAllFiltersTemplate,
+			null, // clearAllFiltersTemplate
 			null, // allPagesTemplate
 			filterScrollView,
 			$$(ID_FILTER_PANEL),

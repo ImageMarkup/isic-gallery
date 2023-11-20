@@ -33,6 +33,7 @@ class ApiDocumentationService {
 				this._listOfSearchedValues.hide();
 			}
 			else {
+				// eslint-disable-next-line array-callback-return
 				this._leftSidebar.find((obj) => {
 					const value = obj.value.toLowerCase();
 					if (value.indexOf(searchValue) !== -1) {
