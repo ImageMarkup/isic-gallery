@@ -31,6 +31,10 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
 		// eslint-disable-next-line max-len
+		if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
+			return facets.meta.missing_count;
+		}
+		// eslint-disable-next-line max-len
 		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
 	}
 	return foundItem ? foundItem.doc_count : null;
@@ -139,6 +143,12 @@ function updateFiltersCounts(countsAfterFiltration) {
 				}
 			});
 		}
+		// else if (filterKey === "collections") {
+		// 	let values = state.imagesTotalCounts[filterKey];
+		// 	values.forEach((value) => {
+
+		// 	})
+		// }
 	});
 	_setLabelCount(filteredCounts, docCounts);
 }
