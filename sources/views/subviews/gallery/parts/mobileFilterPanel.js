@@ -194,7 +194,8 @@ function getConfig(config) {
 			rows: [
 				filtersForm
 			]
-		}
+		},
+		minWidth: 300
 	};
 
 	const landscapeFiltersForm = {
@@ -211,7 +212,7 @@ function getConfig(config) {
 		id: ID_SCROLL_LANDSCAPE_UP_BUTTON,
 		height: 30,
 		type: "icon",
-		icon: "fas fa-angle-up"
+		icon: "fas fa-angle-up",
 	};
 
 	const scrollLandscapeDownButton = {
@@ -219,7 +220,7 @@ function getConfig(config) {
 		id: ID_SCROLL_LANDSCAPE_DOWN_BUTTON,
 		height: 30,
 		type: "icon",
-		icon: "fas fa-angle-down"
+		icon: "fas fa-angle-down",
 	};
 
 	const landscapeFilters = {
@@ -232,7 +233,8 @@ function getConfig(config) {
 			rows: [
 				landscapeFiltersForm
 			]
-		}
+		},
+		minWidth: 300
 	};
 
 	const appliedFiltersView = appliedFiltersList.getMobileConfig(ID_APPLIED_FILTERS_LIST);

@@ -547,9 +547,6 @@ export default class GalleryMobileView extends JetView {
 		const appliedFiltersDownLandscapeMark = view.queryView({
 			id: filterPanel.getAppliedFiltersDownLandscapeMarkID()
 		});
-		const appliedFiltersList = view.queryView({
-			id: filterPanel.getAppliedFiltersListID()
-		});
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -740,8 +737,8 @@ export default class GalleryMobileView extends JetView {
 			}
 			if (id === scrollUpLandscapeButtonID) {
 				currentFilterScrollView.scrollTo(0, 0);
-				scrollDownButton.show();
-				scrollUpButton.hide();
+				scrollDownLandscapeButton.show();
+				scrollUpLandscapeButton.hide();
 			}
 			scrollDownButton.refresh();
 			scrollUpButton.refresh();
@@ -777,7 +774,7 @@ export default class GalleryMobileView extends JetView {
 			}
 
 			else {
-				if (scrollState.y >= scrollBodyHeight - currentAppliedFiltersView.$height) {
+				if (scrollState.y >= scrollBodyHeight - currentAppliedFiltersView.$height ?? 0) {
 					if (util.isPortrait()) {
 						appliedFiltersDownMark.hide();
 					}
@@ -795,7 +792,7 @@ export default class GalleryMobileView extends JetView {
 					}
 				}
 
-				if (scrollState.y < scrollBodyHeight - currentAppliedFiltersView.$height) {
+				if (scrollState.y < scrollBodyHeight - currentAppliedFiltersView.$height ?? 0) {
 					if (util.isPortrait()) {
 						appliedFiltersDownMark.show();
 					}
@@ -829,19 +826,19 @@ export default class GalleryMobileView extends JetView {
 
 		scrollDownButton.attachEvent("onItemClick", moveScroll);
 
+		scrollDownLandscapeButton.attachEvent("onItemClick", moveScroll);
+
 		scrollUpButton.attachEvent("onItemClick", moveScroll);
 
-		portraitAppliedFiltersList.attachEvent("onViewShow", showOrHideAppliedFiltersMarks);
+		scrollUpLandscapeButton.attachEvent("onItemClick", moveScroll);
 
 		portraitAppliedFiltersList.attachEvent("onAfterScroll", showOrHideAppliedFiltersMarks);
 
-		portraitAppliedFiltersList.attachEvent("onAfterLoad", showOrHideAppliedFiltersMarks);
-
-		landscapeAppliedFiltersList.attachEvent("onViewShow", showOrHideAppliedFiltersMarks);
+		portraitAppliedFiltersList.attachEvent("onAfterRender", showOrHideAppliedFiltersMarks);
 
 		landscapeAppliedFiltersList.attachEvent("onAfterScroll", showOrHideAppliedFiltersMarks);
 
-		landscapeAppliedFiltersList.attachEvent("onAfterLoad", showOrHideAppliedFiltersMarks);
+		landscapeAppliedFiltersList.attachEvent("onAfterRender", showOrHideAppliedFiltersMarks);
 	}
 
 	async ready() {
@@ -1022,6 +1019,8 @@ export default class GalleryMobileView extends JetView {
 	getAppliedFiltersLayout() {
 		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersLayoutID()});
 	}
+
+	showList() {}
 
 	filteredListUpdateHandler() {
 		const appliedFiltersLayoutView = $$(filterPanel.getAppliedFiltersLayoutID());

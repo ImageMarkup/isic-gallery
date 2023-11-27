@@ -834,18 +834,6 @@ class GalleryService {
 			this._reload();
 		};
 
-		// this._clearAllFiltersTemplate?.define("onClick", {
-		// 	"clear-all-filters": clearAllFilters
-		// });
-
-		// this._portraitClearAllFiltersTemplate?.define("onClick", {
-		// 	"clear-all-filters": clearAllFilters
-		// });
-
-		// this._landscapeClearAllFiltersTemplate?.define("onClick", {
-		// 	"clear-all-filters": clearAllFilters
-		// });
-
 		this._clearAllFiltersTemplate?.define("onClick", {
 			"clear-all-filters": clearAllFilters
 		});

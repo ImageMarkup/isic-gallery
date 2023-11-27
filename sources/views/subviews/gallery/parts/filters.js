@@ -125,7 +125,6 @@ function getCheckboxUI(data, collapsed) {
 						},
 						{width: 10},
 						selectAllLabel,
-						{width: 10},
 						selectNoneLabel
 					]
 				},
