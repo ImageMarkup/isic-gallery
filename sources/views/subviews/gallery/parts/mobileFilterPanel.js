@@ -164,8 +164,8 @@ function getConfig(config) {
 
 	const scrollUpButton = {
 		view: "button",
-		width: 60,
-		height: 60,
+		width: 40,
+		height: 40,
 		css: "filter-scroll-button",
 		id: ID_SCROLL_UP_BUTTON,
 		type: "icon",
@@ -175,8 +175,8 @@ function getConfig(config) {
 
 	const scrollDownButton = {
 		view: "button",
-		width: 60,
-		height: 60,
+		width: 40,
+		height: 40,
 		css: "filter-scroll-button",
 		id: ID_SCROLL_DOWN_BUTTON,
 		type: "icon",
@@ -288,7 +288,7 @@ function getConfig(config) {
 							{
 								rows: [
 									scrollUpButton,
-									{width: 60},
+									{width: 40},
 									scrollDownButton
 								]
 							}
