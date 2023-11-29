@@ -816,13 +816,13 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
+			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			await this._reload(0, this._pager?.data?.size || 10);
 			// Fix scrollView
 			this.resizeFilterScrollView();
-			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
 			if (element) {
 				this._scrollToFilterFormElement(element);
 			}
-			await this._reload(0, this._pager?.data?.size || 10);
 		});
 
 		const clearAllFilters = () => {
