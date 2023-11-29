@@ -818,10 +818,12 @@ class GalleryService {
 			});
 			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
-			// Fix scrollView
-			this.resizeFilterScrollView();
-			if (element) {
-				this._scrollToFilterFormElement(element);
+			if (util.isMobilePhone()) {
+				// Fix scrollView
+				this.resizeFilterScrollView();
+				if (element) {
+					this._scrollToFilterFormElement(element);
+				}
 			}
 		});
 
@@ -1500,27 +1502,34 @@ class GalleryService {
 	}
 
 	_scrollToFilterFormElement(element) {
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
 		const elementView = $$(element.id);
 		const elementOffsetTop = elementView.$view.offsetTop;
-		const filterScrollViewOffsetTop = this._filterScrollView.$view.offsetTop;
+		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop;
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
-		this._filterScrollView.scrollTo(0, positionToScroll);
+		currentFilterScrollView.scrollTo(0, positionToScroll);
+		currentFilterScrollView.callEvent("onAfterScroll");
 	}
 
 	resizeFilterScrollView() {
-		const filterScrollViewChildren = this._filterScrollView.getChildViews();
-		const scrollViewWidth = this._filterScrollView.$width;
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
+		const filterScrollViewChildren = currentFilterScrollView.getChildViews();
+		const scrollViewWidth = currentFilterScrollView.$width;
 		let scrollViewHeight = 0;
 		filterScrollViewChildren?.forEach((childView) => {
 			scrollViewHeight += childView.$height;
 		});
 		if (scrollViewHeight && scrollViewWidth) {
-			this._filterScrollView?.$setSize(
+			currentFilterScrollView?.$setSize(
 				scrollViewWidth,
 				scrollViewHeight
 			);
 		}
-		this._filterScrollView.resize();
+		currentFilterScrollView.resize();
 	}
 
 	clearFilterForm() {

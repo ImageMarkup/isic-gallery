@@ -1020,6 +1020,10 @@ export default class GalleryMobileView extends JetView {
 		return this.getRoot().queryView({id: filterPanel.getAppliedFiltersLayoutID()});
 	}
 
+	getFilterScrollView() {
+		return this.getRoot().queryView({name: filterPanel.getFilterScrollViewName()});
+	}
+
 	showList() {}
 
 	filteredListUpdateHandler() {
