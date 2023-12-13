@@ -18,7 +18,8 @@ function createConfig(firstName, lastName) {
 			// 		<img src="${imageUrl}" class="userbar-avatar-image" width="50px" height="50px"/>
 			// 	</div>`,
 			borderless: true,
-			width: 60
+			width: 60,
+			hidden: true
 		},
 		{
 			rows: [

@@ -1,5 +1,6 @@
 import constants from "../constants";
 import state from "../models/state";
+import logger from "./logger";
 
 const FileSaver = require("../../node_modules/file-saver/FileSaver");
 
@@ -12,6 +13,25 @@ function openInNewTab(url) {
 	const otherWindow = window.open();
 	otherWindow.opener = null;
 	otherWindow.location = url;
+}
+
+function openImageInNewTab(url, name) {
+	const image_window = window.open("", "_blank")
+	image_window.document.write(`
+	<html>
+		<head>
+		</head>
+		<body>
+			<img src="${url}" alt="${name}" style="
+				display: block;
+				max-width: 100%;
+				max-height: 100%;
+				margin-left:  auto;
+				margin-right: auto;
+			">
+		</body>
+	</html>
+	`);
 }
 
 function downloadByLink(url, name) {
@@ -224,6 +244,10 @@ function getDataviewSelectionId() {
 
 function getOptionId(filterId, optionValue) {
 	return `${filterId || ""}|${optionValue || ""}`;
+}
+
+function getFilterLabelId(filterId) {
+	return `filter-label-${filterId || ""}`
 }
 
 function getImageIconDimensions() {
@@ -477,8 +501,59 @@ function debounce(func, timeout = 300) {
 	};
 }
 
+function isIOS() {
+	return /iPad|iPhone|iPod/i.test(navigator.userAgent)
+}
+
+function isMobilePhone() {
+	return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+/**
+ *
+ * @param title - A string representing a title to be shared.
+ * @param url - A string representing a URL to be shared.
+ */
+function shareUrl(title, url) {
+	if (navigator.share) {
+		navigator.share({
+			title,
+			url
+		}).then(() => {
+			logger.info("Successful share");
+		}).catch((error) => {
+			logger.error(`${error}`);
+		})
+	}
+	else {
+		// Fallback
+		webix.message("Share is not supported")
+	}
+}
+
+function shareFile(title, data, fileName) {
+	const file = new File([data], `${fileName}.jpeg`, {type: data.type});
+	navigator.share({
+		title: title,
+		files: [file]
+	}).then(() => {
+		logger.info("Successful download");
+	}).catch ((err) => {
+		console.error("Download failed:", err.message);
+	});
+}
+
+function isPortrait() {
+	return window.matchMedia("(orientation: portrait)").matches;
+}
+
+function isSafari() {
+	return navigator.userAgent.indexOf("Safari") > -1;
+}
+
 export default {
 	openInNewTab,
+	openImageInNewTab,
 	downloadByLink,
 	isChrome,
 	exportCsv,
@@ -510,6 +585,13 @@ export default {
 	getImageWidth,
 	getImageHeight,
 	setImageDimensions,
-	getOptionId
+	getOptionId,
+	isIOS,
+	isMobilePhone,
+	shareUrl,
+	shareFile,
+	isPortrait,
+	getFilterLabelId,
+	isSafari
 };
 

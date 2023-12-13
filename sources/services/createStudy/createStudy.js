@@ -1,7 +1,10 @@
 import createStudyModel from "../../models/createStudyModel";
+import galleryImagesUrls from "../../models/galleryImagesUrls";
 import selectedGalleryImages from "../../models/selectedGalleryImages";
 import imageSelectionWindow from "../../views/subviews/createStudy/windows/imagesSelectionWindow";
 import LargeImageWindow from "../../views/subviews/gallery/windows/imageWindow";
+import ajax from "../ajaxActions";
+
 
 const IMAGE_WINDOW_ID = "study-creation-image-window-id";
 let featureSetListItemsCount;
@@ -112,6 +115,14 @@ export default class CreateStudyService {
 
 		this._largeImageWindow.attachEvent("onKeyPress", (keyCode) => {
 			this._keyPressed(keyCode);
+		});
+
+		this._imageWindowViewer.attachEvent("onBeforRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageWidnowViewer.refresh();
+			}
 		});
 
 		this._imageWindowViewer.attachEvent("onAfterRender", () => {

@@ -49,7 +49,13 @@ class GalleryService {
 		downloadFilteredImagesButton,
 		appliedFiltersLayout,
 		imageWindowZoomButtons,
-		imageWindowTemplate
+		leftLandImageWindowZoomButton,
+		rightLandImageWindowZoomButton,
+		imageWindowTemplate,
+		imageWindowTemplateWithoutControls,
+		enlargeContextMenu,
+		portraitClearAllFiltersTemplate,
+		landscapeClearAllFiltersTemplate
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -74,7 +80,13 @@ class GalleryService {
 		this._downloadFilteredImagesButton = downloadFilteredImagesButton;
 		this._appliedFiltersLayout = appliedFiltersLayout;
 		this._imageWindowZoomButtons = imageWindowZoomButtons;
+		this._leftLandImageWindowZoomButton = leftLandImageWindowZoomButton;
+		this._rightLandImageWindowZoomButton = rightLandImageWindowZoomButton;
 		this._imageWindowTemplate = imageWindowTemplate;
+		this._imageWindowTemplateWithoutControls = imageWindowTemplateWithoutControls;
+		this._enlargeContextMenu = enlargeContextMenu;
+		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
+		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
 		this._init();
 	}
 
@@ -183,6 +195,7 @@ class GalleryService {
 	}
 
 	_init() {
+		const self = this;
 		webix.extend(this._imagesDataview, webix.OverlayBox);
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
@@ -449,28 +462,94 @@ class GalleryService {
 			this._keyPressed(keyCode);
 		});
 
+		this._imageWindowTemplate?.attachEvent("onBeforeRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageWindowTemplate.refresh();
+			}
+			return true;
+		});
+
+		this._imageWindowTemplate?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				type: "image",
+				maxScale: 5,
+				zoomOnClick: false,
+				minScale: 1
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+			// TODO: check this
+			setTimeout(() => {
+				this.wzoom.transform(0, 0, 1);
+			});
+		});
+
+		this._imageTemplate?.attachEvent("onBeforeRender", async (obj) => {
+			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageTemplate.refresh();
+			}
+			return true;
+		});
+
+		this._imageTemplate?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				minScale: 1,
+				type: "image",
+				maxScale: 5,
+				speed: 1.2
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+		});
+
+		this._imageWindowTemplateWithoutControls?.attachEvent("onBeforeRender", async (obj) => {
+			if (obj.imageId && typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
+				const item = await ajax.getImageItem(obj.imageId);
+				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
+				this._imageWindowTemplateWithoutControls?.refresh();
+			}
+			return true;
+		});
+
+		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", () => {
+			if (this._imageInstance) {
+				this.wzoom.destroy();
+			}
+			if (this._imageWindow) {
+				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+			}
+			const wzoomOptions = {
+				minScale: 1,
+				type: "image",
+				maxScale: 5,
+				speed: 1.2
+			};
+			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
+		});
+
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {
+			this._imageWindowTemplateWithoutControls?.hide();
+			this._imageWindowTemplate?.show();
 			const currentItem = this._imagesDataview.getItem(id);
 			this._setImageWindowValues(currentItem);
 			if (this._imageWindow) {
 				this._eventForHideMessages(this._imageWindow);
 				this._imageWindow.show();
 			}
-			this._imageTemplate?.attachEvent("onAfterRender", () => {
-				if (this._imageInstance) {
-					this.wzoom.destroy();
-				}
-				if (this._imageWindow) {
-					this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-				}
-				const wzoomOptions = {
-					minScale: 1,
-					type: "image",
-					maxScale: 5,
-					speed: 1.2
-				};
-				this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			});
 		};
 
 		this._imageWindowTemplate?.define("onClick", {
@@ -482,6 +561,9 @@ class GalleryService {
 			},
 			"mobile-window-close-button": function () {
 				this.getTopParentView().hide();
+			},
+			"close-window": function () {
+				this.getTopParentView().hide();
 			}
 		});
 
@@ -490,6 +572,24 @@ class GalleryService {
 				this._zoomImage("plus");
 			},
 			"btn-minus": () => {
+				this._zoomImage("minus");
+			}
+		});
+
+		this._leftLandImageWindowZoomButton?.define("onClick", {
+			"land-btn-plus": () => {
+				this._zoomImage("plus");
+			},
+			"land-btn-minus": () => {
+				this._zoomImage("minus");
+			}
+		});
+
+		this._rightLandImageWindowZoomButton?.define("onClick", {
+			"land-btn-plus": () => {
+				this._zoomImage("plus");
+			},
+			"land-btn-minus": () => {
 				this._zoomImage("minus");
 			}
 		});
@@ -706,7 +806,7 @@ class GalleryService {
 		this._view.$scope.on(this._view.$scope.app, "changedAllSelectedImagesCount", () => {
 			this._allPagesTemplate?.refresh();
 		});
-		this._view.$scope.on(this._view.$scope.app, "filtersChanged", (data/* , selectNone */) => {
+		this._view.$scope.on(this._view.$scope.app, "filtersChanged", async (data/* , selectNone */) => {
 			// add (or remove) filters data to model
 			appliedFilterModel.processNewFilters(data);
 			// refresh data in list
@@ -716,19 +816,33 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			this._reload(0, this._pager.data.size);
-		});
-
-		this._clearAllFiltersTemplate?.define("onClick", {
-			"clear-all-filters": () => {
-				this._downloadFilteredImagesButton.hide();
-				this._appliedFiltersList.clearAll();
-				this._appliedFiltersList.callEvent("onAfterLoad");
-				this._appliedFiltersLayout?.hide();
-				appliedFilterModel.clearAll();
-				this._reload();
+			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			await this._reload(0, this._pager?.data?.size || 10);
+			if (util.isMobilePhone()) {
+				// Fix scrollView
+				this.resizeFilterScrollView();
+				if (element) {
+					this._scrollToFilterFormElement(element);
+				}
 			}
 		});
+
+		const clearAllFilters = () => {
+			this._downloadFilteredImagesButton?.hide();
+			this._appliedFiltersList.clearAll();
+			this._appliedFiltersList.callEvent("onAfterLoad");
+			this._appliedFiltersLayout?.hide();
+			appliedFilterModel.clearAll();
+			this._reload();
+		};
+
+		this._clearAllFiltersTemplate?.define("onClick", {
+			"clear-all-filters": clearAllFilters
+		});
+
+		this._portraitClearAllFiltersTemplate?.attachEvent("onTouchEnd", clearAllFilters);
+
+		this._landscapeClearAllFiltersTemplate?.attachEvent("onTouchEnd", clearAllFilters);
 
 		this._createStudyButton?.attachEvent("onItemClick", () => {
 			let studyImagesCount = selectedImages.countForStudies();
@@ -884,17 +998,32 @@ class GalleryService {
 			}
 		});
 
-		this._galleryContextMenu.attachEvent("onItemClick", function (id) {
+		this._galleryContextMenu?.attachEvent("onItemClick", function (id) {
 			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
 				const context = this.getContext();
-				const contextView = context.obj;
-				const dataviewId = context.id;
-				const currentItem = contextView.getItem(dataviewId);
-				const fullFileUrl = currentItem.files?.full?.url;
-				const fileName = currentItem.isic_id;
-				if (fullFileUrl) {
-					util.downloadByLink(fullFileUrl, fileName);
+				if (context.isic_id) {
+					const fileName = context.isic_id;
+					const fullFileUrl = context.files.full.url;
+					self.downloadImage(fullFileUrl, fileName);
 				}
+				else {
+					const contextView = context.obj;
+					const itemId = context.id;
+					const currentItem = contextView.getItem(itemId);
+					const fullFileUrl = currentItem.files?.full?.url;
+					const fileName = currentItem.isic_id;
+					self.downloadImage(fullFileUrl, fileName);
+				}
+			}
+		});
+
+		this._enlargeContextMenu?.attachEvent("onItemClick", (id) => {
+			if (id === constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE) {
+				const obj = this._imageWindowTemplate?.getValues()
+					?? this._imageWindowTemplateWithoutControls?.getValues();
+				const fullFileUrl = obj.fullFileUrl;
+				const fileName = obj.imageId;
+				this.downloadImage(fullFileUrl, fileName);
 			}
 		});
 
@@ -908,11 +1037,18 @@ class GalleryService {
 			}
 		});
 
-		this._downloadFilteredImagesButton.attachEvent("onItemClick", async () => {
+		this._downloadFilteredImagesButton?.attachEvent("onItemClick", async () => {
 			const query = appliedFilterModel.getConditionsForApi();
 			const url = await ajax.getDownloadUrl(constants.DOWNLOAD_FILTERED_IMAGES, query);
 			if (url) {
 				util.downloadByLink(url, "isic_data.zip");
+			}
+		});
+
+		window.matchMedia("(orientation: portrait)").addEventListener("change", async (e) => {
+			if (await state.auth.isTermsOfUseAccepted()) {
+				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
 			}
 		});
 	}
@@ -926,7 +1062,7 @@ class GalleryService {
 			this._updateContentHeaderTemplate(
 				{
 					rangeStart: 1,
-					rangeFinish: this._pager.data.size,
+					rangeFinish: this._pager?.data?.size || 10,
 					totalCount: state.imagesTotalCounts.passedFilters.count
 				}
 			);
@@ -935,6 +1071,10 @@ class GalleryService {
 			const ids = Object.keys(facets);
 			ids.forEach((id) => {
 				state.imagesTotalCounts[id] = facets[id].buckets;
+				state.imagesTotalCounts[id].push({
+					key: constants.MISSING_KEY_VALUE,
+					doc_count: facets[id]?.meta?.missing_count
+				});
 			});
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
@@ -960,6 +1100,20 @@ class GalleryService {
 					}); // create filters form controls from config
 			}
 			filterService.updateFiltersCounts();
+			const image = this._view.$scope.getParam("image");
+			if (image) {
+				const isTermsOfUseAccepted = await authService.isTermsOfUseAccepted();
+				if (this._imageWindow && isTermsOfUseAccepted) {
+					this._imageWindowTemplate?.hide();
+					this._imageWindowTemplateWithoutControls?.show();
+					const item = await ajax.getImageItem(image);
+					this._imageWindowTemplateWithoutControls?.setValues({
+						imageId: image,
+						fullFileUrl: item.files.full.url
+					});
+					this._imageWindow.show();
+				}
+			}
 			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
 		catch (error) {
@@ -969,17 +1123,19 @@ class GalleryService {
 		}
 	}
 
-	_reload(offsetSource, limitSource) {
-		let limit = limitSource || this._pager.data.size;
-		let offset = offsetSource || 0;
-		state.imagesOffset = offset;
-		const appliedFiltersArray = appliedFilterModel.getFiltersArray();
-		this._createFilters(appliedFiltersArray);
-		this._updateCounts();
-		const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
-		this._view.$scope.setParam("filter", paramFilters, true);
-		this._filterScrollView.resize();
-		this._updateImagesDataview(offset, limit); // load images first time
+	async _reload(offsetSource, limitSource) {
+		if (await state.auth.isTermsOfUseAccepted()) {
+			let limit = limitSource || this._pager.data.size;
+			let offset = offsetSource || 0;
+			state.imagesOffset = offset;
+			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
+			this._createFilters(appliedFiltersArray);
+			this._updateCounts();
+			const paramFilters = appliedFilterModel.convertAppliedFiltersToParams();
+			// set params to url
+			this._view.$scope.setParam("filter", paramFilters, true);
+			await this._updateImagesDataview(offset, limit); // load images first time
+		}
 	}
 
 	_updateContentHeaderTemplate(ranges) {
@@ -1016,13 +1172,14 @@ class GalleryService {
 	}
 
 	_updateAppliedFiltersList(data) {
+		this._appliedFiltersList = this._view.$scope.getAppliedFiltersList();
 		this._appliedFiltersList.clearAll();
 		this._appliedFiltersList.parse(data);
 		if (data.length > 0) {
-			this._downloadFilteredImagesButton.show();
+			this._downloadFilteredImagesButton?.show();
 		}
 		else {
-			this._downloadFilteredImagesButton.hide();
+			this._downloadFilteredImagesButton?.hide();
 		}
 	}
 
@@ -1034,6 +1191,8 @@ class GalleryService {
 		}
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
+			this.clearFilterForm();
+			this._filtersForm = this._view.$scope.getFiltersForm();
 			webix.ui(elements, this._filtersForm);
 			const firstItemToScroll = filtersBySearchCollection.getItem(
 				filtersBySearchCollection.getFirstId()
@@ -1095,7 +1254,6 @@ class GalleryService {
 					limit,
 					filter
 				});
-			this.resizeFilterScrollView();
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
 			if (filter) {
@@ -1184,13 +1342,13 @@ class GalleryService {
 
 	async _setImageWindowValues(currentItem) {
 		this._currentItem = currentItem;
-		this._imageWindowViewer?.setValues({imageId: currentItem.isic_id});
+		this._imageWindowViewer?.setValues({
+			imageId: currentItem.isic_id,
+			fullFileUrl: currentItem.files?.full?.url
+		});
 		const image = await ajax.getImageItem(currentItem.isic_id);
 		if (this._imageWindowMetadata) {
 			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)], this._imageWindowMetadata); // [] - because we rebuild only rows of this._imageWindowMetadata
-		}
-		else {
-			webix.ui([metadataPart.getConfig("image-window-metadata", image, currentItem)]); // [] - because we rebuild only rows of this._imageWindowMetadata
 		}
 	}
 
@@ -1344,25 +1502,56 @@ class GalleryService {
 	}
 
 	_scrollToFilterFormElement(element) {
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
 		const elementView = $$(element.id);
 		const elementOffsetTop = elementView.$view.offsetTop;
-		const filterScrollViewOffsetTop = this._filterScrollView.$view.offsetTop;
+		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop;
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
-		this._filterScrollView.scrollTo(0, positionToScroll);
+		currentFilterScrollView.scrollTo(0, positionToScroll);
+		currentFilterScrollView.callEvent("onAfterScroll");
 	}
 
 	resizeFilterScrollView() {
-		const filterScrollViewChildren = this._filterScrollView.getChildViews();
-		const scrollViewWidth = this._filterScrollView.$width;
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
+		const filterScrollViewChildren = currentFilterScrollView.getChildViews();
+		const scrollViewWidth = currentFilterScrollView.$width;
 		let scrollViewHeight = 0;
-		filterScrollViewChildren.forEach((childView) => {
+		filterScrollViewChildren?.forEach((childView) => {
 			scrollViewHeight += childView.$height;
 		});
-		this._filterScrollView.$setSize(
-			scrollViewWidth,
-			scrollViewHeight
-		);
-		this._filterScrollView.resize();
+		if (scrollViewHeight && scrollViewWidth) {
+			currentFilterScrollView?.$setSize(
+				scrollViewWidth,
+				scrollViewHeight
+			);
+		}
+		currentFilterScrollView.resize();
+	}
+
+	clearFilterForm() {
+		const elements = this._filtersForm.getChildViews();
+		for (let i = 0; i < elements.length; i++) {
+			let element = elements[i];
+			i--;
+			this._filtersForm.removeView(element);
+		}
+	}
+
+	downloadImage(fullFileUrl, fileName) {
+		if (fullFileUrl) {
+			if (util.isIOS()) {
+				ajax.downloadImage(fullFileUrl, fileName);
+			}
+			else {
+				util.downloadByLink(fullFileUrl, fileName);
+			}
+			// TODO: alternative
+			// ajax.downloadImage(fullFileUrl, fileName);
+		}
 	}
 }
 

@@ -59,10 +59,12 @@ function prepareDataForList() {
 function processNewFilters(data) {
 	if (Array.isArray(data)) {
 		data.forEach((item) => {
+			// eslint-disable-next-line no-use-before-define
 			processNewFilter(item);
 		});
 	}
 	else if (data) {
+		// eslint-disable-next-line no-use-before-define
 		processNewFilter(data);
 	}
 }
@@ -137,23 +139,57 @@ function _prepareValuesCondition(filter, result) {
 		const valuesLastIndex = filter.values.length - 1;
 		filter.values.forEach((currentFilterValue, valueIndex) => {
 			if (valueIndex === 0) {
-				result.push({
-					key: filter.key,
-					value: currentFilterValue,
-					operator: "",
-					openingBracket: "(",
-					closingBracket: "",
-					type: filter.datatype
-				});
+				if (currentFilterValue === constants.MISSING_KEY_VALUE) {
+					result.push({
+						key: `-${filter.key}`,
+						value: "*",
+						operator: "",
+						openingBracket: "(",
+						closingBracket: "",
+						type: "boolean"
+					});
+				}
+				else {
+					result.push({
+						key: filter.key,
+						value: currentFilterValue,
+						operator: "",
+						openingBracket: "(",
+						closingBracket: "",
+						type: filter.datatype
+					});
+				}
 			}
 			else if (valueIndex === valuesLastIndex) {
+				if (currentFilterValue === constants.MISSING_KEY_VALUE) {
+					result.push({
+						key: `-${filter.key}`,
+						value: "*",
+						operator: "OR",
+						openingBracket: "",
+						closingBracket: ")",
+						type: "boolean"
+					});
+				}
+				else {
+					result.push({
+						key: filter.key,
+						value: currentFilterValue,
+						operator: "OR",
+						openingBracket: "",
+						closingBracket: ")",
+						type: filter.datatype
+					});
+				}
+			}
+			else if (currentFilterValue === constants.MISSING_KEY_VALUE) {
 				result.push({
-					key: filter.key,
-					value: currentFilterValue,
+					key: `-${filter.key}`,
+					value: "*",
 					operator: "OR",
 					openingBracket: "",
-					closingBracket: ")",
-					type: filter.datatype
+					closingBracket: "",
+					type: "boolean"
 				});
 			}
 			else {
@@ -166,6 +202,16 @@ function _prepareValuesCondition(filter, result) {
 					type: filter.datatype
 				});
 			}
+		});
+	}
+	else if (filter.values[0] === constants.MISSING_KEY_VALUE) {
+		result.push({
+			key: `-${filter.key}`,
+			value: "*",
+			operator: "",
+			openingBracket: "",
+			closingBracket: "",
+			type: "boolean"
 		});
 	}
 	else {
@@ -185,23 +231,57 @@ function _prepareRangeCondition(filter, result) {
 		const valuesLastIndex = filter.values.length - 1;
 		filter.values.forEach((currentFilterValue, valueIndex) => {
 			if (valueIndex === 0) {
-				result.push({
-					key: filter.key,
-					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
-					operator: "",
-					openingBracket: "(",
-					closingBracket: "",
-					type: filter.datatype
-				});
+				if (currentFilterValue.label === constants.MISSING_KEY_VALUE) {
+					result.push({
+						key: `-${filter.key}`,
+						value: "*",
+						operator: "",
+						openingBracket: "(",
+						closingBracket: "",
+						type: "boolean"
+					});
+				}
+				else {
+					result.push({
+						key: filter.key,
+						value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+						operator: "",
+						openingBracket: "(",
+						closingBracket: "",
+						type: filter.datatype
+					});
+				}
 			}
 			else if (valueIndex === valuesLastIndex) {
+				if (currentFilterValue.label === constants.MISSING_KEY_VALUE) {
+					result.push({
+						key: `-${filter.key}`,
+						value: "*",
+						operator: "OR",
+						openingBracket: "",
+						closingBracket: ")",
+						type: "boolean"
+					});
+				}
+				else {
+					result.push({
+						key: filter.key,
+						value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+						operator: "OR",
+						openingBracket: "",
+						closingBracket: ")",
+						type: filter.datatype
+					});
+				}
+			}
+			else if (currentFilterValue.label === constants.MISSING_KEY_VALUE) {
 				result.push({
-					key: filter.key,
-					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
+					key: `-${filter.key}`,
+					value: "*",
 					operator: "OR",
 					openingBracket: "",
-					closingBracket: ")",
-					type: filter.datatype
+					closingBracket: "",
+					type: "boolean"
 				});
 			}
 			else {
@@ -210,10 +290,20 @@ function _prepareRangeCondition(filter, result) {
 					value: `[${currentFilterValue.from} TO ${currentFilterValue.to}}`,
 					operator: "OR",
 					openingBracket: "",
-					closingBracket: ")",
+					closingBracket: "",
 					type: filter.datatype
 				});
 			}
+		});
+	}
+	else if (filter.values[0].label === "missing key") {
+		result.push({
+			key: `-${filter.key}`,
+			value: "*",
+			operator: "",
+			openingBracket: "",
+			closingBracket: "",
+			type: "boolean"
 		});
 	}
 	else {

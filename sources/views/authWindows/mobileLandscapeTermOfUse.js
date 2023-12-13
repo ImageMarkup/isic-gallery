@@ -13,7 +13,7 @@ const body = {
 			align: "absolute",
 			body: {
 				view: "scrollview",
-				height: 400,
+				height: 0,
 				body: {
 					rows: [
 						{
@@ -26,11 +26,10 @@ const body = {
 				}
 			}
 		},
-		termsOfUseDownloadingPanel.getDownloadingPanel(),
 		{
 			paddingY: 10,
 			cols: [
-				{},
+				termsOfUseDownloadingPanel.getDownloadingPanel(),
 				{
 					view: "button",
 					css: "btn-contour",

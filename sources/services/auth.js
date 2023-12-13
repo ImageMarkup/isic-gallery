@@ -7,6 +7,7 @@ import state from "../models/state";
 import wizardUploaderStorage from "../models/wizardUploaderStorage";
 import logger from "../utils/logger";
 import util from "../utils/util";
+import mobileLandscapeTermOfUse from "../views/authWindows/mobileLandscapeTermOfUse";
 import mobileTermOfUseWindow from "../views/authWindows/mobileTermOfUse";
 import termOfUseWindow from "../views/authWindows/termOfUse";
 import ajax from "./ajaxActions";
@@ -43,6 +44,15 @@ class OAuthISIC {
 					logger.error("Authentication: Something went wrong");
 				});
 		}
+		webix.attachEvent("onRotate", (landscape) => {
+			const win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
+				|| webix.ui(mobileTermOfUseWindow.getConfig(constants.ID_MOBILE_WINDOW_TERMS_OF_USE));
+			const landWin = $$(constants.ID_MOBILE_LANDSCAPE_TERMS_OF_USE)
+				|| webix.ui(mobileLandscapeTermOfUse.getConfig(constants.ID_MOBILE_LANDSCAPE_TERMS_OF_USE));
+			if (win.isVisible() || landWin.isVisible()) {
+				this.reloadPage();
+			}
+		});
 	}
 
 	login() {
@@ -117,14 +127,26 @@ class OAuthISIC {
 	}
 
 	showMobileTermOfUse(okCallback) {
-		let win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
+		const win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
 			|| webix.ui(mobileTermOfUseWindow.getConfig(constants.ID_MOBILE_WINDOW_TERMS_OF_USE));
-		win.show();
+		const landWin = $$(constants.ID_MOBILE_LANDSCAPE_TERMS_OF_USE)
+			|| webix.ui(mobileLandscapeTermOfUse.getConfig(constants.ID_MOBILE_LANDSCAPE_TERMS_OF_USE));
+		if (util.isPortrait()) {
+			win.show();
+		}
+		else {
+			landWin.show();
+		}
 		win.okCallback = okCallback;
+		landWin.okCallback = okCallback;
 	}
 
 	showMainPage() {
 		window.location = "/";
+	}
+
+	reloadPage() {
+		window.location.reload(true);
 	}
 
 	getUserInfo() {
@@ -162,7 +184,7 @@ class OAuthISIC {
 	}
 
 	get isLoginRestored() {
-		return this.#isLoginRestored
+		return this.#isLoginRestored;
 	}
 }
 

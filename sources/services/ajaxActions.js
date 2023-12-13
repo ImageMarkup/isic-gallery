@@ -1,6 +1,8 @@
-import axios from "../../node_modules/axios/dist/axios.min";
+import axios from "axios";
+
 import state from "../models/state";
 import logger from "../utils/logger";
+import util from "../utils/util";
 
 const API_URL = process.env.ISIC_NEW_API_URL;
 
@@ -129,7 +131,7 @@ class AjaxActions {
 
 	// New API
 	searchImages(sourceParams) {
-		const conditions = sourceParams.conditions;
+		const conditions = sourceParams.conditions || "";
 		const params = {
 			limit: sourceParams.limit || 0,
 			query: conditions
@@ -222,6 +224,7 @@ class AjaxActions {
 				query
 			};
 			const headers = await getAuthHeaders();
+			headers["Content-Type"] = "application/json";
 			const resp = await this._ajax()
 				.headers(headers)
 				.post(`${API_URL}zip-download/url/`, JSON.stringify(params));
@@ -234,8 +237,11 @@ class AjaxActions {
 		}
 	}
 
-	downloadImage(url, name) {
-		if (url) {
+	async downloadImage(url, name) {
+		if (util.isIOS()) {
+			util.openImageInNewTab(url, name);
+		}
+		else if (url) {
 			return webix.ajax().response("blob").get(`${url}`, (text, blob) => {
 				webix.html.download(blob, `${name}`);
 			});

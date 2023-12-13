@@ -117,15 +117,26 @@
 
 .webix_pager.mobile-pager {
   .webix_pager_item {
-    border-radius: 100%;
-    width: 55px;
+    border-radius: 20px;
+    border-color: @dark-bg;
+    background: transparent;
+    width: 50%;
     height: 55px;
-    .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right{
+    .webix_icon.wxi-angle-left, .webix_icon.wxi-angle-right {
       font-size: 40px;
+      color: @dark-bg;
     }
   }
 }
 
+.gallery-pager-button {
+  .webix_img_btn {
+    .webix_icon_btn.fa-chevron-left, .webix_icon_btn.fa-chevron-right {
+        font-size: 40px;
+        color: @dark-bg;
+    }
+  }
+}
 
 
 /*=====
@@ -1110,11 +1121,25 @@
   }
 }
 
+.select-all-template,
+.select-none-template {
+  .webix_template {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .select-all-label,
 .select-none-label {
   border-bottom: 1px dashed @select-color;
   display: inline-block;
   cursor: pointer;
+  text-transform: none;
+  vertical-align: middle;
+}
+
+.back-to-gallery-button .webix_el_box .webix_img_btn {
+  font-size: 16px;
 }
 
 
@@ -1265,6 +1290,7 @@
 
 /* mobile-gallery-images-info */
 .mobile-gallery-images-info {
+  font-size: 20px;
   display: flex;
   justify-content: space-between;
   padding: 5px 30px;
@@ -1355,16 +1381,20 @@
 
 }
 
-.gallery-header-name-panel {
+.mobile-gallery-header-logo {
+  cursor: pointer;
+}
+
+.gallery-header-name-panel, .mobile-gallery-header-logo {
   font-size: 24px;
-  padding-left: 20px;
   padding-top: 5px;
   font-weight: bold;
 }
 
-.gallery-header-mobile-button {
-  position: absolute;
-  right: 20px;
+.gallery-header-mobile-context {
+  .webix_template {
+    position: relative;
+  }
 }
 
 .webix_view.webix_control.webix_el_button.filtered .webix_img_btn .fas.fa-filter{
@@ -2037,7 +2067,7 @@
 }
 
 /* Style the button and place it in the middle of the container/image */
-.zoom-btn {
+.zoom-btn, .land-zoom-btn {
   vertical-align: middle;
   position: absolute;
   font-size: 18px;
@@ -2049,6 +2079,7 @@
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
+  margin: 10px;
   //box-shadow: 0 2px #999;
   &.btn-plus {
     left: 100px;
@@ -2067,6 +2098,20 @@
   &:active {
     box-shadow: 0 1px #666;
     transform: translateY(1px);
+  }
+}
+
+.land-zoom-btn {
+  border-radius: 3%;
+  border: none;
+  width: 100px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0px;
+  span {
+    font-size: 20px;
+    line-height: 20px;
   }
 }
 
@@ -2096,4 +2141,24 @@
 
 .wizard-tool-submit-button {
   margin-left: -3px !important;
+}
+
+.webix_view.webix_control.webix_el_button.filter-scroll-button.filter-scroll-button {
+  .webix_img_btn {
+    background-color: transparent;
+    border: 2px solid black;
+    span {
+      margin: 0;
+    }
+  }
+}
+
+.applied-filters-mark {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  color:rgba(0, 0, 0, 0.4);
+  .webix_template .fas {
+    margin: 0 50%;
+  }
 }

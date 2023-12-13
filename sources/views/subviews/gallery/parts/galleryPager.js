@@ -56,7 +56,7 @@ const mobilePager = {
 	master: false,
 	css: "mobile-pager",
 	template(obj, common) {
-		return `<div style="display: flex; justify-content: space-between">${common.prev()} <div></div> ${common.next()}</div>`;
+		return `<div style="display: flex; justify-content: space-around">${common.prev()}${common.next()}</div>`;
 	},
 	on: {
 		onItemClick(id/* , e, node */) {

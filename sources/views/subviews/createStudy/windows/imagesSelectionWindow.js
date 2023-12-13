@@ -321,11 +321,13 @@ export default class ImagesSelectionWindow extends JetView {
 	}
 
 	reload() {
-		let page = this.pager.data.page;
-		let limit = this.pager.data.size;
+		let page = this.pager?.data?.page;
+		let limit = this.pager?.data?.size;
 		let offset = page * limit;
 		// save promise to object. we need wait for its result before rendering images dataview
-		this.updateImagesDataview(offset, limit); // load images first time
+		if (offset >= 0 && limit) {
+			this.updateImagesDataview(offset, limit); // load images first time
+		}
 	}
 
 	updateImagesDataview(offset, limit) {
