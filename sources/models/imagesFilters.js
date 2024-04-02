@@ -22,7 +22,8 @@ const filtersIds = {
 	dermoscopicType: "dermoscopic_type",
 	imageType: "image_type",
 	colorTint: "color_tint",
-	license: "copyright_license"
+	license: "copyright_license",
+	fitzpatrickSkinType: "fitzpatrick_skin_type"
 };
 
 function getFiltersDataValues() {
@@ -43,7 +44,8 @@ function getFiltersDataValues() {
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.lesionDiagnosis]
-				}]
+				}
+			]
 		},
 		{
 			label: "Clinical Attributes",
@@ -82,6 +84,16 @@ function getFiltersDataValues() {
 					type: "checkbox",
 					datatype: "boolean",
 					options: state.imagesTotalCounts[filtersIds.familyHistoryMelanoma]
+				},
+				{
+					id: filtersIds.fitzpatrickSkinType,
+					name: "Fitzpatrick skin type",
+					type: "checkbox",
+					datatype: "string",
+					options: reorderValues(
+						filtersIds.fitzpatrickSkinType,
+						state.imagesTotalCounts[filtersIds.fitzpatrickSkinType]
+					)
 				},
 				{
 					id: filtersIds.melanomaClass,
@@ -217,6 +229,36 @@ function getFiltersData(forceRebuild) {
 		}
 		resolve(filtersData);
 	});
+}
+
+function reorderValues(id, values) {
+	const newValues = [];
+	let facetValues;
+	switch (id) {
+		case filtersIds.fitzpatrickSkinType:
+			facetValues = ["I", "II", "III", "IV", "V", "VI", "missing key"];
+			break;
+		case filtersIds.imageType:
+			facetValues = [
+				"dermoscopic",
+				"clinical: overview",
+				"clinical: close-up",
+				"TBP tile: close-up",
+				"TBP tile: overview",
+				"missing key"
+			];
+			break;
+		default:
+			break;
+	}
+
+	facetValues.forEach((key) => {
+		const v = values.find(e => e.key === key);
+		if (v) {
+			newValues.push(v);
+		}
+	});
+	return newValues;
 }
 
 export default {

@@ -29,7 +29,8 @@ module.exports = {
 	"rules": {
 		"no-extra-parens": "warn",
 		"valid-jsdoc": "warn",
-		"no-useless-escape": "off"
+		"no-useless-escape": "off",
+		"no-use-before-define": "off"
 	},
 	"settings": {
 		"import/resolver": {
