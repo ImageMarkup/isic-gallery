@@ -93,10 +93,6 @@ class GalleryService {
 	_searchHandlerByFilter() {
 		let searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
 		this._searchInput.setValue(searchValue);
-		if (searchValue.length < 3) {
-			webix.alert("You should type minimum 3 characters");
-			return;
-		}
 		this._appliedFiltersList.clearAll();
 		appliedFilterModel.clearAll();
 		const filtersInfo = [];
@@ -435,12 +431,12 @@ class GalleryService {
 				await this._updateImagesDataview(offset, limit, url);
 				galleryImagesUrls.setCurrImagesUrl(null);
 				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
-					|| state.imagesTotalCounts.passedFilters.currentCount;
+					|| null;
 				const count = state.imagesTotalCounts.passedFilters.count;
 				const filtered = state.imagesTotalCounts.passedFilters.filtered;
 				this._updateContentHeaderTemplate({
 					rangeStart: offset + 1,
-					rangeFinish: offset + limit >= currentCount ? currentCount : offset + limit,
+					rangeFinish: currentCount && offset + limit >= currentCount ? currentCount : offset + limit,
 					totalCount: count,
 					currentCount,
 					filtered
@@ -1045,7 +1041,7 @@ class GalleryService {
 			}
 		});
 
-		window.matchMedia("(orientation: portrait)").addEventListener("change", async (e) => {
+		window.matchMedia("(orientation: portrait)").addEventListener("change", async (/* e */) => {
 			if (await state.auth.isTermsOfUseAccepted()) {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
