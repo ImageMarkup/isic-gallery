@@ -93,6 +93,10 @@ class GalleryService {
 	_searchHandlerByFilter() {
 		let searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
 		this._searchInput.setValue(searchValue);
+		if (searchValue.length < 3) {
+			webix.alert("You should type minimum 3 characters");
+			return;
+		}
 		this._appliedFiltersList.clearAll();
 		appliedFilterModel.clearAll();
 		const filtersInfo = [];
