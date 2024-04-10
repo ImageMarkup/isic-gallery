@@ -1278,7 +1278,6 @@ class GalleryService {
 			}
 			galleryImagesUrls.setNextImagesUrl(images.next);
 			galleryImagesUrls.setPrevImagesUrl(images.previous);
-			this._updatePagerCount(images.count);
 			if (images && images.results.length > 0) {
 				images.results.forEach((item) => {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
@@ -1290,6 +1289,7 @@ class GalleryService {
 				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing was found</div>");
 				this._view.hideProgress();
 			}
+			this._updatePagerCount(images.count);
 		}
 		catch (error) {
 			if (!this._view.$destructed) {
