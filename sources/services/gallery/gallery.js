@@ -435,12 +435,12 @@ class GalleryService {
 				await this._updateImagesDataview(offset, limit, url);
 				galleryImagesUrls.setCurrImagesUrl(null);
 				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
-					|| state.imagesTotalCounts.passedFilters.currentCount;
+					|| null;
 				const count = state.imagesTotalCounts.passedFilters.count;
 				const filtered = state.imagesTotalCounts.passedFilters.filtered;
 				this._updateContentHeaderTemplate({
 					rangeStart: offset + 1,
-					rangeFinish: offset + limit >= currentCount ? currentCount : offset + limit,
+					rangeFinish: currentCount && offset + limit >= currentCount ? currentCount : offset + limit,
 					totalCount: count,
 					currentCount,
 					filtered
@@ -1045,7 +1045,7 @@ class GalleryService {
 			}
 		});
 
-		window.matchMedia("(orientation: portrait)").addEventListener("change", async (e) => {
+		window.matchMedia("(orientation: portrait)").addEventListener("change", async (/* e */) => {
 			if (await state.auth.isTermsOfUseAccepted()) {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
@@ -1278,7 +1278,6 @@ class GalleryService {
 			}
 			galleryImagesUrls.setNextImagesUrl(images.next);
 			galleryImagesUrls.setPrevImagesUrl(images.previous);
-			this._updatePagerCount(images.count);
 			if (images && images.results.length > 0) {
 				images.results.forEach((item) => {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
@@ -1290,6 +1289,7 @@ class GalleryService {
 				this._imagesDataview.showOverlay("<div style=\"font-size: 17px; font-weight: bold;\">Nothing was found</div>");
 				this._view.hideProgress();
 			}
+			this._updatePagerCount(images.count);
 		}
 		catch (error) {
 			if (!this._view.$destructed) {

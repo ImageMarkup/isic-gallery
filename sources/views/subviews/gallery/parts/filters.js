@@ -182,7 +182,7 @@ function getCheckboxUI(data, collapsed) {
 				height: 28,
 				attributes: {
 					title: `${optionName} (0)`,
-					dataOptionId: `${currentOption.optionId}`
+					dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
 				},
 				labelWidth: 0,
 				filtersChangedData,
