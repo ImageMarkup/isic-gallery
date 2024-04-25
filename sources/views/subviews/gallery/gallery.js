@@ -16,7 +16,9 @@ import filterPanel from "./parts/filterPanel";
 import dataview from "./parts/galleryDataview";
 import pager from "./parts/galleryPager";
 import imageWindow from "./windows/imageWindow";
+import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 import metadataWindow from "./windows/metadataWindow";
+import MultiLesionWindowService from "../../../services/gallery/multiimageLesionWindow";
 
 const ID_PAGER = "gallery-pager-id";
 const ID_DATAVIEW = "gallery-dataview-id";
@@ -326,6 +328,10 @@ export default class GalleryView extends JetView {
 			null,
 			this.removeParam.bind(this)
 		));
+		this.multiImageLesionWindow = this.ui(multiImageLesionWindow.getConfig(
+			"MULTI-IMAGE LESION CASE STUDY",
+			() => {}
+		));
 		this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
 		const contextMenuConfig = contextMenu.getConfig(ID_GALLERY_CONTEXT_MENU);
 		this.galleryContextMenu = this.ui(contextMenuConfig);
@@ -354,6 +360,7 @@ export default class GalleryView extends JetView {
 			$$(imageWindow.getMetadataLayoutId()),
 			this.metadataWindow,
 			$$(metadataWindow.getMetadataLayoutId()),
+			this.multiImageLesionWindow,
 			filtersForm,
 			this.getAppliedFiltersList(),
 			this.imagesSelectionTemplate,
@@ -376,6 +383,12 @@ export default class GalleryView extends JetView {
 			null, // portraitClearAllFiltersTemplate
 			null // landscapeClearAllFiltersTemplate
 		);
+
+		// multi lesion
+		this._multiImageLesionService = new MultiLesionWindowService(
+			this._galleryService
+		);
+		this._multiImageLesionService.ready();
 	}
 
 	async ready() {
@@ -665,5 +678,9 @@ export default class GalleryView extends JetView {
 		if (image) {
 			this.setParam("image", "", true);
 		}
+	}
+
+	setMultiLesionMode(item, mode) {
+		this._multiImageLesionService.setMultiLesionState(item, mode);
 	}
 }

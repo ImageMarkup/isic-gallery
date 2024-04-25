@@ -1335,12 +1335,18 @@
   width: 100%;
 }
 
-.gallery-images-button-elem  {
+.gallery-images-button-elem, .gallery-images-button-elem-disabled {
   display: inline-block;
   vertical-align: top;
   width: 22px;
   height: 22px;
   margin: 0 4px;
+}
+.gallery-images-button-elem-disabled {
+  opacity: 0.4;
+}
+.gallery-images-button-elem-disabled:active {
+  pointer-events: none;
 }
 .gallery-images-button {
   display: block;
