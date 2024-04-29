@@ -201,6 +201,6 @@ export default {
 	MULTI_LESION_FILTERS: {
 		TIME: "Image Time",
 		TYPE: "Image type",
-		CONTR_DAY: "Contribution day"
-	}
+		CONTR_DAY: "Contribution day",
+	},
 };

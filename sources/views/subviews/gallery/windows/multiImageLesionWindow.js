@@ -86,13 +86,10 @@ function getConfig(windowTitle, closeCallback) {
 			constants.MULTI_LESION_FILTERS.TIME,
 			constants.MULTI_LESION_FILTERS.TYPE,
 			constants.MULTI_LESION_FILTERS.CONTR_DAY
-			// "Image Time",
-			// "Image type",
-			// "Contribution day"
 		]
 	};
 
-	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, true);
+	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, false);
 
 	const rightTemplateViewer = getTemplateViewer(ID_RIGHT_IMAGE, false);
 
@@ -147,7 +144,12 @@ function getConfig(windowTitle, closeCallback) {
 					leftFooter
 				]
 			},
-			leftSlider
+			{
+				width: 1,
+				cols: [
+					leftSlider
+				]
+			}
 		]
 	};
 
@@ -155,7 +157,12 @@ function getConfig(windowTitle, closeCallback) {
 		id: ID_RIGHT_CONTAINER,
 		css: "container",
 		cols: [
-			rightSlider,
+			{
+				width: 1,
+				cols: [
+					rightSlider
+				]
+			},
 			{
 				rows: [
 					rightToolbar,
@@ -490,24 +497,35 @@ function footerTemplateFunction(obj, /* common */) {
 	const lesionImagesCount = lesionsModel.getLesionImagesCount(lesionID);
 	const lesionTimePointsCount = lesionsModel.getLesionTimePointsCount(lesionID);
 	const multipleModalities = lesionsModel.checkMultipleModality(lesionID) ? "Yes" : "No";
-	return `<div class="footer-container">
-		<div class="footer-row">
+	return true
+		? `<div class="footer-container">
 			<div class="footer-item">
 				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name"># of total lesion images: </span><span class="footer-item__value">${lesionImagesCount}</span>
 			</div>
-		</div>
-		<div class="footer-row">
 			<div class="footer-item">
 				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name">Availability of multiple modalities: </span><span class="footer-item__value">${multipleModalities}</span>
 			</div>
-		</div>
-	</div>`;
+		</div>`
+		: `<div class="footer-container">
+			<div class="footer-item">
+				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID}</span>
+			</div>
+			<div class="footer-item">
+				<span class="footer-item__name"># of total lesion images: </span><span class="footer-item__value">${lesionImagesCount}</span>
+			</div>
+			<div class="footer-item">
+				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>
+			</div>
+			<div class="footer-item">
+				<span class="footer-item__name">Availability of multiple modalities: </span><span class="footer-item__value">${multipleModalities}</span>
+			</div>
+		</div>`;
 }
 
 function getFooter(id, side) {

@@ -339,18 +339,16 @@
       border: 0px;
       .footer-container {
         display: flex;
-        justify-content: center;
-        .footer-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+        .footer-item {
           width: 50%;
-          height: 50%;
-          .footer-item {
-            // width: max-content
-            .footer-item__name {
-              color: #6F747F;
-            }
-            .footer-item__value {
-              color: black;
-            }
+          padding-bottom: 5px;
+          .footer-item__name {
+            color: #6F747F;
+          }
+          .footer-item__value {
+            color: black;
           }
         }
       }

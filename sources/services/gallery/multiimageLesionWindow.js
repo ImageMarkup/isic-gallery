@@ -34,7 +34,9 @@ export default class MultiLesionWindowService {
 		this._rightImageLabel = $$(multiImageLesionWindow.getRightImageNameLabelID());
 		this._resizer = $$(multiImageLesionWindow.getResizerID());
 		this._rightContainer = $$(multiImageLesionWindow.getRightContainerID());
+		/** @type {webix.ui.template} */
 		this._leftImage = $$(multiImageLesionWindow.getLeftImageID());
+		/** @type {webix.ui.template} */
 		this._rightImage = $$(multiImageLesionWindow.getRightImageID());
 		this._fullScreenButton = $$(multiImageLesionWindow.getFullScreenButtonID());
 		this._windowedButton = $$(multiImageLesionWindow.getWindowedButtonID());
@@ -76,24 +78,23 @@ export default class MultiLesionWindowService {
 			);
 		});
 
-		const prevClickHandler = util.debounce(() => {
-			let url = lesionWindowImagesUrls.getPrevImagesUrl() || null;
-			const visibleImagesCount = this._topSlider.getVisibleCount();
+		const navButtonClickHandler = util.debounce(async (navigate) => {
+			let url = navigate === "prev"
+				? lesionWindowImagesUrls.getPrevImagesUrl()
+				: lesionWindowImagesUrls.getNextImagesUrl();
 			if (url) {
+				this._topSlider.showProgress();
 				lesionWindowImagesUrls.setCurrImagesUrl(url);
-				this._topSlider.loadNext(visibleImagesCount);
+				const result = await ajax.getImagesByUrl(url);
+				lesionWindowImagesUrls.setPrevImagesUrl(result.previous);
+				lesionWindowImagesUrls.setNextImagesUrl(result.next);
+				this._topSlider.clearAll();
+				this._topSlider.parse(result.results);
+				this._topSlider.hideProgress();
 			}
 		}, 100);
-		const nextClickHandler = util.debounce(() => {
-			let url = lesionWindowImagesUrls.getNextImagesUrl() || null;
-			const visibleImagesCount = this._topSlider.getVisibleCount();
-			if (url) {
-				lesionWindowImagesUrls.setCurrImagesUrl(url);
-				this._topSlider.loadNext(visibleImagesCount);
-			}
-		}, 100);
-		this._prevPageButton.attachEvent("onItemClick", prevClickHandler);
-		this._nextPageButton.attachEvent("onItemClick", nextClickHandler);
+		this._prevPageButton.attachEvent("onItemClick", navButtonClickHandler.bind(this, "prev"));
+		this._nextPageButton.attachEvent("onItemClick", navButtonClickHandler.bind(this, "next"));
 
 		const clearWindow = () => {
 			this._leftSlider.clearAll();
@@ -162,6 +163,21 @@ export default class MultiLesionWindowService {
 			this._rightSlider.clearAll();
 			this._rightSlider.parse(sortedImages);
 		});
+		const leftImageView = this._leftImage.$view;
+		const rightImageView = this._rightImage.getNode();
+		webix.DragControl.addDrop(leftImageView, {$drop: (/* source, target, event */) => {
+			const dnd = webix.DragControl.getContext();
+			const item = dnd.from.getItem(dnd.start);
+			this.setMultiLesionState(item);
+		}});
+		webix.DragControl.addDrop(rightImageView, {$drop: (source, target, /* event */) => {
+			const targetID = target.getAttribute("view_id");
+			const targetView = $$(targetID);
+
+			const dnd = webix.DragControl.getContext();
+			const item = dnd.from.getItem(dnd.start);
+			targetView.parse(item);
+		}});
 
 		webix.extend(this._topSlider, webix.ProgressBar);
 	}
@@ -352,14 +368,14 @@ export default class MultiLesionWindowService {
 				sortedImages.push(...images.sort((i1, i2) => {
 					const t1 = this.getItemTimePoint(i1);
 					const t2 = this.getItemTimePoint(i2);
-					return t1 < t2;
+					return t1 - t2;
 				}));
 				break;
 			case constants.MULTI_LESION_FILTERS.TYPE:
 				sortedImages.push(...images.sort((i1, i2) => {
 					const t1 = this.getItemModality(i1);
 					const t2 = this.getItemModality(i2);
-					return t1 < t2;
+					return t1.localeCompare(t2);
 				}));
 				break;
 			default:
