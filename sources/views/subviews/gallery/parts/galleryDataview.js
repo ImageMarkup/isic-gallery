@@ -129,8 +129,8 @@ const dataview = {
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#time-attack" class="gallery-icon-use"></use>
 				</svg>
 			</span>
-			<span class="gallery-images-badge">${lesionTimePointImagesCount ?? 0}</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Multiple time points</span>
+			<span class="gallery-images-badge">${lesionTimePointImagesCount ?? 0}</span>
 		</div>`;
 		const modalitiesIconElementClass = lesionModalitiesCount > 0
 			? "gallery-images-button-elem"
@@ -141,8 +141,8 @@ const dataview = {
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 				</svg>
 			</span>
-			<span class="gallery-images-badge">${lesionModalitiesCount ?? 0}</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Multiple available modalities</span>
+			<span class="gallery-images-badge">${lesionModalitiesCount ?? 0}</span>
 		</div>`;
 		const totalIconElementClass = lesionImagesCount
 			? "gallery-images-button-elem"
@@ -153,8 +153,8 @@ const dataview = {
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sum-of-sum" class="gallery-icon-use"></use>
 				</svg>
 			</span>
-			<span class="gallery-images-badge">${lesionImagesCount ?? 0}</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Multiple images per lesion</span>
+			<span class="gallery-images-badge">${lesionImagesCount ?? 0}</span>
 		</div>`;
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
