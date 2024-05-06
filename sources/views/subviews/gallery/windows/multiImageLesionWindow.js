@@ -3,16 +3,17 @@ import appliedFiltersModel from "../../../../models/appliedFilters";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import lesionsModel from "../../../../models/lesionsModel";
 import util from "../../../../utils/util";
+import "../../../components/svgIcon";
 
 const ID_MULTI_IMAGE_LESION_WINDOW = `multi-image-lesion-window-id-${webix.uid()}`;
 const ID_LEFT_IMAGE_NAME_LABEL = `image-name-id-${webix.uid()}`;
 const ID_RIGHT_IMAGE_NAME_LABEL = `image-name-id-${webix.uid()}`;
-const ID_LEFT_BUTTON1 = `button1-id-${webix.uid()}`;
-const ID_RIGHT_BUTTON1 = `button1-id-${webix.uid()}`;
-const ID_LEFT_BUTTON2 = `button2-id-${webix.uid()}`;
-const ID_RIGHT_BUTTON2 = `button2-id-${webix.uid()}`;
-const ID_LEFT_BUTTON3 = `button3-id-${webix.uid()}`;
-const ID_RIGHT_BUTTON3 = `button3-id-${webix.uid()}`;
+const ID_LEFT_TIME_POINT_BUTTON = `left-time-point-button-id-${webix.uid()}`;
+const ID_RIGHT_TIME_POINT_BUTTON = `right-time-point-button-id-${webix.uid()}`;
+const ID_LEFT_MODALITY_BUTTON = `left-modality-button-id-${webix.uid()}`;
+const ID_RIGHT_MODALITY_BUTTON = `right-modality-button-id-${webix.uid()}`;
+const ID_LEFT_TOTAL_BUTTON = `left-total-button-id-${webix.uid()}`;
+const ID_RIGHT_TOTAL_BUTTON = `right-total-button-id-${webix.uid()}`;
 const ID_TOP_SLIDER = `top-slider-id-${webix.uid()}`;
 const ID_PREV_PAGE_BUTTON = `prev-page-button-id-${webix.uid()}`;
 const ID_NEXT_PAGE_BUTTON = `next-page-button-id-${webix.uid()}`;
@@ -29,6 +30,8 @@ const ID_RIGHT_IMAGE = `image-id-${webix.uid()}`;
 const ID_BUTTON_FULL_SCREEN = `button-full-screen-id-${webix.uid()}`;
 const ID_BUTTON_WINDOWED = `button-windowed-id-${webix.uid()}`;
 const ID_SEARCH = `search-id-${webix.uid()}`;
+const ID_LEFT_CONTROLS = `left-controls-id-${webix.uid()}`;
+const ID_RIGHT_CONTROLS = `right-controls-id-${webix.uid()}`;
 
 function getConfig(windowTitle, closeCallback) {
 	const topSlider = getTopSlider(ID_TOP_SLIDER, ID_PREV_PAGE_BUTTON, ID_NEXT_PAGE_BUTTON);
@@ -40,12 +43,12 @@ function getConfig(windowTitle, closeCallback) {
 	const rightImageLabel = getImageLabel(ID_RIGHT_IMAGE_NAME_LABEL);
 
 	/** @type {webix.ui.buttonConfig} */
-	const lButton1 = getButtonIconConfig(ID_LEFT_BUTTON1, "fas fa-clock");
-	const lButton2 = getButtonIconConfig(ID_LEFT_BUTTON2, "fas fa-newspaper");
-	const lButton3 = getButtonIconConfig(ID_LEFT_BUTTON3, "fas fa-layer-group");
-	const rButton1 = getButtonIconConfig(ID_RIGHT_BUTTON1, "fas fa-clock");
-	const rButton2 = getButtonIconConfig(ID_RIGHT_BUTTON2, "fas fa-newspaper");
-	const rButton3 = getButtonIconConfig(ID_RIGHT_BUTTON3, "fas fa-layer-group");
+	const leftTimePointButton = getButtonIconConfig(ID_LEFT_TIME_POINT_BUTTON, "time-attack");
+	const leftModalityButton = getButtonIconConfig(ID_LEFT_MODALITY_BUTTON, "layer-group");
+	const leftTotalButton = getButtonIconConfig(ID_LEFT_TOTAL_BUTTON, "sum-of-sum");
+	const rightTimePointButton = getButtonIconConfig(ID_RIGHT_TIME_POINT_BUTTON, "time-attack");
+	const rightModalityButton = getButtonIconConfig(ID_RIGHT_MODALITY_BUTTON, "layer-group");
+	const rightTotalButton = getButtonIconConfig(ID_RIGHT_TOTAL_BUTTON, "sum-of-sum");
 
 	const anchorIcon = {
 		view: "icon",
@@ -98,9 +101,44 @@ function getConfig(windowTitle, closeCallback) {
 		height: 60,
 		cols: [
 			{width: 20},
-			lButton1,
-			lButton2,
-			lButton3,
+			{
+				rows: [
+					{},
+					{
+						css: "lesion-controls",
+						id: ID_LEFT_CONTROLS,
+						height: 34,
+						cols: [
+							{width: 6},
+							{
+								rows: [
+									{},
+									leftTimePointButton,
+									{},
+								]
+							},
+							{width: 6},
+							{
+								rows: [
+									{},
+									leftModalityButton,
+									{},
+								]
+							},
+							{width: 6},
+							{
+								rows: [
+									{},
+									leftTotalButton,
+									{},
+								]
+							},
+							{width: 6},
+						]
+					},
+					{},
+				]
+			},
 			{width: 20},
 			leftImageLabel,
 			{width: 5},
@@ -120,9 +158,45 @@ function getConfig(windowTitle, closeCallback) {
 			{gravity: 1},
 			rightImageLabel,
 			{width: 20},
-			rButton1,
-			rButton2,
-			rButton3,
+			{
+				rows: [
+					{},
+					{
+						id: ID_RIGHT_CONTROLS,
+						css: "lesion-controls",
+						height: 34,
+						cols: [
+							{width: 6},
+							{
+								rows: [
+									{},
+									rightTimePointButton,
+									{}
+								]
+							},
+							{width: 6},
+							{
+								rows: [
+									{},
+									rightModalityButton,
+									{}
+								]
+							},
+							{width: 6},
+							{
+								rows: [
+									{},
+									rightTotalButton,
+									{}
+								]
+							},
+							{width: 6},
+						]
+					},
+					{},
+				]
+			},
+			{width: 10}
 		]
 	};
 
@@ -192,7 +266,7 @@ function getConfig(windowTitle, closeCallback) {
 		fullscreen: false,
 		position: "center",
 		headHeight: 48,
-		move: true,
+		move: false,
 		head: {
 			view: "toolbar",
 			css: "window-header-toolbar2",
@@ -215,7 +289,7 @@ function getConfig(windowTitle, closeCallback) {
 					value: `${appliedFiltersModel.getFilterValue()}`,
 					css: "multi-image-lesion-search-block",
 					placeholder: "Search images",
-					height: 22,
+					inputHeight: 38,
 					width: 634,
 				},
 				{width: 20},
@@ -298,7 +372,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 				layout: "x",
 				css: "multilesion-top-list",
 				scroll: false,
-				select: true,
+				select: false,
 				drag: true,
 				height: 134,
 				type: {
@@ -307,65 +381,66 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 				template(obj, /* common */) {
 					const imageIconDimensions = {
 						iconContainerDimensions: {
-							width: constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_WIDTH,
-							height: constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_HEIGHT
+							width: constants.DEFAULT_RIBBON_ICON_CONTAINER_WIDTH,
+							height: constants.DEFAULT_RIBBON_ICON_CONTAINER_HEIGHT
 						},
 						iconDimensions: {
-							width: constants.DEFAULT_GALLERY_IMAGE_ICON_WIDTH,
-							height: constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT
+							width: constants.DEFAULT_RIBBON_IMAGE_ICON_WIDTH,
+							height: constants.DEFAULT_RIBBON_IMAGE_ICON_HEIGHT
 						}
 					};
 					const diagnosisIcon = obj.hasAnnotations ?
 						`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-							<span class="gallery-images-button diagnosis-icon tooltip-title">
+							<span class="gallery-images-button diagnosis-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 								<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#diagnosis-icon" class="gallery-icon-use"></use>
 								</svg>
 							</span>
 							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 						</div>` : "";
-					const timePointsIcon = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button time-attack tooltip-title">
+					const timePointsIcon = `<div class="gallery-images-button-elem-disabled tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+						<span class="gallery-images-button time-attack tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#time-attack" class="gallery-icon-use"></use>
 							</svg>
 						</span>
-						<span class="gallery-images-badge">${obj.multipleAvailableTimePoints ?? 1}</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple time points</span>
+						<span class="gallery-images-badge">${lesionsModel.getImagesWithTimePointsCount(obj) ?? 0}</span>
 					</div>`;
-					const modalitiesIcon = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button layer-group tooltip-title">
+					const modalitiesIcon = `<div class="gallery-images-button-elem-disabled tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+						<span class="gallery-images-button layer-group tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 							</svg>
 						</span>
-						<span class="gallery-images-badge">${obj.multipleAvailableModalities ?? 2}</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple available modalities</span>
+						<span class="gallery-images-badge">${lesionsModel.getImagesWithModalityCount(obj) ?? 0}</span>
 					</div>`;
-					const totalIcons = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button sum-of-sum tooltip-title">
+					const lesionID = lesionsModel.getItemLesionID(obj);
+					const totalIcons = `<div class="gallery-images-button-elem-disabled tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+						<span class="gallery-images-button sum-of-sum tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sum-of-sum" class="gallery-icon-use"></use>
 							</svg>
 						</span>
-						<span class="gallery-images-badge">${obj.totalCount ?? 3}</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple images per lesion</span>
+						<span class="gallery-images-badge">${lesionsModel.getLesionImagesCount(lesionID) ?? 3}</span>
 					</div>`;
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
-					if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
+					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
 						galleryImageUrl.setPreviewImageUrl(
-							obj.isic_id,
+							lesionsModel.getItemID(obj),
 							obj.files.thumbnail_256.url
 						); // to prevent sending query more than 1 time
 					}
 					return `<div class="gallery-images-container" style="height: 104px;">
 							<div class='gallery-images-info' style="height: 104px; position: absolute; right:0px;">
 								<div class="gallery-images-header">
-									<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
+									<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
 								</div>
 								<div class="gallery-images-buttons" style="bottom: 0px;">
 									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button resize-icon tooltip-title">
+										<span class="gallery-images-button resize-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
 											</svg>
@@ -373,7 +448,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 												<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
 									</div>
 									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button info-icon tooltip-title">
+										<span class="gallery-images-button info-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
 											</svg>
@@ -381,7 +456,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 										<span class="tooltip-block tooltip-block-top">Metadata</span>
 									</div>
 									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button batch-icon tooltip-title">
+										<span class="gallery-images-button batch-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
 											</svg>
@@ -395,7 +470,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 								</div>
 							</div>
 							${starHtml}
-							<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height="104px"/>
+							<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) || ""}" class="gallery-image" height="104px"/>
 					</div>`;
 				},
 			},
@@ -435,24 +510,22 @@ function getVerticalSlider(id, side) {
 					height: constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT / 2
 				}
 			};
-			const anchorIcon = obj.hasAnnotations ?
-				`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-					<span class="gallery-images-button diagnosis-icon tooltip-title fas fa-anchor gallery-icon-use"></span>
-					<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Anchor image</span>
-				</div>` : "";
-			if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
+			const lesionID = lesionsModel.getItemLesionID(obj);
+			const anchorImageID = lesionsModel.getAnchorImageID(lesionID);
+			const anchorIcon = lesionsModel.getItemID(obj) === anchorImageID
+				? `<div class="ribbon-image-elem tooltip-container tooltip-gallery-images">
+					<span class="gallery-images-button fas fa-anchor gallery-icon-use" style="color:white"></span>
+				</div>`
+				: "";
+			if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
 				galleryImageUrl.setPreviewImageUrl(
-					obj.isic_id,
+					lesionsModel.getItemID(obj),
 					obj.files.thumbnail_256.url
 				); // to prevent sending query more than 1 time
 			}
 			return `<div class="gallery-images-container">
-					<div class='gallery-images-info' style="height: 44px; position: absolute; right:0px;">
-						<div class="gallery-images-buttons" style="bottom: 0px;">
-							${anchorIcon}
-						</div>
-					</div>
-					<img src="${galleryImageUrl.getPreviewImageUrl(obj.isic_id) || ""}" class="gallery-image" height="42px" width="62px"/>
+					${anchorIcon}
+					<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) || ""}" class="gallery-image" height="42px" width="100%"/>
 			</div>`;
 		}
 	};
@@ -471,7 +544,7 @@ function getTemplateViewer(id, showButtons) {
 		id,
 		css: "absolute-centered-image-template",
 		template(obj) {
-			const imageUrl = galleryImageUrl.getNormalImageUrl(obj.isic_id) || "";
+			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
 			return `<div class="image-zoom-container">
 						<img class= 'zoomable-image' src="${imageUrl}"/>
 					</div>
@@ -497,30 +570,18 @@ function footerTemplateFunction(obj, /* common */) {
 	const lesionImagesCount = lesionsModel.getLesionImagesCount(lesionID);
 	const lesionTimePointsCount = lesionsModel.getLesionTimePointsCount(lesionID);
 	const multipleModalities = lesionsModel.checkMultipleModality(lesionID) ? "Yes" : "No";
-	return true
-		? `<div class="footer-container">
+	const container = $$(ID_RIGHT_CONTAINER).isVisible()
+		? "<div class='footer-container-narrow'>"
+		: "<div class='footer-container-wide'>";
+	return `${container}
 			<div class="footer-item">
 				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID}</span>
-			</div>
-			<div class="footer-item">
-				<span class="footer-item__name"># of total lesion images: </span><span class="footer-item__value">${lesionImagesCount}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>
 			</div>
 			<div class="footer-item">
-				<span class="footer-item__name">Availability of multiple modalities: </span><span class="footer-item__value">${multipleModalities}</span>
-			</div>
-		</div>`
-		: `<div class="footer-container">
-			<div class="footer-item">
-				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID}</span>
-			</div>
-			<div class="footer-item">
 				<span class="footer-item__name"># of total lesion images: </span><span class="footer-item__value">${lesionImagesCount}</span>
-			</div>
-			<div class="footer-item">
-				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name">Availability of multiple modalities: </span><span class="footer-item__value">${multipleModalities}</span>
@@ -567,12 +628,13 @@ function getFooter(id, side) {
 
 function getButtonIconConfig(id, icon) {
 	return {
+		view: "svgIcon",
 		id,
+		css: "controlIcon",
 		icon,
-		view: "button",
-		type: "icon",
-		width: 34,
-		height: 34,
+		active: false,
+		width: 28,
+		height: 28,
 	};
 }
 
@@ -584,26 +646,26 @@ function getRightImageNameLabelID() {
 	return ID_RIGHT_IMAGE_NAME_LABEL;
 }
 
-function getLeftButton1ID() {
-	return ID_LEFT_BUTTON1;
+function getLeftTimePointButtonID() {
+	return ID_LEFT_TIME_POINT_BUTTON;
 }
-function getLeftButton2ID() {
-	return ID_LEFT_BUTTON2;
+function getLeftModalityButtonID() {
+	return ID_LEFT_MODALITY_BUTTON;
 }
-function getLeftButton3ID() {
-	return ID_LEFT_BUTTON3;
-}
-
-function getRightButton1ID() {
-	return ID_RIGHT_BUTTON1;
+function getLeftTotalButtonID() {
+	return ID_LEFT_TOTAL_BUTTON;
 }
 
-function getRightButton2ID() {
-	return ID_RIGHT_BUTTON2;
+function getRightTimePointButtonID() {
+	return ID_RIGHT_TIME_POINT_BUTTON;
 }
 
-function getRightButton3ID() {
-	return ID_RIGHT_BUTTON3;
+function getRightModalityButtonID() {
+	return ID_RIGHT_MODALITY_BUTTON;
+}
+
+function getRightTotalButtonID() {
+	return ID_RIGHT_TOTAL_BUTTON;
 }
 
 function getTopSliderID() {
@@ -674,16 +736,24 @@ function getRightDropDownFilterID() {
 	return ID_RIGHT_DROP_DOWN_FILTER;
 }
 
+function getLeftControlsID() {
+	return ID_LEFT_CONTROLS;
+}
+
+function getRightControlsID() {
+	return ID_RIGHT_CONTROLS;
+}
+
 export default {
 	getConfig,
 	getLeftImageNameLabelID,
 	getRightImageNameLabelID,
-	getLeftTimePointButtonID: getLeftButton1ID,
-	getLeftModalityButtonID: getLeftButton2ID,
-	getLeftTotalButtonID: getLeftButton3ID,
-	getRightTimePointButtonID: getRightButton1ID,
-	getRightModalityButtonID: getRightButton2ID,
-	getRightTotalButtonID: getRightButton3ID,
+	getLeftTimePointButtonID,
+	getLeftModalityButtonID,
+	getLeftTotalButtonID,
+	getRightTimePointButtonID,
+	getRightModalityButtonID,
+	getRightTotalButtonID,
 	getTopSliderID,
 	getLeftSliderID,
 	getRightSliderID,
@@ -701,4 +771,6 @@ export default {
 	getPrevPageButtonID,
 	getLeftDropDownFilterID,
 	getRightDropDownFilterID,
+	getLeftControlsID,
+	getRightControlsID,
 };

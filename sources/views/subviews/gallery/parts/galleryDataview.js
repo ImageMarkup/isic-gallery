@@ -92,9 +92,11 @@ const dataview = {
 	template(obj, common) {
 		const lesionID = lesionsModel.getItemLesionID(obj);
 		const lesionImagesCount = lesionID ? lesionsModel.getLesionImagesCount(lesionID) : null;
-		const lesionModalitiesCount = lesionID ? lesionsModel.getLesionModalitiesCount(lesionID) : null;
+		const lesionModalityImagesCount = lesionID
+			? lesionsModel.getImagesWithModalityCount(obj)
+			: null;
 		const lesionTimePointImagesCount = lesionID
-			? lesionsModel.getLesionTimePointsCount(lesionID)
+			? lesionsModel.getImagesWithTimePointsCount(obj)
 			: null;
 		const imageIconDimensions = util.getImageIconDimensions();
 		let flagForStudies = selectedImages.getStudyFlag();
@@ -123,7 +125,7 @@ const dataview = {
 		const timePointsIconElementClass = lesionTimePointImagesCount > 0
 			? "gallery-images-button-elem"
 			: "gallery-images-button-elem-disabled";
-		const timePointsIcon = `<div class="${timePointsIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[1].height}px;width:${imageIconDimensions[1].width}px;">
+		const timePointsIcon = `<div class="${timePointsIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
 			<span class="gallery-images-button time-attack tooltip-title">
 				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#time-attack" class="gallery-icon-use"></use>
@@ -132,22 +134,22 @@ const dataview = {
 			<span class="tooltip-block tooltip-block-top" style="display: block">Multiple time points</span>
 			<span class="gallery-images-badge">${lesionTimePointImagesCount ?? 0}</span>
 		</div>`;
-		const modalitiesIconElementClass = lesionModalitiesCount > 0
+		const modalitiesIconElementClass = lesionModalityImagesCount > 0
 			? "gallery-images-button-elem"
 			: "gallery-images-button-elem-disabled";
-		const modalitiesIcon = `<div class="${modalitiesIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[1].height}px;width:${imageIconDimensions[1].width}px;">
+		const modalitiesIcon = `<div class="${modalitiesIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
 			<span class="gallery-images-button layer-group tooltip-title">
 				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 				</svg>
 			</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Multiple available modalities</span>
-			<span class="gallery-images-badge">${lesionModalitiesCount ?? 0}</span>
+			<span class="gallery-images-badge">${lesionModalityImagesCount ?? 0}</span>
 		</div>`;
 		const totalIconElementClass = lesionImagesCount
 			? "gallery-images-button-elem"
 			: "gallery-images-button-elem-disabled";
-		const totalIcons = `<div class="${totalIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[1].height}px;width:${imageIconDimensions[1].width}px;">
+		const totalIcons = `<div class="${totalIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
 			<span class="gallery-images-button sum-of-sum tooltip-title">
 				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sum-of-sum" class="gallery-icon-use"></use>
