@@ -66,7 +66,7 @@ function getConfig(windowTitle, closeCallback) {
 		labelAlign: "left",
 		width: 180,
 		height: 16,
-		labelWidth: 70,
+		labelWidth: 75,
 		// TODO: check options
 		options: [
 			constants.MULTI_LESION_FILTERS.TIME,
@@ -83,7 +83,7 @@ function getConfig(windowTitle, closeCallback) {
 		labelAlign: "left",
 		width: 180,
 		height: 16,
-		labelWidth: 70,
+		labelWidth: 75,
 		// TODO: check options
 		options: [
 			constants.MULTI_LESION_FILTERS.TIME,
@@ -92,7 +92,7 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
-	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, false);
+	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, true);
 
 	const rightTemplateViewer = getTemplateViewer(ID_RIGHT_IMAGE, false);
 
@@ -492,7 +492,7 @@ function getVerticalSlider(id, side) {
 		id,
 		layout: "y",
 		drag: true,
-		// width: 62,
+		select: false,
 		type: {
 			width: 62,
 			height: 42,
@@ -500,16 +500,6 @@ function getVerticalSlider(id, side) {
 		css: `vertical-slider-${side}`,
 		width: 1,
 		template(obj, /* common */) {
-			const imageIconDimensions = {
-				iconContainerDimensions: {
-					width: constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_WIDTH / 2,
-					height: constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_HEIGHT / 2
-				},
-				iconDimensions: {
-					width: constants.DEFAULT_GALLERY_IMAGE_ICON_WIDTH / 2,
-					height: constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT / 2
-				}
-			};
 			const lesionID = lesionsModel.getItemLesionID(obj);
 			const anchorImageID = lesionsModel.getAnchorImageID(lesionID);
 			const anchorIcon = lesionsModel.getItemID(obj) === anchorImageID
@@ -545,10 +535,15 @@ function getTemplateViewer(id, showButtons) {
 		css: "absolute-centered-image-template",
 		template(obj) {
 			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
+			const mode = lesionsModel.getLeftMode();
+			const lesionID = lesionsModel.getItemLesionID(obj);
+			const lesionsImages = mode === constants.MULTI_LESION_WINDOW_STATE.TIME
+				? lesionsModel.getTimePointImages(lesionID, lesionsModel.getItemTimePoint(obj))
+				: [];
 			return `<div class="image-zoom-container">
 						<img class= 'zoomable-image' src="${imageUrl}"/>
 					</div>
-						${showButtons ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
+						${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
 					`;
 		},
 		borderless: true
@@ -561,7 +556,7 @@ function getImageLabel(imageNameId) {
 		css: "multi-image-lesion-window__image-label",
 		width: 100,
 		id: imageNameId,
-		label: "12345678901234567890"
+		label: ""
 	};
 }
 

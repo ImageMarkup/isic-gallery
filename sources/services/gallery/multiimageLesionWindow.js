@@ -191,6 +191,23 @@ export default class MultiLesionWindowService {
 			this.fillRightPanel(item);
 		}});
 
+		this._leftImage.define("onClick", {
+			prev: () => {
+				const selectedId = this._leftSlider.getSelectedId();
+				const itemID = this._leftSlider.getPrevId(selectedId) ?? this._leftSlider.getLastId();
+				const item = webix.copy(this._leftSlider.getItem(itemID));
+				delete item.id;
+				this.fillLeftPanel(item);
+			},
+			next: () => {
+				const selectedId = this._leftSlider.getSelectedId();
+				const itemID = this._leftSlider.getNextId(selectedId) ?? this._leftSlider.getFirstId();
+				const item = webix.copy(this._leftSlider.getItem(itemID));
+				delete item.id;
+				this.fillLeftPanel(item);
+			}
+		});
+
 		this._topSlider.on_click["resize-icon"] = (e, id) => {
 			const currentItem = this._topSlider.getItem(id);
 			this._galleryService._imageWindowTemplateWithoutControls?.hide();
@@ -298,10 +315,12 @@ export default class MultiLesionWindowService {
 		const anchorImageID = lesionsModel.getAnchorImageID(lesionID);
 		if (itemID !== anchorImageID) {
 			this._rightContainer.show();
+			this._resizer.show();
 			lesionsModel.setRightImage(item);
 			this.fillRightPanel(item);
 		}
 		else {
+			this._resizer.hide();
 			this._rightContainer.hide();
 		}
 		const anchorImg = lesionImages.find(i => lesionsModel.getItemID(i) === anchorImageID);
@@ -442,6 +461,10 @@ export default class MultiLesionWindowService {
 				this._rightTotalButton.define("active", true);
 				break;
 		}
+		const itemToSelect = this._rightSlider
+			.find(obj => lesionsModel.getItemID(obj) === lesionsModel.getItemID(image))[0];
+		this._rightSlider.unselectAll();
+		this._rightSlider.select(itemToSelect.id);
 		this.refreshRightControls();
 	}
 
@@ -473,6 +496,10 @@ export default class MultiLesionWindowService {
 				this._leftTotalButton.define("active", true);
 				break;
 		}
+		const itemToSelect = this._leftSlider
+			.find(obj => lesionsModel.getItemID(obj) === lesionsModel.getItemID(image))[0];
+		this._leftSlider.unselectAll();
+		this._leftSlider.select(itemToSelect.id);
 		this.refreshLeftControls();
 	}
 
