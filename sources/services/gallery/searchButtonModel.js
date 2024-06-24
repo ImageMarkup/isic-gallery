@@ -24,7 +24,7 @@ function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName,
 		const linkProps = this.getBoundingClientRect();
 		const tooltipProps = tooltipWrap.getBoundingClientRect();
 		const topPos = linkProps.top - (tooltipProps.height + padding);
-		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;z-index: 101`); // z-index: 101 to show tooltip in modal window background
+		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;z-index: 1010`); // z-index: 1010 to show tooltip in modal window background
 	}
 	elementNodeForTooltip.addEventListener("mouseover", mouseOverHandler);
 	elementNodeForTooltip.addEventListener("mouseout", () => {

@@ -386,12 +386,10 @@
         align-items: center;
         .footer-container-wide {
           width: 100%;
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
+          display: grid;
+          grid-template-columns: auto auto auto auto;
           .footer-item {
-            width: 25%;
-            padding-bottom: 5px;
+            min-width: 240px;
             .footer-item__name {
               color: #6F747F;
             }
@@ -401,14 +399,18 @@
           }
         }
         .footer-container-narrow{
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
+          min-width: 615px;
+          display: grid;
+          grid-template-columns: auto auto;
+          grid-template-rows: auto auto;
+          overflow: hidden;
           .footer-item {
-            width: 50%;
+            overflow: hidden;
+            min-width: 200px;
             padding-bottom: 5px;
             .footer-item__name {
               color: #6F747F;
+              min-width: 210px;
             }
             .footer-item__value {
               color: black;

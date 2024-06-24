@@ -5,13 +5,15 @@ webix.protoUI({
 		template(obj, view) {
 			const min = Math.min(obj.awidth, obj.aheight);
 			const top = Math.round((view.$height - obj.aheight) / 2);
-			const inner = `<button type='button' style='height:${min}px;width:${min}px;' class='webix_icon_button'>${
+			const inner = `<button type='button' style='height:${min}px;width:${min}px;' class='webix_icon_button tooltip-title'>${
 				wrapIconWithSpan("webix_icon", obj.icon, obj.active)
 			}</button>`;
 
 			const lineHeight = obj.aheight !== min ? obj.aheight : 0;
-			return `<div class='webix_el_box' style='width:${obj.awidth}px;height:${obj.aheight}px;line-height:${lineHeight}px;margin-top:${top}px; background-color: ${obj.active ? "#FFFFFF;" : "transparent"}'>${inner}${obj.badge || obj.badge === 0 ? `<span class='webix_badge'>${obj.badge}</span>` : ""
-			}</div>`;
+			return `<div class='webix_el_box tooltip-container' style='width:${obj.awidth}px;height:${obj.aheight}px;line-height:${lineHeight}px;margin-top:${top}px; background-color: ${obj.active ? "#FFFFFF;" : "transparent"}'>${inner}
+			<span class="tooltip-block tooltip-block-top" style="display: block; z-index: 1000000">${obj.tooltip}</span>
+			${obj.badge || obj.badge === 0 ? `<span class='webix_badge'>${obj.badge}</span>` : ""}
+			</div>`;
 		}
 	}
 }, webix.ui.icon);

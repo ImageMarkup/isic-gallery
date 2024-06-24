@@ -31,6 +31,14 @@ function getLesionAnchorImageID(lesionID) {
 	return lesion?.index_image_id;
 }
 
+function checkIsImageAnchor(image) {
+	const lesionID = getItemLesionID(image);
+	if (lesionID) {
+		const lesionAnchorImageID = getAnchorImageID(lesionID);
+		return lesionAnchorImageID === getItemID(image);
+	}
+	return false;
+}
 
 function getLesionModalitiesCount(lesionID) {
 	const lesion = getLesionByID(lesionID);
@@ -48,11 +56,14 @@ function getLesionModalitiesCount(lesionID) {
 
 function getImagesWithModalityCount(item) {
 	const lesionID = getItemLesionID(item);
-	const lesion = getLesionByID(lesionID);
-	const modality = getItemModality(item);
-	const images = lesion.images;
-	const lesionModalityImagesCount = images.filter(i => getImageModality(i) === modality).length;
-	return lesionModalityImagesCount;
+	if (lesionID) {
+		const lesion = getLesionByID(lesionID);
+		const modality = getItemModality(item);
+		const images = lesion.images;
+		const lesionModalityImagesCount = images.filter(i => getImageModality(i) === modality).length;
+		return lesionModalityImagesCount;
+	}
+	return 0;
 }
 
 function getLesionTimePointsCount(lesionID) {
@@ -71,11 +82,15 @@ function getLesionTimePointsCount(lesionID) {
 
 function getImagesWithTimePointsCount(item) {
 	const lesionID = getItemLesionID(item);
-	const lesion = getLesionByID(lesionID);
-	const timePoint = getItemTimePoint(item);
-	const images = lesion?.images;
-	const lesionTimePointsImagesCount = images.filter(i => getImageTimePoint(i) === timePoint).length;
-	return lesionTimePointsImagesCount;
+	if (lesionID) {
+		const lesion = getLesionByID(lesionID);
+		const timePoint = getItemTimePoint(item);
+		const images = lesion?.images;
+		const lesionTimePointsImagesCount = images
+			.filter(i => getImageTimePoint(i) === timePoint).length;
+		return lesionTimePointsImagesCount;
+	}
+	return 0;
 }
 
 function getLesionImages(lesionID) {
@@ -199,4 +214,5 @@ export default {
 	setLeftImage,
 	getRightImage,
 	setRightImage,
+	checkIsImageAnchor,
 };

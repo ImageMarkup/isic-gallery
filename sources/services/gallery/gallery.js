@@ -1496,7 +1496,7 @@ class GalleryService {
 
 	_searchEventsMethods(eventMethod) {
 		this._searchInput.detachEvent("onEnter");
-		this._searchInput.on_click["fa-search"] = eventMethod;
+		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
 		this._searchInput.attachEvent("onEnter", eventMethod);
 	}
 
