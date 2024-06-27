@@ -249,14 +249,21 @@
   .lesion-controls {
     background-color: #E1E7F0;
   }
-  .image-panel-container {
+  .left-image-panel-container, .right-image-panel-container {
     position: relative;
     .absolute-centered-image-template {
       position: absolute;
       top: 0;
       left: 0;
-      .next {
-        right: 90px;
+      .next, .prev {
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        padding: 0px;
+        text-align: center;
+        line-height: 40px;
       }
     }
     .vertical-slider-left, .vertical-slider-right {
@@ -295,6 +302,28 @@
     
     .vertical-slider-right {
       left: 10
+    }
+  }
+
+  .left-image-panel-container {
+    .absolute-centered-image-template {
+      .next {
+        right: 90px;
+      }
+      .prev {
+        left: 10px;
+      }
+    }
+  }
+
+  .right-image-panel-container {
+    .absolute-centered-image-template {
+      .prev {
+        left: 90px;
+      }
+      .next {
+        right: 10px;
+      }
     }
   }
 
@@ -399,7 +428,8 @@
           }
         }
         .footer-container-narrow{
-          min-width: 615px;
+          min-width: 540px;
+          width: calc(100% - 90px);
           display: grid;
           grid-template-columns: auto auto;
           grid-template-rows: auto auto;
@@ -422,9 +452,13 @@
     
   }
   .multilesion-filter-dropdown {
-    select, select:focus {
+    .webix_inp_static {
       border: none;
+      padding-left: 0px;
+    }
+    .webix_input_icon.wxi-menu-down, .webix_input_icon.wxi-menu-down:focus {
       outline: none;
+      color: @main-color-light;
       background-color: transparent;
     }
   }

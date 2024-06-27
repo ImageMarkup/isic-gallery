@@ -71,15 +71,15 @@ function getConfig(windowTitle, closeCallback) {
 		icon: "fas fa-anchor"
 	};
 
-	/** @type {webix.ui.selectConfig} */
+	/** @type {webix.ui.richselectConfig} */
 	const leftSortDropdown = {
-		view: "select",
+		view: "richselect",
 		id: ID_LEFT_DROP_DOWN_FILTER,
 		css: "multilesion-filter-dropdown",
 		label: "Sorted by:",
 		labelAlign: "left",
-		width: 180,
-		height: 16,
+		width: 210,
+		height: 24,
 		labelWidth: 75,
 		// TODO: check options
 		options: [
@@ -90,13 +90,13 @@ function getConfig(windowTitle, closeCallback) {
 	};
 
 	const rightSortDropdown = {
-		view: "select",
+		view: "richselect",
 		id: ID_RIGHT_DROP_DOWN_FILTER,
 		css: "multilesion-filter-dropdown",
 		label: "Sorted by:",
 		labelAlign: "left",
-		width: 180,
-		height: 16,
+		width: 210,
+		height: 30,
 		labelWidth: 75,
 		// TODO: check options
 		options: [
@@ -108,7 +108,7 @@ function getConfig(windowTitle, closeCallback) {
 
 	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, true);
 
-	const rightTemplateViewer = getTemplateViewer(ID_RIGHT_IMAGE, false);
+	const rightTemplateViewer = getTemplateViewer(ID_RIGHT_IMAGE, true);
 
 	/** @type {webix.ui.toolbarConfig} */
 	const leftToolbar = {
@@ -161,7 +161,13 @@ function getConfig(windowTitle, closeCallback) {
 				gravity: 1,
 				minWidth: 10
 			},
-			leftSortDropdown,
+			{
+				rows: [
+					{gravity: 1},
+					leftSortDropdown,
+					{gravity: 1},
+				]
+			},
 			{width: 100}
 		]
 	};
@@ -171,7 +177,13 @@ function getConfig(windowTitle, closeCallback) {
 		height: 60,
 		cols: [
 			{width: 100},
-			rightSortDropdown,
+			{
+				rows: [
+					{gravity: 1},
+					rightSortDropdown,
+					{gravity: 1},
+				]
+			},
 			{gravity: 1},
 			rightImageLabel,
 			{width: 5},
@@ -229,12 +241,17 @@ function getConfig(windowTitle, closeCallback) {
 				rows: [
 					leftToolbar,
 					{
-						css: "image-panel-container",
+						css: "left-image-panel-container",
 						cols: [
 							leftTemplateViewer,
 						]
 					},
-					leftFooter
+					{
+						cols: [
+							{width: 10},
+							leftFooter
+						]
+					}
 				]
 			},
 			{
@@ -260,6 +277,7 @@ function getConfig(windowTitle, closeCallback) {
 				rows: [
 					rightToolbar,
 					{
+						css: "right-image-panel-container",
 						cols: [
 							rightTemplateViewer,
 						]
@@ -564,7 +582,7 @@ function getTemplateViewer(id, showButtons) {
 			return `<div class="image-zoom-container">
 						<img class= 'zoomable-image' src="${imageUrl}"/>
 					</div>
-						${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
+					${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
 					`;
 		},
 		borderless: true
@@ -583,15 +601,25 @@ function getImageLabel(imageNameId) {
 
 function footerTemplateFunction(obj, /* common */) {
 	const lesionID = lesionsModel.getItemLesionID(obj);
-	const lesionImagesCount = lesionsModel.getLesionImagesCount(lesionID);
-	const lesionTimePointsCount = lesionsModel.getLesionTimePointsCount(lesionID);
-	const multipleModalities = lesionsModel.checkMultipleModality(lesionID) ? "Yes" : "No";
+	const lesionImagesCount = lesionID
+		? lesionsModel.getLesionImagesCount(lesionID)
+		: "";
+	const lesionTimePointsCount = lesionID
+		? lesionsModel.getLesionTimePointsCount(lesionID)
+		: "";
+	let multipleModalities;
+	if (lesionID) {
+		multipleModalities = lesionsModel.checkMultipleModality(lesionID) ? "Yes" : "No";
+	}
+	else {
+		multipleModalities = "";
+	}
 	const container = $$(ID_RIGHT_CONTAINER).isVisible()
 		? "<div class='footer-container-narrow'>"
 		: "<div class='footer-container-wide'>";
 	return `${container}
 			<div class="footer-item">
-				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID}</span>
+				<span class="footer-item__name">Lesion ID: </span><span class="footer-item__value">${lesionID ?? ""}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>

@@ -51,7 +51,7 @@ export default class MultiLesionWindowService {
 		this._rightControls = $$(multiImageLesionWindow.getRightControlsID());
 		this._leftAnchorIcon = $$(multiImageLesionWindow.getLeftAnchorIconID());
 		this._rightAnchorIcon = $$(multiImageLesionWindow.getRightAnchorIconID());
-		this._multiLesionState = null;
+		this._fullscreen = false;
 		this.init();
 	}
 
@@ -193,31 +193,59 @@ export default class MultiLesionWindowService {
 		webix.DragControl.addDrop(leftImageView, {$drop: (/* source, target, event */) => {
 			const dnd = webix.DragControl.getContext();
 			const item = dnd.from.getItem(dnd.start);
-			lesionsModel.setLeftImage(item);
-			this.fillLeftPanel(item);
+			const lesionID = lesionsModel.getItemLesionID(item);
+			if (lesionID) {
+				lesionsModel.setLeftImage(item);
+				this.fillLeftPanel(item);
+			}
+			else {
+				webix.message("There are no lesions attached to this image");
+			}
 		}});
 		webix.DragControl.addDrop(rightImageView, {$drop: (/* source, target, event */) => {
 			const dnd = webix.DragControl.getContext();
 			const item = dnd.from.getItem(dnd.start);
-			lesionsModel.setRightImage(item);
-			this.fillRightPanel(item);
+			const lesionID = lesionsModel.getItemLesionID(item);
+			if (lesionID) {
+				lesionsModel.setRightImage(item);
+				this.fillRightPanel(item);
+			}
+			else {
+				webix.message("There are no lesions attached to this image");
+			}
 		}});
 
-		const changeTimePointImage = (move) => {
-			const selectedId = this._leftSlider.getSelectedId();
+		const changeTimePointImage = (side, move) => {
+			const slider = side === "right" ? this._rightSlider : this._leftSlider;
+			const selectedId = slider.getSelectedId();
 			const itemID = move === "next"
-				? this._leftSlider.getNextId(selectedId) ?? this._leftSlider.getFirstId()
-				: this._leftSlider.getPrevId(selectedId) ?? this._leftSlider.getLastId();
-			const item = webix.copy(this._leftSlider.getItem(itemID));
+				? slider.getNextId(selectedId) ?? slider.getFirstId()
+				: slider.getPrevId(selectedId) ?? slider.getLastId();
+			const item = webix.copy(slider.getItem(itemID));
 			delete item.id;
-			this.fillLeftPanel(item);
+			if (side === "left") {
+				this.fillLeftPanel(item);
+			}
+			if (side === "right") {
+				this.fillRightPanel(item);
+			}
 		};
+
 		this._leftImage.define("onClick", {
 			prev: () => {
-				changeTimePointImage("prev");
+				changeTimePointImage("left", "prev");
 			},
 			next: () => {
-				changeTimePointImage("next");
+				changeTimePointImage("left", "next");
+			}
+		});
+
+		this._rightImage.define("onClick", {
+			prev: () => {
+				changeTimePointImage("right", "prev");
+			},
+			next: () => {
+				changeTimePointImage("right", "next");
 			}
 		});
 
@@ -398,14 +426,18 @@ export default class MultiLesionWindowService {
 	}
 
 	changeWindowMode() {
-		if (this._window.config.fullscreen) {
-			this._window.define("fullscreen", false);
+		if (this._fullscreen) {
+			this._fullscreen = false;
+			this._window.define("width", 1240);
+			this._window.define("height", 750);
 			this._window.define("position", "center");
 			this._fullScreenButton.show();
 			this._windowedButton.hide();
 		}
 		else {
-			this._window.define("fullscreen", true);
+			this._fullscreen = true;
+			this._window.define("width", window.innerWidth);
+			this._window.define("height", window.innerHeight);
 			this._window.define("position", "center");
 			this._fullScreenButton.hide();
 			this._windowedButton.show();
@@ -568,7 +600,7 @@ export default class MultiLesionWindowService {
 	buildCondition(filter) {
 		const searchValues = filter.split(" OR ");
 		const conditions = searchValues.map((str) => {
-			const values = str.split(" and ");
+			const values = str.split(" AND ");
 			return values.map((v) => {
 				if (v.includes(":")) {
 					return v;
