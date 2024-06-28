@@ -1173,6 +1173,12 @@ class GalleryService {
 	}
 
 	_updateContentHeaderTemplate(ranges) {
+		if (ranges.filtered) {
+			state.filteredImages.isImagesFiltered = true;
+			if (ranges.currentCount) {
+				state.filteredImages.filteredImagesCount = ranges.currentCount;
+			}
+		}
 		const values = webix.copy(ranges);
 		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values
 		this._contentHeaderTemplate?.refresh();

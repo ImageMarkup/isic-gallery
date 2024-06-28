@@ -4,9 +4,11 @@ import constants from "../../../constants";
 import "../../components/activeList";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import selectedImages from "../../../models/selectedGalleryImages";
+import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
+import MultiLesionWindowService from "../../../services/gallery/multiimageLesionWindow";
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
 import util from "../../../utils/util";
 import collapser from "../../components/collapser";
@@ -16,9 +18,8 @@ import filterPanel from "./parts/filterPanel";
 import dataview from "./parts/galleryDataview";
 import pager from "./parts/galleryPager";
 import imageWindow from "./windows/imageWindow";
-import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 import metadataWindow from "./windows/metadataWindow";
-import MultiLesionWindowService from "../../../services/gallery/multiimageLesionWindow";
+import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 
 const ID_PAGER = "gallery-pager-id";
 const ID_DATAVIEW = "gallery-dataview-id";
@@ -145,11 +146,11 @@ export default class GalleryView extends JetView {
 							template(obj) {
 								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
-								const filteredAmountHtml = `Filtered images: <b>${obj.currentCount || 0}</b>`;
+								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>`;
 								let result = "";
 								if (obj.filtered) {
 									result = ` ${filteredAmountHtml} ${totalAmountHtml}`;
-									if (obj.rangeFinish - obj.rangeStart < obj.currentCount) {
+									if (obj.rangeFinish - obj.rangeStart < state.filteredImages.filteredImagesCount) {
 										result = `${rangeHtml} ${result}`;
 									}
 								}
