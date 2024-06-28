@@ -37,8 +37,8 @@ const ID_RIGHT_ANCHOR_ICON = `right-anchor-icon-id-${webix.uid()}`;
 
 function getConfig(windowTitle, closeCallback) {
 	const topSlider = getTopSlider(ID_TOP_SLIDER, ID_PREV_PAGE_BUTTON, ID_NEXT_PAGE_BUTTON);
-	const leftSlider = getVerticalSlider(ID_LEFT_SLIDER, "left");
-	const rightSlider = getVerticalSlider(ID_RIGHT_SLIDER, "right");
+	const leftSlider = getVerticalSlider(ID_LEFT_SLIDER, constants.MULTI_LESION_SIDE.LEFT);
+	const rightSlider = getVerticalSlider(ID_RIGHT_SLIDER, constants.MULTI_LESION_SIDE.RIGHT);
 
 	/** @type {webix.ui.labelConfig} */
 	const leftImageLabel = getImageLabel(ID_LEFT_IMAGE_NAME_LABEL);
@@ -106,9 +106,17 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
-	const leftTemplateViewer = getTemplateViewer(ID_LEFT_IMAGE, true);
+	const leftTemplateViewer = getTemplateViewer(
+		ID_LEFT_IMAGE,
+		true,
+		constants.MULTI_LESION_SIDE.LEFT
+	);
 
-	const rightTemplateViewer = getTemplateViewer(ID_RIGHT_IMAGE, true);
+	const rightTemplateViewer = getTemplateViewer(
+		ID_RIGHT_IMAGE,
+		true,
+		constants.MULTI_LESION_SIDE.RIGHT
+	);
 
 	/** @type {webix.ui.toolbarConfig} */
 	const leftToolbar = {
@@ -231,8 +239,8 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
-	const leftFooter = getFooter(ID_LEFT_FOOTER, "left");
-	const rightFooter = getFooter(ID_RIGHT_FOOTER, "right");
+	const leftFooter = getFooter(ID_LEFT_FOOTER, constants.MULTI_LESION_SIDE.LEFT);
+	const rightFooter = getFooter(ID_RIGHT_FOOTER, constants.MULTI_LESION_SIDE.RIGHT);
 
 	const leftImageContainer = {
 		css: "container",
@@ -567,14 +575,16 @@ function getVerticalSlider(id, side) {
  * @param {boolean} showButtons
  * @returns {webix.ui.templateConfig}
  */
-function getTemplateViewer(id, showButtons) {
+function getTemplateViewer(id, showButtons, side) {
 	return {
 		view: "template",
 		id,
 		css: "absolute-centered-image-template",
 		template(obj) {
 			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
-			const mode = lesionsModel.getLeftMode();
+			const mode = side === constants.MULTI_LESION_SIDE.LEFT
+				? lesionsModel.getLeftMode()
+				: lesionsModel.getRightMode();
 			const lesionID = lesionsModel.getItemLesionID(obj);
 			const lesionsImages = mode === constants.MULTI_LESION_WINDOW_STATE.TIME
 				? lesionsModel.getTimePointImages(lesionID, lesionsModel.getItemTimePoint(obj))
@@ -636,7 +646,7 @@ function footerTemplateFunction(obj, /* common */) {
 function getFooter(id, side) {
 	let config;
 	switch (side) {
-		case "left":
+		case constants.MULTI_LESION_SIDE.LEFT:
 			config = {
 				cols: [
 					{
@@ -650,7 +660,7 @@ function getFooter(id, side) {
 				]
 			};
 			break;
-		case "right":
+		case constants.MULTI_LESION_SIDE.RIGHT:
 			config = {
 				cols: [
 					{width: 100},

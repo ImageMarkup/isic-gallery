@@ -216,36 +216,38 @@ export default class MultiLesionWindowService {
 		}});
 
 		const changeTimePointImage = (side, move) => {
-			const slider = side === "right" ? this._rightSlider : this._leftSlider;
+			const slider = side === constants.MULTI_LESION_SIDE.RIGHT
+				? this._rightSlider
+				: this._leftSlider;
 			const selectedId = slider.getSelectedId();
 			const itemID = move === "next"
 				? slider.getNextId(selectedId) ?? slider.getFirstId()
 				: slider.getPrevId(selectedId) ?? slider.getLastId();
 			const item = webix.copy(slider.getItem(itemID));
 			delete item.id;
-			if (side === "left") {
+			if (side === constants.MULTI_LESION_SIDE.LEFT) {
 				this.fillLeftPanel(item);
 			}
-			if (side === "right") {
+			if (side === constants.MULTI_LESION_SIDE.RIGHT) {
 				this.fillRightPanel(item);
 			}
 		};
 
 		this._leftImage.define("onClick", {
 			prev: () => {
-				changeTimePointImage("left", "prev");
+				changeTimePointImage(constants.MULTI_LESION_SIDE.LEFT, "prev");
 			},
 			next: () => {
-				changeTimePointImage("left", "next");
+				changeTimePointImage(constants.MULTI_LESION_SIDE.LEFT, "next");
 			}
 		});
 
 		this._rightImage.define("onClick", {
 			prev: () => {
-				changeTimePointImage("right", "prev");
+				changeTimePointImage(constants.MULTI_LESION_SIDE.RIGHT, "prev");
 			},
 			next: () => {
-				changeTimePointImage("right", "next");
+				changeTimePointImage(constants.MULTI_LESION_SIDE.RIGHT, "next");
 			}
 		});
 
@@ -504,7 +506,7 @@ export default class MultiLesionWindowService {
 	fillRightPanel(image) {
 		this._rightImage.parse(image);
 		this._rightFooter.parse(image);
-		this.setAnchorIcon(image, "right");
+		this.setAnchorIcon(image, constants.MULTI_LESION_SIDE.RIGHT);
 		const imageID = lesionsModel.getItemID(image);
 		this._rightImageLabel.define("label", imageID.toUpperCase());
 		this._rightImageLabel.refresh();
@@ -540,7 +542,7 @@ export default class MultiLesionWindowService {
 	fillLeftPanel(image) {
 		this._leftImage.parse(image);
 		this._leftFooter.parse(image);
-		this.setAnchorIcon(image, "left");
+		this.setAnchorIcon(image, constants.MULTI_LESION_SIDE.LEFT);
 		const imageID = lesionsModel.getItemID(image);
 		this._leftImageLabel.define("label", imageID.toUpperCase());
 		this._leftImageLabel.refresh();
@@ -640,10 +642,10 @@ export default class MultiLesionWindowService {
 	setAnchorIcon(image, side) {
 		if (lesionsModel.checkIsImageAnchor(image)) {
 			switch (side) {
-				case "left":
+				case constants.MULTI_LESION_SIDE.LEFT:
 					this._leftAnchorIcon.show();
 					break;
-				case "right":
+				case constants.MULTI_LESION_SIDE.RIGHT:
 					this._rightAnchorIcon.show();
 					break;
 				default:
@@ -652,10 +654,10 @@ export default class MultiLesionWindowService {
 		}
 		else {
 			switch (side) {
-				case "left":
+				case constants.MULTI_LESION_SIDE.LEFT:
 					this._leftAnchorIcon.hide();
 					break;
-				case "right":
+				case constants.MULTI_LESION_SIDE.RIGHT:
 					this._rightAnchorIcon.hide();
 					break;
 				default:

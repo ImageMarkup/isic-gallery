@@ -207,4 +207,8 @@ export default {
 		TYPE: "Image type",
 		CONTR_DAY: "Contribution day",
 	},
+	MULTI_LESION_SIDE: {
+		LEFT: "left",
+		RIGHT: "right",
+	}
 };
