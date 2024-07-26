@@ -3,21 +3,16 @@ import appliedFiltersModel from "../../../../models/appliedFilters";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import lesionsModel from "../../../../models/lesionsModel";
 import util from "../../../../utils/util";
+import collapser from "../../../components/collapser";
 import "../../../components/svgIcon";
 
 const ID_MULTI_IMAGE_LESION_WINDOW = `multi-image-lesion-window-id-${webix.uid()}`;
 const ID_LEFT_IMAGE_NAME_LABEL = `image-name-id-${webix.uid()}`;
 const ID_RIGHT_IMAGE_NAME_LABEL = `image-name-id-${webix.uid()}`;
-const ID_LEFT_TIME_POINT_BUTTON = `left-time-point-button-id-${webix.uid()}`;
-const ID_RIGHT_TIME_POINT_BUTTON = `right-time-point-button-id-${webix.uid()}`;
-const ID_LEFT_MODALITY_BUTTON = `left-modality-button-id-${webix.uid()}`;
-const ID_RIGHT_MODALITY_BUTTON = `right-modality-button-id-${webix.uid()}`;
-const ID_LEFT_TOTAL_BUTTON = `left-total-button-id-${webix.uid()}`;
-const ID_RIGHT_TOTAL_BUTTON = `right-total-button-id-${webix.uid()}`;
+const ID_TOP_PANEL = `top-panel-id-${webix.uid()}`;
 const ID_TOP_SLIDER = `top-slider-id-${webix.uid()}`;
 const ID_PREV_PAGE_BUTTON = `prev-page-button-id-${webix.uid()}`;
 const ID_NEXT_PAGE_BUTTON = `next-page-button-id-${webix.uid()}`;
-const ID_RESIZER = `resizer-id-${webix.uid()}`;
 const ID_RIGHT_CONTAINER = `container-id-${webix.uid()}`;
 const ID_LEFT_DROP_DOWN_FILTER = `left-drop-down-filter-${webix.uid()}`;
 const ID_RIGHT_DROP_DOWN_FILTER = `right-drop-down-filter-${webix.uid()}`;
@@ -30,30 +25,29 @@ const ID_RIGHT_IMAGE = `image-id-${webix.uid()}`;
 const ID_BUTTON_FULL_SCREEN = `button-full-screen-id-${webix.uid()}`;
 const ID_BUTTON_WINDOWED = `button-windowed-id-${webix.uid()}`;
 const ID_SEARCH = `search-id-${webix.uid()}`;
-const ID_LEFT_CONTROLS = `left-controls-id-${webix.uid()}`;
-const ID_RIGHT_CONTROLS = `right-controls-id-${webix.uid()}`;
 const ID_LEFT_ANCHOR_ICON = `left-anchor-icon-id-${webix.uid()}`;
 const ID_RIGHT_ANCHOR_ICON = `right-anchor-icon-id-${webix.uid()}`;
 
+let expandButtonID;
+let collapseButtonID;
+
 function getConfig(windowTitle, closeCallback) {
-	const topSlider = getTopSlider(ID_TOP_SLIDER, ID_PREV_PAGE_BUTTON, ID_NEXT_PAGE_BUTTON);
+	const topSlider = getTopSlider(
+		ID_TOP_PANEL,
+		ID_TOP_SLIDER,
+		ID_PREV_PAGE_BUTTON,
+		ID_NEXT_PAGE_BUTTON
+	);
+	const topSliderCollapser = collapser.getConfig(ID_TOP_PANEL, {type: "top", closed: true});
+	// TODO: find alternatives
+	collapseButtonID = topSliderCollapser.cols[0].id;
+	expandButtonID = topSliderCollapser.cols[1].id;
 	const leftSlider = getVerticalSlider(ID_LEFT_SLIDER, constants.MULTI_LESION_SIDE.LEFT);
 	const rightSlider = getVerticalSlider(ID_RIGHT_SLIDER, constants.MULTI_LESION_SIDE.RIGHT);
 
 	/** @type {webix.ui.labelConfig} */
 	const leftImageLabel = getImageLabel(ID_LEFT_IMAGE_NAME_LABEL);
 	const rightImageLabel = getImageLabel(ID_RIGHT_IMAGE_NAME_LABEL);
-
-	const timePointTooltip = "Multiple time points";
-	const modalitiesTooltip = "Multiple available modalities";
-	const imagesPerLesionTooltip = "Multiple images per lesion";
-	/** @type {webix.ui.buttonConfig} */
-	const leftTimePointButton = getButtonIconConfig(ID_LEFT_TIME_POINT_BUTTON, "time-attack", timePointTooltip);
-	const leftModalityButton = getButtonIconConfig(ID_LEFT_MODALITY_BUTTON, "layer-group", modalitiesTooltip);
-	const leftTotalButton = getButtonIconConfig(ID_LEFT_TOTAL_BUTTON, "sum-of-sum", imagesPerLesionTooltip);
-	const rightTimePointButton = getButtonIconConfig(ID_RIGHT_TIME_POINT_BUTTON, "time-attack", timePointTooltip);
-	const rightModalityButton = getButtonIconConfig(ID_RIGHT_MODALITY_BUTTON, "layer-group", modalitiesTooltip);
-	const rightTotalButton = getButtonIconConfig(ID_RIGHT_TOTAL_BUTTON, "sum-of-sum", imagesPerLesionTooltip);
 
 	const leftAnchorIcon = {
 		view: "icon",
@@ -72,37 +66,41 @@ function getConfig(windowTitle, closeCallback) {
 	};
 
 	/** @type {webix.ui.richselectConfig} */
-	const leftSortDropdown = {
+	const leftGroupDropdown = {
 		view: "richselect",
 		id: ID_LEFT_DROP_DOWN_FILTER,
 		css: "multilesion-filter-dropdown",
-		label: "Sorted by:",
+		label: "Group by:",
 		labelAlign: "left",
-		width: 210,
+		width: 250,
 		height: 24,
 		labelWidth: 75,
+		value: constants.MULTI_LESION_GROUP_BY.TIME,
 		// TODO: check options
 		options: [
-			constants.MULTI_LESION_FILTERS.TIME,
-			constants.MULTI_LESION_FILTERS.TYPE,
-			constants.MULTI_LESION_FILTERS.CONTR_DAY
+			constants.MULTI_LESION_GROUP_BY.TIME,
+			constants.MULTI_LESION_GROUP_BY.TYPE,
+			constants.MULTI_LESION_GROUP_BY.COMBINATION,
+			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
 		]
 	};
 
-	const rightSortDropdown = {
+	const rightGroupDropdown = {
 		view: "richselect",
 		id: ID_RIGHT_DROP_DOWN_FILTER,
 		css: "multilesion-filter-dropdown",
-		label: "Sorted by:",
+		label: "Group by:",
 		labelAlign: "left",
-		width: 210,
+		width: 250,
 		height: 30,
 		labelWidth: 75,
+		value: constants.MULTI_LESION_GROUP_BY.TIME,
 		// TODO: check options
 		options: [
-			constants.MULTI_LESION_FILTERS.TIME,
-			constants.MULTI_LESION_FILTERS.TYPE,
-			constants.MULTI_LESION_FILTERS.CONTR_DAY
+			constants.MULTI_LESION_GROUP_BY.TIME,
+			constants.MULTI_LESION_GROUP_BY.TYPE,
+			constants.MULTI_LESION_GROUP_BY.COMBINATION,
+			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
 		]
 	};
 
@@ -123,45 +121,6 @@ function getConfig(windowTitle, closeCallback) {
 		height: 60,
 		cols: [
 			{width: 20},
-			{
-				rows: [
-					{},
-					{
-						css: "lesion-controls",
-						id: ID_LEFT_CONTROLS,
-						height: 34,
-						cols: [
-							{width: 6},
-							{
-								rows: [
-									{},
-									leftTimePointButton,
-									{},
-								]
-							},
-							{width: 6},
-							{
-								rows: [
-									{},
-									leftModalityButton,
-									{},
-								]
-							},
-							{width: 6},
-							{
-								rows: [
-									{},
-									leftTotalButton,
-									{},
-								]
-							},
-							{width: 6},
-						]
-					},
-					{},
-				]
-			},
-			{width: 20},
 			leftImageLabel,
 			{width: 5},
 			leftAnchorIcon,
@@ -172,7 +131,7 @@ function getConfig(windowTitle, closeCallback) {
 			{
 				rows: [
 					{gravity: 1},
-					leftSortDropdown,
+					leftGroupDropdown,
 					{gravity: 1},
 				]
 			},
@@ -188,7 +147,7 @@ function getConfig(windowTitle, closeCallback) {
 			{
 				rows: [
 					{gravity: 1},
-					rightSortDropdown,
+					rightGroupDropdown,
 					{gravity: 1},
 				]
 			},
@@ -196,47 +155,8 @@ function getConfig(windowTitle, closeCallback) {
 			rightImageLabel,
 			{width: 5},
 			rightAnchorIcon,
-			{width: 20},
-			{
-				rows: [
-					{},
-					{
-						id: ID_RIGHT_CONTROLS,
-						css: "lesion-controls",
-						height: 34,
-						cols: [
-							{width: 6},
-							{
-								rows: [
-									{},
-									rightTimePointButton,
-									{}
-								]
-							},
-							{width: 6},
-							{
-								rows: [
-									{},
-									rightModalityButton,
-									{}
-								]
-							},
-							{width: 6},
-							{
-								rows: [
-									{},
-									rightTotalButton,
-									{}
-								]
-							},
-							{width: 6},
-						]
-					},
-					{},
-				]
-			},
-			{width: 10}
-		]
+			{gravity: 1},
+		],
 	};
 
 	const leftFooter = getFooter(ID_LEFT_FOOTER, constants.MULTI_LESION_SIDE.LEFT);
@@ -296,13 +216,6 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
-	/** @type {webix.ui.resizerConfig} */
-	const resizer = {
-		view: "resizer",
-		id: ID_RESIZER,
-		width: 8,
-	};
-
 	return {
 		view: "window",
 		id: ID_MULTI_IMAGE_LESION_WINDOW,
@@ -336,6 +249,7 @@ function getConfig(windowTitle, closeCallback) {
 					value: `${appliedFiltersModel.getFilterValue()}`,
 					css: "multi-image-lesion-search-block",
 					placeholder: "Search images",
+					hidden: true,
 					inputHeight: 38,
 					width: 634,
 				},
@@ -385,10 +299,11 @@ function getConfig(windowTitle, closeCallback) {
 			css: "multi-image-lesion-window-body",
 			rows: [
 				topSlider,
+				topSliderCollapser,
+				{height: 10},
 				{
 					cols: [
 						leftImageContainer,
-						resizer,
 						rightImageContainer
 					]
 				}
@@ -402,8 +317,10 @@ function getConfig(windowTitle, closeCallback) {
  *
  * @returns {webix.ui.listConfig}
  */
-function getTopSlider(id, prevButtonID, nextButtonID) {
+function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 	return {
+		id: topPanelID,
+		hidden: true,
 		cols: [
 			{width: 20},
 			{
@@ -415,7 +332,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 			},
 			{
 				view: "list",
-				id,
+				id: sliderID,
 				layout: "x",
 				css: "multilesion-top-list",
 				scroll: false,
@@ -426,6 +343,13 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 					height: 104
 				},
 				template(obj, /* common */) {
+					const lesionID = lesionsModel.getItemLesionID(obj);
+					const lesionModalitiesCount = lesionID
+						? lesionsModel.getLesionModalitiesCount(lesionID)
+						: null;
+					const lesionTimePointsCount = lesionID
+						? lesionsModel.getLesionTimePointsCount(lesionID)
+						: null;
 					const imageIconDimensions = {
 						iconContainerDimensions: {
 							width: constants.DEFAULT_RIBBON_ICON_CONTAINER_WIDTH,
@@ -436,6 +360,9 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 							height: constants.DEFAULT_RIBBON_IMAGE_ICON_HEIGHT
 						}
 					};
+					const lesionIconElementClass = lesionID
+						? "gallery-images-button-elem"
+						: "gallery-images-button-elem-disabled";
 					const diagnosisIcon = obj.hasAnnotations ?
 						`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 							<span class="gallery-images-button diagnosis-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
@@ -445,33 +372,17 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 							</span>
 							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 						</div>` : "";
-					const timePointsIcon = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button time-attack tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#time-attack" class="gallery-icon-use"></use>
-							</svg>
-						</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple time points</span>
-						<span class="gallery-images-badge">${lesionsModel.getImagesWithTimePointsCount(obj) ?? 0}</span>
-					</div>`;
-					const modalitiesIcon = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button layer-group tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions.iconDimensions.height}px;width:${imageIconDimensions.iconDimensions.width}px;">
+						<span class="gallery-images-button layer-group tooltip-title">
+							<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 							</svg>
 						</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple available modalities</span>
-						<span class="gallery-images-badge">${lesionsModel.getImagesWithModalityCount(obj) ?? 0}</span>
-					</div>`;
-					const lesionID = lesionsModel.getItemLesionID(obj);
-					const totalIcons = `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-						<span class="gallery-images-button sum-of-sum tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-							<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sum-of-sum" class="gallery-icon-use"></use>
-							</svg>
-						</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Multiple images per lesion</span>
-						<span class="gallery-images-badge">${lesionsModel.getLesionImagesCount(lesionID) ?? 3}</span>
+						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
+						<span class="gallery-images-badge gallery-images-badge_1 tooltip-title">${lesionModalitiesCount ?? 0}</span>
+						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion modalities count</span>
+						<span class="gallery-images-badge gallery-images-badge_2 tooltip-title">${lesionTimePointsCount ?? 0}</span>
+						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion time points count</span>
 					</div>`;
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
@@ -511,9 +422,7 @@ function getTopSlider(id, prevButtonID, nextButtonID) {
 										<span class="tooltip-block tooltip-block-top">Download ZIP</span>
 									</div>
 									${diagnosisIcon}
-									${timePointsIcon}
-									${modalitiesIcon}
-									${totalIcons}
+									${lesionIcon}
 								</div>
 							</div>
 							${starHtml}
@@ -546,23 +455,45 @@ function getVerticalSlider(id, side) {
 		},
 		css: `vertical-slider-${side}`,
 		width: 1,
+		/**
+		 *
+		 * @param {Object} obj
+		 * @param {string} obj.type
+		 * @param {string | number} obj.value
+		 * @param {Array} obj.images
+		 * @returns
+		 */
 		template(obj, /* common */) {
-			const lesionID = lesionsModel.getItemLesionID(obj);
+			let images;
+			let multipleFlag = false;
+			if (obj.images) {
+				images = obj.images;
+				multipleFlag = obj.images.length > 1;
+			}
+			const lesionID = lesionsModel.getItemLesionID(images[0]);
 			const anchorImageID = lesionsModel.getAnchorImageID(lesionID);
-			const anchorIcon = lesionsModel.getItemID(obj) === anchorImageID
+			const anchorIcon = lesionsModel.getItemID(images) === anchorImageID
 				? `<div class="ribbon-image-elem tooltip-container tooltip-gallery-images">
 					<span class="gallery-images-button fas fa-anchor gallery-icon-use" style="color:white"></span>
 				</div>`
 				: "";
-			if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
-				galleryImageUrl.setPreviewImageUrl(
-					lesionsModel.getItemID(obj),
-					obj.files.thumbnail_256.url
-				); // to prevent sending query more than 1 time
-			}
-			return `<div class="gallery-images-container">
+			images.forEach((i) => {
+				if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(i)) === "undefined") {
+					galleryImageUrl.setPreviewImageUrl(
+						lesionsModel.getItemID(i),
+						i.files.thumbnail_256.url
+					); // to prevent sending query more than 1 time
+				}
+			});
+			return `<div class='gallery-images-container${multipleFlag ? " images-group" : ""}'>
 					${anchorIcon}
-					<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) || ""}" class="gallery-image" height="42px" width="100%"/>
+					<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(images[0])) || ""}" 
+					class="gallery-image${multipleFlag ? " framed-image" : ""}" height="42px" width="100%"/>
+					<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(images[1])) || ""}" 
+					class="gallery-image${multipleFlag ? " framed-image2" : ""}" height="42px" width="100%"/>
+					<img src="${galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(images[1])) || ""}" 
+					class="gallery-image${multipleFlag ? " framed-image3" : "hidden"}" height="42px" width="100%" 
+					${"style=display:none"}/>
 			</div>`;
 		}
 	};
@@ -582,13 +513,9 @@ function getTemplateViewer(id, showButtons, side) {
 		css: "absolute-centered-image-template",
 		template(obj) {
 			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
-			const mode = side === constants.MULTI_LESION_SIDE.LEFT
-				? lesionsModel.getLeftMode()
-				: lesionsModel.getRightMode();
-			const lesionID = lesionsModel.getItemLesionID(obj);
-			const lesionsImages = mode === constants.MULTI_LESION_WINDOW_STATE.TIME
-				? lesionsModel.getTimePointImages(lesionID, lesionsModel.getItemTimePoint(obj))
-				: [];
+			const lesionsImages = side === constants.MULTI_LESION_SIDE.LEFT
+				? lesionsModel.getCurrentLeftImages()
+				: lesionsModel.getCurrentRightImages();
 			return `<div class="image-zoom-container">
 						<img class= 'zoomable-image' src="${imageUrl}"/>
 					</div>
@@ -618,8 +545,12 @@ function footerTemplateFunction(obj, /* common */) {
 		? lesionsModel.getLesionTimePointsCount(lesionID)
 		: "";
 	let multipleModalities;
+	let timePoint;
+	let modality;
 	if (lesionID) {
 		multipleModalities = lesionsModel.checkMultipleModality(lesionID) ? "Yes" : "No";
+		timePoint = lesionsModel.getItemTimePoint(obj);
+		modality = lesionsModel.getItemModality(obj);
 	}
 	else {
 		multipleModalities = "";
@@ -633,6 +564,12 @@ function footerTemplateFunction(obj, /* common */) {
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name">Number of unique time points: </span><span class="footer-item__value">${lesionTimePointsCount}</span>
+			</div>
+			<div class="footer-item">
+				<span class="footer-item__name">Time point: </span><span class="footer-item__value">${timePoint}</span>
+			</div>
+			<div class="footer-item">
+				<span class="footer-item__name">Modality: </span><span class="footer-item__value">${modality}</span>
 			</div>
 			<div class="footer-item">
 				<span class="footer-item__name"># of total lesion images: </span><span class="footer-item__value">${lesionImagesCount}</span>
@@ -680,49 +617,12 @@ function getFooter(id, side) {
 	return config;
 }
 
-function getButtonIconConfig(id, icon, tooltip) {
-	return {
-		view: "svgIcon",
-		id,
-		css: "controlIcon",
-		icon,
-		active: false,
-		width: 28,
-		height: 28,
-		tooltip: {
-			template: `<span class="tooltip-block tooltip-block-top">${tooltip}</span>`
-		}
-	};
-}
-
 function getLeftImageNameLabelID() {
 	return ID_LEFT_IMAGE_NAME_LABEL;
 }
 
 function getRightImageNameLabelID() {
 	return ID_RIGHT_IMAGE_NAME_LABEL;
-}
-
-function getLeftTimePointButtonID() {
-	return ID_LEFT_TIME_POINT_BUTTON;
-}
-function getLeftModalityButtonID() {
-	return ID_LEFT_MODALITY_BUTTON;
-}
-function getLeftTotalButtonID() {
-	return ID_LEFT_TOTAL_BUTTON;
-}
-
-function getRightTimePointButtonID() {
-	return ID_RIGHT_TIME_POINT_BUTTON;
-}
-
-function getRightModalityButtonID() {
-	return ID_RIGHT_MODALITY_BUTTON;
-}
-
-function getRightTotalButtonID() {
-	return ID_RIGHT_TOTAL_BUTTON;
 }
 
 function getTopSliderID() {
@@ -735,10 +635,6 @@ function getLeftImageID() {
 
 function getRightImageID() {
 	return ID_RIGHT_IMAGE;
-}
-
-function getResizerID() {
-	return ID_RESIZER;
 }
 
 function getRightContainerID() {
@@ -793,14 +689,6 @@ function getRightDropDownFilterID() {
 	return ID_RIGHT_DROP_DOWN_FILTER;
 }
 
-function getLeftControlsID() {
-	return ID_LEFT_CONTROLS;
-}
-
-function getRightControlsID() {
-	return ID_RIGHT_CONTROLS;
-}
-
 function getLeftAnchorIconID() {
 	return ID_LEFT_ANCHOR_ICON;
 }
@@ -809,22 +697,27 @@ function getRightAnchorIconID() {
 	return ID_RIGHT_ANCHOR_ICON;
 }
 
+function getTopPanelID() {
+	return ID_TOP_PANEL;
+}
+
+function getExpandButtonID() {
+	return expandButtonID;
+}
+
+function getCollapseButtonID() {
+	return collapseButtonID;
+}
+
 export default {
 	getConfig,
 	getLeftImageNameLabelID,
 	getRightImageNameLabelID,
-	getLeftTimePointButtonID,
-	getLeftModalityButtonID,
-	getLeftTotalButtonID,
-	getRightTimePointButtonID,
-	getRightModalityButtonID,
-	getRightTotalButtonID,
 	getTopSliderID,
 	getLeftSliderID,
 	getRightSliderID,
 	getLeftFooterID,
 	getRightFooterID,
-	getResizerID,
 	getRightContainerID,
 	getLeftImageID,
 	getRightImageID,
@@ -836,8 +729,9 @@ export default {
 	getPrevPageButtonID,
 	getLeftDropDownFilterID,
 	getRightDropDownFilterID,
-	getLeftControlsID,
-	getRightControlsID,
 	getLeftAnchorIconID,
 	getRightAnchorIconID,
+	getTopPanelID,
+	getCollapseButtonID,
+	getExpandButtonID,
 };

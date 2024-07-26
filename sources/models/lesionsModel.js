@@ -4,9 +4,8 @@ let leftMode;
 let rightMode;
 let leftImage;
 let rightImage;
-
-// TODO: delete?
-// function addLesion(lesion) {}
+const currentLeftImagesCollection = new webix.DataCollection();
+const currentRightImagesCollection = new webix.DataCollection();
 
 function getLesionByID(lesionID) {
 	return lesionsMap.get(lesionID);
@@ -66,18 +65,23 @@ function getImagesWithModalityCount(item) {
 	return 0;
 }
 
-function getLesionTimePointsCount(lesionID) {
+function getLesionTimePoints(lesionID) {
 	const lesion = getLesionByID(lesionID);
 	const images = lesion?.images;
-	const lesionTimePointsCount = images?.reduce((timePoints, img) => {
+	const lesionTimePoints = images?.reduce((timePoints, img) => {
 		const imgTimePoint = getImageTimePoint(img);
 		if (timePoints.includes(imgTimePoint)) {
 			return timePoints;
 		}
 		timePoints.push(imgTimePoint);
 		return timePoints;
-	}, [])?.length;
-	return lesionTimePointsCount;
+	}, []);
+	return lesionTimePoints;
+}
+
+function getLesionTimePointsCount(lesionID) {
+	const lesionTimePoints = getLesionTimePoints(lesionID);
+	return lesionTimePoints.length;
 }
 
 function getImagesWithTimePointsCount(item) {
@@ -108,9 +112,40 @@ function getTimePointImages(lesionID, timePoint) {
 	return lesionImages?.filter(i => getImageTimePoint(i) === timePoint);
 }
 
+// combine is time point and modality
+function getCombineImages(lesionID, timePoint, modality) {
+	const lesionImages = getLesionImages(lesionID);
+	return lesionImages?.filter((i) => {
+		const result = getImageTimePoint(i) === timePoint && getImageModality(i) === modality;
+		return result;
+	});
+}
+
 function getAnchorImageID(lesionID) {
 	const lesion = getLesionByID(lesionID);
 	return lesion?.index_image_id;
+}
+
+function getFirstNonAnchorImage(lesionID, anchorImageID) {
+	const timePoints = getLesionTimePoints(lesionID);
+	const lesionImages = getLesionImages(lesionID);
+	const anchorImage = lesionImages.find(i => getItemID(i) === anchorImageID);
+	const anchorTimePoint = getImageTimePoint(anchorImage);
+	const sortedTimePoints = timePoints.sort((a, b) => a - b);
+	const firstTimePoint = sortedTimePoints[0];
+	let nonAnchorImage;
+	if (timePoints.length === 1) {
+		nonAnchorImage = lesionImages.find(i => anchorImageID !== getItemID(i))
+			?? lesionImages[0];
+	}
+	else if (anchorTimePoint === firstTimePoint) {
+		const secondTimePoint = sortedTimePoints[1];
+		nonAnchorImage = lesionImages.find(i => getImageTimePoint(i) === secondTimePoint);
+	}
+	else {
+		nonAnchorImage = lesionImages.find(i => getImageTimePoint(i) === firstTimePoint);
+	}
+	return nonAnchorImage;
 }
 
 function getImageTimePoint(image) {
@@ -186,6 +221,93 @@ function setRightImage(image) {
 	rightImage = image;
 }
 
+function groupByTimePoint(images) {
+	const imagesGroups = Object.groupBy(images, i => getImageTimePoint(i));
+	return imagesGroups;
+}
+
+function groupByModality(images) {
+	const imagesGroups = Object.groupBy(images, i => getImageModality(i));
+	return imagesGroups;
+}
+
+function groupByTimePointAndModality(images) {
+	const timePointGroups = Object.groupBy(images, i => getImageTimePoint(i));
+	const timePointKeys = Object.keys(timePointGroups);
+	const imagesGroups = {};
+	timePointKeys.forEach((tpk) => {
+		const modalityGroups = Object.groupBy(timePointGroups[tpk], i => getImageModality(i));
+		const modalityKeys = Object.keys(modalityGroups);
+		modalityKeys.forEach((mk) => {
+			imagesGroups[`${tpk} and ${mk}`] = modalityGroups[mk];
+		});
+	});
+	return imagesGroups;
+}
+
+function groupByID(images) {
+	const imagesGroups = Object.groupBy(images, i => getItemID(i));
+	return imagesGroups;
+}
+
+function setCurrentLeftImages(images) {
+	currentLeftImagesCollection.clearAll();
+	currentLeftImagesCollection.parse(images);
+}
+
+function getCurrentLeftImages() {
+	return currentLeftImagesCollection.serialize();
+}
+
+function setCurrentRightImages(images) {
+	currentRightImagesCollection.clearAll();
+	currentRightImagesCollection.parse(images);
+}
+
+function getCurrentRightImages() {
+	return currentRightImagesCollection.serialize();
+}
+
+function getNextLeftImage(image) {
+	const currentImage = currentLeftImagesCollection.find(
+		i => getItemID(i) === getItemID(image),
+		true
+	);
+	const nextImageId = currentLeftImagesCollection.getNextId(currentImage.id);
+	const nextImage = currentLeftImagesCollection.getItem(nextImageId);
+	return nextImage;
+}
+
+function getNextRightImage(image) {
+	const currentImage = currentRightImagesCollection.find(
+		i => getItemID(i) === getItemID(image),
+		true
+	);
+	const nextImageId = currentRightImagesCollection.getNextId(currentImage.id);
+	const nextImage = currentRightImagesCollection.getItem(nextImageId);
+	return nextImage;
+}
+
+function getPrevLeftImage(image) {
+	const currentImage = currentLeftImagesCollection.find(
+		i => getItemID(i) === getItemID(image),
+		true
+	);
+	const prevImageId = currentLeftImagesCollection.getPrevId(currentImage.id);
+	const prevImage = currentLeftImagesCollection.getItem(prevImageId);
+	return prevImage;
+}
+
+function getPrevRightImage(image) {
+	const currentImage = currentRightImagesCollection.find(
+		i => getItemID(i) === getItemID(image),
+		true
+	);
+	const prevImageId = currentRightImagesCollection.getNextId(currentImage.id);
+	const prevImage = currentRightImagesCollection.getItem(prevImageId);
+	return prevImage;
+}
+
 export default {
 	setLesions,
 	getLesionImagesCount,
@@ -196,6 +318,7 @@ export default {
 	getLesionAnchorImageID,
 	getLesionImages,
 	getTimePointImages,
+	getCombineImages,
 	getImagesWithTimePointsCount,
 	getAnchorImageID,
 	getItemLesionID,
@@ -215,4 +338,17 @@ export default {
 	getRightImage,
 	setRightImage,
 	checkIsImageAnchor,
+	getFirstNonAnchorImage,
+	groupByModality,
+	groupByTimePoint,
+	groupByTimePointAndModality,
+	groupByID,
+	setCurrentLeftImages,
+	getCurrentLeftImages,
+	setCurrentRightImages,
+	getCurrentRightImages,
+	getPrevLeftImage,
+	getNextLeftImage,
+	getPrevRightImage,
+	getNextRightImage,
 };

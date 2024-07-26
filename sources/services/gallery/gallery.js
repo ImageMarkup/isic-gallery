@@ -640,31 +640,11 @@ class GalleryService {
 			}
 		};
 
-		this._imagesDataview.on_click["time-attack"] = (e, id) => {
-			if (this._multiImageLesionWindow) {
-				const currentItem = this._imagesDataview.getItem(id);
-				this._view.$scope.setMultiLesionMode(currentItem, constants.MULTI_LESION_WINDOW_STATE.TIME);
-				this._multiImageLesionWindow.show();
-			}
-		};
-
 		this._imagesDataview.on_click["layer-group"] = (e, id) => {
 			if (this._multiImageLesionWindow) {
 				const currentItem = this._imagesDataview.getItem(id);
 				this._view.$scope.setMultiLesionMode(
 					currentItem,
-					constants.MULTI_LESION_WINDOW_STATE.MODALITY
-				);
-				this._multiImageLesionWindow.show();
-			}
-		};
-
-		this._imagesDataview.on_click["sum-of-sum"] = (e, id) => {
-			if (this._multiImageLesionWindow) {
-				const currentItem = this._imagesDataview.getItem(id);
-				this._view.$scope.setMultiLesionMode(
-					currentItem,
-					constants.MULTI_LESION_WINDOW_STATE.TOTAL
 				);
 				this._multiImageLesionWindow.show();
 			}

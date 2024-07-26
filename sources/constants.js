@@ -197,15 +197,11 @@ export default {
 	DEFAULT_GALLERY_IMAGE_HEIGHT: 123,
 
 	// MultiLesion
-	MULTI_LESION_WINDOW_STATE: {
-		TIME: "time",
-		MODALITY: "modality",
-		TOTAL: "total",
-	},
-	MULTI_LESION_FILTERS: {
-		TIME: "Image Time",
+	MULTI_LESION_GROUP_BY: {
+		TIME: "Image time",
 		TYPE: "Image type",
-		CONTR_DAY: "Contribution day",
+		COMBINATION: "Image time and type",
+		NO_GROUP: "No group"
 	},
 	MULTI_LESION_SIDE: {
 		LEFT: "left",

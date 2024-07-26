@@ -681,7 +681,7 @@ export default class GalleryView extends JetView {
 		}
 	}
 
-	setMultiLesionMode(item, mode) {
-		this._multiImageLesionService.setMultiLesionState(item, mode);
+	setMultiLesionMode(item) {
+		this._multiImageLesionService.setMultiLesionState(item);
 	}
 }
