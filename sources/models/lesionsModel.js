@@ -4,7 +4,9 @@ let leftMode;
 let rightMode;
 let leftImage;
 let rightImage;
+/** @type {webix.DataCollection} */
 const currentLeftImagesCollection = new webix.DataCollection();
+/** @type {webix.DataCollection} */
 const currentRightImagesCollection = new webix.DataCollection();
 
 function getLesionByID(lesionID) {
@@ -273,7 +275,8 @@ function getNextLeftImage(image) {
 		i => getItemID(i) === getItemID(image),
 		true
 	);
-	const nextImageId = currentLeftImagesCollection.getNextId(currentImage.id);
+	const nextImageId = currentLeftImagesCollection.getNextId(currentImage.id)
+		?? currentLeftImagesCollection.getFirstId();
 	const nextImage = currentLeftImagesCollection.getItem(nextImageId);
 	return nextImage;
 }
@@ -283,7 +286,8 @@ function getNextRightImage(image) {
 		i => getItemID(i) === getItemID(image),
 		true
 	);
-	const nextImageId = currentRightImagesCollection.getNextId(currentImage.id);
+	const nextImageId = currentRightImagesCollection.getNextId(currentImage.id)
+		?? currentRightImagesCollection.getFirstId();
 	const nextImage = currentRightImagesCollection.getItem(nextImageId);
 	return nextImage;
 }
@@ -293,7 +297,8 @@ function getPrevLeftImage(image) {
 		i => getItemID(i) === getItemID(image),
 		true
 	);
-	const prevImageId = currentLeftImagesCollection.getPrevId(currentImage.id);
+	const prevImageId = currentLeftImagesCollection.getPrevId(currentImage.id)
+		?? currentLeftImagesCollection.getLastId();
 	const prevImage = currentLeftImagesCollection.getItem(prevImageId);
 	return prevImage;
 }
@@ -303,7 +308,8 @@ function getPrevRightImage(image) {
 		i => getItemID(i) === getItemID(image),
 		true
 	);
-	const prevImageId = currentRightImagesCollection.getNextId(currentImage.id);
+	const prevImageId = currentRightImagesCollection.getPrevId(currentImage.id)
+		?? currentRightImagesCollection.getLastId();
 	const prevImage = currentRightImagesCollection.getItem(prevImageId);
 	return prevImage;
 }

@@ -72,7 +72,7 @@ function getConfig(windowTitle, closeCallback) {
 		css: "multilesion-filter-dropdown",
 		label: "Group by:",
 		labelAlign: "left",
-		width: 250,
+		width: 270,
 		height: 24,
 		labelWidth: 75,
 		value: constants.MULTI_LESION_GROUP_BY.TIME,
@@ -372,7 +372,7 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 							</span>
 							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 						</div>` : "";
-					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions.iconDimensions.height}px;width:${imageIconDimensions.iconDimensions.width}px;">
+					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 						<span class="gallery-images-button layer-group tooltip-title">
 							<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
@@ -380,9 +380,9 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 						</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
 						<span class="gallery-images-badge gallery-images-badge_1 tooltip-title">${lesionModalitiesCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion modalities count</span>
+						<span class="tooltip-block tooltip-block-top" style="display: block">Modalities count</span>
 						<span class="gallery-images-badge gallery-images-badge_2 tooltip-title">${lesionTimePointsCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion time points count</span>
+						<span class="tooltip-block tooltip-block-top" style="display: block">Time points count</span>
 					</div>`;
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
@@ -458,6 +458,7 @@ function getVerticalSlider(id, side) {
 		/**
 		 *
 		 * @param {Object} obj
+		 * @param {obj} obj.firstImage
 		 * @param {string} obj.type
 		 * @param {string | number} obj.value
 		 * @param {Array} obj.images

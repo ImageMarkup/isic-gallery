@@ -113,33 +113,54 @@ export default class MultiLesionWindowService {
 		};
 		this._window.attachEvent("onHide", clearWindow);
 		this._window.attachEvent("onShow", this.searchImagesByQueryHandler.bind(this));
-
-		const leftGroupByHandler = (type) => {
-			const newType = type ?? this._leftGroup.getValue();
+		this._window.attachEvent("onShow", () => {
 			const leftImage = lesionsModel.getLeftImage();
-			const lesionID = lesionsModel.getItemLesionID(leftImage);
-			const images = lesionsModel.getLesionImages(lesionID);
-			const imagesGroups = this.groupImages(images, newType);
-			this._leftSlider.clearAll();
-			this._leftSlider.parse(imagesGroups);
-			const selectedID = this._leftSlider.getSelectedId() ?? this._leftSlider.getFirstId();
-			this._leftSlider.select(selectedID);
-		};
-		this._leftGroup.attachEvent("onChange", leftGroupByHandler.bind(this));
-		this._leftGroup.attachEvent("onAfterRender", leftGroupByHandler.bind(this));
-		const rightGroupByHandler = (type) => {
-			const newType = type ?? this._rightGroup.getValue();
+			const leftLesionId = lesionsModel.getItemLesionID(leftImage);
+			const LeftLesionImages = lesionsModel.getLesionImages(leftLesionId);
+			const leftType = this._leftGroup.getValue();
+			const leftImagesGroups = this.groupImages(LeftLesionImages, leftType);
+			if (leftImagesGroups.length === 1) {
+				this._leftGroup.setValue(constants.MULTI_LESION_GROUP_BY.TYPE);
+				this._leftGroup.refresh();
+			}
+			else if (this._leftGroup.getValue !== constants.MULTI_LESION_GROUP_BY.TIME) {
+				this._leftGroup.setValue(constants.MULTI_LESION_GROUP_BY.TIME);
+			}
+
 			const rightImage = lesionsModel.getRightImage();
-			const lesionID = lesionsModel.getItemLesionID(rightImage);
-			const images = lesionsModel.getLesionImages(lesionID);
-			const imagesGroups = this.groupImages(images, newType);
-			this._rightSlider.clearAll();
-			this._rightSlider.parse(imagesGroups);
-			const selectedID = this._rightSlider.getSelectedId() ?? this._rightSlider.getFirstId();
-			this._rightSlider.select(selectedID);
+			const rightLesionId = lesionsModel.getItemLesionID(rightImage);
+			const rightLesionImages = lesionsModel.getLesionImages(rightLesionId);
+			const rightType = this._rightGroup.getValue();
+			const rightImagesGroups = this.groupImages(rightLesionImages, rightType);
+			if (rightImagesGroups.length === 1) {
+				this._rightGroup.setValue(constants.MULTI_LESION_GROUP_BY.TYPE);
+				this._rightGroup.refresh();
+			}
+			else if (this._rightGroup.getValue !== constants.MULTI_LESION_GROUP_BY.TIME) {
+				this._rightGroup.setValue(constants.MULTI_LESION_GROUP_BY.TIME);
+			}
+
+			if (this._topPanel.isVisible()) {
+				this._collapseButton.hide();
+				this._topPanel.hide();
+				this._expandButton.show();
+			}
+		});
+
+		const leftGroupByHandler = () => {
+			const leftImage = lesionsModel.getLeftImage();
+			this.fillLeftPanel(leftImage);
 		};
+
+		this._leftGroup.attachEvent("onChange", leftGroupByHandler.bind(this));
+
+		const rightGroupByHandler = () => {
+			const rightImage = lesionsModel.getRightImage();
+			this.fillRightPanel(rightImage);
+		};
+
 		this._rightGroup.attachEvent("onChange", rightGroupByHandler.bind(this));
-		this._rightGroup.attachEvent("onAfterRender", rightGroupByHandler.bind(this));
+
 		this._rightSlider.attachEvent("onBeforeDrop", () => false);
 		this._topSlider.attachEvent("onBeforeDrop", () => false);
 		this._leftSlider.attachEvent("onBeforeDrop", () => false);
@@ -148,10 +169,11 @@ export default class MultiLesionWindowService {
 		webix.DragControl.addDrop(leftImageView, {$drop: (/* source, target, event */) => {
 			const dnd = webix.DragControl.getContext();
 			const item = dnd.from.getItem(dnd.start);
-			const lesionID = lesionsModel.getItemLesionID(item);
+			const image = item.firstImage ?? item;
+			const lesionID = lesionsModel.getItemLesionID(image);
 			if (lesionID) {
-				lesionsModel.setLeftImage(item);
-				this.fillLeftPanel(item);
+				lesionsModel.setLeftImage(image);
+				this.fillLeftPanel(image);
 			}
 			else {
 				webix.message("There are no lesions attached to this image");
@@ -160,10 +182,11 @@ export default class MultiLesionWindowService {
 		webix.DragControl.addDrop(rightImageView, {$drop: (/* source, target, event */) => {
 			const dnd = webix.DragControl.getContext();
 			const item = dnd.from.getItem(dnd.start);
-			const lesionID = lesionsModel.getItemLesionID(item);
+			const image = item.firstImage ?? item;
+			const lesionID = lesionsModel.getItemLesionID(image);
 			if (lesionID) {
-				lesionsModel.setRightImage(item);
-				this.fillRightPanel(item);
+				lesionsModel.setRightImage(image);
+				this.fillRightPanel(image);
 			}
 			else {
 				webix.message("There are no lesions attached to this image");
@@ -305,14 +328,26 @@ export default class MultiLesionWindowService {
 		const lesionImages = webix.copy(lesionsModel.getLesionImages(lesionID));
 		const itemID = lesionsModel.getItemID(item);
 		const anchorImageID = lesionsModel.getAnchorImageID(lesionID);
+		this._rightContainer.show();
+		let rightGroupType = this._rightGroup.getValue();
+		let imageForRightPanel;
 		if (itemID === anchorImageID) {
-			const imageForRightPanel = lesionsModel.getFirstNonAnchorImage(lesionID, anchorImageID);
-			this.fillRightPanel(imageForRightPanel);
-			this._rightContainer.show();
+			imageForRightPanel = lesionsModel.getFirstNonAnchorImage(lesionID, anchorImageID);
 		}
 		else {
-			this.fillRightPanel(item);
-			this._rightContainer.show();
+			imageForRightPanel = item;
+		}
+		lesionsModel.setRightImage(imageForRightPanel);
+		if (rightGroupType === "") {
+			this._rightGroup.setValue(constants.MULTI_LESION_GROUP_BY.TIME);
+			rightGroupType = this._rightGroup.getValue();
+		}
+		this.fillRightPanel(imageForRightPanel);
+
+		let leftGroupType = this._leftGroup.getValue();
+		if (leftGroupType === "") {
+			this._leftGroup.setValue(constants.MULTI_LESION_GROUP_BY.TYPE);
+			leftGroupType = this._leftGroup.getValue();
 		}
 		const anchorImg = lesionImages.find(i => lesionsModel.getItemID(i) === anchorImageID);
 		this.fillLeftPanel(anchorImg);
@@ -322,51 +357,25 @@ export default class MultiLesionWindowService {
 		const lesionImages = lesionsModel.getLesionImages(lesionID);
 		if (isRightSide === true) {
 			let rightGroupType = this._rightGroup.getValue();
-			if (rightGroupType === "") {
-				this._rightGroup.setValue(constants.MULTI_LESION_GROUP_BY.TIME);
-				rightGroupType = this._rightGroup.getValue();
-			}
 			const rightImagesGroups = this.groupImages(lesionImages, rightGroupType);
-			let sortedImages;
-			if (rightGroupType === constants.MULTI_LESION_GROUP_BY.NO_GROUP) {
-				const images = rightImagesGroups.map(g => g.images[0]);
-				sortedImages = this.sortImages(images, rightImagesGroups);
-			}
-			else {
-				const currentImagesGroup = rightImagesGroups.find((g) => {
-					const found = g.images
-						.find(i => lesionsModel.getItemID(item) === lesionsModel.getItemID(i));
-					return found;
-				});
-				sortedImages = this.sortImages(currentImagesGroup.images, rightGroupType);
-			}
+			const sortedImages = this.sortImages(rightImagesGroups, rightGroupType, item);
 			lesionsModel.setCurrentRightImages(sortedImages);
 			this._rightSlider.clearAll();
 			this._rightSlider.parse(rightImagesGroups);
+			this._rightSlider.unselectAll();
+			const groupToSelect = this.findItemToSelect(rightImagesGroups, item);
+			this._rightSlider.select(groupToSelect.id);
 		}
 		else {
 			let leftGroupType = this._leftGroup.getValue();
-			if (leftGroupType === "") {
-				this._leftGroup.setValue(constants.MULTI_LESION_GROUP_BY.TIME);
-				leftGroupType = this._leftGroup.getValue();
-			}
 			const leftImagesGroups = this.groupImages(lesionImages, leftGroupType);
-			let sortedImages;
-			if (leftGroupType === constants.MULTI_LESION_GROUP_BY.NO_GROUP) {
-				const images = leftImagesGroups.map(g => g.images[0]);
-				sortedImages = this.sortImages(images, leftGroupType);
-			}
-			else {
-				const currentImagesGroup = leftImagesGroups.find((g) => {
-					const found = g.images
-						.find(i => lesionsModel.getItemID(item) === lesionsModel.getItemID(i));
-					return found;
-				});
-				sortedImages = this.sortImages(currentImagesGroup.images, leftGroupType);
-			}
+			const sortedImages = this.sortImages(leftImagesGroups, leftGroupType, item);
 			lesionsModel.setCurrentLeftImages(sortedImages);
 			this._leftSlider.clearAll();
 			this._leftSlider.parse(leftImagesGroups);
+			this._leftSlider.unselectAll();
+			const groupToSelect = this.findItemToSelect(leftImagesGroups, item);
+			this._leftSlider.select(groupToSelect.id);
 		}
 	}
 
@@ -448,7 +457,6 @@ export default class MultiLesionWindowService {
 
 	fillRightPanel(image) {
 		lesionsModel.setRightImage(image);
-		this._rightImage.parse(image);
 		this._rightFooter.parse(image);
 		this.setAnchorIcon(image, constants.MULTI_LESION_SIDE.RIGHT);
 		const imageID = lesionsModel.getItemID(image);
@@ -456,15 +464,11 @@ export default class MultiLesionWindowService {
 		this._rightImageLabel.refresh();
 		const lesionID = lesionsModel.getItemLesionID(image);
 		this.parseImages(image, lesionID, true);
-		const itemToSelect = this._rightSlider
-			.find(obj => lesionsModel.getItemID(obj) === lesionsModel.getItemID(image), true);
-		this._rightSlider.unselectAll();
-		this._rightSlider.select(itemToSelect?.id);
+		this._rightImage.parse(image);
 	}
 
 	fillLeftPanel(image) {
 		lesionsModel.setLeftImage(image);
-		this._leftImage.parse(image);
 		this._leftFooter.parse(image);
 		this.setAnchorIcon(image, constants.MULTI_LESION_SIDE.LEFT);
 		const imageID = lesionsModel.getItemID(image);
@@ -472,10 +476,7 @@ export default class MultiLesionWindowService {
 		this._leftImageLabel.refresh();
 		const lesionID = lesionsModel.getItemLesionID(image);
 		this.parseImages(image, lesionID, false);
-		const itemToSelect = this._leftSlider
-			.find(obj => lesionsModel.getItemID(obj) === lesionsModel.getItemID(image), true);
-		this._leftSlider.unselectAll();
-		this._leftSlider.select(itemToSelect?.id);
+		this._leftImage.parse(image);
 	}
 
 	buildCondition(filter) {
@@ -510,6 +511,7 @@ export default class MultiLesionWindowService {
 		const imagesGroupsObjectKeys = Object.keys(imagesGroupsObj);
 		const result = imagesGroupsObjectKeys.map((k) => {
 			const imgsGroup = {
+				firstImage: imagesGroupsObj[k][0],
 				groupBy: type,
 				groupValue: k,
 				images: imagesGroupsObj[k],
@@ -519,7 +521,22 @@ export default class MultiLesionWindowService {
 		return result;
 	}
 
-	sortImages(images, groupType) {
+	sortImages(imagesGroups, groupType, item) {
+		let images;
+		if (groupType === constants.MULTI_LESION_GROUP_BY.NO_GROUP) {
+			images = imagesGroups.map(g => g.images[0]);
+		}
+		else {
+			const currentImagesGroup = imagesGroups.find((g) => {
+				const found = g.images
+					.find(i => lesionsModel.getItemID(item) === lesionsModel.getItemID(i));
+				return found;
+			});
+			images = [...currentImagesGroup.images];
+		}
+		if (images.length === 1) {
+			return images;
+		}
 		const sortedImages = images.sort((a, b) => {
 			let result;
 			let aValue;
@@ -527,12 +544,17 @@ export default class MultiLesionWindowService {
 			switch (groupType) {
 				case constants.MULTI_LESION_GROUP_BY.TIME:
 					aValue = lesionsModel.getItemModality(a);
-					bValue = lesionsModel.getItemModality(b);
-					result = aValue.localeCompare(bValue);
-					if (result === 0) {
-						aValue = lesionsModel.getItemID(a);
-						bValue = lesionsModel.getItemID(b);
+					if (aValue === constants.MULTI_LESION_TYPE_PRIORITY.FIRST) {
+						result = -1;
+					}
+					else {
+						bValue = lesionsModel.getItemModality(b);
 						result = aValue.localeCompare(bValue);
+						if (result === 0) {
+							aValue = lesionsModel.getItemID(a);
+							bValue = lesionsModel.getItemID(b);
+							result = aValue.localeCompare(bValue);
+						}
 					}
 					break;
 				case constants.MULTI_LESION_GROUP_BY.TYPE:
@@ -585,5 +607,18 @@ export default class MultiLesionWindowService {
 					break;
 			}
 		}
+	}
+
+	findItemToSelect(groups, image) {
+		const groupToSelect = groups.find((obj) => {
+			if (obj.images) {
+				if (obj.images.find(i => lesionsModel.getItemID(i) === lesionsModel.getItemID(image))) {
+					return true;
+				}
+				return false;
+			}
+			return lesionsModel.getItemID(obj) === lesionsModel.getItemID(image);
+		});
+		return groupToSelect;
 	}
 }

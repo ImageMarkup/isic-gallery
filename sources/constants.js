@@ -198,13 +198,16 @@ export default {
 
 	// MultiLesion
 	MULTI_LESION_GROUP_BY: {
-		TIME: "Image time",
-		TYPE: "Image type",
-		COMBINATION: "Image time and type",
+		TIME: "Time Point",
+		TYPE: "Modality",
+		COMBINATION: "Time Point and Modality",
 		NO_GROUP: "No group"
 	},
 	MULTI_LESION_SIDE: {
 		LEFT: "left",
 		RIGHT: "right",
-	}
+	},
+	MULTI_LESION_TYPE_PRIORITY: {
+		FIRST: "dermoscopy"
+	},
 };
