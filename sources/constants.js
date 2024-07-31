@@ -208,6 +208,6 @@ export default {
 		RIGHT: "right",
 	},
 	MULTI_LESION_TYPE_PRIORITY: {
-		FIRST: "dermoscopy"
+		FIRST: "dermoscopic"
 	},
 };

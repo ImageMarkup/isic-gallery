@@ -91,7 +91,7 @@ function getConfig(windowTitle, closeCallback) {
 		css: "multilesion-filter-dropdown",
 		label: "Group by:",
 		labelAlign: "left",
-		width: 250,
+		width: 270,
 		height: 30,
 		labelWidth: 75,
 		value: constants.MULTI_LESION_GROUP_BY.TIME,
@@ -459,8 +459,8 @@ function getVerticalSlider(id, side) {
 		 *
 		 * @param {Object} obj
 		 * @param {obj} obj.firstImage
-		 * @param {string} obj.type
-		 * @param {string | number} obj.value
+		 * @param {string} obj.groupBy
+		 * @param {string | number} obj.groupValue
 		 * @param {Array} obj.images
 		 * @returns
 		 */
