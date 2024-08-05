@@ -24,7 +24,7 @@ function createHintForSearchTimesButton(elementNodeForTooltip, tooltipClassName,
 		const linkProps = this.getBoundingClientRect();
 		const tooltipProps = tooltipWrap.getBoundingClientRect();
 		const topPos = linkProps.top - (tooltipProps.height + padding);
-		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;`);
+		tooltipWrap.setAttribute("style", `top:${topPos}px;left:${linkProps.left}px;z-index: 1010`); // z-index: 1010 to show tooltip in modal window background
 	}
 	elementNodeForTooltip.addEventListener("mouseover", mouseOverHandler);
 	elementNodeForTooltip.addEventListener("mouseout", () => {
@@ -39,11 +39,12 @@ function createTimesSearchButton(
 	tooltipText,
 	nameFilter
 ) {
+	const className = `clear-input-${webix.uid()}`;
 	inputNode.lastChild.style.paddingRight = "26px";
 	const timesSpan = document.createElement("span");
 	inputNode.appendChild(timesSpan);
 	const timesButtonNode = inputNode.lastChild;
-	timesButtonNode.setAttribute("class", "search-times-button webix_input_icon fas fa-times");
+	timesButtonNode.setAttribute("class", `search-times-button webix_input_icon fas fa-times ${className}`);
 	timesButtonNode.setAttribute("style", "height:26px; padding-top:6px;");
 	const tootipTextForTimesButton = `${tooltipText}`;
 	const tooltipClassNameForTimesButton = "tooltip";
@@ -52,10 +53,12 @@ function createTimesSearchButton(
 		tooltipClassNameForTimesButton,
 		tootipTextForTimesButton
 	);
-	searchInput.on_click["fa-times"] = () => {
+	searchInput.on_click[className] = () => {
 		if (searchInput.getValue() !== "") {
 			searchInput.setValue("");
-			appliedFilterModel.setFilterValue("");
+			if (appliedFilterModel) {
+				appliedFilterModel?.setFilterValue("");
+			}
 			if (nameFilter) {
 				searchInput.callEvent("onEnter");
 			}
