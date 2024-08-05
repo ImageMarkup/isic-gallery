@@ -35,7 +35,6 @@ class GalleryService {
 		imageWindowMetadata,
 		metadataWindow,
 		metadataWindowMetadata,
-		multiImageLesionWindow,
 		filtersForm,
 		appliedFiltersList,
 		unselectLink,
@@ -67,7 +66,6 @@ class GalleryService {
 		this._imageWindowMetadata = imageWindowMetadata;
 		this._metadataWindow = metadataWindow;
 		this._metadataWindowMetadata = metadataWindowMetadata;
-		this._multiImageLesionWindow = multiImageLesionWindow;
 		this._filtersForm = filtersForm;
 		this._appliedFiltersList = appliedFiltersList;
 		this._imagesSelectionTemplate = unselectLink;
@@ -442,9 +440,7 @@ class GalleryService {
 				const filtered = state.imagesTotalCounts.passedFilters.filtered;
 				this._updateContentHeaderTemplate({
 					rangeStart: offset + 1,
-					rangeFinish: currentCount && offset + limit >= currentCount
-						? currentCount
-						: offset + limit,
+					rangeFinish: currentCount && offset + limit >= currentCount ? currentCount : offset + limit,
 					totalCount: count,
 					currentCount,
 					filtered
@@ -637,16 +633,6 @@ class GalleryService {
 			);
 			if (url) {
 				util.downloadByLink(url, `${currentItemId}.zip`);
-			}
-		};
-
-		this._imagesDataview.on_click["layer-group"] = (e, id) => {
-			if (this._multiImageLesionWindow) {
-				const currentItem = this._imagesDataview.getItem(id);
-				this._view.$scope.setMultiLesionMode(
-					currentItem,
-				);
-				this._multiImageLesionWindow.show();
 			}
 		};
 
@@ -1153,12 +1139,6 @@ class GalleryService {
 	}
 
 	_updateContentHeaderTemplate(ranges) {
-		if (ranges.filtered) {
-			state.filteredImages.isImagesFiltered = true;
-			if (ranges.currentCount) {
-				state.filteredImages.filteredImagesCount = ranges.currentCount;
-			}
-		}
 		const values = webix.copy(ranges);
 		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values
 		this._contentHeaderTemplate?.refresh();
@@ -1482,7 +1462,7 @@ class GalleryService {
 
 	_searchEventsMethods(eventMethod) {
 		this._searchInput.detachEvent("onEnter");
-		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
+		this._searchInput.on_click["fa-search"] = eventMethod;
 		this._searchInput.attachEvent("onEnter", eventMethod);
 	}
 

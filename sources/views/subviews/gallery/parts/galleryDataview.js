@@ -1,7 +1,6 @@
 import "../../../components/activeDataview";
 import constants from "../../../../constants";
 import galleryImageUrl from "../../../../models/galleryImagesUrls";
-import lesionsModel from "../../../../models/lesionsModel";
 import selectedImages from "../../../../models/selectedGalleryImages";
 import state from "../../../../models/state";
 import util from "../../../../utils/util";
@@ -90,20 +89,12 @@ const dataview = {
 	datathrottle: 500,
 	onContext: {},
 	template(obj, common) {
-		const lesionID = lesionsModel.getItemLesionID(obj);
-		const lesionModalitiesCount = lesionID
-			? lesionsModel.getLesionModalitiesCount(lesionID)
-			: null;
-		const lesionTimePointsCount = lesionID
-			? lesionsModel.getLesionTimePointsCount(lesionID)
-			: null;
 		const imageIconDimensions = util.getImageIconDimensions();
 		let flagForStudies = selectedImages.getStudyFlag();
 		// TODO check this when if study works
 		if (flagForStudies) {
 			// eslint-disable-next-line no-use-before-define
 			let dataviewConfig = $$(getIdFromConfig());
-			// TODO: find out why we use find
 			// eslint-disable-next-line array-callback-return
 			dataviewConfig.find((config) => {
 				if (selectedImages.isSelectedInStudies(config.isic_id)) {
@@ -121,21 +112,6 @@ const dataview = {
 				</span>
 				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 			</div>` : "";
-		const lesionIconElementClass = lesionID
-			? "gallery-images-button-elem"
-			: "gallery-images-button-elem-disabled";
-		const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
-			<span class="gallery-images-button layer-group tooltip-title">
-				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
-					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
-				</svg>
-			</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-			<span class="gallery-images-badge gallery-images-badge_1 tooltip-title">${lesionModalitiesCount ?? 0}</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion modalities count</span>
-			<span class="gallery-images-badge gallery-images-badge_2 tooltip-title">${lesionTimePointsCount ?? 0}</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion time points count</span>
-		</div>`;
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
 			galleryImageUrl.setPreviewImageUrl(
@@ -175,7 +151,6 @@ const dataview = {
 									</span>
 									<span class="tooltip-block tooltip-block-top">Download ZIP</span>
 								</div>
-								${lesionIcon}
 								${diagnosisIcon}
 							</div>
 						</div>
