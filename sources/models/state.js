@@ -29,11 +29,7 @@ const state = {
 			toolbarValues: {}
 		};
 	},
-	imagesOffset: 0,
-	filteredImages: {
-		isImagesFiltered: false,
-		filteredImagesCount: 0
-	}
+	imagesOffset: 0
 };
 
 export default state;
