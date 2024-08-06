@@ -4,9 +4,11 @@ import constants from "../../../constants";
 import "../../components/activeList";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import selectedImages from "../../../models/selectedGalleryImages";
+import state from "../../../models/state";
 import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
+import MultiLesionWindowService from "../../../services/gallery/multiimageLesionWindow";
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
 import util from "../../../utils/util";
 import collapser from "../../components/collapser";
@@ -17,6 +19,7 @@ import dataview from "./parts/galleryDataview";
 import pager from "./parts/galleryPager";
 import imageWindow from "./windows/imageWindow";
 import metadataWindow from "./windows/metadataWindow";
+import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 
 const ID_PAGER = "gallery-pager-id";
 const ID_DATAVIEW = "gallery-dataview-id";
@@ -143,11 +146,11 @@ export default class GalleryView extends JetView {
 							template(obj) {
 								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
-								const filteredAmountHtml = `Filtered images: <b>${obj.currentCount || 0}</b>`;
+								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>`;
 								let result = "";
 								if (obj.filtered) {
 									result = ` ${filteredAmountHtml} ${totalAmountHtml}`;
-									if (obj.rangeFinish - obj.rangeStart < obj.currentCount) {
+									if (obj.rangeFinish - obj.rangeStart < state.filteredImages.filteredImagesCount) {
 										result = `${rangeHtml} ${result}`;
 									}
 								}
@@ -326,6 +329,10 @@ export default class GalleryView extends JetView {
 			null,
 			this.removeParam.bind(this)
 		));
+		this.multiImageLesionWindow = this.ui(multiImageLesionWindow.getConfig(
+			"MULTI-IMAGE LESION CASE STUDY",
+			() => {}
+		));
 		this.metadataWindow = this.ui(metadataWindow.getConfig(ID_METADATA_WINDOW));
 		const contextMenuConfig = contextMenu.getConfig(ID_GALLERY_CONTEXT_MENU);
 		this.galleryContextMenu = this.ui(contextMenuConfig);
@@ -354,6 +361,7 @@ export default class GalleryView extends JetView {
 			$$(imageWindow.getMetadataLayoutId()),
 			this.metadataWindow,
 			$$(metadataWindow.getMetadataLayoutId()),
+			this.multiImageLesionWindow,
 			filtersForm,
 			this.getAppliedFiltersList(),
 			this.imagesSelectionTemplate,
@@ -376,6 +384,12 @@ export default class GalleryView extends JetView {
 			null, // portraitClearAllFiltersTemplate
 			null // landscapeClearAllFiltersTemplate
 		);
+
+		// multi lesion
+		this._multiImageLesionService = new MultiLesionWindowService(
+			this._galleryService
+		);
+		this._multiImageLesionService.ready();
 	}
 
 	async ready() {
@@ -665,5 +679,9 @@ export default class GalleryView extends JetView {
 		if (image) {
 			this.setParam("image", "", true);
 		}
+	}
+
+	setMultiLesionMode(item) {
+		this._multiImageLesionService.setMultiLesionState(item);
 	}
 }

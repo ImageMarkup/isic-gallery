@@ -47,7 +47,10 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.html$/,
-					exclude: /node_modules/,
+					exclude: [
+						/node_modules/,
+						path.resolve(__dirname, "index.html")
+					],
 					use: {loader: "html-loader"}
 				},
 				{
