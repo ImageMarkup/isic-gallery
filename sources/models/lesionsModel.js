@@ -10,7 +10,18 @@ const currentLeftImagesCollection = new webix.DataCollection();
 const currentRightImagesCollection = new webix.DataCollection();
 
 function getLesionByID(lesionID) {
-	return lesionsMap.get(lesionID);
+	if (lesionID) {
+		const lesion = lesionsMap.get(lesionID);
+		return lesion ?? null;
+	}
+	return null;
+}
+
+function setLesionByID(lesionID, lesion) {
+	if (lesion) {
+		lesionsMap.set(lesionID, lesion);
+	}
+	return lesion;
 }
 
 function setLesions(lesions) {
@@ -43,22 +54,25 @@ function checkIsImageAnchor(image) {
 
 function getLesionModalitiesCount(lesionID) {
 	const lesion = getLesionByID(lesionID);
-	const images = lesion.images;
-	const lesionModalitiesCount = images.reduce((modalities, img) => {
-		const imgModality = getImageModality(img);
-		if (modalities.includes(imgModality)) {
+	if (lesion) {
+		const images = lesion.images;
+		const lesionModalitiesCount = images.reduce((modalities, img) => {
+			const imgModality = getImageModality(img);
+			if (modalities.includes(imgModality)) {
+				return modalities;
+			}
+			modalities.push(imgModality);
 			return modalities;
-		}
-		modalities.push(imgModality);
-		return modalities;
-	}, [])?.length;
-	return lesionModalitiesCount;
+		}, [])?.length;
+		return lesionModalitiesCount;
+	}
+	return 0;
 }
 
 function getImagesWithModalityCount(item) {
 	const lesionID = getItemLesionID(item);
-	if (lesionID) {
-		const lesion = getLesionByID(lesionID);
+	const lesion = getLesionByID(lesionID);
+	if (lesion) {
 		const modality = getItemModality(item);
 		const images = lesion.images;
 		const lesionModalityImagesCount = images.filter(i => getImageModality(i) === modality).length;
@@ -78,18 +92,18 @@ function getLesionTimePoints(lesionID) {
 		timePoints.push(imgTimePoint);
 		return timePoints;
 	}, []);
-	return lesionTimePoints;
+	return lesionTimePoints ?? [];
 }
 
 function getLesionTimePointsCount(lesionID) {
 	const lesionTimePoints = getLesionTimePoints(lesionID);
-	return lesionTimePoints.length;
+	return lesionTimePoints?.length ?? 0;
 }
 
 function getImagesWithTimePointsCount(item) {
 	const lesionID = getItemLesionID(item);
-	if (lesionID) {
-		const lesion = getLesionByID(lesionID);
+	const lesion = getLesionByID(lesionID);
+	if (lesion) {
 		const timePoint = getItemTimePoint(item);
 		const images = lesion?.images;
 		const lesionTimePointsImagesCount = images
@@ -101,7 +115,7 @@ function getImagesWithTimePointsCount(item) {
 
 function getLesionImages(lesionID) {
 	const lesion = getLesionByID(lesionID);
-	return lesion?.images;
+	return lesion?.images ?? null;
 }
 
 function getModalityImages(lesionID, modality) {
@@ -125,7 +139,7 @@ function getCombineImages(lesionID, timePoint, modality) {
 
 function getAnchorImageID(lesionID) {
 	const lesion = getLesionByID(lesionID);
-	return lesion?.index_image_id;
+	return lesion?.index_image_id ?? null;
 }
 
 function getFirstNonAnchorImage(lesionID, anchorImageID) {
@@ -316,6 +330,8 @@ function getPrevRightImage(image) {
 
 export default {
 	setLesions,
+	getLesionByID,
+	setLesionByID,
 	getLesionImagesCount,
 	getLesionModalitiesCount,
 	getModalityImages,

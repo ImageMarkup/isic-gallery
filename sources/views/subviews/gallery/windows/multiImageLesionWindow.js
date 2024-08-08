@@ -344,6 +344,7 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 				},
 				template(obj, /* common */) {
 					const lesionID = lesionsModel.getItemLesionID(obj);
+					const lesion = lesionsModel.getLesionByID(lesionID);
 					const lesionModalitiesCount = lesionID
 						? lesionsModel.getLesionModalitiesCount(lesionID)
 						: null;
@@ -360,9 +361,12 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 							height: constants.DEFAULT_RIBBON_IMAGE_ICON_HEIGHT
 						}
 					};
-					const lesionIconElementClass = lesionID
+					const lesionIconElementClass = lesion
 						? "gallery-images-button-elem"
 						: "gallery-images-button-elem-disabled";
+					const disabledBadge = lesion
+						? ""
+						: " disabled-badge";
 					const diagnosisIcon = obj.hasAnnotations ?
 						`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 							<span class="gallery-images-button diagnosis-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
@@ -379,9 +383,9 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 							</svg>
 						</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-						<span class="gallery-images-badge gallery-images-badge_1 tooltip-title">${lesionModalitiesCount ?? 0}</span>
+						<span class="gallery-images-badge gallery-images-badge_1${disabledBadge} tooltip-title">${lesionModalitiesCount ?? 0}</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Modalities count</span>
-						<span class="gallery-images-badge gallery-images-badge_2 tooltip-title">${lesionTimePointsCount ?? 0}</span>
+						<span class="gallery-images-badge gallery-images-badge_2${disabledBadge} tooltip-title">${lesionTimePointsCount ?? 0}</span>
 						<span class="tooltip-block tooltip-block-top" style="display: block">Time points count</span>
 					</div>`;
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";

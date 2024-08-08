@@ -91,6 +91,7 @@ const dataview = {
 	onContext: {},
 	template(obj, common) {
 		const lesionID = lesionsModel.getItemLesionID(obj);
+		const lesion = lesionsModel.getLesionByID(lesionID);
 		const lesionModalitiesCount = lesionID
 			? lesionsModel.getLesionModalitiesCount(lesionID)
 			: null;
@@ -121,9 +122,12 @@ const dataview = {
 				</span>
 				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 			</div>` : "";
-		const lesionIconElementClass = lesionID
+		const lesionIconElementClass = lesion
 			? "gallery-images-button-elem"
 			: "gallery-images-button-elem-disabled";
+		const disabledBadge = lesion
+			? ""
+			: " disabled-badge";
 		const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
 			<span class="gallery-images-button layer-group tooltip-title">
 				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
@@ -131,9 +135,9 @@ const dataview = {
 				</svg>
 			</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-			<span class="gallery-images-badge gallery-images-badge_1 tooltip-title">${lesionModalitiesCount ?? 0}</span>
+			<span class="gallery-images-badge gallery-images-badge_1${disabledBadge} tooltip-title">${lesionModalitiesCount ?? 0}</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion modalities count</span>
-			<span class="gallery-images-badge gallery-images-badge_2 tooltip-title">${lesionTimePointsCount ?? 0}</span>
+			<span class="gallery-images-badge gallery-images-badge_2${disabledBadge} tooltip-title">${lesionTimePointsCount ?? 0}</span>
 			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion time points count</span>
 		</div>`;
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";

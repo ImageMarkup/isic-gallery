@@ -5,6 +5,7 @@ import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
+import lesionsModel from "../../models/lesionsModel";
 import selectedImages from "../../models/selectedGalleryImages";
 import state from "../../models/state";
 import util from "../../utils/util";
@@ -1299,9 +1300,17 @@ class GalleryService {
 			galleryImagesUrls.setNextImagesUrl(images.next);
 			galleryImagesUrls.setPrevImagesUrl(images.previous);
 			if (images && images.results.length > 0) {
-				images.results.forEach((item) => {
+				for await (const item of images.results) {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
-				});
+					const lesionID = lesionsModel.getItemLesionID(item);
+					const lesion = lesionID ? await lesionsModel.getLesionByID(lesionID) : null;
+					if (lesionID && !lesion) {
+						const newLesion = await ajax.getLesionByID(lesionID);
+						if (newLesion) {
+							await lesionsModel.setLesionByID(lesionID, newLesion);
+						}
+					}
+				}
 				parseDataToDataview(images);
 			}
 			else {
