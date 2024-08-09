@@ -1,3 +1,5 @@
+import groupBy from "core-js/actual/object/group-by";
+
 const lesionsMap = new Map();
 let currentItem;
 let leftMode;
@@ -238,21 +240,29 @@ function setRightImage(image) {
 }
 
 function groupByTimePoint(images) {
-	const imagesGroups = Object.groupBy(images, i => getImageTimePoint(i));
+	const imagesGroups = !Object.groupBy
+		? Object.groupBy(images, i => getImageTimePoint(i))
+		: groupBy(images, i => getImageTimePoint(i));
 	return imagesGroups;
 }
 
 function groupByModality(images) {
-	const imagesGroups = Object.groupBy(images, i => getImageModality(i));
+	const imagesGroups = !Object.groupBy
+		? Object.groupBy(images, i => getImageModality(i))
+		: groupBy(images, i => getImageTimePoint(i));
 	return imagesGroups;
 }
 
 function groupByTimePointAndModality(images) {
-	const timePointGroups = Object.groupBy(images, i => getImageTimePoint(i));
+	const timePointGroups = !Object.groupBy
+		? Object.groupBy(images, i => getImageTimePoint(i))
+		: groupBy(images, i => getImageTimePoint(i));
 	const timePointKeys = Object.keys(timePointGroups);
 	const imagesGroups = {};
 	timePointKeys.forEach((tpk) => {
-		const modalityGroups = Object.groupBy(timePointGroups[tpk], i => getImageModality(i));
+		const modalityGroups = !Object.groupBy
+			? Object.groupBy(timePointGroups[tpk], i => getImageModality(i))
+			: groupBy(timePointGroups[tpk], i => getImageModality(i));
 		const modalityKeys = Object.keys(modalityGroups);
 		modalityKeys.forEach((mk) => {
 			imagesGroups[`${tpk} and ${mk}`] = modalityGroups[mk];
@@ -262,7 +272,9 @@ function groupByTimePointAndModality(images) {
 }
 
 function groupByID(images) {
-	const imagesGroups = Object.groupBy(images, i => getItemID(i));
+	const imagesGroups = !Object.groupBy
+		? Object.groupBy(images, i => getItemID(i))
+		: groupBy(images, i => getItemID(i));
 	return imagesGroups;
 }
 
