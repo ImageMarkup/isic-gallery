@@ -115,7 +115,7 @@ function getImagesWithTimePointsCount(item) {
 
 function getLesionImages(lesionID) {
 	const lesion = getLesionByID(lesionID);
-	return lesion?.images ?? null;
+	return lesion?.images ?? [];
 }
 
 function getModalityImages(lesionID, modality) {
