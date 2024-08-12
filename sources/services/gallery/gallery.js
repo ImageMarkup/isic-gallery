@@ -5,6 +5,7 @@ import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
+import lesionsModel from "../../models/lesionsModel";
 import selectedImages from "../../models/selectedGalleryImages";
 import state from "../../models/state";
 import util from "../../utils/util";
@@ -35,6 +36,7 @@ class GalleryService {
 		imageWindowMetadata,
 		metadataWindow,
 		metadataWindowMetadata,
+		multiImageLesionWindow,
 		filtersForm,
 		appliedFiltersList,
 		unselectLink,
@@ -66,6 +68,7 @@ class GalleryService {
 		this._imageWindowMetadata = imageWindowMetadata;
 		this._metadataWindow = metadataWindow;
 		this._metadataWindowMetadata = metadataWindowMetadata;
+		this._multiImageLesionWindow = multiImageLesionWindow;
 		this._filtersForm = filtersForm;
 		this._appliedFiltersList = appliedFiltersList;
 		this._imagesSelectionTemplate = unselectLink;
@@ -440,7 +443,9 @@ class GalleryService {
 				const filtered = state.imagesTotalCounts.passedFilters.filtered;
 				this._updateContentHeaderTemplate({
 					rangeStart: offset + 1,
-					rangeFinish: currentCount && offset + limit >= currentCount ? currentCount : offset + limit,
+					rangeFinish: currentCount && offset + limit >= currentCount
+						? currentCount
+						: offset + limit,
 					totalCount: count,
 					currentCount,
 					filtered
@@ -633,6 +638,16 @@ class GalleryService {
 			);
 			if (url) {
 				util.downloadByLink(url, `${currentItemId}.zip`);
+			}
+		};
+
+		this._imagesDataview.on_click["layer-group"] = (e, id) => {
+			if (this._multiImageLesionWindow) {
+				const currentItem = this._imagesDataview.getItem(id);
+				this._view.$scope.setMultiLesionMode(
+					currentItem,
+				);
+				this._multiImageLesionWindow.show();
 			}
 		};
 
@@ -1139,6 +1154,12 @@ class GalleryService {
 	}
 
 	_updateContentHeaderTemplate(ranges) {
+		if (ranges.filtered) {
+			state.filteredImages.isImagesFiltered = true;
+			if (ranges.currentCount) {
+				state.filteredImages.filteredImagesCount = ranges.currentCount;
+			}
+		}
 		const values = webix.copy(ranges);
 		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values
 		this._contentHeaderTemplate?.refresh();
@@ -1279,9 +1300,17 @@ class GalleryService {
 			galleryImagesUrls.setNextImagesUrl(images.next);
 			galleryImagesUrls.setPrevImagesUrl(images.previous);
 			if (images && images.results.length > 0) {
-				images.results.forEach((item) => {
+				for await (const item of images.results) {
 					item.markCheckbox = selectedImages.isSelected(item.isic_id);
-				});
+					const lesionID = lesionsModel.getItemLesionID(item);
+					const lesion = lesionID ? await lesionsModel.getLesionByID(lesionID) : null;
+					if (lesionID && !lesion) {
+						const newLesion = await ajax.getLesionByID(lesionID);
+						if (newLesion) {
+							await lesionsModel.setLesionByID(lesionID, newLesion);
+						}
+					}
+				}
 				parseDataToDataview(images);
 			}
 			else {
@@ -1462,7 +1491,7 @@ class GalleryService {
 
 	_searchEventsMethods(eventMethod) {
 		this._searchInput.detachEvent("onEnter");
-		this._searchInput.on_click["fa-search"] = eventMethod;
+		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
 		this._searchInput.attachEvent("onEnter", eventMethod);
 	}
 

@@ -66,6 +66,7 @@ class AjaxActions {
 
 	async _ajaxGet(url, params) {
 		const headers = await getAuthHeaders();
+		headers["Content-Type"] = "application/json";
 		if (!params) {
 			params = {};
 		}
@@ -247,6 +248,28 @@ class AjaxActions {
 			});
 		}
 		return null;
+	}
+
+	async getLesions(/* sourceParams */) {
+		try {
+			const result = await this._ajaxGet(`${API_URL}lesions/`);
+			return this._parseData(result);
+		}
+		catch (error) {
+			parseError(error);
+			return [];
+		}
+	}
+
+	async getLesionByID(lesionID) {
+		try {
+			const result = await this._ajaxGet(`${API_URL}lesions/${lesionID}`);
+			return this._parseData(result);
+		}
+		catch (error) {
+			parseError(error);
+			return null;
+		}
 	}
 }
 

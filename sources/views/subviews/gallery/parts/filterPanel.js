@@ -36,7 +36,7 @@ function getConfig(config) {
 
 	const searchField = {
 		view: "search",
-		icon: "fas fa-search",
+		icon: "fas fa-search gallery-search-filter",
 		id: ID_SEARCH_FIELD,
 		name: NAME_SEARCH_FIELD,
 		value: `${appliedFiltersModel.getFilterValue()}`,
