@@ -1,5 +1,6 @@
 import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
+import collectionsModel from "../../models/collectionsModel";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -30,12 +31,20 @@ function prepareOptionName(value, key) {
 function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
-		// eslint-disable-next-line max-len
-		if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
-			return facets?.meta?.missing_count;
+		if (key === "collections") {
+			const collections = collectionsModel.getAllCollections();
+			foundItem = facets.buckets.find((element) => {
+				const collection = collections.find(item => element.key === item.id);
+				return valueThatLookingFor === collection?.name;
+			});
 		}
-		// eslint-disable-next-line max-len
-		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		else if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
+			return facets.meta.missing_count;
+		}
+		else {
+			// eslint-disable-next-line max-len
+			foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		}
 	}
 	return foundItem ? foundItem.doc_count : null;
 }
@@ -70,6 +79,9 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
+			if (data.key === "collections") {
+				break;
+			}
 			const controlId = util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
 			// we do not need to call onChange event for the control. so we block event

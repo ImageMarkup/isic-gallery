@@ -103,8 +103,7 @@ class AjaxActions {
 
 	// New API
 	getImages(sourceParams) {
-		if (sourceParams
-			&& sourceParams.filter
+		if (sourceParams?.filter || sourceParams?.collections
 		) {
 			sourceParams.conditions = sourceParams.filter;
 			return this.searchImages(sourceParams);
@@ -133,9 +132,11 @@ class AjaxActions {
 	// New API
 	searchImages(sourceParams) {
 		const conditions = sourceParams.conditions || "";
+		const collections = sourceParams.collections || "";
 		const params = {
 			limit: sourceParams.limit || 0,
-			query: conditions
+			query: conditions,
+			collections
 		};
 		return this._ajaxGet(`${API_URL}images/search/`, params)
 			.then(result => this._parseData(result))
@@ -146,10 +147,10 @@ class AjaxActions {
 	// New API
 	getFacets(sourceParams) {
 		const conditions = sourceParams && sourceParams.conditions ? sourceParams.conditions : null;
-		const collection = sourceParams && sourceParams.collection ? sourceParams.collection : "";
+		const collections = sourceParams && sourceParams.collections ? sourceParams.collections : "";
 		const params = {
 			query: conditions,
-			collection
+			collections
 		};
 		return this._ajaxGet(`${API_URL}images/facets/`, params)
 			.then((result) => {
@@ -217,6 +218,12 @@ class AjaxActions {
 				return {allImages: this._parseData(result)};
 			})
 			.catch(parseError);
+	}
+
+	getCollections(sourceParams) {
+		const params = sourceParams ? {...sourceParams} : {limit: 0};
+		return this._ajaxGet(`${API_URL}collections/`, params)
+			.then(result => this._parseData(result));
 	}
 
 	async getDownloadUrl(type, query) {

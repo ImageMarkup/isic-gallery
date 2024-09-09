@@ -557,6 +557,7 @@ export default class GalleryMobileView extends JetView {
 			null, // imageWindowMetadata
 			null, // metadataWindow
 			null, // metadataWindowMetadata
+			null, // multiImageLesionWindow
 			filtersForm,
 			$$(filterPanel.getAppliedFiltersListID()),
 			null, // unselectLink
