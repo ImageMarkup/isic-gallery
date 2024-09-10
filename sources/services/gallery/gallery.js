@@ -1079,9 +1079,16 @@ class GalleryService {
 			const allCollectionsOptions = {
 				limit: 0
 			};
+			const pinnedCollectionOptions = {
+				limit: 0,
+				pinned: true,
+			};
 			const allCollectionsData = await ajax.getCollections(allCollectionsOptions);
+			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
 			collectionsModel.clearAllCollections();
+			collectionsModel.clearPinnedCollections();
 			collectionsModel.setAllCollectionsData(allCollectionsData);
+			collectionsModel.setPinnedCollections(pinnedCollectionsData);
 
 			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
 			this._updateContentHeaderTemplate(
@@ -1096,10 +1103,12 @@ class GalleryService {
 			const ids = Object.keys(facets);
 			ids.forEach((id) => {
 				state.imagesTotalCounts[id] = facets[id].buckets;
-				state.imagesTotalCounts[id].push({
-					key: constants.MISSING_KEY_VALUE,
-					doc_count: facets[id]?.meta?.missing_count
-				});
+				if (id !== constants.COLLECTION_KEY) {
+					state.imagesTotalCounts[id].push({
+						key: constants.MISSING_KEY_VALUE,
+						doc_count: facets[id]?.meta?.missing_count
+					});
+				}
 			});
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");

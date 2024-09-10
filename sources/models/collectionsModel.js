@@ -1,3 +1,4 @@
+import constants from "../constants";
 import filtersModel from "./appliedFilters";
 
 const allCollections = [];
@@ -60,7 +61,8 @@ function updateCollections(buckets) {
 
 function getAppliedCollectionsForApi() {
 	const appliedFilters = filtersModel.getFiltersArray();
-	const appliedCollections = appliedFilters.filter(filter => filter.key === "collections");
+	const appliedCollections = appliedFilters
+		.filter(filter => filter.key === constants.COLLECTION_KEY);
 	const result = appliedCollections.map(collection => collection.optionId);
 	return result.length > 0 ? result.join(",") : "";
 }

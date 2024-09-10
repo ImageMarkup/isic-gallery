@@ -389,7 +389,8 @@ function _prepareCondition(filter) {
 function getConditionsForApi() {
 	const conditions = {};
 	conditions.operands = [];
-	const groupedFilters = _groupFiltersByKey().filter(groupedFilter => groupedFilter.key !== "collections");
+	const groupedFilters = _groupFiltersByKey()
+		.filter(groupedFilter => groupedFilter.key !== constants.COLLECTION_KEY);
 	if (groupedFilters.length !== 0) {
 		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
 		groupedFilters.forEach((groupedFilter) => {
@@ -445,7 +446,7 @@ function getFiltersFromURL(filtersArray) {
 			const filterId = typeof filter === "object" ? filter.id : filter;
 			const control = $$(filterId);
 			const data = control.config.filtersChangedData;
-			data.id = filter.includes("collections")
+			data.id = filter.includes(constants.COLLECTION_KEY)
 				? filter
 				: util.getOptionId(data.key, data.value);
 			data.remove = false;

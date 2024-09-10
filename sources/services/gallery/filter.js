@@ -31,11 +31,11 @@ function prepareOptionName(value, key) {
 function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
-		if (key === "collections") {
-			const collections = collectionsModel.getAllCollections();
+		if (key === constants.COLLECTION_KEY) {
+			const pinnedCollections = collectionsModel.getPinnedCollections();
 			foundItem = facets.buckets.find((element) => {
-				const collection = collections.find(item => element.key === item.id);
-				return valueThatLookingFor === collection?.name;
+				const collection = pinnedCollections.find(item => element.key === item.id);
+				return valueThatLookingFor === collection?.id;
 			});
 		}
 		else if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
@@ -79,10 +79,9 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
-			if (data.key === "collections") {
-				break;
-			}
-			const controlId = util.getOptionId(data.key, data.value);
+			const controlId = data.key === constants.COLLECTION_KEY
+				? util.getOptionId(data.key, data.optionId)
+				: util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
 			// we do not need to call onChange event for the control. so we block event
 			control.blockEvent();
@@ -155,7 +154,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				}
 			});
 		}
-		// else if (filterKey === "collections") {
+		// else if (filterKey === constants.COLLECTION_KEY) {
 		// 	let values = state.imagesTotalCounts[filterKey];
 		// 	values.forEach((value) => {
 

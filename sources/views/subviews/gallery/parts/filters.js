@@ -16,9 +16,6 @@ function getLabelUI(label) {
 		css: "gallery-sidebar-title",
 		align: "left"
 	};
-	if (label.toUpperCase() === "COLLECTIONS") {
-		view.css = "hidden-block";
-	}
 	return view;
 }
 
@@ -161,12 +158,12 @@ function getCheckboxUI(data, collapsed) {
 		};
 
 	data?.options?.forEach((currentOption) => {
-		if (data.id === "collections") {
+		if (data.id === constants.COLLECTION_KEY) {
 			if (!currentOption.updated) {
-				const allCollections = collectionsModel
-					.getAllCollections()
+				const pinnedCollections = collectionsModel
+					.getPinnedCollections()
 					.map(collection => ({name: collection.name, id: collection.id}));
-				const currentCollection = allCollections
+				const currentCollection = pinnedCollections
 					.find(collection => collection.id === currentOption.key);
 				if (currentCollection) {
 					currentOption.updated = true;
@@ -183,7 +180,7 @@ function getCheckboxUI(data, collapsed) {
 			datatype: data.datatype,
 			key: data.id,
 			filterName: data.name,
-			value: data.id === "collections" ? currentOption.collectionName : optionName,
+			value: data.id === constants.COLLECTION_KEY ? currentOption.collectionName : optionName,
 			optionId: currentOption.optionId,
 			status: "equals"
 		};
@@ -191,8 +188,7 @@ function getCheckboxUI(data, collapsed) {
 			filtersChangedData.to = currentOption.to;
 			filtersChangedData.from = currentOption.from;
 		}
-		if (data.id === "collections") {
-			view.css = "hidden-block";
+		if (data.id === constants.COLLECTION_KEY) {
 			view.rows[1].rows.push(
 				{
 					cols: [
@@ -227,19 +223,6 @@ function getCheckboxUI(data, collapsed) {
 								}
 							}
 						},
-						{
-							id: `${id}-link`,
-							view: "button",
-							type: "icon",
-							gravity: 2,
-							css: "to-collection",
-							icon: "fas fa-arrow-right",
-							label: "To Collection",
-							click: () => {
-								util.openInNewTab(`${constants.URL_COLLECTIONS}${currentOption.optionId}`);
-							}
-						}
-					]
 				}
 			);
 		}

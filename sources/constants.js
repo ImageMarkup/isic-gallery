@@ -183,6 +183,7 @@ export default {
 	DOWNLOAD_ANNOTATIONS_ID: "downloadAnnotations",
 	NULL_OPTION_VALUE: "unknown",
 	MISSING_KEY_VALUE: "missing key",
+	COLLECTION_KEY: "collections",
 
 	DEFAULT_RIBBON_IMAGE_ICON_WIDTH: 14,
 	DEFAULT_RIBBON_IMAGE_ICON_HEIGHT: 14,
