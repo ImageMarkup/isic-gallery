@@ -1,8 +1,10 @@
 import appliedFiltersModel from "../../../../models/appliedFilters";
 import searchButtonModel from "../../../../services/gallery/searchButtonModel";
 import appliedFiltersList from "./appliedFiltersList";
+import searchSuggest from "./searchSuggest";
 
 const ID_SEARCH_FIELD = `search-field-id-${webix.uid()}`;
+const ID_SEARCH_SUGGESTION = `search-suggestion-id-${webix.uid()}`;
 const ID_DOWNLOAD_FILTERED_IMAGES_BUTTON = `download-filtered-images-button-id-${webix.uid()}`;
 const ID_APPLIED_FILTERS_LIST = `applied-filters-list-id-${webix.uid()}`;
 const ID_CLEAR_ALL_FILTERS_TEMPLATE = `clear-all-filters-template-id-${webix.uid()}`;
@@ -34,6 +36,14 @@ function getConfig(config) {
 		hidden: true
 	};
 
+	/** @type {webix.ui.suggestConfig} */
+	const searchSuggestView = searchSuggest.getConfig(ID_SEARCH_SUGGESTION);
+	searchSuggestView.body.template = obj => `${obj.key}: ${obj.value}`;
+	searchSuggestView.filter = (obj, value) => {
+		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
+		return result;
+	};
+
 	const searchField = {
 		view: "search",
 		icon: "fas fa-search gallery-search-filter",
@@ -43,6 +53,7 @@ function getConfig(config) {
 		css: "gallery-search-block",
 		placeholder: "Search images",
 		width: 270,
+		suggest: searchSuggestView,
 		on: {
 			onAfterRender: () => {
 				const searchInputWidth = $$(ID_SEARCH_FIELD).$width;
@@ -164,6 +175,10 @@ function getAppliedFiltersListID() {
 	return ID_APPLIED_FILTERS_LIST;
 }
 
+function getSearchSuggestID() {
+	return ID_SEARCH_SUGGESTION;
+}
+
 export default {
 	getConfig,
 	getFilterScrollViewName,
@@ -172,5 +187,6 @@ export default {
 	getFiltersFormName,
 	getClearAllFiltersTemplateName,
 	getDownloadFilteredImagesButtonName,
-	getAppliedFiltersListID
+	getAppliedFiltersListID,
+	getSearchSuggestID,
 };

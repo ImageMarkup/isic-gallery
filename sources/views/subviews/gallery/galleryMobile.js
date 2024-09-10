@@ -578,7 +578,8 @@ export default class GalleryMobileView extends JetView {
 			this.imageWindowTemplate,
 			this.enlargeContextMenu,
 			portraitClearAllFiltersTemplate,
-			landscapeClearAllFiltersTemplate
+			landscapeClearAllFiltersTemplate,
+			null, // searchSuggest
 		);
 
 		this.heaaderService = new MobileHeaderService(
