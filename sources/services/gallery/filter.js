@@ -83,12 +83,14 @@ function updateFiltersFormControl(data) {
 				? util.getOptionId(data.key, data.optionId)
 				: util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
-			// we do not need to call onChange event for the control. so we block event
-			control.blockEvent();
-			/* remove key is from "filtersChanged" event parameters.
-			   Its value is inverse for checkbox value */
-			control.setValue(!data.remove);
-			control.unblockEvent();
+			if (control) {
+				// we do not need to call onChange event for the control. so we block event
+				control.blockEvent();
+				/* remove key is from "filtersChanged" event parameters.
+				   Its value is inverse for checkbox value */
+				control.setValue(!data.remove);
+				control.unblockEvent();
+			}
 			break;
 		}
 		case "rangeFilter":
