@@ -3,7 +3,7 @@ import state from "./state";
 let filtersData;
 
 const filtersIds = {
-	allCollections: "collections",
+	pinnedCollections: "collections",
 	benignMelignant: "benign_malignant",
 	lesionDiagnosis: "diagnosis",
 	approximateAge: "age_approx",
@@ -30,15 +30,14 @@ const filtersIds = {
 function getFiltersDataValues() {
 	const filtersDataValues = [
 		{
-			label: "Collections",
-			visible: false,
+			label: "Pinned Collections",
 			data: [
 				{
-					id: filtersIds.allCollections,
+					id: filtersIds.pinnedCollections,
 					name: "Collection",
 					type: "checkbox",
 					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.allCollections] ?? []
+					options: state.imagesTotalCounts[filtersIds.pinnedCollections] ?? []
 				}
 			]
 		},

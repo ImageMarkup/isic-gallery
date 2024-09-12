@@ -178,6 +178,10 @@ function createAccordionRows(data) {
 										<div class="item-content-label">Unique ID</div>
 										<div class="item-content-value">${data.isic_id || ""}</div>
 									</div>
+									<div class="item-content-row">
+										<div class="item-content-label">Copyright license</div>
+										<div class="item-content-value">${data.copyright_license || ""}</div>
+									</div>
 								</div>
 							</div>`,
 				autoheight: true,

@@ -173,14 +173,16 @@ function getCheckboxUI(data, collapsed) {
 				}
 			}
 		}
-		const optionName = filterService.prepareOptionName(currentOption.key, data.id);
+		const optionName = data.id === constants.COLLECTION_KEY
+			? filterService.prepareOptionName(currentOption.name, data.id)
+			: filterService.prepareOptionName(currentOption.key, data.id);
 		const id = util.getOptionId(data.id, optionName);
 		const filtersChangedData = {
 			view: data.type,
 			datatype: data.datatype,
 			key: data.id,
 			filterName: data.name,
-			value: data.id === constants.COLLECTION_KEY ? currentOption.collectionName : optionName,
+			value: optionName,
 			optionId: currentOption.optionId,
 			status: "equals"
 		};
@@ -197,13 +199,13 @@ function getCheckboxUI(data, collapsed) {
 							view: "checkbox",
 							css: "checkbox-ctrl",
 							label: "",
-							labelRight: `${optionName} (0)`,
+							labelRight: optionName,
 							value: 0,
 							name: id,
 							height: 28,
 							gravity: 3,
 							attributes: {
-								title: `${optionName} (0)`,
+								title: `${optionName}`,
 								dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
 							},
 							labelWidth: 0,
