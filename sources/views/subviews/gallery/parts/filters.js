@@ -26,11 +26,15 @@ function getCheckboxUI(data, collapsed) {
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlName = util.getOptionId(controlData.id, option);
-			const control = elements[controlName];
-			control.blockEvent(); // block events for checkbox
-			control.setValue(newValue);
-			control.unblockEvent();
+			const controlId = controlData.id === constants.COLLECTION_KEY
+				? util.getOptionId(controlData.id, currentOption.name)
+				: util.getOptionId(controlData.id, option);
+			const control = elements[controlId];
+			if (control) {
+				control.blockEvent(); // block events for checkbox
+				control.setValue(newValue);
+				control.unblockEvent();
+			}
 			filtersInfo.push();
 			let params = webix.copy(control.config.filtersChangedData);
 			params.optionId = currentOption.optionId;

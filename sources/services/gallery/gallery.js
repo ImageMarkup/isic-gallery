@@ -1189,6 +1189,9 @@ class GalleryService {
 			if (ranges.currentCount) {
 				state.filteredImages.filteredImagesCount = ranges.currentCount;
 			}
+			else {
+				state.filteredImages.filteredImagesCount = 0;
+			}
 		}
 		const values = webix.copy(ranges);
 		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values

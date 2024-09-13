@@ -454,6 +454,9 @@ function getFiltersFromURL(filtersArray) {
 				const collection = pinnedCollections?.find(c => c.id === id);
 				filterId = `${constants.COLLECTION_KEY}|${collection?.name}`;
 			}
+			else {
+				filterId = filter;
+			}
 			const control = $$(filterId);
 			if (control) {
 				const data = control.config.filtersChangedData;
