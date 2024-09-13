@@ -1189,7 +1189,7 @@ class GalleryService {
 			if (ranges.currentCount) {
 				state.filteredImages.filteredImagesCount = ranges.currentCount;
 			}
-			else {
+			else if (ranges.currentCount === 0) {
 				state.filteredImages.filteredImagesCount = 0;
 			}
 		}
