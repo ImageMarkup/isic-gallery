@@ -79,9 +79,7 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
-			const controlId = data.key === constants.COLLECTION_KEY
-				? util.getOptionId(data.key, data.optionId)
-				: util.getOptionId(data.key, data.value);
+			const controlId = util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
 			if (control) {
 				// we do not need to call onChange event for the control. so we block event
@@ -115,9 +113,15 @@ function _setLabelCount(foundCurrentCount, docCount) {
 	filtersKeys.forEach((filterKey) => {
 		const labelView = $$(util.getFilterLabelId(filterKey));
 		const template = labelView.config.template();
-		const newTemplate = filterKey === constants.MISSING_KEY_VALUE
-			? `${template} (${docCount[filterKey]})`
-			: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		let newTemplate;
+		if (docCount[filterKey]) {
+			newTemplate = filterKey === constants.MISSING_KEY_VALUE
+				? `${template} (${docCount[filterKey]})`
+				: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		}
+		else {
+			newTemplate = template;
+		}
 		labelView.define("template", newTemplate);
 		labelView.refresh();
 	});
@@ -152,7 +156,9 @@ function updateFiltersCounts(countsAfterFiltration) {
 				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
-					_setFilterCounts(controlView, value.doc_count, currentCount);
+					if (filterKey !== constants.COLLECTION_KEY) {
+						_setFilterCounts(controlView, value.doc_count, currentCount);
+					}
 				}
 			});
 		}

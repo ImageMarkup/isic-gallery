@@ -1151,11 +1151,20 @@ class GalleryService {
 			const facets = await ajax.getFacets();
 			const ids = Object.keys(facets);
 			ids.forEach((id) => {
-				state.imagesTotalCounts[id] = facets[id].buckets;
+				state.imagesTotalCounts[id] = webix.copy(facets[id].buckets);
 				if (id !== constants.COLLECTION_KEY) {
 					state.imagesTotalCounts[id].push({
 						key: constants.MISSING_KEY_VALUE,
 						doc_count: facets[id]?.meta?.missing_count
+					});
+				}
+				if (id === constants.COLLECTION_KEY) {
+					state.imagesTotalCounts[id].length = 0;
+					pinnedCollectionsData.results.forEach((pc) => {
+						state.imagesTotalCounts[id].push({
+							key: pc.id,
+							name: pc.name,
+						});
 					});
 				}
 				const facetValues = state.imagesTotalCounts[id].map(
@@ -1180,7 +1189,9 @@ class GalleryService {
 							try {
 								const parsedFilters = JSON.parse(paramFilters);
 								appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
-								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+								if (appliedFiltersArray) {
+									this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+								}
 							}
 							catch (err) {
 								this._view.$scope.setParam("filter", "[]", true);
@@ -1233,6 +1244,9 @@ class GalleryService {
 			state.filteredImages.isImagesFiltered = true;
 			if (ranges.currentCount) {
 				state.filteredImages.filteredImagesCount = ranges.currentCount;
+			}
+			else if (ranges.currentCount === 0) {
+				state.filteredImages.filteredImagesCount = 0;
 			}
 		}
 		const values = webix.copy(ranges);

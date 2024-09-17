@@ -644,7 +644,7 @@ export default class GalleryMobileView extends JetView {
 		});
 
 		const portrait = window.matchMedia("(orientation: portrait)").matches;
-		this.showOrHideElementsOnOrientation(portrait);
+		this.showOrHideElementsOnOrientation(portrait, true);
 
 		const rotateHandler = util.debounce((landscape) => {
 			const currentPortrait = !landscape;
@@ -906,7 +906,7 @@ export default class GalleryMobileView extends JetView {
 
 		const isicId = this.getRoot().$scope.getParam("image");
 		if (!util.isMobilePhone()) {
-			this.app.show(`${constants.PATH_GALLERY}?image=${isicId}`);
+			this.app.show(`${constants.PATH_GALLERY}?image=${isicId ?? ""}`);
 		}
 		else if (isicId && isTermsOfUseAccepted) {
 			if (this.imageWindow) {
@@ -1102,7 +1102,7 @@ export default class GalleryMobileView extends JetView {
 		}
 	}
 
-	showOrHideElementsOnOrientation(portrait) {
+	showOrHideElementsOnOrientation(portrait, initial) {
 		try {
 			const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
 			const leftLandscapeImageWindowZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
@@ -1148,7 +1148,7 @@ export default class GalleryMobileView extends JetView {
 			logger.error(e);
 		}
 		finally {
-			this.updatePagerSize();
+			this.updatePagerSize(initial);
 		}
 	}
 

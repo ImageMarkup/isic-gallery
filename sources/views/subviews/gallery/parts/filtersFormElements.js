@@ -33,7 +33,7 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 			if (!controls.isVisible()) {
 				selectAllFiltersButton.show();
 				selectNoneFiltersButton.show();
-				showOrHideAggregateButton(filter, dataForCreatingControl, this);
+				showOrHideAggregateButton(filter, controls, dataForCreatingControl, currentMobile);
 				webix.html.addCss(labelObject.getNode(), "showed-filter");
 				webix.html.removeCss(labelObject.getNode(), "hidden-filter");
 				this.config.isRowsVisible = true;
@@ -113,13 +113,22 @@ function transformToFormFormat(data, expandedFilters) {
 	return elems;
 }
 
-function showOrHideAggregateButton(filter, dataForCreatingControl, view) {
-	const selectAllFiltersButton = view.getTopParentView().queryView({
-		name: NAME_SELECT_ALL_FILTER
-	});
-	const selectNoneFiltersButton = view.getTopParentView().queryView({
-		name: NAME_SELECT_NONE_FILTER
-	});
+function showOrHideAggregateButton(filter, controls, dataForCreatingControl, isCurrentMobile) {
+	const filterView = $$(filter.id);
+	const selectAllFiltersButton = isCurrentMobile
+		? filterView?.queryView({
+			name: NAME_SELECT_ALL_FILTER
+		})
+		: controls.queryView({
+			name: NAME_SELECT_ALL_FILTER
+		});
+	const selectNoneFiltersButton = isCurrentMobile
+		? filterView?.queryView({
+			name: NAME_SELECT_NONE_FILTER
+		})
+		: controls.queryView({
+			name: NAME_SELECT_NONE_FILTER
+		});
 	const filtersArray = appliedFilters.getFiltersArray();
 	const filtersCount = filtersArray.reduce((count, filterFromFilterArray) => {
 		if (filter.id.includes(filterFromFilterArray.key)) {

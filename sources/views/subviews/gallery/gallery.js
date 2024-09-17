@@ -178,17 +178,19 @@ export default class GalleryView extends JetView {
 							id: ID_IMAGES_SELECTION_TEMPLATE,
 							template: () => {
 								webix.delay(() => {
-									const selectImagesForDownloadTemplateNode = this
-										.imagesSelectionTemplate
-										.$view
-										.firstChild
-										.firstChild;
-									const tooltipTextForDownload = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for download.`;
-									searchButtonModel.createHintForSearchTimesButton(
-										selectImagesForDownloadTemplateNode,
-										tooltipForDataviewTemplatesClassName,
-										tooltipTextForDownload
-									);
+									if (!util.isMobilePhone()) {
+										const selectImagesForDownloadTemplateNode = this
+											.imagesSelectionTemplate
+											?.$view
+											?.firstChild
+											?.firstChild;
+										const tooltipTextForDownload = `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images for download.`;
+										searchButtonModel.createHintForSearchTimesButton(
+											selectImagesForDownloadTemplateNode,
+											tooltipForDataviewTemplatesClassName,
+											tooltipTextForDownload
+										);
+									}
 								});
 								const text = "<span class='gallery-select-all-images link'> Select All on the Page for Download</span>";
 								const selectedImagesCount = selectedImages.count();
@@ -451,7 +453,8 @@ export default class GalleryView extends JetView {
 
 		const isicId = this.getRoot().$scope.getParam("image");
 		if (util.isMobilePhone()) {
-			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${isicId}`);
+			const filter = this.getRoot().$scope.getParam("filter");
+			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${isicId ?? ""}&filter=${filter ?? ""}`);
 		}
 		else if (isicId && isTermsOfUseAccepted) {
 			if (this.imageWindow) {

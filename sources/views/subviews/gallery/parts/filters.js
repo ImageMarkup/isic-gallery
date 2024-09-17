@@ -26,11 +26,15 @@ function getCheckboxUI(data, collapsed) {
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlName = util.getOptionId(controlData.id, option);
-			const control = elements[controlName];
-			control.blockEvent(); // block events for checkbox
-			control.setValue(newValue);
-			control.unblockEvent();
+			const controlId = controlData.id === constants.COLLECTION_KEY
+				? util.getOptionId(controlData.id, currentOption.name)
+				: util.getOptionId(controlData.id, option);
+			const control = elements[controlId];
+			if (control) {
+				control.blockEvent(); // block events for checkbox
+				control.setValue(newValue);
+				control.unblockEvent();
+			}
 			filtersInfo.push();
 			let params = webix.copy(control.config.filtersChangedData);
 			params.optionId = currentOption.optionId;
@@ -173,14 +177,16 @@ function getCheckboxUI(data, collapsed) {
 				}
 			}
 		}
-		const optionName = filterService.prepareOptionName(currentOption.key, data.id);
+		const optionName = data.id === constants.COLLECTION_KEY
+			? filterService.prepareOptionName(currentOption.name, data.id)
+			: filterService.prepareOptionName(currentOption.key, data.id);
 		const id = util.getOptionId(data.id, optionName);
 		const filtersChangedData = {
 			view: data.type,
 			datatype: data.datatype,
 			key: data.id,
 			filterName: data.name,
-			value: data.id === constants.COLLECTION_KEY ? currentOption.collectionName : optionName,
+			value: optionName,
 			optionId: currentOption.optionId,
 			status: "equals"
 		};
@@ -197,13 +203,13 @@ function getCheckboxUI(data, collapsed) {
 							view: "checkbox",
 							css: "checkbox-ctrl",
 							label: "",
-							labelRight: `${optionName} (0)`,
+							labelRight: optionName,
 							value: 0,
 							name: id,
 							height: 28,
 							gravity: 3,
 							attributes: {
-								title: `${optionName} (0)`,
+								title: `${optionName}`,
 								dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
 							},
 							labelWidth: 0,
