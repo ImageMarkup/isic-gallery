@@ -7,6 +7,10 @@ function getView() {
 		keyPressTimeout: 500,
 		body: {
 			multiselect: true,
+			tooltip: {
+				view: "tooltip",
+				template: "Press and hold the left CTRL key to make multiple selections",
+			}
 		},
 	};
 

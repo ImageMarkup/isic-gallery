@@ -18,6 +18,7 @@ import ajax from "../ajaxActions";
 import authService from "../auth";
 import filterService from "./filter";
 import searchButtonModel from "./searchButtonModel";
+import searchSuggestService from "./searchSuggest";
 import suggestService from "./suggest";
 
 const layoutHeightAfterHide = 1;
@@ -318,52 +319,13 @@ class GalleryService {
 		});
 
 		// Suggest start
-		const suggestList = this._searchSuggest.getList();
-
-		this._searchSuggest.attachEvent("onBeforeShow", () => {
-			const searchValue = this._searchInput.getValue();
-			if (searchValue.length < 3) {
-				this._searchSuggest.hide();
-				return false;
-			}
-			return true;
-		});
-
-
-		suggestList.detachEvent("onItemClick");
-
-		suggestList.attachEvent("onItemClick", (id, event) => {
-			const item = suggestList.getItem(id);
-			if (event.ctrlKey) {
-				const controlId = item.key === constants.COLLECTION_KEY
-					? util.getOptionId(item.key, item.optionId)
-					: util.getOptionId(item.key, item.value);
-				/** @type {webix.ui.checkbox} */
-				const control = $$(controlId);
-				const controlValue = control.getValue();
-				control.setValue(!controlValue);
-			}
-		});
-
-		this._searchSuggest.attachEvent("onShow", () => {
-			const filters = appliedFilterModel.getFiltersArray();
-			const suggestData = suggestList.serialize();
-			const selectedItems = [];
-			filters.forEach((f) => {
-				const found = suggestData.find((item) => {
-					if (f.id === item.id) {
-						return true;
-					}
-					return false;
-				});
-				if (found) {
-					selectedItems.push(f.id);
-				}
-			});
-			suggestList.blockEvent();
-			suggestList.select(selectedItems);
-			suggestList.unblockEvent();
-		});
+		if (this._searchSuggest) {
+			searchSuggestService.attachEvents(
+				this._searchSuggest,
+				this._searchInput,
+				this._leftPanelToggleButton
+			);
+		}
 		// Suggest end
 
 		let dataviewSelectionId = util.getDataviewSelectionId()
@@ -1172,9 +1134,11 @@ class GalleryService {
 				);
 				facetsModel.addFacet(id, facetValues);
 			});
-			await suggestService.buildSuggestionsForFilter(this._searchSuggest);
-			const suggestions = suggestService.getSuggestionsForFilter();
-			this._searchSuggest.getList().parse(suggestions);
+			if (this._searchSuggest) {
+				await suggestService.buildSuggestionsForFilter(this._searchSuggest);
+				const suggestions = suggestService.getSuggestionsForFilter();
+				this._searchSuggest.getList().parse(suggestions);
+			}
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
 			if (appliedFiltersArray.length) {

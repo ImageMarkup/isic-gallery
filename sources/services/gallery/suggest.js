@@ -11,12 +11,12 @@ function getSuggestionsForFilter() {
 
 async function buildSuggestionsForFilter() {
 	const facets = facetsModel.getFacets();
-	const facetsKeys = Object.keys(facets);
 	const collections = collectionsModel.getAllCollections();
 	const newSuggestions = [];
 	const filtersData = await imagesFilters.getFiltersData();
 	const filterArray = [];
 	filterArray.push(...filtersData.map(f => f.data).flat(Infinity));
+	const facetsKeys = filterArray.map(f => f.id);
 	facetsKeys.forEach((key) => {
 		const values = facets[key].map((v) => {
 			if (key === constants.COLLECTION_KEY) {
