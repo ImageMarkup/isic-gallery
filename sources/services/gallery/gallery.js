@@ -1082,6 +1082,7 @@ class GalleryService {
 			const pinnedCollectionOptions = {
 				limit: 0,
 				pinned: true,
+				sort: "name"
 			};
 			const allCollectionsData = await ajax.getCollections(allCollectionsOptions);
 			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
