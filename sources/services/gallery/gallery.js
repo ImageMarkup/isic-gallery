@@ -1076,19 +1076,13 @@ class GalleryService {
 			state.imagesTotalCounts = {};
 			state.imagesTotalCounts.passedFilters = {};
 			const images = await ajax.getImages();
-			const allCollectionsOptions = {
-				limit: 0
-			};
 			const pinnedCollectionOptions = {
 				limit: 0,
 				pinned: true,
 				sort: "name"
 			};
-			const allCollectionsData = await ajax.getCollections(allCollectionsOptions);
 			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
-			collectionsModel.clearAllCollections();
 			collectionsModel.clearPinnedCollections();
-			collectionsModel.setAllCollectionsData(allCollectionsData);
 			collectionsModel.setPinnedCollections(pinnedCollectionsData);
 
 			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
