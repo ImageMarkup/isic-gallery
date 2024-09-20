@@ -11,7 +11,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		view: "template",
 		css: "gallery__filter_suggest_result-template",
 		id: foundCountTemplateID,
-		template: obj => `Found ${obj.count} items`,
+		template: obj => `Match ${obj.count} values`,
 	};
 
 	const foundCountPopup = webix.ui({
@@ -75,10 +75,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		foundCountPopup.define("width", searchSuggest.config.width);
 		foundCountPopup.resize();
 		foundCountPopup.show(searchSuggest.getNode());
-	});
-
-	searchSuggest.attachEvent("onHide", () => {
-		searchInput.setValue("");
+		searchInput.focus();
 	});
 }
 

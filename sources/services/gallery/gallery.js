@@ -206,6 +206,7 @@ class GalleryService {
 	_init() {
 		const self = this;
 		webix.extend(this._imagesDataview, webix.OverlayBox);
+		this._searchInput.disable();
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
 		this._imageTemplate = $$(imageWindow.getViewerId());
@@ -1134,6 +1135,7 @@ class GalleryService {
 				const suggestions = suggestService.getSuggestionsForFilter();
 				this._searchSuggest.getList().parse(suggestions);
 			}
+			this._searchInput.enable();
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
 			if (appliedFiltersArray.length) {
