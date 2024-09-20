@@ -10,6 +10,7 @@ import filtersData from "../../models/imagesFilters";
 import lesionsModel from "../../models/lesionsModel";
 import selectedImages from "../../models/selectedGalleryImages";
 import state from "../../models/state";
+import logger from "../../utils/logger";
 import util from "../../utils/util";
 import filtersFormElements from "../../views/subviews/gallery/parts/filtersFormElements";
 import metadataPart from "../../views/subviews/gallery/parts/metadata";
@@ -466,6 +467,7 @@ class GalleryService {
 				state.imagesOffset = offset;
 			}
 			catch (error) {
+				logger.error(error);
 				if (!this._view.$destructed) {
 					webix.message("DataRequest: Something went wrong");
 				}
@@ -628,6 +630,7 @@ class GalleryService {
 				}
 			}
 			catch (error) {
+				logger.error(error);
 				if (!this._view.$destructed) {
 					webix.message("ShowMetadata: Something went wrong");
 				}
@@ -1179,6 +1182,7 @@ class GalleryService {
 			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				webix.message("Load: Something went wrong");
 			}
@@ -1226,6 +1230,7 @@ class GalleryService {
 			filterService.updateFiltersCounts(facets);
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				webix.message("UpdateCount: Something went wrong");
 			}
@@ -1375,6 +1380,7 @@ class GalleryService {
 			this._updatePagerCount(images.count);
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				this._view.hideProgress();
 			}
