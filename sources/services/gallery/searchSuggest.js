@@ -48,7 +48,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			const controlValue = control.getValue();
 			control.setValue(!controlValue);
 		}
-		if (!event.ctrlKey) {
+		if (!event.metaKey && !event.ctrlKey) {
 			suggestList.hide();
 		}
 	});

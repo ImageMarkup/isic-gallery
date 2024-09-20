@@ -1,3 +1,5 @@
+import util from "../../../../utils/util";
+
 function getView() {
 	/**	@type {webix.ui.suggestConfig} */
 	const view = {
@@ -9,7 +11,9 @@ function getView() {
 			multiselect: true,
 			tooltip: {
 				view: "tooltip",
-				template: "Press and hold the left CTRL key to make multiple selections",
+				template: util.isMacintosh()
+					? "Press and hold Cmd (⌘) key to make multiple selections"
+					: "Press and hold left CTRL key to make multiple selections",
 			}
 		},
 	};

@@ -551,6 +551,11 @@ function isSafari() {
 	return navigator.userAgent.indexOf("Safari") > -1;
 }
 
+function isMacintosh() {
+	debugger;
+	return navigator.userAgent.indexOf("Macintosh") > -1;
+}
+
 export default {
 	openInNewTab,
 	openImageInNewTab,
@@ -592,6 +597,7 @@ export default {
 	shareFile,
 	isPortrait,
 	getFilterLabelId,
-	isSafari
+	isSafari,
+	isMacintosh,
 };
 
