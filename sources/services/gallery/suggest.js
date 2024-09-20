@@ -11,7 +11,7 @@ function getSuggestionsForFilter() {
 
 async function buildSuggestionsForFilter() {
 	const facets = facetsModel.getFacets();
-	const collections = collectionsModel.getAllCollections();
+	const collections = collectionsModel.getPinnedCollections();
 	const newSuggestions = [];
 	const filtersData = await imagesFilters.getFiltersData();
 	const filterArray = [];
@@ -24,7 +24,7 @@ async function buildSuggestionsForFilter() {
 				return {
 					id: `${key}|${v}`,
 					key,
-					value: item.name,
+					value: item?.name ?? "",
 					optionId: v,
 					isCollection: true,
 				};
