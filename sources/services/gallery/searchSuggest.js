@@ -39,9 +39,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 
 	suggestList.attachEvent("onItemClick", (id, event) => {
 		const item = suggestList.getItem(id);
-		const controlId = item.key === constants.COLLECTION_KEY
-			? util.getOptionId(item.key, item.optionId)
-			: util.getOptionId(item.key, item.value);
+		const controlId = util.getOptionId(item.key, item.value);
 		/** @type {webix.ui.checkbox} */
 		const control = $$(controlId);
 		if (control) {
