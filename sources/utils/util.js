@@ -552,8 +552,7 @@ function isSafari() {
 }
 
 function isMacintosh() {
-	debugger;
-	return navigator.userAgent.indexOf("Macintosh") > -1;
+	return webix.env.isMac;
 }
 
 export default {
