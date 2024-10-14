@@ -1,5 +1,6 @@
 import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
+import collectionsModel from "../../models/collectionsModel";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -30,12 +31,20 @@ function prepareOptionName(value, key) {
 function _findCurrentCount(facets, valueThatLookingFor, key) {
 	let foundItem;
 	if (Array.isArray(facets.buckets)) {
-		// eslint-disable-next-line max-len
-		if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
-			return facets?.meta?.missing_count;
+		if (key === constants.COLLECTION_KEY) {
+			const pinnedCollections = collectionsModel.getPinnedCollections();
+			foundItem = facets.buckets.find((element) => {
+				const collection = pinnedCollections.find(item => element.key === item.id);
+				return valueThatLookingFor === collection?.id;
+			});
 		}
-		// eslint-disable-next-line max-len
-		foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		else if (valueThatLookingFor === constants.MISSING_KEY_VALUE) {
+			return facets.meta.missing_count;
+		}
+		else {
+			// eslint-disable-next-line max-len
+			foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+		}
 	}
 	return foundItem ? foundItem.doc_count : null;
 }
@@ -72,12 +81,14 @@ function updateFiltersFormControl(data) {
 		{
 			const controlId = util.getOptionId(data.key, data.value);
 			const control = $$(controlId);
-			// we do not need to call onChange event for the control. so we block event
-			control.blockEvent();
-			/* remove key is from "filtersChanged" event parameters.
-			   Its value is inverse for checkbox value */
-			control.setValue(!data.remove);
-			control.unblockEvent();
+			if (control) {
+				// we do not need to call onChange event for the control. so we block event
+				control.blockEvent();
+				/* remove key is from "filtersChanged" event parameters.
+				   Its value is inverse for checkbox value */
+				control.setValue(!data.remove);
+				control.unblockEvent();
+			}
 			break;
 		}
 		case "rangeFilter":
@@ -102,9 +113,15 @@ function _setLabelCount(foundCurrentCount, docCount) {
 	filtersKeys.forEach((filterKey) => {
 		const labelView = $$(util.getFilterLabelId(filterKey));
 		const template = labelView.config.template();
-		const newTemplate = filterKey === constants.MISSING_KEY_VALUE
-			? `${template} (${docCount[filterKey]})`
-			: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		let newTemplate;
+		if (docCount[filterKey]) {
+			newTemplate = filterKey === constants.MISSING_KEY_VALUE
+				? `${template} (${docCount[filterKey]})`
+				: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+		}
+		else {
+			newTemplate = template;
+		}
 		labelView.define("template", newTemplate);
 		labelView.refresh();
 	});
@@ -139,11 +156,13 @@ function updateFiltersCounts(countsAfterFiltration) {
 				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
 				const controlView = $$(controlId);
 				if (controlView) {
-					_setFilterCounts(controlView, value.doc_count, currentCount);
+					if (filterKey !== constants.COLLECTION_KEY) {
+						_setFilterCounts(controlView, value.doc_count, currentCount);
+					}
 				}
 			});
 		}
-		// else if (filterKey === "collections") {
+		// else if (filterKey === constants.COLLECTION_KEY) {
 		// 	let values = state.imagesTotalCounts[filterKey];
 		// 	values.forEach((value) => {
 

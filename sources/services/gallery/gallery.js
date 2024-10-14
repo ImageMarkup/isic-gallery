@@ -3,6 +3,7 @@ import WZoom from "vanilla-js-wheel-zoom";
 
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
+import collectionsModel from "../../models/collectionsModel";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import lesionsModel from "../../models/lesionsModel";
@@ -712,13 +713,15 @@ class GalleryService {
 				let isNeedShowAlert = true;
 				let countSelectedFilteredImages = 0;
 				let filter = appliedFilterModel.getConditionsForApi();
+				const collections = collectionsModel.getAppliedCollectionsForApi();
 				let imagesLimit = constants.MAX_COUNT_IMAGES_SELECTION;
 				let arrayOfImagesLength = selectedImages.countForStudies();
 				const sourceParams = {
 					limit: imagesLimit,
 					sort: "name",
 					detail: "false",
-					filter
+					filter,
+					collections
 				};
 				if (arrayOfImagesLength === imagesLimit) {
 					webix.alert({
@@ -1073,6 +1076,15 @@ class GalleryService {
 			state.imagesTotalCounts = {};
 			state.imagesTotalCounts.passedFilters = {};
 			const images = await ajax.getImages();
+			const pinnedCollectionOptions = {
+				limit: 0,
+				pinned: true,
+				sort: "name"
+			};
+			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
+			collectionsModel.clearPinnedCollections();
+			collectionsModel.setPinnedCollections(pinnedCollectionsData);
+
 			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
 			this._updateContentHeaderTemplate(
 				{
@@ -1085,11 +1097,22 @@ class GalleryService {
 			const facets = await ajax.getFacets();
 			const ids = Object.keys(facets);
 			ids.forEach((id) => {
-				state.imagesTotalCounts[id] = facets[id].buckets;
-				state.imagesTotalCounts[id].push({
-					key: constants.MISSING_KEY_VALUE,
-					doc_count: facets[id]?.meta?.missing_count
-				});
+				state.imagesTotalCounts[id] = webix.copy(facets[id].buckets);
+				if (id !== constants.COLLECTION_KEY) {
+					state.imagesTotalCounts[id].push({
+						key: constants.MISSING_KEY_VALUE,
+						doc_count: facets[id]?.meta?.missing_count
+					});
+				}
+				if (id === constants.COLLECTION_KEY) {
+					state.imagesTotalCounts[id].length = 0;
+					pinnedCollectionsData.results.forEach((pc) => {
+						state.imagesTotalCounts[id].push({
+							key: pc.id,
+							name: pc.name,
+						});
+					});
+				}
 			});
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
@@ -1105,7 +1128,9 @@ class GalleryService {
 							try {
 								const parsedFilters = JSON.parse(paramFilters);
 								appliedFiltersArray = appliedFilterModel.getFiltersFromURL(parsedFilters);
-								this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+								if (appliedFiltersArray) {
+									this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+								}
 							}
 							catch (err) {
 								this._view.$scope.setParam("filter", "[]", true);
@@ -1159,6 +1184,9 @@ class GalleryService {
 			if (ranges.currentCount) {
 				state.filteredImages.filteredImagesCount = ranges.currentCount;
 			}
+			else if (ranges.currentCount === 0) {
+				state.filteredImages.filteredImagesCount = 0;
+			}
 		}
 		const values = webix.copy(ranges);
 		this._contentHeaderTemplate?.setValues(values, true); // true -> unchange existing values
@@ -1168,8 +1196,10 @@ class GalleryService {
 	async _updateCounts() {
 		try {
 			const filterQuery = appliedFilterModel.getConditionsForApi();
+			const appliedCollections = collectionsModel.getAppliedCollectionsForApi();
 			const params = {};
 			params.conditions = filterQuery;
+			params.collections = appliedCollections;
 			const facets = await ajax.getFacets(params);
 			filterService.updateFiltersCounts(facets);
 		}
@@ -1269,15 +1299,17 @@ class GalleryService {
 				return;
 			}
 			const filter = appliedFilterModel.getConditionsForApi();
+			const collections = collectionsModel.getAppliedCollectionsForApi();
 			const images = url
 				? await ajax.getImagesByUrl(url)
 				: await ajax.getImages({
 					limit,
-					filter
+					filter,
+					collections
 				});
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
 			const start = offset !== 0 ? offset : 1;
-			if (filter) {
+			if (filter || collections) {
 				state.imagesTotalCounts.passedFilters.filtered = true;
 				state.imagesTotalCounts.passedFilters.currentCount = images.count;
 				this._updateContentHeaderTemplate({

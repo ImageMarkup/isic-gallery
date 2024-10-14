@@ -1,5 +1,6 @@
 import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
+import collectionsModel from "../../../../models/collectionsModel";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
@@ -9,12 +10,13 @@ const NAME_SELECT_NONE_FILTERS = "filter-images-select-none-name";
 const NAME_SELECT_NONE_FILTERS_MOBILE = "filter-images-select-none-mobile-name";
 
 function getLabelUI(label) {
-	return {
+	const view = {
 		view: "label",
 		label: label.toUpperCase(),
 		css: "gallery-sidebar-title",
 		align: "left"
 	};
+	return view;
 }
 
 function getCheckboxUI(data, collapsed) {
@@ -24,11 +26,15 @@ function getCheckboxUI(data, collapsed) {
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlName = util.getOptionId(controlData.id, option);
-			const control = elements[controlName];
-			control.blockEvent(); // block events for checkbox
-			control.setValue(newValue);
-			control.unblockEvent();
+			const controlId = controlData.id === constants.COLLECTION_KEY
+				? util.getOptionId(controlData.id, currentOption.name)
+				: util.getOptionId(controlData.id, option);
+			const control = elements[controlId];
+			if (control) {
+				control.blockEvent(); // block events for checkbox
+				control.setValue(newValue);
+				control.unblockEvent();
+			}
 			filtersInfo.push();
 			let params = webix.copy(control.config.filtersChangedData);
 			params.optionId = currentOption.optionId;
@@ -156,7 +162,24 @@ function getCheckboxUI(data, collapsed) {
 		};
 
 	data?.options?.forEach((currentOption) => {
-		const optionName = filterService.prepareOptionName(currentOption, data.id);
+		if (data.id === constants.COLLECTION_KEY) {
+			if (!currentOption.updated) {
+				const pinnedCollections = collectionsModel
+					.getPinnedCollections()
+					.map(collection => ({name: collection.name, id: collection.id}));
+				const currentCollection = pinnedCollections
+					.find(collection => collection.id === currentOption.key);
+				if (currentCollection) {
+					currentOption.updated = true;
+					currentOption.optionId = currentCollection.id;
+					currentOption.key = currentCollection.id;
+					currentOption.collectionName = currentCollection.name;
+				}
+			}
+		}
+		const optionName = data.id === constants.COLLECTION_KEY
+			? filterService.prepareOptionName(currentOption.name, data.id)
+			: filterService.prepareOptionName(currentOption.key, data.id);
 		const id = util.getOptionId(data.id, optionName);
 		const filtersChangedData = {
 			view: data.type,
@@ -164,44 +187,86 @@ function getCheckboxUI(data, collapsed) {
 			key: data.id,
 			filterName: data.name,
 			value: optionName,
+			optionId: currentOption.optionId,
 			status: "equals"
 		};
 		if (currentOption && data.type === "rangeCheckbox") {
 			filtersChangedData.to = currentOption.to;
 			filtersChangedData.from = currentOption.from;
 		}
-		view.rows[1].rows.push(
-			{
-				id,
-				view: "checkbox",
-				css: "checkbox-ctrl",
-				label: "",
-				labelRight: `${optionName} (0)`,
-				value: 0,
-				name: id,
-				height: 28,
-				attributes: {
-					title: `${optionName} (0)`,
-					dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
-				},
-				labelWidth: 0,
-				filtersChangedData,
-				on: {
-					onChange(status) {
-						let params = webix.copy(this.config.filtersChangedData);
-						if (currentOption && data.type === "rangeCheckbox") {
-							webix.extend(this.config.filtersChangedData, {
-								to: currentOption.to,
-								from: currentOption.from
-							});
+		if (data.id === constants.COLLECTION_KEY) {
+			view.rows[1].rows.push(
+				{
+					cols: [
+						{
+							id,
+							view: "checkbox",
+							css: "checkbox-ctrl",
+							label: "",
+							labelRight: optionName,
+							value: 0,
+							name: id,
+							height: 28,
+							gravity: 3,
+							attributes: {
+								title: `${optionName}`,
+								dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
+							},
+							labelWidth: 0,
+							filtersChangedData,
+							on: {
+								onChange(status) {
+									let params = webix.copy(this.config.filtersChangedData);
+									if (currentOption && data.type === "rangeCheckbox") {
+										webix.extend(this.config.filtersChangedData, {
+											to: currentOption.to,
+											from: currentOption.from
+										});
+									}
+									params.remove = !status;
+									params.optionId = currentOption.optionId;
+									this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
+								}
+							}
+						},
+					]
+				}
+			);
+		}
+		else {
+			view.rows[1].rows.push(
+				{
+					id,
+					view: "checkbox",
+					css: "checkbox-ctrl",
+					label: "",
+					labelRight: `${optionName} (0)`,
+					value: 0,
+					name: id,
+					height: 28,
+					attributes: {
+						title: `${optionName} (0)`,
+						dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
+					},
+					labelWidth: 0,
+					filtersChangedData,
+					on: {
+						onChange(status) {
+							let params = webix.copy(this.config.filtersChangedData);
+							if (currentOption && data.type === "rangeCheckbox") {
+								webix.extend(this.config.filtersChangedData, {
+									to: currentOption.to,
+									from: currentOption.from
+								});
+							}
+							params.remove = !status;
+							params.optionId = currentOption.optionId;
+							this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
 						}
-						params.remove = !status;
-						params.optionId = currentOption.optionId;
-						this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
 					}
 				}
-			}
-		);
+			);
+		}
 	});
 	return view;
 }

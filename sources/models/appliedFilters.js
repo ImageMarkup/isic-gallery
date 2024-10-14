@@ -1,5 +1,6 @@
 import constants from "../constants";
 import util from "../utils/util";
+import collectionsModel from "./collectionsModel";
 import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
@@ -389,7 +390,8 @@ function _prepareCondition(filter) {
 function getConditionsForApi() {
 	const conditions = {};
 	conditions.operands = [];
-	const groupedFilters = _groupFiltersByKey();
+	const groupedFilters = _groupFiltersByKey()
+		.filter(groupedFilter => groupedFilter.key !== constants.COLLECTION_KEY);
 	if (groupedFilters.length !== 0) {
 		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
 		groupedFilters.forEach((groupedFilter) => {
@@ -440,15 +442,31 @@ function getFilterValue() {
 }
 
 function getFiltersFromURL(filtersArray) {
-	return filtersArray
+	const filtersFromUrl = filtersArray
 		.map((filter) => {
-			const filterId = typeof filter === "object" ? filter.id : filter;
+			let filterId;
+			if (typeof filter === "object") {
+				filterId = filter.id;
+			}
+			else if (filter.includes(constants.COLLECTION_KEY)) {
+				const pinnedCollections = collectionsModel.getPinnedCollections();
+				const id = Number(filter.substring(filter.indexOf("|") + 1));
+				const collection = pinnedCollections?.find(c => c.id === id);
+				filterId = `${constants.COLLECTION_KEY}|${collection?.name}`;
+			}
+			else {
+				filterId = filter;
+			}
 			const control = $$(filterId);
-			const data = control.config.filtersChangedData;
-			data.id = util.getOptionId(data.key, data.value);
-			data.remove = false;
-			return data;
+			if (control) {
+				const data = control.config.filtersChangedData;
+				data.id = util.getOptionId(data.key, data.value);
+				data.remove = false;
+				return data;
+			}
+			return null;
 		});
+	return filtersFromUrl.filter(f => f !== null);
 }
 
 function convertAppliedFiltersToParams() {
