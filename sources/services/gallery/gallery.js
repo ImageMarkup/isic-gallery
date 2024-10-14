@@ -4,11 +4,13 @@ import WZoom from "vanilla-js-wheel-zoom";
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
+import facetsModel from "../../models/facets";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import lesionsModel from "../../models/lesionsModel";
 import selectedImages from "../../models/selectedGalleryImages";
 import state from "../../models/state";
+import logger from "../../utils/logger";
 import util from "../../utils/util";
 import filtersFormElements from "../../views/subviews/gallery/parts/filtersFormElements";
 import metadataPart from "../../views/subviews/gallery/parts/metadata";
@@ -17,6 +19,8 @@ import ajax from "../ajaxActions";
 import authService from "../auth";
 import filterService from "./filter";
 import searchButtonModel from "./searchButtonModel";
+import searchSuggestService from "./searchSuggest";
+import suggestService from "./suggest";
 
 const layoutHeightAfterHide = 1;
 const layoutHeightAfterShow = 32;
@@ -58,7 +62,8 @@ class GalleryService {
 		imageWindowTemplateWithoutControls,
 		enlargeContextMenu,
 		portraitClearAllFiltersTemplate,
-		landscapeClearAllFiltersTemplate
+		landscapeClearAllFiltersTemplate,
+		searchSuggest,
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -91,6 +96,7 @@ class GalleryService {
 		this._enlargeContextMenu = enlargeContextMenu;
 		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
 		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
+		this._searchSuggest = searchSuggest;
 		this._init();
 	}
 
@@ -201,6 +207,7 @@ class GalleryService {
 	_init() {
 		const self = this;
 		webix.extend(this._imagesDataview, webix.OverlayBox);
+		this._searchInput.disable();
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
 		this._imageTemplate = $$(imageWindow.getViewerId());
@@ -313,9 +320,15 @@ class GalleryService {
 			}
 		});
 
-		this._searchInput.attachEvent("onAfterRender", () => {
-
-		});
+		// Suggest start
+		if (this._searchSuggest) {
+			searchSuggestService.attachEvents(
+				this._searchSuggest,
+				this._searchInput,
+				this._leftPanelToggleButton
+			);
+		}
+		// Suggest end
 
 		let dataviewSelectionId = util.getDataviewSelectionId()
 			? util.getDataviewSelectionId() : constants.DEFAULT_DATAVIEW_COLUMNS;
@@ -454,6 +467,7 @@ class GalleryService {
 				state.imagesOffset = offset;
 			}
 			catch (error) {
+				logger.error(error);
 				if (!this._view.$destructed) {
 					webix.message("DataRequest: Something went wrong");
 				}
@@ -616,6 +630,7 @@ class GalleryService {
 				}
 			}
 			catch (error) {
+				logger.error(error);
 				if (!this._view.$destructed) {
 					webix.message("ShowMetadata: Something went wrong");
 				}
@@ -1113,7 +1128,17 @@ class GalleryService {
 						});
 					});
 				}
+				const facetValues = state.imagesTotalCounts[id].map(
+					f => f.key
+				);
+				facetsModel.addFacet(id, facetValues);
 			});
+			if (this._searchSuggest) {
+				await suggestService.buildSuggestionsForFilter(this._searchSuggest);
+				const suggestions = suggestService.getSuggestionsForFilter();
+				this._searchSuggest.getList().parse(suggestions);
+			}
+			this._searchInput.enable();
 			let appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			const paramFilters = this._view.$scope.getParam("filter");
 			if (appliedFiltersArray.length) {
@@ -1157,6 +1182,7 @@ class GalleryService {
 			if (!paramFilters && !appliedFiltersArray.length) this._reload();
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				webix.message("Load: Something went wrong");
 			}
@@ -1204,6 +1230,7 @@ class GalleryService {
 			filterService.updateFiltersCounts(facets);
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				webix.message("UpdateCount: Something went wrong");
 			}
@@ -1353,6 +1380,7 @@ class GalleryService {
 			this._updatePagerCount(images.count);
 		}
 		catch (error) {
+			logger.error(error);
 			if (!this._view.$destructed) {
 				this._view.hideProgress();
 			}

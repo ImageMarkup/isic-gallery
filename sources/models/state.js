@@ -33,7 +33,8 @@ const state = {
 	filteredImages: {
 		isImagesFiltered: false,
 		filteredImagesCount: 0
-	}
+	},
+	imagesTotalCounts: {},
 };
 
 export default state;

@@ -353,6 +353,7 @@ export default class GalleryView extends JetView {
 		const imageWindowZoomButtons = $$(imageWindow.getZoomButtonTemplateId());
 		const imageWindowTemplate = $$(imageWindow.getViewerId());
 		const imageWindowTemplateWithoutControls = $$(imageWindow.getViewerWithoutControlsId());
+		const searchSuggest = $$(filterPanel.getSearchSuggestID());
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -384,7 +385,8 @@ export default class GalleryView extends JetView {
 			imageWindowTemplateWithoutControls,
 			this.enlargeContextMenu,
 			null, // portraitClearAllFiltersTemplate
-			null // landscapeClearAllFiltersTemplate
+			null, // landscapeClearAllFiltersTemplate
+			searchSuggest,
 		);
 
 		// multi lesion

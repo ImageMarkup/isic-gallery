@@ -551,6 +551,10 @@ function isSafari() {
 	return navigator.userAgent.indexOf("Safari") > -1;
 }
 
+function isMacintosh() {
+	return webix.env.isMac;
+}
+
 export default {
 	openInNewTab,
 	openImageInNewTab,
@@ -592,6 +596,7 @@ export default {
 	shareFile,
 	isPortrait,
 	getFilterLabelId,
-	isSafari
+	isSafari,
+	isMacintosh,
 };
 
