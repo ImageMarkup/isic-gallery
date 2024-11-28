@@ -27,7 +27,7 @@ input::-ms-clear {
 }
 
 /* checkboxes */
-.checkbox-ctrl {
+.checkbox-ctrl, .checkbox-tree-control {
   height: 30px;
   .webix_label_right {
     color: @main-color-light;
@@ -36,8 +36,9 @@ input::-ms-clear {
     cursor: pointer;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 275px;
+    max-width: 550px;
     white-space: nowrap;
+    width: calc(100% - 20px);
     /* line-height: 16px;
     padding: 10px 0 0 10px;*/
   }

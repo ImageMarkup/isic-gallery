@@ -1,10 +1,11 @@
+import constants from "../constants";
+import diagnosisModel from "./diagnosis";
 import state from "./state";
 
 let filtersData;
 
 const filtersIds = {
 	pinnedCollections: "collections",
-	benignMelignant: "benign_malignant",
 	lesionDiagnosis: "diagnosis",
 	approximateAge: "age_approx",
 	generalAnatomicSite: "anatom_site_general",
@@ -28,61 +29,17 @@ const filtersIds = {
 };
 
 function getFiltersDataValues() {
+	const diagnosisData = diagnosisModel.getDiagnosisDataForFilters();
 	const filtersDataValues = [
-		{
-			label: "Pinned Collections",
-			data: [
-				{
-					id: filtersIds.pinnedCollections,
-					name: "Collection",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.pinnedCollections] ?? []
-				}
-			]
-		},
 		{
 			label: "Diagnostic Attributes",
 			data: [
 				{
-					id: filtersIds.benignMelignant,
-					name: "Benign or Malignant",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.benignMelignant]
-				},
-				{
 					id: filtersIds.lesionDiagnosis,
-					name: "Lesion Diagnosis",
-					type: "checkbox",
+					name: "Lesion diagnosis",
+					type: constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX,
 					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.lesionDiagnosis]
-				},
-			]
-		},
-		{
-			label: "Clinical Attributes",
-			data: [
-				{
-					id: filtersIds.approximateAge,
-					name: "Approximate Age",
-					type: "rangeCheckbox",
-					datatype: "number",
-					options: state.imagesTotalCounts[filtersIds.approximateAge]
-				},
-				{
-					id: filtersIds.generalAnatomicSite,
-					name: "General Anatomic Site",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.generalAnatomicSite]
-				},
-				{
-					id: filtersIds.clinicalSize,
-					name: "Clinical Size - Longest Diameter (mm)",
-					type: "rangeCheckbox",
-					datatype: "number",
-					options: state.imagesTotalCounts[filtersIds.clinicalSize]
+					options: diagnosisData
 				},
 				{
 					id: filtersIds.typeDiagnosis,
@@ -92,25 +49,11 @@ function getFiltersDataValues() {
 					options: state.imagesTotalCounts[filtersIds.typeDiagnosis]
 				},
 				{
-					id: filtersIds.familyHistoryMelanoma,
-					name: "Family History of Melanoma",
+					id: filtersIds.melanocytic,
+					name: "Melanocytic",
 					type: "checkbox",
 					datatype: "boolean",
-					options: state.imagesTotalCounts[filtersIds.familyHistoryMelanoma]
-				},
-				{
-					id: filtersIds.fitzpatrickSkinType,
-					name: "Fitzpatrick Skin Type",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.fitzpatrickSkinType]
-				},
-				{
-					id: filtersIds.melanomaClass,
-					name: "Melanoma Class",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.melanomaClass]
+					options: state.imagesTotalCounts[filtersIds.melanocytic]
 				},
 				{
 					id: filtersIds.melanomaMitoticIndex,
@@ -127,32 +70,58 @@ function getFiltersDataValues() {
 					options: state.imagesTotalCounts[filtersIds.melanomaThickness]
 				},
 				{
-					id: filtersIds.melanomaType,
-					name: "Melanoma Type",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.melanomaType]
-				},
-				{
 					id: filtersIds.melanomaUlceration,
 					name: "Melanoma Ulceration",
 					type: "checkbox",
 					datatype: "boolean",
 					options: state.imagesTotalCounts[filtersIds.melanomaUlceration]
 				},
+			]
+		},
+		{
+			label: "Clinical Attributes",
+			data: [
 				{
-					id: filtersIds.melanocytic,
-					name: "Melanocytic",
-					type: "checkbox",
-					datatype: "boolean",
-					options: state.imagesTotalCounts[filtersIds.melanocytic]
-				},
-				{
-					id: filtersIds.nevusType,
-					name: "Nevus Type",
+					id: filtersIds.sex,
+					name: "Sex",
 					type: "checkbox",
 					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.nevusType]
+					options: state.imagesTotalCounts[filtersIds.sex]
+				},
+				{
+					id: filtersIds.approximateAge,
+					name: "Approximate Age",
+					type: "rangeCheckbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.approximateAge]
+				},
+				{
+					id: filtersIds.generalAnatomicSite,
+					name: "General Anatomic Site",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.generalAnatomicSite]
+				},
+				{
+					id: filtersIds.fitzpatrickSkinType,
+					name: "Fitzpatrick Skin Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.fitzpatrickSkinType]
+				},
+				{
+					id: filtersIds.clinicalSize,
+					name: "Clinical Size - Longest Diameter (mm)",
+					type: "rangeCheckbox",
+					datatype: "number",
+					options: state.imagesTotalCounts[filtersIds.clinicalSize]
+				},
+				{
+					id: filtersIds.familyHistoryMelanoma,
+					name: "Family History of Melanoma",
+					type: "checkbox",
+					datatype: "boolean",
+					options: state.imagesTotalCounts[filtersIds.familyHistoryMelanoma]
 				},
 				{
 					id: filtersIds.personalHistoryMelanoma,
@@ -161,25 +130,11 @@ function getFiltersDataValues() {
 					datatype: "boolean",
 					options: state.imagesTotalCounts[filtersIds.personalHistoryMelanoma]
 				},
-				{
-					id: filtersIds.sex,
-					name: "Sex",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.sex]
-				}
 			]
 		},
 		{
 			label: "Technological Attributes",
 			data: [
-				{
-					id: filtersIds.dermoscopicType,
-					name: "Dermoscopic Type",
-					type: "checkbox",
-					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.dermoscopicType]
-				},
 				{
 					id: filtersIds.imageType,
 					name: "Image Type",
@@ -188,11 +143,30 @@ function getFiltersDataValues() {
 					options: state.imagesTotalCounts[filtersIds.imageType]
 				},
 				{
+					id: filtersIds.dermoscopicType,
+					name: "Dermoscopic Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.dermoscopicType]
+				},
+			]
+		},
+		{
+			label: "Other Attributes",
+			data: [
+				{
 					id: filtersIds.license,
 					name: "License",
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.license]
+				},
+				{
+					id: filtersIds.pinnedCollections,
+					name: "Collection",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.pinnedCollections] ?? []
 				}
 			]
 		}

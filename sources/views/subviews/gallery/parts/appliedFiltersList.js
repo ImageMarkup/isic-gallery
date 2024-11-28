@@ -22,13 +22,26 @@ const list = {
 	height: 100,
 	scroll: "auto",
 	template(obj) {
+		if (obj.treeCheckboxFlag) {
+			const result = getTreeCheckboxFilterName(obj);
+			const filterName = _prepareFilterName(obj);
+			return `<div class='applied-filters-item' title="${filterName}">
+						${result}
+						<span class="remove-filter-icon">
+							<svg viewBox="0 0 26 26" style="width:26px;height:26px">
+								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#remove-filter-icon" class="close-icon-svg-use"></use>
+							</svg>
+						</span>
+					</div>`;
+		}
 		const filterName = _prepareFilterName(obj);
 		return `<div class='applied-filters-item' title="${filterName}">${filterName}
 					<span class="remove-filter-icon">
 						<svg viewBox="0 0 26 26" class="close-icon-svg">
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use>
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#remove-filter-icon" class="close-icon-svg-use"></use>
 						</svg>
-					</span></div>`;
+					</span>
+				</div>`;
 	},
 	onClick: {
 		// eslint-disable-next-line func-names
@@ -132,6 +145,19 @@ function getConfig(id) {
 
 function getIdFromConfig() {
 	return list.id;
+}
+
+function getTreeCheckboxFilterName(obj) {
+	let result = ["<div class='applied-filters-item-hierarchy_container'>"];
+	const namesArray = obj.optionId.split("|");
+	namesArray.forEach((n, index) => {
+		const lastBlockClass = index === namesArray.length - 1
+			? " last-block"
+			: "";
+		result.push(`<div class="applied-filters-item-hierarchy-item${lastBlockClass}">${n}</div>`);
+	});
+	result.push("</div>");
+	return result.join(" ");
 }
 
 export default {

@@ -54,7 +54,8 @@ export default class GalleryView extends JetView {
 
 		const leftPanelConfig = {
 			id: ID_LEFT_PANEL,
-			width: 400,
+			minWidth: 400,
+			maxWidth: 700,
 			paddingX: 15,
 			paddingY: 15,
 			margin: 20
@@ -305,7 +306,7 @@ export default class GalleryView extends JetView {
 			name: "leftPanelWithCollapser",
 			cols: [
 				leftPanel,
-				leftCollapser
+				leftCollapser,
 			]
 		};
 
@@ -315,7 +316,8 @@ export default class GalleryView extends JetView {
 				{
 					cols: [
 						leftPanelWithCollapser,
-						content
+						{view: "resizer"},
+						content,
 					]
 				}
 			]

@@ -4,6 +4,7 @@ import WZoom from "vanilla-js-wheel-zoom";
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
+import diagnosisModel from "../../models/diagnosis";
 import facetsModel from "../../models/facets";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
@@ -336,7 +337,7 @@ class GalleryService {
 		this._dataviewYCountSelection?.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection?.unblockEvent();
 
-		const resizeHandler = util.debounce((event) => {
+		const dataTableResizeHandler = util.debounce((event) => {
 			const contentWidth = event[0].contentRect.width;
 			const minCurrentTargetInnerWidth = searchButtonModel.getMinCurrentTargetInnerWidth();
 			if (contentWidth >= minCurrentTargetInnerWidth) {
@@ -344,9 +345,9 @@ class GalleryService {
 				this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
 			}
 		});
-		const resizeObserver = new ResizeObserver(resizeHandler);
-		const galleryNode = this._view.getNode();
-		resizeObserver.observe(galleryNode);
+		const dataTableResizeObserver = new ResizeObserver(dataTableResizeHandler);
+		const dataTableNode = this._imagesDataview.getNode();
+		dataTableResizeObserver.observe(dataTableNode);
 
 		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
 			let newItemWidth;
@@ -728,7 +729,7 @@ class GalleryService {
 				let isNeedShowAlert = true;
 				let countSelectedFilteredImages = 0;
 				let filter = appliedFilterModel.getConditionsForApi();
-				const collections = collectionsModel.getAppliedCollectionsForApi();
+				const collections = appliedFilterModel.getAppliedCollectionsForApi();
 				let imagesLimit = constants.MAX_COUNT_IMAGES_SELECTION;
 				let arrayOfImagesLength = selectedImages.countForStudies();
 				const sourceParams = {
@@ -849,7 +850,9 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			const element = data.treeCheckboxFlag
+				? this._filtersForm.queryView({id: `${data?.key}`})?.config
+				: this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
 			if (util.isMobilePhone()) {
 				// Fix scrollView
@@ -1094,7 +1097,7 @@ class GalleryService {
 			const pinnedCollectionOptions = {
 				limit: 0,
 				pinned: true,
-				sort: "name"
+				sort: "name",
 			};
 			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
 			collectionsModel.clearPinnedCollections();
@@ -1109,9 +1112,10 @@ class GalleryService {
 				}
 			);
 			this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
+			const diagnosisRegex = /^diagnosis_\d$/;
 			const facets = await ajax.getFacets();
-			const ids = Object.keys(facets);
-			ids.forEach((id) => {
+			const facetsIds = Object.keys(facets);
+			facetsIds.forEach((id) => {
 				state.imagesTotalCounts[id] = webix.copy(facets[id].buckets);
 				if (id !== constants.COLLECTION_KEY) {
 					state.imagesTotalCounts[id].push({
@@ -1127,6 +1131,9 @@ class GalleryService {
 							name: pc.name,
 						});
 					});
+				}
+				if (diagnosisRegex.test(id)) {
+					diagnosisModel.addDisplayDiagnosis(facets[id].buckets.map(d => d.key));
 				}
 				const facetValues = state.imagesTotalCounts[id].map(
 					f => f.key
@@ -1222,7 +1229,7 @@ class GalleryService {
 	async _updateCounts() {
 		try {
 			const filterQuery = appliedFilterModel.getConditionsForApi();
-			const appliedCollections = collectionsModel.getAppliedCollectionsForApi();
+			const appliedCollections = appliedFilterModel.getAppliedCollectionsForApi();
 			const params = {};
 			params.conditions = filterQuery;
 			params.collections = appliedCollections;
@@ -1265,7 +1272,12 @@ class GalleryService {
 	_createFilters(expandedFilters, forceRebuild) {
 		let expandedFiltersKeys = [];
 		if (expandedFilters && expandedFilters.length) {
-			expandedFiltersKeys = expandedFilters.map(item => item.key);
+			expandedFiltersKeys = expandedFilters.map((item) => {
+				if (item.view === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX) {
+					return item.id;
+				}
+				return item.key;
+			});
 		}
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
@@ -1326,7 +1338,7 @@ class GalleryService {
 				return;
 			}
 			const filter = appliedFilterModel.getConditionsForApi();
-			const collections = collectionsModel.getAppliedCollectionsForApi();
+			const collections = appliedFilterModel.getAppliedCollectionsForApi();
 			const images = url
 				? await ajax.getImagesByUrl(url)
 				: await ajax.getImages({

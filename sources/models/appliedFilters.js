@@ -40,6 +40,7 @@ function prepareDataForList() {
 		switch (filter.view) {
 			case "checkbox":
 			case "rangeCheckbox":
+			case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
 			{
 				result.push(webix.copy(filter));
 				break;
@@ -83,6 +84,7 @@ function processNewFilter(filter) {
 	switch (filter.view) {
 		case "checkbox":
 		case "rangeCheckbox":
+		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
 		{
 			let checkboxId = util.getOptionId(filter.key, filter.optionId ?? filter.value);
 			if (filter.remove) {
@@ -356,6 +358,20 @@ function _groupFiltersByKey() {
 				});
 				break;
 			}
+			case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
+				let itemFromResult = result.find(comparedItem => comparedItem.key === `${item.key}_${item.diagnosisLevel}`, true);
+				if (!itemFromResult) {
+					itemFromResult = {
+						view: item.view,
+						key: `${item.key}_${item.diagnosisLevel}`,
+						datatype: item.datatype,
+						values: []
+					};
+					result.push(itemFromResult);
+				}
+				itemFromResult.values.push(_prepareOptionNameForApi(item.value, `${item.key}_${item.diagnosisLevel}`));
+				break;
+			}
 			default:
 			{
 				break;
@@ -369,6 +385,7 @@ function _prepareCondition(filter) {
 	let result = [];
 	switch (filter.view) {
 		case "checkbox":
+		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
 		{
 			_prepareValuesCondition(filter, result);
 			break;
@@ -473,6 +490,14 @@ function convertAppliedFiltersToParams() {
 	return JSON.stringify(getFiltersArray().map(filter => filter.id));
 }
 
+function getAppliedCollectionsForApi() {
+	const filtersArray = getFiltersArray();
+	const appliedCollections = filtersArray
+		.filter(filter => filter.key === constants.COLLECTION_KEY);
+	const result = appliedCollections.map(collection => collection.optionId);
+	return result.length > 0 ? result.join(",") : "";
+}
+
 export default {
 	getFiltersArray,
 	processNewFilters,
@@ -489,7 +514,8 @@ export default {
 	getFilterValue,
 	getShowedFiltersCollection,
 	getFiltersFromURL,
-	convertAppliedFiltersToParams
+	convertAppliedFiltersToParams,
+	getAppliedCollectionsForApi,
 };
 
 // TODO: rewrite example

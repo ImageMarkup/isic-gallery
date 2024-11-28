@@ -1,4 +1,3 @@
-import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
 import util from "../../utils/util";
 

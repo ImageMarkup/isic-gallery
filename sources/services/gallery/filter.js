@@ -1,6 +1,7 @@
 import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
+import diagnosisModel from "../../models/diagnosis";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -71,6 +72,32 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	controlView.refresh();
 }
 
+function _setDiagnosisFilterCounts(controlView, totalCount, currentCount) {
+	const oldLabel = controlView.config.labelRight;
+	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
+	const baseLabelText = lastBracketIndex === -1
+		? oldLabel
+		: oldLabel.substring(0, lastBracketIndex);
+	let firstNumberHtml;
+	if (totalCount === currentCount) {
+		firstNumberHtml = "";
+	}
+	else if (!currentCount) {
+		firstNumberHtml = "0 / ";
+	}
+	else {
+		firstNumberHtml = `${currentCount} / `;
+	}
+	const newLabel = `${baseLabelText}(${firstNumberHtml}${totalCount})`;
+	controlView.define("labelRight", newLabel);
+	controlView.getNode().setAttribute("title", newLabel);
+	controlView.refresh();
+}
+
+function hideControl(controlView) {
+	controlView.define("hidden", true);
+}
+
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -91,6 +118,11 @@ function updateFiltersFormControl(data) {
 			}
 			break;
 		}
+		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
+		{
+			updateTreeCheckboxControl(data, true);
+			break;
+		}
 		case "rangeFilter":
 		{
 			break;
@@ -99,6 +131,61 @@ function updateFiltersFormControl(data) {
 		{
 			break;
 		}
+	}
+}
+
+function updateTreeCheckboxControl(data, updateParentFlag) {
+	const controlId = util.getOptionId("diagnosis", data.optionId);
+	const control = $$(controlId);
+	if (control) {
+		// we do not need to call onChange event for the control. so we block event
+		control.blockEvent();
+		/* remove key is from "filtersChanged" event parameters.
+		   Its value is inverse for checkbox value */
+		control.setValue(!data.remove);
+		control.unblockEvent();
+		if (updateParentFlag && control.config.attributes.parentId) {
+			const isIndeterminate = !data.remove;
+			const parentElement = $$(control.config.attributes.parentId);
+			changeParentState(parentElement, isIndeterminate, !data.remove);
+		}
+	}
+	if (data.children) {
+		const remove = data.remove;
+		data.children.forEach((c) => {
+			const child = webix.copy(c);
+			child.remove = remove;
+			child.optionId = child.id;
+			updateTreeCheckboxControl(child, false);
+		});
+	}
+	if (data.data) {
+		const remove = data.remove;
+		data.data.forEach((c) => {
+			const child = webix.copy(c);
+			child.remove = remove;
+			child.optionId = child.id;
+			updateTreeCheckboxControl(child, false);
+		});
+	}
+}
+
+function changeParentState(element, isIndeterminate, status) {
+	if (isIndeterminate) {
+		const elementNode = element.getInputNode();
+		if (elementNode) {
+			elementNode.indeterminate = true;
+			const parentId = element?.config?.attributes?.parentId;
+			if (parentId) {
+				const parentElement = $$(parentId);
+				changeParentState(parentElement, isIndeterminate, status);
+			}
+		}
+	}
+	else {
+		element.blockEvent();
+		element.setValue(status);
+		element.unblockEvent();
 	}
 }
 
@@ -139,28 +226,80 @@ function updateFiltersCounts(countsAfterFiltration) {
 			const values = state.imagesTotalCounts[filterKey];
 			filteredCounts[filterKey] = 0;
 			docCounts[filterKey] = 0;
-			values.forEach((value) => {
-				let currentCount;
-				if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
-					currentCount = _findCurrentCount(countsAfterFiltration[filterKey], value.key, filterKey);
-				}
-				else {
-					currentCount = value.doc_count;
-				}
-				if (value.key !== constants.MISSING_KEY_VALUE) {
-					filteredCounts[filterKey] += currentCount;
-				}
-				docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
-					? value.doc_count
-					: 0;
-				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
-				const controlView = $$(controlId);
-				if (controlView) {
-					if (filterKey !== constants.COLLECTION_KEY) {
-						_setFilterCounts(controlView, value.doc_count, currentCount);
+			const diagnosisRegex = /^diagnosis_\d$/;
+			if (diagnosisRegex.test(filterKey)) {
+				const controlKey = "diagnosis";
+				const diagnosisValues = diagnosisModel.getDiagnosisValuesByLevel(filterKey);
+				const displayDiagnosis = diagnosisModel.getDisplayDiagnosis();
+				diagnosisValues.forEach((v) => {
+					let value = values.find(item => item.key === v);
+					if (!value) {
+						value = {
+							key: v,
+							doc_count: 0
+						};
 					}
-				}
-			});
+					let currentCount;
+					value.fullKey = value.key !== constants.MISSING_KEY_VALUE
+						? diagnosisModel.getDiagnosisConcatenateValue(value.key)
+						: constants.MISSING_KEY_VALUE;
+					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
+						currentCount = _findCurrentCount(
+							countsAfterFiltration[filterKey],
+							value.key,
+							filterKey
+						);
+					}
+					else {
+						currentCount = value.doc_count;
+					}
+					if (value.key !== constants.MISSING_KEY_VALUE) {
+						filteredCounts[filterKey] += currentCount;
+					}
+					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
+						? value.doc_count
+						: 0;
+					const controlId = util.getOptionId(
+						controlKey,
+						prepareOptionName(value.fullKey, filterKey)
+					);
+					const controlView = $$(controlId);
+					if (controlView) {
+						_setDiagnosisFilterCounts(controlView, value.doc_count, currentCount);
+						if (!displayDiagnosis.find(item => item === v)) {
+							hideControl(controlView);
+						}
+					}
+				});
+			}
+			else {
+				values.forEach((value) => {
+					let currentCount;
+					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
+						currentCount = _findCurrentCount(
+							countsAfterFiltration[filterKey],
+							value.key,
+							filterKey
+						);
+					}
+					else {
+						currentCount = value.doc_count;
+					}
+					if (value.key !== constants.MISSING_KEY_VALUE) {
+						filteredCounts[filterKey] += currentCount;
+					}
+					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
+						? value.doc_count
+						: 0;
+					const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
+					const controlView = $$(controlId);
+					if (controlView) {
+						if (filterKey !== constants.COLLECTION_KEY) {
+							_setFilterCounts(controlView, value.doc_count, currentCount);
+						}
+					}
+				});
+			}
 		}
 		// else if (filterKey === constants.COLLECTION_KEY) {
 		// 	let values = state.imagesTotalCounts[filterKey];
@@ -176,5 +315,6 @@ export default {
 	NULL_OPTION_VALUE,
 	prepareOptionName,
 	updateFiltersCounts,
-	updateFiltersFormControl
+	updateFiltersFormControl,
+	changeParentState,
 };

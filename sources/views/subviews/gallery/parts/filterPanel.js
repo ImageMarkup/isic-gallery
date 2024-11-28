@@ -36,8 +36,13 @@ function getConfig(config) {
 		hidden: true
 	};
 
-	/** @type {webix.ui.suggestConfig} */
-	const searchSuggestView = searchSuggest.getConfig(ID_SEARCH_SUGGESTION);
+	const searchSuggestConfig = {
+		id: ID_SEARCH_SUGGESTION,
+		width: 800,
+		fitMaster: false,
+		css: "filters-suggest",
+	};
+	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
 	searchSuggestView.body.template = obj => `${obj.key}: ${obj.value}`;
 	searchSuggestView.filter = (obj, value) => {
 		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
