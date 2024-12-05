@@ -1150,6 +1150,20 @@
 .collapssible-filter-tree {
   padding-left: 0px;
   border-width: 0px !important;
+  padding-left: 19px;
+  position: relative;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.filter-tree-table {
+  .webix_tree_open::before {
+    content: "\F027" !important;
+  }
+  
+  .webix_tree_close::before {
+    content: "\F028" !important;
+  }
 }
 
 .select-all-template,

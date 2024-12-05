@@ -108,12 +108,12 @@ function transformToFormFormat(data, expandedFilters) {
 						const diagnosisRegex = /^diagnosis\|.*/;
 						const diagnosisFilter = expandedFilters.find(f => diagnosisRegex.test(f));
 						collapsed = !diagnosisFilter;
-						filtersConfig = filtersViewHelper.getCheckboxUI(
+						filtersConfig = filtersViewHelper.getTreeCheckboxUI(
 							dataForCreatingControl,
 							collapsed,
 							expandedFilters
 						);
-						elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
+						elems.push(filtersConfig);
 						break;
 					}
 					default:

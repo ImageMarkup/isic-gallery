@@ -72,12 +72,8 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	controlView.refresh();
 }
 
-function _setDiagnosisFilterCounts(controlView, totalCount, currentCount) {
-	const oldLabel = controlView.config.labelRight;
-	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
-	const baseLabelText = lastBracketIndex === -1
-		? oldLabel
-		: oldLabel.substring(0, lastBracketIndex);
+function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
+	const baseLabelText = option.id;
 	let firstNumberHtml;
 	if (totalCount === currentCount) {
 		firstNumberHtml = "";
@@ -88,14 +84,9 @@ function _setDiagnosisFilterCounts(controlView, totalCount, currentCount) {
 	else {
 		firstNumberHtml = `${currentCount} / `;
 	}
-	const newLabel = `${baseLabelText}(${firstNumberHtml}${totalCount})`;
-	controlView.define("labelRight", newLabel);
-	controlView.getNode().setAttribute("title", newLabel);
-	controlView.refresh();
-}
-
-function hideControl(controlView) {
-	controlView.define("hidden", true);
+	const newLabel = `${baseLabelText} (${firstNumberHtml}${totalCount})`;
+	option.name = newLabel;
+	treeView.updateItem(option.id, option);
 }
 
 function updateFiltersFormControl(data) {
@@ -120,7 +111,7 @@ function updateFiltersFormControl(data) {
 		}
 		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
 		{
-			updateTreeCheckboxControl(data, true);
+			updateTreeCheckboxControl(data);
 			break;
 		}
 		case "rangeFilter":
@@ -134,58 +125,37 @@ function updateFiltersFormControl(data) {
 	}
 }
 
-function updateTreeCheckboxControl(data, updateParentFlag) {
-	const controlId = util.getOptionId("diagnosis", data.optionId);
-	const control = $$(controlId);
-	if (control) {
+function updateTreeCheckboxControl(data) {
+	const treeView = $$(data.viewId);
+	if (treeView) {
 		// we do not need to call onChange event for the control. so we block event
-		control.blockEvent();
+		treeView.blockEvent();
 		/* remove key is from "filtersChanged" event parameters.
 		   Its value is inverse for checkbox value */
-		control.setValue(!data.remove);
-		control.unblockEvent();
-		if (updateParentFlag && control.config.attributes.parentId) {
-			const isIndeterminate = !data.remove;
-			const parentElement = $$(control.config.attributes.parentId);
-			changeParentState(parentElement, isIndeterminate, !data.remove);
+		if (!treeView.isVisible()) {
+			treeView.show();
 		}
-	}
-	if (data.children) {
-		const remove = data.remove;
-		data.children.forEach((c) => {
-			const child = webix.copy(c);
-			child.remove = remove;
-			child.optionId = child.id;
-			updateTreeCheckboxControl(child, false);
-		});
-	}
-	if (data.data) {
-		const remove = data.remove;
-		data.data.forEach((c) => {
-			const child = webix.copy(c);
-			child.remove = remove;
-			child.optionId = child.id;
-			updateTreeCheckboxControl(child, false);
-		});
+		treeView.checkItem(data.id);
+		treeView.open(data.id);
+		const parentId = treeView.getParentId(data.id);
+		if (parentId) {
+			const parent = treeView.getItem(parentId);
+			changeParentState(treeView, parent);
+		}
+		treeView.unblockEvent();
 	}
 }
 
-function changeParentState(element, isIndeterminate, status) {
-	if (isIndeterminate) {
-		const elementNode = element.getInputNode();
-		if (elementNode) {
-			elementNode.indeterminate = true;
-			const parentId = element?.config?.attributes?.parentId;
-			if (parentId) {
-				const parentElement = $$(parentId);
-				changeParentState(parentElement, isIndeterminate, status);
-			}
-		}
+function changeParentState(treeView, option) {
+	treeView.open(option.id);
+	if (option.checked) {
+		// TODO: fix uncheck all items
+		// treeView.uncheckItem(parent.id);
 	}
-	else {
-		element.blockEvent();
-		element.setValue(status);
-		element.unblockEvent();
+	const parentId = treeView.getParentId(option.id);
+	if (parentId) {
+		const parentOption = treeView.getItem(parentId);
+		changeParentState(treeView, parentOption);
 	}
 }
 
@@ -231,6 +201,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				const controlKey = "diagnosis";
 				const diagnosisValues = diagnosisModel.getDiagnosisValuesByLevel(filterKey);
 				const displayDiagnosis = diagnosisModel.getDisplayDiagnosis();
+				const treeView = $$(`treeTable-${controlKey}`);
 				diagnosisValues.forEach((v) => {
 					let value = values.find(item => item.key === v);
 					if (!value) {
@@ -259,15 +230,12 @@ function updateFiltersCounts(countsAfterFiltration) {
 					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
 						? value.doc_count
 						: 0;
-					const controlId = util.getOptionId(
-						controlKey,
-						prepareOptionName(value.fullKey, filterKey)
-					);
-					const controlView = $$(controlId);
-					if (controlView) {
-						_setDiagnosisFilterCounts(controlView, value.doc_count, currentCount);
+					const optionId = prepareOptionName(value.fullKey, filterKey);
+					const option = treeView?.getItem(optionId);
+					if (option) {
+						_setDiagnosisFilterCounts(treeView, option, value.doc_count, currentCount);
 						if (!displayDiagnosis.find(item => item === v)) {
-							hideControl(controlView);
+							treeView.remove(optionId);
 						}
 					}
 				});

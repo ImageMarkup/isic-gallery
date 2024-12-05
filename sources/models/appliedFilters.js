@@ -84,7 +84,6 @@ function processNewFilter(filter) {
 	switch (filter.view) {
 		case "checkbox":
 		case "rangeCheckbox":
-		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
 		{
 			let checkboxId = util.getOptionId(filter.key, filter.optionId ?? filter.value);
 			if (filter.remove) {
@@ -95,6 +94,21 @@ function processNewFilter(filter) {
 			else {
 				filter.id = checkboxId;
 				if (!appliedFilters.exists(checkboxId)) {
+					appliedFilters.add(filter);
+				}
+			}
+			break;
+		}
+		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
+			const optionId = filter.optionId;
+			if (filter.remove) {
+				if (appliedFilters.exists(optionId)) {
+					appliedFilters.remove(optionId);
+				}
+			}
+			else {
+				filter.id = optionId;
+				if (!appliedFilters.exists(optionId)) {
 					appliedFilters.add(filter);
 				}
 			}
