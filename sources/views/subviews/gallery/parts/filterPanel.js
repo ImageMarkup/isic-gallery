@@ -38,12 +38,13 @@ function getConfig(config) {
 
 	const searchSuggestConfig = {
 		id: ID_SEARCH_SUGGESTION,
-		width: 800,
 		fitMaster: false,
 		css: "filters-suggest",
 	};
 	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
-	searchSuggestView.body.template = obj => `${obj.key}: ${obj.value}`;
+	searchSuggestView.body.template = obj => (obj.key
+		? `${obj.key}: ${obj.value}`
+		: `${obj.value}`);
 	searchSuggestView.filter = (obj, value) => {
 		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
 		return result;
@@ -61,9 +62,6 @@ function getConfig(config) {
 		suggest: searchSuggestView,
 		on: {
 			onAfterRender: () => {
-				const searchInputWidth = $$(ID_SEARCH_FIELD).$width;
-				const dataviewMinWidth = 800;
-				searchButtonModel.setMinCurrentTargetInnerWidth(dataviewMinWidth + searchInputWidth);
 				const inputNode = $$(ID_SEARCH_FIELD).$view.getElementsByClassName("webix_el_box")[0];
 				const tooltipText = "Clear search value";
 				searchButtonModel.createTimesSearchButton(

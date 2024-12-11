@@ -34,7 +34,7 @@ function formSuggestionsFromOptions(parent) {
 			const currentCollection = collections.find(c => c.id === o.key);
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
-				key: o.key,
+				key: parent.id,
 				value: currentCollection.name ?? "",
 				optionId: currentCollection.id,
 				isCollection: true,
@@ -89,10 +89,11 @@ function formSuggestionsFromOptions(parent) {
 function formSuggestionsFromData(parent) {
 	const suggestions = [];
 	parent.data?.forEach((d) => {
+		const valueArray = parent.id.split("|").map((v, index) => (index < 2 ? v.toUpperCase() : v));
 		suggestions.push({
 			id: `diagnosis|${parent.id}`,
-			key: "diagnosis",
-			value: parent.id ?? "",
+			key: "",
+			value: valueArray.join("|") ?? "",
 		});
 		if (d.data) {
 			suggestions.push(...formSuggestionsFromData(d));

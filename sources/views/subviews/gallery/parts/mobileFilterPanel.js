@@ -76,9 +76,6 @@ function getConfig(config) {
 		hidden: true,
 		on: {
 			onAfterRender: () => {
-				const searchInputWidth = $$(ID_SEARCH_FIELD).$width;
-				const dataviewMinWidth = 800;
-				searchButtonModel.setMinCurrentTargetInnerWidth(dataviewMinWidth + searchInputWidth);
 				const inputNode = $$(ID_SEARCH_FIELD).$view.getElementsByClassName("webix_el_box")[0];
 				const tooltipText = "Clear search value";
 				searchButtonModel.createTimesSearchButton(

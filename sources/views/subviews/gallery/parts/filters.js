@@ -24,7 +24,7 @@ function getLabelUI(label) {
 
 const expandedParentsFilters = [];
 
-function _attachCollapseToFilter(filter, dataForCreatingControl, expandedFilters) {
+function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFilters) {
 	const collapsibleFilter = webix.copy(filter);
 	const collapseElement = collapsibleFilter.rows[0];
 	const collapsibleFilterFunction = function () {
@@ -368,7 +368,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 						id: "name",
 						template: (obj, common) => {
 							const name = obj.$level < 3 ? obj.name.toUpperCase() : obj.name;
-							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="margin-left:5px;">${name}</span>`;
+							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;">${name}</span>`;
 						},
 						fillspace: true,
 						select: false
@@ -493,7 +493,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 			}
 		]
 	};
-	return _attachCollapseToFilter(view, data, expandedFilters);
+	return _attachCollapseToTreeFilter(view, data, expandedFilters);
 }
 
 function getParentsIds(treeView, optionId, level) {

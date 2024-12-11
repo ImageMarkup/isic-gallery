@@ -1046,19 +1046,20 @@
     display: flex;
     .applied-filters-item-hierarchy-item {
       background-color: #FAFBFD;
-      flex-grow: 1;
       overflow: hidden;
       white-space: nowrap;
       padding-left: 5px;
       text-overflow: ellipsis;
       border-right: 1px solid #E8EBF0;;
       box-sizing: border-box;
+      max-width: max-content;
     }
     .applied-filters-item-hierarchy-item:not(:last-child) {
-      max-width: 50px;
+      flex: 1;
+      padding-right: 5px;
     }
     .applied-filters-item-hierarchy-item:last-child {
-      flex-grow: 10;
+      flex: 3;
     }
     .applied-filters-item-hierarchy-item:first-child {
       text-transform: uppercase;
@@ -1068,6 +1069,12 @@
       text-transform: uppercase;
       background-color: transparent;
     }
+    .applied-filters-item-hierarchy-item:hover  {
+      flex: 3;
+    }
+  }
+  .applied-filters-item-hierarchy_container:hover .applied-filters-item-hierarchy-item:not(:hover) {
+    flex: 1;
   }
   .applied-filters-item {
     white-space: nowrap;
@@ -1157,12 +1164,36 @@
 }
 
 .filter-tree-table {
+  .webix_cell {
+    border-width: 0px;
+  }
   .webix_tree_open::before {
     content: "\F027" !important;
   }
   
   .webix_tree_close::before {
     content: "\F028" !important;
+  }
+  [aria-level="5"], [aria-level="4"], [aria-level="3"] {
+    .webix_tree_open, .webix_tree_close, .webix_tree_checkbox, span {
+      background-color: #FAFBFD !important;
+    }
+  }
+  .webix_tree_checkbox {
+    width: 18px;
+  }
+  span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .webix_ss_center_scroll {
+    width: 100% !important;
+    .webix_column {
+      width: 100% !important;
+    }
   }
 }
 
@@ -2241,13 +2272,5 @@
   color:rgba(0, 0, 0, 0.4);
   .webix_template .fas {
     margin: 0 50%;
-  }
-}
-
-.filters-suggest {
-  .webix_list_item {
-    height: auto !important;
-    overflow: auto !important;
-    overflow-wrap: break-word; 
   }
 }

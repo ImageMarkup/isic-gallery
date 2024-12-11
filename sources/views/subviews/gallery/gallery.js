@@ -58,7 +58,7 @@ export default class GalleryView extends JetView {
 			maxWidth: 700,
 			paddingX: 15,
 			paddingY: 15,
-			margin: 20
+			margin: 20,
 		};
 
 		const leftPanel = filterPanel.getConfig(leftPanelConfig);
@@ -294,8 +294,8 @@ export default class GalleryView extends JetView {
 					]
 				},
 				{height: 10}
-			]
-
+			],
+			gravity: 10,
 		};
 
 		const leftCollapser = collapser.getConfig(ID_LEFT_PANEL, {
@@ -307,7 +307,8 @@ export default class GalleryView extends JetView {
 			cols: [
 				leftPanel,
 				leftCollapser,
-			]
+			],
+			gravity: 1
 		};
 
 		const ui = {
@@ -631,7 +632,7 @@ export default class GalleryView extends JetView {
 			}
 			case constants.DEFAULT_DATAVIEW_COLUMNS: {
 				const minGalleryWidth = window.innerWidth
-					- this.$$(ID_LEFT_PANEL).config.width
+					- this.$$(ID_LEFT_PANEL).config.maxWidth ?? $$(ID_LEFT_PANEL).config.width
 					- galleryCartList.config.width;
 				cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
 				break;

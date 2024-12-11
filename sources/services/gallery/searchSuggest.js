@@ -22,9 +22,26 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		body: foundCountTemplateConfig,
 	});
 
+	foundCountPopup.attachEvent("onShow", () => {
+		foundCountPopup.define("width", searchSuggest.$width);
+		foundCountPopup.resize();
+	});
+
 	const foundCountTemplate = webix.$$(foundCountTemplateID);
 
 	searchSuggest.attachEvent("onBeforeShow", () => {
+		const list = searchSuggest.getList();
+		const texts = [];
+		list.data.each((obj) => {
+			texts.push(obj.value);
+		});
+		const masterView = $$(searchSuggest.config.master);
+		const width = Math.max(
+			webix.html.getTextSize(texts, "webix_list_item").width + 30,
+			masterView.getInputNode().getBoundingClientRect().width
+		);
+		searchSuggest.define("width", width);
+		searchSuggest.resize();
 		const searchValue = searchInput.getValue();
 		if (searchValue.length < 3 || toggleButton.getValue() === 1) {
 			searchSuggest.hide();
@@ -32,7 +49,6 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		}
 		return true;
 	});
-
 
 	suggestList.detachEvent("onItemClick");
 

@@ -1,5 +1,3 @@
-let minCurrentTargetInnerWidth;
-
 function removeTootipDiv(elementNode, tooltipClassName) {
 	elementNode.removeAttribute("tooltip");
 	const tooltipDiv = document.querySelector(`.${tooltipClassName}`);
@@ -71,19 +69,9 @@ function removeTimesSearchButton(inputNode) {
 	inputNode.lastChild.style.paddingRight = "0px";
 }
 
-function getMinCurrentTargetInnerWidth() {
-	return minCurrentTargetInnerWidth;
-}
-
-function setMinCurrentTargetInnerWidth(minWidth) {
-	minCurrentTargetInnerWidth = minWidth;
-}
-
 export default {
 	removeTootipDiv,
 	createTimesSearchButton,
 	removeTimesSearchButton,
 	createHintForSearchTimesButton,
-	getMinCurrentTargetInnerWidth,
-	setMinCurrentTargetInnerWidth
 };

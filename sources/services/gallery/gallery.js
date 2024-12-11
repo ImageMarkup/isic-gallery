@@ -337,13 +337,9 @@ class GalleryService {
 		this._dataviewYCountSelection?.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection?.unblockEvent();
 
-		const dataTableResizeHandler = util.debounce((event) => {
-			const contentWidth = event[0].contentRect.width;
-			const minCurrentTargetInnerWidth = searchButtonModel.getMinCurrentTargetInnerWidth();
-			if (contentWidth >= minCurrentTargetInnerWidth) {
-				dataviewSelectionId = util.getDataviewSelectionId();
-				this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
-			}
+		const dataTableResizeHandler = util.debounce((/* event */) => {
+			dataviewSelectionId = util.getDataviewSelectionId();
+			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
 		});
 		const dataTableResizeObserver = new ResizeObserver(dataTableResizeHandler);
 		const dataTableNode = this._imagesDataview.getNode();
@@ -387,7 +383,7 @@ class GalleryService {
 				}
 				case constants.DEFAULT_DATAVIEW_COLUMNS: {
 					const minGalleryWidth = window.innerWidth
-						- this._galleryLeftPanel.config.width
+						- this._galleryLeftPanel.config.maxWidth ?? this._galleryLeftPanel.config.width
 						- this._activeCartList.config.width;
 					const cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
 					newItemWidth = Math.floor(dataviewWidth / cols);
