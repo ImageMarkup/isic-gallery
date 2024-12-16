@@ -42,8 +42,8 @@ function getConfig(config) {
 		css: "filters-suggest",
 	};
 	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
-	searchSuggestView.body.template = obj => (obj.key
-		? `${obj.key}: ${obj.value}`
+	searchSuggestView.body.template = obj => (obj.name
+		? `${obj.name}: ${obj.value}`
 		: `${obj.value}`);
 	searchSuggestView.filter = (obj, value) => {
 		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
@@ -73,7 +73,6 @@ function getConfig(config) {
 			},
 			onChange() {
 				let searchValue = this.getValue();
-				searchValue = searchValue.trim();
 				searchValue = searchValue.replace(/\s+/g, " ");
 				this.setValue(searchValue);
 			}

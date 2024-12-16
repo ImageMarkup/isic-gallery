@@ -50,16 +50,34 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		return true;
 	});
 
+	// remove default behavior
 	suggestList.detachEvent("onItemClick");
 
+	// add new behavior
 	suggestList.attachEvent("onItemClick", (id, event) => {
 		const item = suggestList.getItem(id);
-		const controlId = util.getOptionId(item.key, item.value);
-		/** @type {webix.ui.checkbox} */
-		const control = $$(controlId);
-		if (control) {
-			const controlValue = control.getValue();
-			control.setValue(!controlValue);
+		if (item.key === "diagnosis") {
+			/** @type {webix.ui.treetable} */
+			const diagnosisTree = $$(`treeTable-${item.key}`);
+			const controlId = item.optionId;
+			const control = diagnosisTree.getItem(controlId);
+			if (control) {
+				if (diagnosisTree.isChecked(controlId)) {
+					diagnosisTree.uncheckItem(controlId);
+				}
+				else {
+					diagnosisTree.checkItem(controlId);
+				}
+			}
+		}
+		else {
+			const controlId = util.getOptionId(item.key, item.value);
+			/** @type {webix.ui.checkbox} */
+			const control = $$(controlId);
+			if (control) {
+				const controlValue = control.getValue();
+				control.setValue(!controlValue);
+			}
 		}
 		if (!event.metaKey && !event.ctrlKey) {
 			suggestList.hide();

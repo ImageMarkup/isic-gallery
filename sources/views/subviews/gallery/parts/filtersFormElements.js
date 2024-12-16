@@ -99,12 +99,17 @@ function transformToFormFormat(data, expandedFilters) {
 					case "checkbox":
 					case "rangeCheckbox":
 						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl, collapsed);
-						elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
+						if (filtersConfig) {
+							elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
+						}
 						break;
 					/* case "range_slider":
 						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
 						break; */
 					case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
+						if (util.isMobilePhone()) {
+							break;
+						}
 						const diagnosisRegex = /^diagnosis\|.*/;
 						const diagnosisFilter = expandedFilters.find(f => diagnosisRegex.test(f));
 						collapsed = !diagnosisFilter;
@@ -113,7 +118,9 @@ function transformToFormFormat(data, expandedFilters) {
 							collapsed,
 							expandedFilters
 						);
-						elems.push(filtersConfig);
+						if (filtersConfig) {
+							elems.push(filtersConfig);
+						}
 						break;
 					}
 					default:

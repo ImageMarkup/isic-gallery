@@ -35,6 +35,7 @@ function formSuggestionsFromOptions(parent) {
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
 				key: parent.id,
+				name: "Collections",
 				value: currentCollection.name ?? "",
 				optionId: currentCollection.id,
 				isCollection: true,
@@ -75,7 +76,8 @@ function formSuggestionsFromOptions(parent) {
 		parent.options?.forEach((o) => {
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
-				key: parent.name,
+				name: parent.name,
+				key: parent.id,
 				value: o.key ?? "",
 			});
 			if (o.options) {
@@ -92,7 +94,8 @@ function formSuggestionsFromData(parent) {
 		const valueArray = parent.id.split("|").map((v, index) => (index < 2 ? v.toUpperCase() : v));
 		suggestions.push({
 			id: `diagnosis|${parent.id}`,
-			key: "",
+			key: "diagnosis",
+			optionId: parent.id,
 			value: valueArray.join("|") ?? "",
 		});
 		if (d.data) {

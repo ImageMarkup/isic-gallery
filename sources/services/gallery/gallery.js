@@ -130,10 +130,21 @@ class GalleryService {
 				}
 			}
 		});
+		const treeDataElements = this._filtersForm.queryView({view: "treetable"}, "all");
+		let foundTreeDataElementFlag = false;
+		treeDataElements.forEach((e) => {
+			e.data.each((i) => {
+				const labelLowerCase = i.name.replace(/\([\/ 0-9]*\)$/, "");
+				if (labelLowerCase.indexOf(searchValue.toLowerCase()) > -1) {
+					e.checkItem(i.id);
+					foundTreeDataElementFlag = true;
+				}
+			});
+		});
 		if (filtersInfo.length > 0) {
 			filtersBySearchCollection.parse(filtersInfo);
 		}
-		else {
+		else if (!foundTreeDataElementFlag) {
 			webix.alert(`"There are no filters which include "${searchValue}"`);
 		}
 		this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
@@ -1560,7 +1571,6 @@ class GalleryService {
 	_searchEventsMethods(eventMethod) {
 		this._searchInput.detachEvent("onEnter");
 		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
-		this._searchInput.attachEvent("onEnter", eventMethod);
 	}
 
 	_clearNameFilter() {

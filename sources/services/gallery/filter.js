@@ -73,7 +73,7 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 }
 
 function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
-	const baseLabelText = option.id;
+	const baseLabelText = option.name;
 	let firstNumberHtml;
 	if (totalCount === currentCount) {
 		firstNumberHtml = "";

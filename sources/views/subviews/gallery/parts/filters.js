@@ -50,8 +50,7 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFil
 	collapseElement.onClick = {
 		"collapssible-filter-tree": collapsibleFilterFunction
 	};
-	const filterId = util.getOptionId("diagnosis", dataForCreatingControl.id);
-	if (!expandedFilters?.includes(filterId)) {
+	if (expandedFilters?.length === 0) {
 		collapseElement.css = "collapssible-filter-tree hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;
 	}
@@ -63,17 +62,6 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFil
 				id: dataForCreatingControl.id
 			});
 		}
-		if (dataForCreatingControl.parent) {
-			const parentValue = diagnosisModel.getDiagnosisConcatenateValue(
-				dataForCreatingControl.parent
-			);
-			const parentId = util.getOptionId("diagnosis", parentValue);
-			expandedParentsFilters.push(parentId);
-		}
-	}
-	if (expandedParentsFilters.includes(filterId)) {
-		collapseElement.css = "collapssible-filter-tree showed-filter";
-		collapsibleFilter.rows[1].hidden = false;
 		if (dataForCreatingControl.parent) {
 			const parentValue = diagnosisModel.getDiagnosisConcatenateValue(
 				dataForCreatingControl.parent
@@ -368,7 +356,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 						id: "name",
 						template: (obj, common) => {
 							const name = obj.$level < 3 ? obj.name.toUpperCase() : obj.name;
-							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;">${name}</span>`;
+							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;" title="${name}">${name}</span>`;
 						},
 						fillspace: true,
 						select: false
