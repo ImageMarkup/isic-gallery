@@ -1049,6 +1049,7 @@
       overflow: hidden;
       white-space: nowrap;
       padding-left: 5px;
+      padding-right: 5px;
       text-overflow: ellipsis;
       border-right: 1px solid #E8EBF0;;
       box-sizing: border-box;
@@ -1056,10 +1057,11 @@
     }
     .applied-filters-item-hierarchy-item:not(:last-child) {
       flex: 1;
+      min-width: 51px;
       padding-right: 5px;
     }
     .applied-filters-item-hierarchy-item:last-child {
-      flex: 3;
+      flex: 10;
     }
     .applied-filters-item-hierarchy-item:first-child {
       text-transform: uppercase;
@@ -1070,7 +1072,7 @@
       background-color: transparent;
     }
     .applied-filters-item-hierarchy-item:hover  {
-      flex: 3;
+      flex: 10;
     }
   }
   .applied-filters-item-hierarchy_container:hover .applied-filters-item-hierarchy-item:not(:hover) {

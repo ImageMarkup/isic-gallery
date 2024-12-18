@@ -474,6 +474,26 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 									nextSiblingId = this.getNextSiblingId(currentId);
 								}
 							}
+							const allCheckedItems = this.getChecked();
+							allCheckedItems.forEach((checkedItemId) => {
+								const checkedItem = this.getItem(checkedItemId);
+								const parentForCheckedItem = this.getItem(this.getParentId(checkedItemId));
+								if (!parentForCheckedItem.checked) {
+									filtersChangedData.push({
+										view: data.type,
+										datatype: checkedItem.datatype,
+										key: labelId,
+										filterName: data.name,
+										value: getTreeOptionValueById(checkedItem.id),
+										status: "equals",
+										treeCheckboxFlag: true,
+										diagnosisLevel: checkedItem.level,
+										optionId: checkedItem.id,
+										viewId: `treeTable-${data.id}`,
+										remove: false,
+									});
+								}
+							});
 						}
 						this.getTopParentView().$scope.app.callEvent("filtersChanged", [filtersChangedData]);
 					}

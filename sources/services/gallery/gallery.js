@@ -1254,7 +1254,8 @@ class GalleryService {
 	// update form controls values(true/false for checkboxes, etc)
 	_updateFiltersFormControls(data) {
 		if (Array.isArray(data)) {
-			data.forEach((item) => {
+			// For treetable elements sorting from highest level to lowest
+			[...data].sort((a, b) => a.diagnosisLevel > b.diagnosisLevel).forEach((item) => {
 				filterService.updateFiltersFormControl(item);
 			});
 		}
