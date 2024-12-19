@@ -66,7 +66,6 @@ class AjaxActions {
 
 	async _ajaxGet(url, params) {
 		const headers = await getAuthHeaders();
-		headers["Content-Type"] = "application/json";
 		if (!params) {
 			params = {};
 		}
