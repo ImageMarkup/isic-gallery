@@ -37,7 +37,7 @@ function formSuggestionsFromOptions(parent) {
 				key: parent.id,
 				name: "Collections",
 				value: currentCollection.name ?? "",
-				optionId: currentCollection.id,
+				optionId: `${parent.id}|${currentCollection.id}`,
 				isCollection: true,
 			});
 		});
@@ -76,9 +76,9 @@ function formSuggestionsFromOptions(parent) {
 		parent.options?.forEach((o) => {
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
-				name: parent.name,
 				key: parent.id,
-				value: o.key ?? "",
+				value: `${parent.name}: ${o.key}` ?? "",
+				optionId: `${parent.id}|${o.key}`,
 			});
 			if (o.options) {
 				suggestions.push(...formSuggestionsFromOptions(o));
@@ -91,11 +91,11 @@ function formSuggestionsFromOptions(parent) {
 function formSuggestionsFromData(parent) {
 	const suggestions = [];
 	parent.data?.forEach((d) => {
-		const valueArray = parent.id.split("|").map((v, index) => (index < 2 ? v.toUpperCase() : v));
+		const valueArray = d.id.split("|").map((v, index) => (index < 2 ? v.toUpperCase() : v));
 		suggestions.push({
-			id: `diagnosis|${parent.id}`,
+			id: `diagnosis|${d.id}`,
 			key: "diagnosis",
-			optionId: parent.id,
+			optionId: d.id,
 			value: valueArray.join("|") ?? "",
 		});
 		if (d.data) {

@@ -373,20 +373,20 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 					onItemCheck(id, state, event) {
 						const item = this.getItem(id);
 						const filtersChangedData = [];
+						filtersChangedData.push({
+							view: data.type,
+							datatype: item.datatype,
+							key: labelId,
+							filterName: data.name,
+							value: getTreeOptionValueById(id),
+							status: "equals",
+							treeCheckboxFlag: true,
+							diagnosisLevel: item.$level,
+							optionId: id,
+							viewId: `treeTable-${data.id}`,
+							remove: !state,
+						});
 						if (state) {
-							filtersChangedData.push({
-								view: data.type,
-								datatype: item.datatype,
-								key: labelId,
-								filterName: data.name,
-								value: getTreeOptionValueById(id),
-								status: "equals",
-								treeCheckboxFlag: true,
-								diagnosisLevel: item.$level,
-								optionId: id,
-								viewId: `treeTable-${data.id}`,
-								remove: !state,
-							});
 							const children = getChildrenIds(this, id, item.$level);
 							children.forEach((c) => {
 								filtersChangedData.push({

@@ -71,7 +71,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			}
 		}
 		else {
-			const controlId = util.getOptionId(item.key, item.value);
+			const controlId = item.optionId;
 			/** @type {webix.ui.checkbox} */
 			const control = $$(controlId);
 			if (control) {

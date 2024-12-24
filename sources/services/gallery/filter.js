@@ -73,7 +73,11 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 }
 
 function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
-	const baseLabelText = option.name;
+	const oldLabel = option.name;
+	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
+	const baseLabelText = lastBracketIndex === -1
+		? oldLabel
+		: oldLabel.substring(0, lastBracketIndex);
 	let firstNumberHtml;
 	if (totalCount === currentCount) {
 		firstNumberHtml = "";
@@ -148,10 +152,6 @@ function updateTreeCheckboxControl(data) {
 
 function changeParentState(treeView, option) {
 	treeView.open(option.id);
-	if (option.checked) {
-		// TODO: fix uncheck all items
-		// treeView.uncheckItem(parent.id);
-	}
 	const parentId = treeView.getParentId(option.id);
 	if (parentId) {
 		const parentOption = treeView.getItem(parentId);
@@ -161,8 +161,9 @@ function changeParentState(treeView, option) {
 
 function _setLabelCount(foundCurrentCount, docCount) {
 	const appliedFiltersArray = appliedFiltersModel.getFiltersArray();
+	const flatFiltersArray = appliedFiltersArray.filter(f => f.view !== "treeCheckbox");
 	const filtersKeys = [];
-	appliedFiltersArray.forEach((filter) => {
+	flatFiltersArray.forEach((filter) => {
 		if (!filtersKeys.includes(filter.key)) {
 			filtersKeys.push(filter.key);
 		}
@@ -269,12 +270,6 @@ function updateFiltersCounts(countsAfterFiltration) {
 				});
 			}
 		}
-		// else if (filterKey === constants.COLLECTION_KEY) {
-		// 	let values = state.imagesTotalCounts[filterKey];
-		// 	values.forEach((value) => {
-
-		// 	})
-		// }
 	});
 	_setLabelCount(filteredCounts, docCounts);
 }

@@ -65,6 +65,7 @@ class GalleryService {
 		portraitClearAllFiltersTemplate,
 		landscapeClearAllFiltersTemplate,
 		searchSuggest,
+		leftPanelResizer,
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -98,6 +99,7 @@ class GalleryService {
 		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
 		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
 		this._searchSuggest = searchSuggest;
+		this._leftPanelResizer = leftPanelResizer;
 		this._init();
 	}
 
@@ -1092,6 +1094,15 @@ class GalleryService {
 			if (await state.auth.isTermsOfUseAccepted()) {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
+			}
+		});
+
+		this._imagesDataview.attachEvent("onAfterRender", () => {
+			if (this._galleryLeftPanel.isVisible()) {
+				this._leftPanelResizer.show();
+			}
+			else {
+				this._leftPanelResizer.hide();
 			}
 		});
 	}

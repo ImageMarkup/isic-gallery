@@ -32,6 +32,7 @@ const ID_DOWNLOADING_MENU = constants.DOWNLOAD_MENU_ID;
 const ID_RIGHT_PANEL = constants.ID_GALLERY_RIGHT_PANEL;
 const ID_GALLERY_CONTEXT_MENU = "gallery-context-menu";
 const ID_ENLARGE_CONTEXT_MENU = `enlarge-context-menu-id-${webix.uid()}`;
+const ID_LEFT_PANEL_RESIZER = `resizer-${webix.uid()}`;
 const NAME_GALLERY_HEADER = `galleryHeaderName-${webix.uid()}`;
 const NAME_SELECT_ALL_IMAGES_ON_ALL_PAGES_TEMPLATE = `selectAllImagesOnAllPagesTemplateName-${webix.uid()}`;
 const NAME_CLONED_PAGER_FOR_NAME_SEARCH = "clonedPagerForNameSearchName";
@@ -317,7 +318,10 @@ export default class GalleryView extends JetView {
 				{
 					cols: [
 						leftPanelWithCollapser,
-						{view: "resizer"},
+						{
+							view: "resizer",
+							id: ID_LEFT_PANEL_RESIZER,
+						},
 						content,
 					]
 				}
@@ -357,6 +361,7 @@ export default class GalleryView extends JetView {
 		const imageWindowTemplate = $$(imageWindow.getViewerId());
 		const imageWindowTemplateWithoutControls = $$(imageWindow.getViewerWithoutControlsId());
 		const searchSuggest = $$(filterPanel.getSearchSuggestID());
+		const leftPanelResizer = $$(ID_LEFT_PANEL_RESIZER);
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -390,6 +395,7 @@ export default class GalleryView extends JetView {
 			null, // portraitClearAllFiltersTemplate
 			null, // landscapeClearAllFiltersTemplate
 			searchSuggest,
+			leftPanelResizer,
 		);
 
 		// multi lesion
