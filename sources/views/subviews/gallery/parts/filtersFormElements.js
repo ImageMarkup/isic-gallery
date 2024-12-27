@@ -110,6 +110,8 @@ function transformToFormFormat(data, expandedFilters) {
 						if (util.isMobilePhone()) {
 							break;
 						}
+						const openedItems = getOpenElementFromTreeTable(`treeTable-${dataForCreatingControl.id}`);
+						expandedFilters.push(...openedItems);
 						const diagnosisRegex = /^diagnosis\|.*/;
 						const diagnosisFilter = expandedFilters.find(f => diagnosisRegex.test(f));
 						collapsed = !diagnosisFilter;
@@ -163,6 +165,14 @@ function showOrHideAggregateButton(filter, controls, dataForCreatingControl, isC
 	if (filtersCount === dataForCreatingControl.options.length) {
 		selectAllFiltersButton.hide();
 	}
+}
+
+function getOpenElementFromTreeTable(id) {
+	const treeTableView = $$(id);
+	if (treeTableView) {
+		return treeTableView.getOpenItems();
+	}
+	return [];
 }
 
 export default {

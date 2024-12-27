@@ -90,13 +90,15 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		const selectedItems = [];
 		filters.forEach((f) => {
 			const found = suggestData.find((item) => {
-				if (f.id === item.id) {
+				if (f.id === item.optionId) {
 					return true;
 				}
 				return false;
 			});
 			if (found) {
-				selectedItems.push(f.id);
+				// for checkbox we use f.id, for other cases we use f.key|f.id
+				const id = f.view === "checkbox" ? f.id : `${f.key}|${f.id}`;
+				selectedItems.push(id);
 			}
 		});
 		suggestList.blockEvent();

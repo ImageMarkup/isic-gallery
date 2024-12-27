@@ -287,7 +287,7 @@ class GalleryService {
 					}
 
 					tooltipText = "Clear name filter";
-					this._searchEventsMethods(this._searchHandlerByName.bind(this));
+					this._searchEventsMethods(this._searchHandlerByName.bind(this), true);
 					searchButtonModel.createTimesSearchButton(
 						this._searchInput,
 						appliedFilterModel,
@@ -1099,10 +1099,10 @@ class GalleryService {
 
 		this._imagesDataview.attachEvent("onAfterRender", () => {
 			if (this._galleryLeftPanel.isVisible()) {
-				this._leftPanelResizer.show();
+				this._leftPanelResizer?.show();
 			}
 			else {
-				this._leftPanelResizer.hide();
+				this._leftPanelResizer?.hide();
 			}
 		});
 	}
@@ -1580,9 +1580,12 @@ class GalleryService {
 		this._toggleHeaders(false);
 	}
 
-	_searchEventsMethods(eventMethod) {
+	_searchEventsMethods(eventMethod, attachEnterFlag) {
 		this._searchInput.detachEvent("onEnter");
 		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
+		if (attachEnterFlag) {
+			this._searchInput.attachEvent("onEnter", eventMethod);
+		}
 	}
 
 	_clearNameFilter() {

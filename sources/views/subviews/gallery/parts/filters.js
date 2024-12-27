@@ -335,6 +335,7 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 }
 
 function getTreeCheckboxUI(data, collapsed, expandedFilters) {
+	const elementsToOpen = [...expandedFilters];
 	const labelId = data.id;
 	const view = {
 		rows: [
@@ -496,6 +497,14 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 							});
 						}
 						this.getTopParentView().$scope.app.callEvent("filtersChanged", [filtersChangedData]);
+					},
+					onAfterRender() {
+						elementsToOpen.forEach((e) => {
+							if (this.getItem(e)) {
+								this.open(e);
+							}
+						});
+						elementsToOpen.length = 0;
 					}
 				}
 			}

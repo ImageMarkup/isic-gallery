@@ -93,6 +93,21 @@ function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
 	treeView.updateItem(option.id, option);
 }
 
+function _setDiagnosisFilterState(treeView, option, totalCount, currentCount) {
+	if (
+		currentCount !== null
+		&& currentCount < totalCount
+		&& treeView.isBranch(option.id)
+		&& !option.indeterminate
+	) {
+		treeView.blockEvent();
+		treeView.add({id: `${option.id}|empty`, hidden: true, name: ""}, 0, option.id);
+		treeView.uncheckItem(`${option.id}|empty`);
+		treeView.remove(`${option.id}|empty`);
+		treeView.unblockEvent();
+	}
+}
+
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -194,7 +209,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 	const docCounts = {};
 	filterKeys.forEach((filterKey) => {
 		if (filterKey !== "passedFilters") {
-			const values = state.imagesTotalCounts[filterKey];
+			const imagesTotalCounts = state.imagesTotalCounts[filterKey];
 			filteredCounts[filterKey] = 0;
 			docCounts[filterKey] = 0;
 			const diagnosisRegex = /^diagnosis_\d$/;
@@ -204,7 +219,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				const displayDiagnosis = diagnosisModel.getDisplayDiagnosis();
 				const treeView = $$(`treeTable-${controlKey}`);
 				diagnosisValues.forEach((v) => {
-					let value = values.find(item => item.key === v);
+					let value = imagesTotalCounts.find(item => item.key === v);
 					if (!value) {
 						value = {
 							key: v,
@@ -235,6 +250,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 					const option = treeView?.getItem(optionId);
 					if (option) {
 						_setDiagnosisFilterCounts(treeView, option, value.doc_count, currentCount);
+						_setDiagnosisFilterState(treeView, option, value.doc_count, currentCount);
 						if (!displayDiagnosis.find(item => item === v)) {
 							treeView.remove(optionId);
 						}
@@ -242,7 +258,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 				});
 			}
 			else {
-				values.forEach((value) => {
+				imagesTotalCounts.forEach((value) => {
 					let currentCount;
 					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
 						currentCount = _findCurrentCount(
