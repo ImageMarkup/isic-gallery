@@ -1322,6 +1322,10 @@ class GalleryService {
 	_updatePagerCount(count) {
 		count = count || 1;
 		if (count) {
+			// TODO: fix setPage
+			if (!this._pager?.$master?.setPage) {
+				this._pager.$master.setPage = () => {};
+			}
 			this._pager.define("count", count);
 			this._pager.refresh();
 		}

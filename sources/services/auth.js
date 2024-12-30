@@ -1,4 +1,5 @@
 import IsicClient from "@isic/client";
+import {AxiosError} from "axios";
 
 import constants from "../constants";
 import appliedFilters from "../models/appliedFilters";
@@ -40,8 +41,8 @@ class OAuthISIC {
 						state.app.callEvent("login");
 					}
 				})
-				.catch(() => {
-					logger.error("Authentication: Something went wrong");
+				.catch((e) => {
+					this.errorHandler(e);
 				});
 		}
 		webix.attachEvent("onRotate", (landscape) => {
@@ -94,6 +95,9 @@ class OAuthISIC {
 					if (userInfo && userInfo.accepted_terms) {
 						webix.storage.local.put("user", user);
 					}
+				})
+				.catch((e) => {
+					this.errorHandler(e);
 				});
 		}
 		return new Promise((resolve) => {
@@ -116,6 +120,9 @@ class OAuthISIC {
 					});
 				}
 				return userInfo;
+			})
+			.catch((e) => {
+				this.errorHandler(e);
 			});
 	}
 
@@ -185,6 +192,21 @@ class OAuthISIC {
 
 	get isLoginRestored() {
 		return this.#isLoginRestored;
+	}
+
+	errorHandler(e) {
+		logger.error(e);
+		if (e.cause instanceof AxiosError) {
+			if (e.cause.response.status === 401) {
+				this.login();
+			}
+			else {
+				logger.error("Authentication: bad response");
+			}
+		}
+		else {
+			logger.error("Authentication: Something went wrong");
+		}
 	}
 }
 
