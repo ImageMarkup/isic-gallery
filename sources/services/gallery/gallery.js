@@ -352,7 +352,7 @@ class GalleryService {
 
 		const dataTableResizeHandler = util.debounce((/* event */) => {
 			dataviewSelectionId = util.getDataviewSelectionId();
-			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
+			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId, null, false]);
 		});
 		const dataTableResizeObserver = new ResizeObserver(dataTableResizeHandler);
 		const dataTableNode = this._imagesDataview.getNode();
@@ -416,7 +416,6 @@ class GalleryService {
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
 			if (!doNotCallUpdatePager) {
-				state.imagesOffset = 0;
 				this._imagesDataview.$scope.updatePagerSize();
 			}
 		});
