@@ -1370,7 +1370,7 @@ class GalleryService {
 					collections
 				});
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
-			const start = offset !== 0 ? offset : 1;
+			const start = offset > 0 ? offset : 1;
 			if (filter || collections) {
 				state.imagesTotalCounts.passedFilters.filtered = true;
 				state.imagesTotalCounts.passedFilters.currentCount = images.count;
