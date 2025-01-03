@@ -35,7 +35,8 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		list.data.each((obj) => {
 			texts.push(obj.value);
 		});
-		const masterView = $$(searchSuggest.config.master);
+		// searchSuggest.config.master does not work in some cases
+		const masterView = searchInput;
 		const width = Math.max(
 			webix.html.getTextSize(texts, "webix_list_item").width + 30,
 			masterView.getInputNode().getBoundingClientRect().width
