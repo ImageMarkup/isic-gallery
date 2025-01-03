@@ -56,6 +56,8 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	// add new behavior
 	suggestList.attachEvent("onItemClick", (id, event) => {
 		const item = suggestList.getItem(id);
+		const appliedFilters = appliedFiltersModel.getFiltersArray();
+		const filterIds = appliedFilters.map(a => a.id);
 		if (item.key === "diagnosis") {
 			/** @type {webix.ui.treetable} */
 			const diagnosisTree = $$(`treeTable-${item.key}`);
@@ -63,6 +65,12 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			const control = diagnosisTree.getItem(controlId);
 			if (control) {
 				if (diagnosisTree.isChecked(controlId)) {
+					diagnosisTree.uncheckItem(controlId);
+				}
+				else if (filterIds.includes(controlId)) {
+					diagnosisTree.blockEvent();
+					diagnosisTree.checkItem(controlId);
+					diagnosisTree.unblockEvent();
 					diagnosisTree.uncheckItem(controlId);
 				}
 				else {
