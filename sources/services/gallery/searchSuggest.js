@@ -31,6 +31,8 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 
 	searchSuggest.attachEvent("onBeforeShow", () => {
 		const list = searchSuggest.getList();
+		const searchValue = searchInput.getValue();
+		list.filter(item => searchSuggest.config.filter.call(searchSuggest, item, searchValue));
 		const texts = [];
 		list.data.each((obj) => {
 			texts.push(obj.value);
@@ -43,7 +45,6 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		);
 		searchSuggest.define("width", width);
 		searchSuggest.resize();
-		const searchValue = searchInput.getValue();
 		if (searchValue.length < 3 || toggleButton.getValue() === 1) {
 			searchSuggest.hide();
 			return false;
