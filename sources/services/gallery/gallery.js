@@ -861,15 +861,22 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			const element = data.treeCheckboxFlag
-				? this._filtersForm.queryView({id: `${data?.key}`})?.config
-				: this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			const item = Array.isArray(data) ? data[0] : data;
+			const element = item.treeCheckboxFlag
+				? this._filtersForm.queryView({id: `${item?.viewId}`})?.getItem(item.optionId)
+				: this._filtersForm.queryView({id: `${item?.key}|${item?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
 			if (util.isMobilePhone()) {
 				// Fix scrollView
 				this.resizeFilterScrollView();
 				if (element) {
 					this._scrollToFilterFormElement(element);
+				}
+			}
+			else if (item.treeCheckboxFlag) {
+				if (element) {
+					const tree = $$(item.viewId);
+					this._scrollToFilterFormElementFromTree(element, tree);
 				}
 			}
 		});
@@ -1638,6 +1645,17 @@ class GalleryService {
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
 		currentFilterScrollView.scrollTo(0, positionToScroll);
 		currentFilterScrollView.callEvent("onAfterScroll");
+	}
+
+	_scrollToFilterFormElementFromTree(element, tree) {
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
+		const elementNode = tree.getItemNode(element.id);
+		const elementOffsetTop = elementNode.offsetTop;
+		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop;
+		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
+		currentFilterScrollView.scrollTo(0, positionToScroll);
 	}
 
 	resizeFilterScrollView() {
