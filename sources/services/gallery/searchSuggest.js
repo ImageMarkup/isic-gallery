@@ -39,10 +39,13 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		});
 		// searchSuggest.config.master does not work in some cases
 		const masterView = searchInput;
-		const width = Math.max(
+		const maxWidth = Math.max(
 			webix.html.getTextSize(texts, "webix_list_item").width + 30,
 			masterView.getInputNode().getBoundingClientRect().width
 		);
+		const width = maxWidth < window.innerWidth
+			? maxWidth
+			: masterView.getInputNode().getBoundingClientRect().width;
 		searchSuggest.define("width", width);
 		searchSuggest.resize();
 		if (searchValue.length < 3 || toggleButton.getValue() === 1) {

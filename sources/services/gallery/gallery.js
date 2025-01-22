@@ -362,6 +362,9 @@ class GalleryService {
 			let newItemWidth;
 			let newImageWidth;
 			let newInnerImageNameSize;
+			if (id !== oldId) {
+				state.imagesOffset = 0;
+			}
 			const previousItemHeight = this._imagesDataview.type.height;
 			let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
 				/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
@@ -1321,7 +1324,6 @@ class GalleryService {
 	_updatePagerCount(count) {
 		count = count || 1;
 		if (count) {
-			// TODO: fix setPage
 			if (!this._pager?.$master?.setPage) {
 				this._pager.$master.setPage = () => {};
 			}

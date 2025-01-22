@@ -506,7 +506,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 						});
 						elementsToOpen.length = 0;
 					}
-				}
+				},
 			}
 		]
 	};

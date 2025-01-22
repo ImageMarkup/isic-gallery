@@ -25,17 +25,19 @@ function convertDiagnosisToTreeArray(tree) {
 	const dataForFilters = [];
 	const diagnosisKeys = Object.keys(tree);
 	diagnosisKeys.forEach((k) => {
-		const diagnosisItem = {};
-		diagnosisItem.id = diagnosisFlat[k].concatenate.replaceAll(CONCATENATE_SEPARATOR, "|");
-		diagnosisItem.name = k;
-		diagnosisItem.type = "treeCheckbox";
-		diagnosisItem.datatype = "string";
-		diagnosisItem.level = diagnosisFlat[k].level;
-		diagnosisItem.data = diagnosisFlat[k].children
-			? convertDiagnosisToTreeArray(tree[k].children)
-			: null;
-		diagnosisItem.parent = diagnosisFlat[k].parent;
-		dataForFilters.push(diagnosisItem);
+		if (displayDiagnosis.find(d => d === k)) {
+			const diagnosisItem = {};
+			diagnosisItem.id = diagnosisFlat[k].concatenate.replaceAll(CONCATENATE_SEPARATOR, "|");
+			diagnosisItem.name = k;
+			diagnosisItem.type = "treeCheckbox";
+			diagnosisItem.datatype = "string";
+			diagnosisItem.level = diagnosisFlat[k].level;
+			diagnosisItem.data = diagnosisFlat[k].children
+				? convertDiagnosisToTreeArray(tree[k].children)
+				: null;
+			diagnosisItem.parent = diagnosisFlat[k].parent;
+			dataForFilters.push(diagnosisItem);
+		}
 	});
 	return dataForFilters;
 }

@@ -24,8 +24,7 @@ const list = {
 	template(obj) {
 		if (obj.treeCheckboxFlag) {
 			const result = getTreeCheckboxFilterName(obj);
-			const filterName = _prepareFilterName(obj);
-			return `<div class='applied-filters-item' title="${filterName}">
+			return `<div class='applied-filters-item'>
 						${result}
 						<span class="remove-filter-icon">
 							<svg viewBox="0 0 26 26" style="width:26px;height:26px">
@@ -154,7 +153,7 @@ function getTreeCheckboxFilterName(obj) {
 		const lastBlockClass = index === namesArray.length - 1
 			? " last-block"
 			: "";
-		result.push(`<div class="applied-filters-item-hierarchy-item${lastBlockClass}">${n}</div>`);
+		result.push(`<div class="applied-filters-item-hierarchy-item${lastBlockClass}" title="${n}">${n}</div>`);
 	});
 	result.push("</div>");
 	return result.join(" ");

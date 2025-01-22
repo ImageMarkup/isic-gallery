@@ -146,7 +146,10 @@ export default class GalleryView extends JetView {
 							css: "centered",
 							id: ID_CONTENT_HEADER,
 							template(obj) {
-								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
+								const rangeFinish = obj.filtered
+									? Math.min(obj.rangeFinish, state.filteredImages.filteredImagesCount)
+									: obj.rangeFinish;
+								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
 								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>`;
 								let result = "";
@@ -656,7 +659,7 @@ export default class GalleryView extends JetView {
 		const maxDataviewHeight = galleryDataviewHeight
 			+ (downloadingMenu.isVisible() ? downloadingMenu.$height : 0);
 		const maxImageHeight = Math.floor(maxImageWidth * multiplier);
-		const rows = Math.floor(maxDataviewHeight / maxImageHeight);
+		const rows = Math.floor(maxDataviewHeight / maxImageHeight) || 1;
 		const elementWidth = util.getDataviewItemWidth();
 		const elementHeight = Math.round(galleryDataviewHeight / rows);
 		dataWindowView.define("type", {width: elementWidth, height: elementHeight});

@@ -198,7 +198,7 @@ class OAuthISIC {
 		logger.error(e);
 		if (e.cause instanceof AxiosError) {
 			if (e.cause.response.status === 401) {
-				this.login();
+				this.logout();
 			}
 			else {
 				logger.error("Authentication: bad response");
