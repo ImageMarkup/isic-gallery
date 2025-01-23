@@ -862,8 +862,8 @@ class GalleryService {
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
 			const item = Array.isArray(data) ? data[0] : data;
-			const element = item.treeCheckboxFlag
-				? this._filtersForm.queryView({id: `${item?.viewId}`})?.getItem(item.optionId)
+			const element = item?.treeCheckboxFlag
+				? this._filtersForm.queryView({id: `${item?.viewId}`})?.getItem(item?.optionId)
 				: this._filtersForm.queryView({id: `${item?.key}|${item?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
 			if (util.isMobilePhone()) {
@@ -873,7 +873,7 @@ class GalleryService {
 					this._scrollToFilterFormElement(element);
 				}
 			}
-			else if (item.treeCheckboxFlag) {
+			else if (item?.treeCheckboxFlag) {
 				if (element) {
 					const tree = $$(item.viewId);
 					this._scrollToFilterFormElementFromTree(element, tree);
