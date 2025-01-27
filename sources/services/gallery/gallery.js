@@ -873,12 +873,6 @@ class GalleryService {
 					this._scrollToFilterFormElement(element);
 				}
 			}
-			else if (item?.treeCheckboxFlag) {
-				if (element) {
-					const tree = $$(item.viewId);
-					this._scrollToFilterFormElementFromTree(element, tree);
-				}
-			}
 		});
 
 		const clearAllFilters = () => {
@@ -1114,6 +1108,14 @@ class GalleryService {
 				this._leftPanelResizer?.hide();
 			}
 		});
+
+		// resize left panel after initialization to fix the resizer
+		const leftPanelWidth = this._leftPanelWithCollapser.$width;
+		this._leftPanelWithCollapser.define("width", leftPanelWidth);
+		this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
+		this._leftPanelWithCollapser.define("maxWidth", 700);
+		this._leftPanelWithCollapser.resize();
+		this._leftPanelResizer.resize();
 	}
 
 	async load() {

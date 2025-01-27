@@ -44,6 +44,9 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFil
 			webix.html.removeCss(collapser.getNode(), "showed-filter");
 			webix.html.addCss(collapser.getNode(), "hidden-filter");
 			this.config.isRowsVisible = false;
+			if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
+				showedFiltersCollection.remove(dataForCreatingControl.id);
+			}
 			controls.hide();
 		}
 	};
