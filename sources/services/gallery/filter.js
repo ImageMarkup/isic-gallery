@@ -145,6 +145,7 @@ function updateFiltersFormControl(data) {
 }
 
 function updateTreeCheckboxControl(data) {
+	/** @type {webix.ui.treetable} */
 	const treeView = $$(data.viewId);
 	if (treeView) {
 		// we do not need to call onChange event for the control. so we block event

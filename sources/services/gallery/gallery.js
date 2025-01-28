@@ -81,6 +81,7 @@ class GalleryService {
 		this._appliedFiltersList = appliedFiltersList;
 		this._imagesSelectionTemplate = unselectLink;
 		this._downloadingMenu = downloadingMenu;
+		/** @type {webix.ui.search} */
 		this._searchInput = searchInput;
 		this._clearAllFiltersTemplate = clearAllFiltersTemplate;
 		this._allPagesTemplate = allPagesTemplate;
@@ -98,6 +99,7 @@ class GalleryService {
 		this._enlargeContextMenu = enlargeContextMenu;
 		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
 		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
+		/** @type {webix.ui.suggest} */
 		this._searchSuggest = searchSuggest;
 		this._leftPanelResizer = leftPanelResizer;
 		this._init();
@@ -873,6 +875,12 @@ class GalleryService {
 					this._scrollToFilterFormElement(element);
 				}
 			}
+			else if (item?.treeCheckboxFlag) {
+				const treeView = $$(item?.viewId);
+				if (treeView) {
+					this._scrollToFilterFormElementFromTree(element, treeView);
+				}
+			}
 		});
 
 		const clearAllFilters = () => {
@@ -1103,9 +1111,22 @@ class GalleryService {
 		this._imagesDataview.attachEvent("onAfterRender", () => {
 			if (this._galleryLeftPanel.isVisible()) {
 				this._leftPanelResizer?.show();
+				// resize left panel after initialization to fix the resizer
+				const leftPanelWidth = this._leftPanelWithCollapser.$width;
+				this._leftPanelWithCollapser.define("width", leftPanelWidth);
+				this._leftPanelWithCollapser.define("minWidth", 451);
+				this._leftPanelWithCollapser.define("maxWidth", 700);
+				this._leftPanelWithCollapser.resize();
+				this._leftPanelResizer.resize();
 			}
 			else {
 				this._leftPanelResizer?.hide();
+				// resize left panel after initialization to fix the resizer
+				this._leftPanelWithCollapser.define("width", 0);
+				this._leftPanelWithCollapser.define("minWidth", 0);
+				this._leftPanelWithCollapser.define("maxWidth", 0);
+				this._leftPanelWithCollapser.resize();
+				this._leftPanelResizer.resize();
 			}
 		});
 
@@ -1655,7 +1676,7 @@ class GalleryService {
 			: this._filterScrollView;
 		const elementNode = tree.getItemNode(element.id);
 		const elementOffsetTop = elementNode.offsetTop;
-		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop;
+		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop / 2;
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
 		currentFilterScrollView.scrollTo(0, positionToScroll);
 	}

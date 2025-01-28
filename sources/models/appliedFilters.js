@@ -510,10 +510,17 @@ function getFiltersFromURL(filtersArray) {
 			if (typeof filter === "object") {
 				if (filter.type === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX) {
 					const view = $$(filter.viewId);
-					view.checkItem(filter.optionId);
-					return null;
+					const item = view.getItem(filter.optionId);
+					const treeData = state.filtersTreeData.get(filter.viewId);
+					const data = getFiltersChangeTreeItemData(
+						treeData,
+						item,
+						item.datatype,
+						false,
+					);
+					return data;
 				}
-				filterId = filter.id;
+				return null;
 			}
 			else if (filter.includes(constants.COLLECTION_KEY)) {
 				const pinnedCollections = collectionsModel.getPinnedCollections();
@@ -553,6 +560,57 @@ function getAppliedCollectionsForApi() {
 	return result.length > 0 ? result.join(",") : "";
 }
 
+/**
+ * Get filters changed data for checkboxes
+ * @param {object} data
+ * @param {object} currentOption
+ * @param {String} optionName
+ */
+function getFiltersChangedData(data, currentOption, optionName) {
+	const filtersChangedData = {};
+	filtersChangedData.view = data.type;
+	filtersChangedData.datatype = data.datatype;
+	filtersChangedData.key = data.id;
+	filtersChangedData.filterName = data.name;
+	filtersChangedData.value = optionName;
+	filtersChangedData.optionId = currentOption.optionId;
+	filtersChangedData.status = "equals";
+	if (currentOption && data.type === "rangeCheckbox") {
+		filtersChangedData.to = currentOption.to;
+		filtersChangedData.from = currentOption.from;
+	}
+	return filtersChangedData;
+}
+
+/**
+ *
+ * @param {object} data
+ * @param {object} item
+ * @param {String} datatype
+ * @param {boolean} state
+ */
+function getFiltersChangeTreeItemData(data, item, datatype, remove) {
+	const filtersChangedData = {};
+	filtersChangedData.view = data.type;
+	filtersChangedData.datatype = datatype;
+	filtersChangedData.key = data.labelId;
+	filtersChangedData.filterName = data.name;
+	filtersChangedData.value = getTreeOptionValueById(item.id);
+	filtersChangedData.status = "equals";
+	filtersChangedData.treeCheckboxFlag = true;
+	filtersChangedData.diagnosisLevel = item.$level;
+	filtersChangedData.optionId = item.id;
+	filtersChangedData.viewId = `treeTable-${data.id}`;
+	filtersChangedData.remove = remove;
+	return filtersChangedData;
+}
+
+function getTreeOptionValueById(id) {
+	const separator = "|";
+	const array = id.split(separator);
+	return array.at(array.length - 1);
+}
+
 export default {
 	getFiltersArray,
 	processNewFilters,
@@ -571,6 +629,8 @@ export default {
 	getFiltersFromURL,
 	convertAppliedFiltersToParams,
 	getAppliedCollectionsForApi,
+	getFiltersChangedData,
+	getFiltersChangeTreeItemData,
 };
 
 // TODO: rewrite example

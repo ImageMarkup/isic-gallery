@@ -35,6 +35,7 @@ const state = {
 		filteredImagesCount: 0
 	},
 	imagesTotalCounts: {},
+	filtersTreeData: new Map(), // for applied filters
 };
 
 export default state;

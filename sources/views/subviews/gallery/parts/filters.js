@@ -2,6 +2,7 @@ import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
 import collectionsModel from "../../../../models/collectionsModel";
 import diagnosisModel from "../../../../models/diagnosis";
+import globalState from "../../../../models/state";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
 
@@ -246,19 +247,11 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 				? filterService.prepareOptionName(currentOption.name, data.id)
 				: filterService.prepareOptionName(currentOption.key, data.id);
 			const id = util.getOptionId(data.id, optionName);
-			const filtersChangedData = {
-				view: data.type,
-				datatype: data.datatype,
-				key: data.id,
-				filterName: data.name,
-				value: optionName,
-				optionId: currentOption.optionId,
-				status: "equals"
-			};
-			if (currentOption && data.type === "rangeCheckbox") {
-				filtersChangedData.to = currentOption.to;
-				filtersChangedData.from = currentOption.from;
-			}
+			const filtersChangedData = appliedFilters.getFiltersChangedData(
+				data,
+				currentOption,
+				optionName
+			);
 			if (data.id === constants.COLLECTION_KEY) {
 				view.rows[1].rows.push(
 					{
@@ -340,6 +333,16 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 	const elementsToOpen = [...expandedFilters];
 	const labelId = data.id;
+	const treeTableId = `treeTable-${data.id}`;
+	const treeTableDataForFilters = {
+		type: data.type,
+		name: data.name,
+		id: data.id,
+		labelId
+	};
+	if (!globalState.filtersTreeData.has(treeTableId)) {
+		globalState.filtersTreeData.set(treeTableId, treeTableDataForFilters);
+	}
 	const view = {
 		rows: [
 			{
@@ -352,7 +355,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 			},
 			{
 				paddingsX: 20,
-				id: `treeTable-${data.id}`,
+				id: treeTableId,
 				view: "treetable",
 				css: "filter-tree-table",
 				columns: [
@@ -376,103 +379,62 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 				on: {
 					onItemCheck(id, state, event) {
 						const item = this.getItem(id);
+						const treeData = globalState.filtersTreeData.get(treeTableId);
 						const filtersChangedData = [];
-						filtersChangedData.push({
-							view: data.type,
-							datatype: item.datatype,
-							key: labelId,
-							filterName: data.name,
-							value: getTreeOptionValueById(id),
-							status: "equals",
-							treeCheckboxFlag: true,
-							diagnosisLevel: item.$level,
-							optionId: id,
-							viewId: `treeTable-${data.id}`,
-							remove: !state,
-						});
+						filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+							treeData,
+							item,
+							item.datatype,
+							!state,
+						));
 						if (state) {
 							const children = getChildrenIds(this, id, item.$level);
 							children.forEach((c) => {
-								filtersChangedData.push({
-									view: data.type,
-									datatype: item.datatype,
-									key: labelId,
-									filterName: data.name,
-									value: getTreeOptionValueById(c.id),
-									status: "equals",
-									treeCheckboxFlag: true,
-									diagnosisLevel: c.level,
-									optionId: c.id,
-									viewId: `treeTable-${data.id}`,
-									remove: true,
-								});
+								filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+									treeData,
+									c,
+									item.datatype,
+									true,
+								));
 							});
 						}
 						else {
 							const parents = getParentsIds(this, id, item.$level);
 							parents.forEach((p) => {
-								filtersChangedData.push({
-									view: data.type,
-									datatype: item.datatype,
-									key: labelId,
-									filterName: data.name,
-									value: getTreeOptionValueById(p.id),
-									status: "equals",
-									treeCheckboxFlag: true,
-									diagnosisLevel: p.level,
-									optionId: p.id,
-									viewId: `treeTable-${data.id}`,
-									remove: true,
-								});
+								filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+									treeData,
+									p,
+									item.datatype,
+									true,
+								));
 							});
 							const currentParent = this.getItem(this.getParentId(id));
 							const firstChildId = currentParent ? this.getFirstChildId(currentParent.id) : null;
 							const firstChildItem = firstChildId ? this.getItem(firstChildId) : null;
 							if (firstChildItem) {
-								filtersChangedData.push({
-									view: data.type,
-									datatype: item.datatype,
-									key: labelId,
-									filterName: data.name,
-									value: getTreeOptionValueById(firstChildItem.id),
-									status: "equals",
-									treeCheckboxFlag: true,
-									diagnosisLevel: firstChildItem.$level,
-									optionId: firstChildItem.id,
-									viewId: `treeTable-${data.id}`,
-									remove: true,
-								});
+								filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+									treeData,
+									firstChildItem,
+									item.datatype,
+									true,
+								));
 								let nextSiblingId = this.getNextSiblingId(firstChildId);
 								while (nextSiblingId) {
 									const nextSiblingItem = this.getItem(nextSiblingId);
-									filtersChangedData.push({
-										view: data.type,
-										datatype: item.datatype,
-										key: labelId,
-										filterName: data.name,
-										value: getTreeOptionValueById(nextSiblingItem.id),
-										status: "equals",
-										treeCheckboxFlag: true,
-										diagnosisLevel: nextSiblingItem.$level,
-										optionId: nextSiblingItem.id,
-										viewId: `treeTable-${data.id}`,
-										remove: !nextSiblingItem.checked,
-									});
+									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+										treeData,
+										nextSiblingItem,
+										item.dataType,
+										!nextSiblingItem.checked,
+									));
 									const children = getChildrenIds(this, nextSiblingId, nextSiblingItem.$level);
 									children.forEach((c) => {
-										filtersChangedData.push({
-											view: data.type,
-											datatype: item.datatype,
-											key: labelId,
-											filterName: data.name,
-											value: getTreeOptionValueById(c.id),
-											status: "equals",
-											treeCheckboxFlag: true,
-											diagnosisLevel: c.level,
-											optionId: c.id,
-											viewId: `treeTable-${data.id}`,
-											remove: true,
-										});
+										filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+											treeData,
+											c,
+											item.datatype,
+											true,
+										));
 									});
 									const currentId = nextSiblingId;
 									nextSiblingId = this.getNextSiblingId(currentId);
@@ -483,19 +445,12 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 								const checkedItem = this.getItem(checkedItemId);
 								const parentForCheckedItem = this.getItem(this.getParentId(checkedItemId));
 								if (!parentForCheckedItem.checked) {
-									filtersChangedData.push({
-										view: data.type,
-										datatype: checkedItem.datatype,
-										key: labelId,
-										filterName: data.name,
-										value: getTreeOptionValueById(checkedItem.id),
-										status: "equals",
-										treeCheckboxFlag: true,
-										diagnosisLevel: checkedItem.level,
-										optionId: checkedItem.id,
-										viewId: `treeTable-${data.id}`,
-										remove: false,
-									});
+									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
+										treeData,
+										checkedItem,
+										checkedItem.datatype,
+										false,
+									));
 								}
 							});
 						}
