@@ -1,4 +1,4 @@
-import IsicClient from "@isic/client";
+import OauthClient from "@resonant/oauth-client";
 import {AxiosError} from "axios";
 
 import constants from "../constants";
@@ -15,9 +15,9 @@ import ajax from "./ajaxActions";
 
 const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
-const client = new IsicClient(
+const client = new OauthClient(
+	new URL(`${AUTHORIZATION_SERVER}/oauth/`),
 	ISIC_CLIENT_ID,
-	AUTHORIZATION_SERVER
 );
 
 class OAuthISIC {
