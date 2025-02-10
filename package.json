@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "@isic/client": "^0.6.2",
+    "@resonant/oauth-client": "^1.0.2",
     "aws-sdk": "^2.910.0",
     "axios": "^1.6.1",
     "core-js": "^3.38.0",
