@@ -1,6 +1,7 @@
-ISIC App
-===================
+# ISIC Gallery
+An interactive image gallery to query and display the ISIC Archive.
 
+## Development
 ### Building for production
 - Set the environment variables:
   - `ISIC_NEW_API_URL` to the absolute URL of the ISIC API root
@@ -24,7 +25,6 @@ ISIC App
 - Configure the directory at `codebase/sources/filesForDownload` to be served with the HTTP `Content-Disposition: attachment` header
 
 ### How to run for development
-
 - set ```devHost``` and ```devPort``` in ```appconfig.json```.
 - set the environment variables.
 - if you start first time you should run ```npm run build```. This command moves static files(images, libs, fonts) to ```codebase``` folder.
