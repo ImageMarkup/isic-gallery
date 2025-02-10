@@ -4,7 +4,6 @@ function getView() {
 	/**	@type {webix.ui.suggestConfig} */
 	const view = {
 		view: "suggest",
-		width: 70,
 		yCount: 10,
 		keyPressTimeout: 500,
 		body: {
@@ -21,9 +20,9 @@ function getView() {
 	return view;
 }
 
-function getConfig(id) {
-	const config = getView();
-	config.id = id;
+function getConfig(customConfig) {
+	const config = {...getView(), ...customConfig};
+
 	return config;
 }
 

@@ -36,9 +36,15 @@ function getConfig(config) {
 		hidden: true
 	};
 
-	/** @type {webix.ui.suggestConfig} */
-	const searchSuggestView = searchSuggest.getConfig(ID_SEARCH_SUGGESTION);
-	searchSuggestView.body.template = obj => `${obj.key}: ${obj.value}`;
+	const searchSuggestConfig = {
+		id: ID_SEARCH_SUGGESTION,
+		fitMaster: false,
+		css: "filters-suggest",
+	};
+	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
+	searchSuggestView.body.template = obj => (obj.name
+		? `${obj.name}: ${obj.value}`
+		: `${obj.value}`);
 	searchSuggestView.filter = (obj, value) => {
 		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
 		return result;
@@ -56,9 +62,6 @@ function getConfig(config) {
 		suggest: searchSuggestView,
 		on: {
 			onAfterRender: () => {
-				const searchInputWidth = $$(ID_SEARCH_FIELD).$width;
-				const dataviewMinWidth = 800;
-				searchButtonModel.setMinCurrentTargetInnerWidth(dataviewMinWidth + searchInputWidth);
 				const inputNode = $$(ID_SEARCH_FIELD).$view.getElementsByClassName("webix_el_box")[0];
 				const tooltipText = "Clear search value";
 				searchButtonModel.createTimesSearchButton(
@@ -70,7 +73,6 @@ function getConfig(config) {
 			},
 			onChange() {
 				let searchValue = this.getValue();
-				searchValue = searchValue.trim();
 				searchValue = searchValue.replace(/\s+/g, " ");
 				this.setValue(searchValue);
 			}

@@ -4,6 +4,7 @@ import WZoom from "vanilla-js-wheel-zoom";
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
+import diagnosisModel from "../../models/diagnosis";
 import facetsModel from "../../models/facets";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
@@ -64,6 +65,7 @@ class GalleryService {
 		portraitClearAllFiltersTemplate,
 		landscapeClearAllFiltersTemplate,
 		searchSuggest,
+		leftPanelResizer,
 	) {
 		this._view = view;
 		this._pager = pager;
@@ -79,6 +81,7 @@ class GalleryService {
 		this._appliedFiltersList = appliedFiltersList;
 		this._imagesSelectionTemplate = unselectLink;
 		this._downloadingMenu = downloadingMenu;
+		/** @type {webix.ui.search} */
 		this._searchInput = searchInput;
 		this._clearAllFiltersTemplate = clearAllFiltersTemplate;
 		this._allPagesTemplate = allPagesTemplate;
@@ -96,7 +99,9 @@ class GalleryService {
 		this._enlargeContextMenu = enlargeContextMenu;
 		this._portraitClearAllFiltersTemplate = portraitClearAllFiltersTemplate;
 		this._landscapeClearAllFiltersTemplate = landscapeClearAllFiltersTemplate;
+		/** @type {webix.ui.suggest} */
 		this._searchSuggest = searchSuggest;
+		this._leftPanelResizer = leftPanelResizer;
 		this._init();
 	}
 
@@ -129,10 +134,21 @@ class GalleryService {
 				}
 			}
 		});
+		const treeDataElements = this._filtersForm.queryView({view: "treetable"}, "all");
+		let foundTreeDataElementFlag = false;
+		treeDataElements.forEach((e) => {
+			e.data.each((i) => {
+				const labelLowerCase = i.name.replace(/\([\/ 0-9]*\)$/, "");
+				if (labelLowerCase.indexOf(searchValue.toLowerCase()) > -1) {
+					e.checkItem(i.id);
+					foundTreeDataElementFlag = true;
+				}
+			});
+		});
 		if (filtersInfo.length > 0) {
 			filtersBySearchCollection.parse(filtersInfo);
 		}
-		else {
+		else if (!foundTreeDataElementFlag) {
 			webix.alert(`"There are no filters which include "${searchValue}"`);
 		}
 		this._view.$scope.app.callEvent("filtersChanged", [filtersInfo]);
@@ -273,7 +289,7 @@ class GalleryService {
 					}
 
 					tooltipText = "Clear name filter";
-					this._searchEventsMethods(this._searchHandlerByName.bind(this));
+					this._searchEventsMethods(this._searchHandlerByName.bind(this), true);
 					searchButtonModel.createTimesSearchButton(
 						this._searchInput,
 						appliedFilterModel,
@@ -336,22 +352,21 @@ class GalleryService {
 		this._dataviewYCountSelection?.setValue(dataviewSelectionId);
 		this._dataviewYCountSelection?.unblockEvent();
 
-		const resizeHandler = util.debounce((event) => {
-			const contentWidth = event[0].contentRect.width;
-			const minCurrentTargetInnerWidth = searchButtonModel.getMinCurrentTargetInnerWidth();
-			if (contentWidth >= minCurrentTargetInnerWidth) {
-				dataviewSelectionId = util.getDataviewSelectionId();
-				this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId]);
-			}
+		const dataTableResizeHandler = util.debounce((/* event */) => {
+			dataviewSelectionId = util.getDataviewSelectionId();
+			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId, null, false]);
 		});
-		const resizeObserver = new ResizeObserver(resizeHandler);
-		const galleryNode = this._view.getNode();
-		resizeObserver.observe(galleryNode);
+		const dataTableResizeObserver = new ResizeObserver(dataTableResizeHandler);
+		const dataTableNode = this._imagesDataview.getNode();
+		dataTableResizeObserver.observe(dataTableNode);
 
 		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
 			let newItemWidth;
 			let newImageWidth;
 			let newInnerImageNameSize;
+			if (id !== oldId) {
+				state.imagesOffset = 0;
+			}
 			const previousItemHeight = this._imagesDataview.type.height;
 			let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
 				/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
@@ -386,7 +401,7 @@ class GalleryService {
 				}
 				case constants.DEFAULT_DATAVIEW_COLUMNS: {
 					const minGalleryWidth = window.innerWidth
-						- this._galleryLeftPanel.config.width
+						- this._galleryLeftPanel.config.maxWidth ?? this._galleryLeftPanel.config.width
 						- this._activeCartList.config.width;
 					const cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
 					newItemWidth = Math.floor(dataviewWidth / cols);
@@ -406,7 +421,6 @@ class GalleryService {
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
 			if (!doNotCallUpdatePager) {
-				state.imagesOffset = 0;
 				this._imagesDataview.$scope.updatePagerSize();
 			}
 		});
@@ -728,7 +742,7 @@ class GalleryService {
 				let isNeedShowAlert = true;
 				let countSelectedFilteredImages = 0;
 				let filter = appliedFilterModel.getConditionsForApi();
-				const collections = collectionsModel.getAppliedCollectionsForApi();
+				const collections = appliedFilterModel.getAppliedCollectionsForApi();
 				let imagesLimit = constants.MAX_COUNT_IMAGES_SELECTION;
 				let arrayOfImagesLength = selectedImages.countForStudies();
 				const sourceParams = {
@@ -849,13 +863,22 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			const element = this._filtersForm.queryView({id: `${data?.key}|${data?.value}`})?.config;
+			const item = Array.isArray(data) ? data[0] : data;
+			const element = item?.treeCheckboxFlag
+				? this._filtersForm.queryView({id: `${item?.viewId}`})?.getItem(item?.optionId)
+				: this._filtersForm.queryView({id: `${item?.key}|${item?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
 			if (util.isMobilePhone()) {
 				// Fix scrollView
 				this.resizeFilterScrollView();
 				if (element) {
 					this._scrollToFilterFormElement(element);
+				}
+			}
+			else if (item?.treeCheckboxFlag) {
+				const treeView = $$(item?.viewId);
+				if (treeView) {
+					this._scrollToFilterFormElementFromTree(element, treeView);
 				}
 			}
 		});
@@ -1084,6 +1107,36 @@ class GalleryService {
 				this._view.$scope.app.callEvent("filtersChanged", [appliedFiltersArray]);
 			}
 		});
+
+		this._imagesDataview.attachEvent("onAfterRender", () => {
+			if (this._galleryLeftPanel.isVisible()) {
+				this._leftPanelResizer?.show();
+				// resize left panel after initialization to fix the resizer
+				const leftPanelWidth = this._leftPanelWithCollapser.$width;
+				this._leftPanelWithCollapser.define("width", leftPanelWidth);
+				this._leftPanelWithCollapser.define("minWidth", 451);
+				this._leftPanelWithCollapser.define("maxWidth", 700);
+				this._leftPanelWithCollapser.resize();
+				this._leftPanelResizer.resize();
+			}
+			else {
+				this._leftPanelResizer?.hide();
+				// resize left panel after initialization to fix the resizer
+				this._leftPanelWithCollapser.define("width", 0);
+				this._leftPanelWithCollapser.define("minWidth", 0);
+				this._leftPanelWithCollapser.define("maxWidth", 0);
+				this._leftPanelWithCollapser.resize();
+				this._leftPanelResizer.resize();
+			}
+		});
+
+		// resize left panel after initialization to fix the resizer
+		const leftPanelWidth = this._leftPanelWithCollapser.$width;
+		this._leftPanelWithCollapser.define("width", leftPanelWidth);
+		this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
+		this._leftPanelWithCollapser.define("maxWidth", 700);
+		this._leftPanelWithCollapser.resize();
+		this._leftPanelResizer.resize();
 	}
 
 	async load() {
@@ -1094,7 +1147,7 @@ class GalleryService {
 			const pinnedCollectionOptions = {
 				limit: 0,
 				pinned: true,
-				sort: "name"
+				sort: "name",
 			};
 			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
 			collectionsModel.clearPinnedCollections();
@@ -1109,9 +1162,10 @@ class GalleryService {
 				}
 			);
 			this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
+			const diagnosisRegex = /^diagnosis_\d$/;
 			const facets = await ajax.getFacets();
-			const ids = Object.keys(facets);
-			ids.forEach((id) => {
+			const facetsIds = Object.keys(facets);
+			facetsIds.forEach((id) => {
 				state.imagesTotalCounts[id] = webix.copy(facets[id].buckets);
 				if (id !== constants.COLLECTION_KEY) {
 					state.imagesTotalCounts[id].push({
@@ -1127,6 +1181,9 @@ class GalleryService {
 							name: pc.name,
 						});
 					});
+				}
+				if (diagnosisRegex.test(id)) {
+					diagnosisModel.addDisplayDiagnosis(facets[id].buckets.map(d => d.key));
 				}
 				const facetValues = state.imagesTotalCounts[id].map(
 					f => f.key
@@ -1222,7 +1279,7 @@ class GalleryService {
 	async _updateCounts() {
 		try {
 			const filterQuery = appliedFilterModel.getConditionsForApi();
-			const appliedCollections = collectionsModel.getAppliedCollectionsForApi();
+			const appliedCollections = appliedFilterModel.getAppliedCollectionsForApi();
 			const params = {};
 			params.conditions = filterQuery;
 			params.collections = appliedCollections;
@@ -1240,7 +1297,8 @@ class GalleryService {
 	// update form controls values(true/false for checkboxes, etc)
 	_updateFiltersFormControls(data) {
 		if (Array.isArray(data)) {
-			data.forEach((item) => {
+			// For treetable elements sorting from highest level to lowest
+			[...data].sort((a, b) => a.diagnosisLevel > b.diagnosisLevel).forEach((item) => {
 				filterService.updateFiltersFormControl(item);
 			});
 		}
@@ -1265,7 +1323,12 @@ class GalleryService {
 	_createFilters(expandedFilters, forceRebuild) {
 		let expandedFiltersKeys = [];
 		if (expandedFilters && expandedFilters.length) {
-			expandedFiltersKeys = expandedFilters.map(item => item.key);
+			expandedFiltersKeys = expandedFilters.map((item) => {
+				if (item.view === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX) {
+					return item.id;
+				}
+				return item.key;
+			});
 		}
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
@@ -1291,6 +1354,9 @@ class GalleryService {
 	_updatePagerCount(count) {
 		count = count || 1;
 		if (count) {
+			if (!this._pager?.$master?.setPage) {
+				this._pager.$master.setPage = () => {};
+			}
 			this._pager.define("count", count);
 			this._pager.refresh();
 		}
@@ -1326,7 +1392,7 @@ class GalleryService {
 				return;
 			}
 			const filter = appliedFilterModel.getConditionsForApi();
-			const collections = collectionsModel.getAppliedCollectionsForApi();
+			const collections = appliedFilterModel.getAppliedCollectionsForApi();
 			const images = url
 				? await ajax.getImagesByUrl(url)
 				: await ajax.getImages({
@@ -1335,7 +1401,7 @@ class GalleryService {
 					collections
 				});
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
-			const start = offset !== 0 ? offset : 1;
+			const start = offset > 0 ? offset : 1;
 			if (filter || collections) {
 				state.imagesTotalCounts.passedFilters.filtered = true;
 				state.imagesTotalCounts.passedFilters.currentCount = images.count;
@@ -1549,10 +1615,12 @@ class GalleryService {
 		this._toggleHeaders(false);
 	}
 
-	_searchEventsMethods(eventMethod) {
+	_searchEventsMethods(eventMethod, attachEnterFlag) {
 		this._searchInput.detachEvent("onEnter");
 		this._searchInput.on_click["gallery-search-filter"] = eventMethod;
-		this._searchInput.attachEvent("onEnter", eventMethod);
+		if (attachEnterFlag) {
+			this._searchInput.attachEvent("onEnter", eventMethod);
+		}
 	}
 
 	_clearNameFilter() {
@@ -1600,6 +1668,17 @@ class GalleryService {
 		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
 		currentFilterScrollView.scrollTo(0, positionToScroll);
 		currentFilterScrollView.callEvent("onAfterScroll");
+	}
+
+	_scrollToFilterFormElementFromTree(element, tree) {
+		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+			? this._view.$scope.getFilterScrollView()
+			: this._filterScrollView;
+		const elementNode = tree.getItemNode(element.id);
+		const elementOffsetTop = elementNode.offsetTop;
+		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop / 2;
+		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
+		currentFilterScrollView.scrollTo(0, positionToScroll);
 	}
 
 	resizeFilterScrollView() {

@@ -138,7 +138,7 @@ export default class GalleryMobileView extends JetView {
 			css: "gallery-header-mobile-context",
 			width: 1,
 			template(obj) {
-				const result = obj?.filtered ? `(${obj.currentCount})` : "";
+				const result = obj?.filtered ? `(${state.filteredImages.filteredImagesCount})` : "";
 				return result;
 			},
 			borderless: true,
@@ -580,6 +580,7 @@ export default class GalleryMobileView extends JetView {
 			portraitClearAllFiltersTemplate,
 			landscapeClearAllFiltersTemplate,
 			null, // searchSuggest
+			null, // leftPanelResizer
 		);
 
 		this.heaaderService = new MobileHeaderService(

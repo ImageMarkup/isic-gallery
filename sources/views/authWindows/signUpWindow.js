@@ -102,6 +102,7 @@ const signupForm = {
 					borderless: true,
 					autoheight: true,
 					onClick: {
+						// eslint-disable-next-line func-names
 						"login-link": function () {
 							// close current window
 							this.getTopParentView().hide();

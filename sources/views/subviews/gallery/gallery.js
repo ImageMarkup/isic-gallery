@@ -32,6 +32,7 @@ const ID_DOWNLOADING_MENU = constants.DOWNLOAD_MENU_ID;
 const ID_RIGHT_PANEL = constants.ID_GALLERY_RIGHT_PANEL;
 const ID_GALLERY_CONTEXT_MENU = "gallery-context-menu";
 const ID_ENLARGE_CONTEXT_MENU = `enlarge-context-menu-id-${webix.uid()}`;
+const ID_LEFT_PANEL_RESIZER = `resizer-${webix.uid()}`;
 const NAME_GALLERY_HEADER = `galleryHeaderName-${webix.uid()}`;
 const NAME_SELECT_ALL_IMAGES_ON_ALL_PAGES_TEMPLATE = `selectAllImagesOnAllPagesTemplateName-${webix.uid()}`;
 const NAME_CLONED_PAGER_FOR_NAME_SEARCH = "clonedPagerForNameSearchName";
@@ -54,10 +55,11 @@ export default class GalleryView extends JetView {
 
 		const leftPanelConfig = {
 			id: ID_LEFT_PANEL,
-			width: 400,
+			minWidth: 400,
+			maxWidth: 700,
 			paddingX: 15,
 			paddingY: 15,
-			margin: 20
+			margin: 20,
 		};
 
 		const leftPanel = filterPanel.getConfig(leftPanelConfig);
@@ -144,7 +146,10 @@ export default class GalleryView extends JetView {
 							css: "centered",
 							id: ID_CONTENT_HEADER,
 							template(obj) {
-								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${obj.rangeFinish || ""}</b>.`;
+								const rangeFinish = obj.filtered
+									? Math.min(obj.rangeFinish, state.filteredImages.filteredImagesCount)
+									: obj.rangeFinish;
+								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
 								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>`;
 								let result = "";
@@ -293,8 +298,8 @@ export default class GalleryView extends JetView {
 					]
 				},
 				{height: 10}
-			]
-
+			],
+			gravity: 10,
 		};
 
 		const leftCollapser = collapser.getConfig(ID_LEFT_PANEL, {
@@ -305,8 +310,9 @@ export default class GalleryView extends JetView {
 			name: "leftPanelWithCollapser",
 			cols: [
 				leftPanel,
-				leftCollapser
-			]
+				leftCollapser,
+			],
+			gravity: 1
 		};
 
 		const ui = {
@@ -315,7 +321,11 @@ export default class GalleryView extends JetView {
 				{
 					cols: [
 						leftPanelWithCollapser,
-						content
+						{
+							view: "resizer",
+							id: ID_LEFT_PANEL_RESIZER,
+						},
+						content,
 					]
 				}
 			]
@@ -354,6 +364,7 @@ export default class GalleryView extends JetView {
 		const imageWindowTemplate = $$(imageWindow.getViewerId());
 		const imageWindowTemplateWithoutControls = $$(imageWindow.getViewerWithoutControlsId());
 		const searchSuggest = $$(filterPanel.getSearchSuggestID());
+		const leftPanelResizer = $$(ID_LEFT_PANEL_RESIZER);
 		this._galleryService = new GalleryService(
 			view,
 			$$(ID_PAGER),
@@ -387,6 +398,7 @@ export default class GalleryView extends JetView {
 			null, // portraitClearAllFiltersTemplate
 			null, // landscapeClearAllFiltersTemplate
 			searchSuggest,
+			leftPanelResizer,
 		);
 
 		// multi lesion
@@ -629,7 +641,7 @@ export default class GalleryView extends JetView {
 			}
 			case constants.DEFAULT_DATAVIEW_COLUMNS: {
 				const minGalleryWidth = window.innerWidth
-					- this.$$(ID_LEFT_PANEL).config.width
+					- this.$$(ID_LEFT_PANEL).config.maxWidth ?? $$(ID_LEFT_PANEL).config.width
 					- galleryCartList.config.width;
 				cols = Math.floor(minGalleryWidth / constants.DEFAULT_GALLERY_IMAGE_WIDTH);
 				break;
@@ -647,7 +659,7 @@ export default class GalleryView extends JetView {
 		const maxDataviewHeight = galleryDataviewHeight
 			+ (downloadingMenu.isVisible() ? downloadingMenu.$height : 0);
 		const maxImageHeight = Math.floor(maxImageWidth * multiplier);
-		const rows = Math.floor(maxDataviewHeight / maxImageHeight);
+		const rows = Math.floor(maxDataviewHeight / maxImageHeight) || 1;
 		const elementWidth = util.getDataviewItemWidth();
 		const elementHeight = Math.round(galleryDataviewHeight / rows);
 		dataWindowView.define("type", {width: elementWidth, height: elementHeight});

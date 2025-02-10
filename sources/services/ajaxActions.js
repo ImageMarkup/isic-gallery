@@ -84,11 +84,14 @@ class AjaxActions {
 			url: `${API_URL}users/me/`,
 			headers
 		};
-		return axios(axiosConfig)
-			.then(result => result?.data || {}, (e) => {
-				webix.message({type: "error", text: e.response.data.detail});
-				return Promise.reject(e);
-			});
+		try {
+			const userInfoResponse = await axios(axiosConfig);
+			return userInfoResponse?.data || {};
+		}
+		catch (e) {
+			webix.message({type: "error", text: e.response.data.detail});
+			throw new Error(e.message, {cause: e});
+		}
 	}
 
 	async putUserTermsOfUse() {

@@ -1,3 +1,4 @@
+import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
 import util from "../../../../utils/util";
 import filtersViewHelper from "./filters";
@@ -10,54 +11,55 @@ const NAME_SELECT_NONE_FILTER = filtersViewHelper.getSelectNoneFiltersName();
 function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	const collapsibleFilter = webix.copy(filter);
 	const isMobile = util.isMobilePhone();
-	const template = isMobile
+	const template = isMobile || filter.type === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX
 		? collapsibleFilter.rows[0].cols[0]
 		: collapsibleFilter.rows[0];
+	const collapsibleFilterFunction = function () {
+		const currentMobile = util.isMobilePhone();
+		const selectAllFiltersButton = this.getParentView().queryView({
+			name: NAME_SELECT_ALL_FILTER
+		});
+		const selectNoneFiltersButton = this.getParentView().queryView({
+			name: NAME_SELECT_NONE_FILTER
+		});
+		const children = currentMobile
+			? this.getParentView().getParentView().getChildViews()
+			: this.getParentView().getChildViews();
+		const labelObject = currentMobile
+			? children[0].getChildViews()[0]
+			: children[0];
+		const controls = children[1];
+		if (!controls.isVisible()) {
+			selectAllFiltersButton.show();
+			selectNoneFiltersButton.show();
+			showOrHideAggregateButton(filter, controls, dataForCreatingControl, currentMobile);
+			webix.html.addCss(labelObject.getNode(), "showed-filter");
+			webix.html.removeCss(labelObject.getNode(), "hidden-filter");
+			this.config.isRowsVisible = true;
+			controls.show();
+			// scroll into collapsed controls
+			// TODO: fix mobile view
+			// const filtersNode = controls.getParentView().getNode();
+			// filtersNode.scrollIntoView();
+			showedFiltersCollection.add({
+				id: dataForCreatingControl.id
+			});
+		}
+		else {
+			selectAllFiltersButton?.hide();
+			selectNoneFiltersButton?.hide();
+			webix.html.removeCss(labelObject.getNode(), "showed-filter");
+			webix.html.addCss(labelObject.getNode(), "hidden-filter");
+			this.config.isRowsVisible = false;
+			if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
+				showedFiltersCollection.remove(dataForCreatingControl.id);
+			}
+			controls.hide();
+		}
+	};
 	template.onClick = {
 		// eslint-disable-next-line func-names
-		"collapssible-filter": function () {
-			const currentMobile = util.isMobilePhone();
-			const selectAllFiltersButton = this.getParentView().queryView({
-				name: NAME_SELECT_ALL_FILTER
-			});
-			const selectNoneFiltersButton = this.getParentView().queryView({
-				name: NAME_SELECT_NONE_FILTER
-			});
-			const children = currentMobile
-				? this.getParentView().getParentView().getChildViews()
-				: this.getParentView().getChildViews();
-			const labelObject = currentMobile
-				? children[0].getChildViews()[0]
-				: children[0];
-			const controls = children[1];
-			if (!controls.isVisible()) {
-				selectAllFiltersButton.show();
-				selectNoneFiltersButton.show();
-				showOrHideAggregateButton(filter, controls, dataForCreatingControl, currentMobile);
-				webix.html.addCss(labelObject.getNode(), "showed-filter");
-				webix.html.removeCss(labelObject.getNode(), "hidden-filter");
-				this.config.isRowsVisible = true;
-				controls.show();
-				// scroll into collapsed controls
-				// TODO: fix mobile view
-				// const filtersNode = controls.getParentView().getNode();
-				// filtersNode.scrollIntoView();
-				showedFiltersCollection.add({
-					id: dataForCreatingControl.id
-				});
-			}
-			else {
-				selectAllFiltersButton?.hide();
-				selectNoneFiltersButton?.hide();
-				webix.html.removeCss(labelObject.getNode(), "showed-filter");
-				webix.html.addCss(labelObject.getNode(), "hidden-filter");
-				this.config.isRowsVisible = false;
-				if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
-					showedFiltersCollection.remove(dataForCreatingControl.id);
-				}
-				controls.hide();
-			}
-		}
+		"collapssible-filter": collapsibleFilterFunction
 	};
 	if (collapsed) {
 		template.css += " collapssible-filter hidden-filter";
@@ -97,16 +99,37 @@ function transformToFormFormat(data, expandedFilters) {
 					case "checkbox":
 					case "rangeCheckbox":
 						filtersConfig = filtersViewHelper.getCheckboxUI(dataForCreatingControl, collapsed);
+						if (filtersConfig) {
+							elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
+						}
 						break;
 					/* case "range_slider":
 						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
 						break; */
+					case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
+						if (util.isMobilePhone()) {
+							break;
+						}
+						const openedItems = getOpenElementFromTreeTable(`treeTable-${dataForCreatingControl.id}`);
+						expandedFilters.push(...openedItems);
+						const diagnosisRegex = /^diagnosis\|.*/;
+						const diagnosisFilter = expandedFilters.find(f => diagnosisRegex.test(f));
+						collapsed = !diagnosisFilter;
+						filtersConfig = filtersViewHelper.getTreeCheckboxUI(
+							dataForCreatingControl,
+							collapsed,
+							expandedFilters
+						);
+						if (filtersConfig) {
+							elems.push(filtersConfig);
+						}
+						break;
+					}
 					default:
 					{
 						break;
 					}
 				}
-				elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
 			}
 		}
 	});
@@ -142,6 +165,14 @@ function showOrHideAggregateButton(filter, controls, dataForCreatingControl, isC
 	if (filtersCount === dataForCreatingControl.options.length) {
 		selectAllFiltersButton.hide();
 	}
+}
+
+function getOpenElementFromTreeTable(id) {
+	const treeTableView = $$(id);
+	if (treeTableView) {
+		return treeTableView.getOpenItems();
+	}
+	return [];
 }
 
 export default {

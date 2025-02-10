@@ -211,4 +211,10 @@ export default {
 	MULTI_LESION_TYPE_PRIORITY: {
 		FIRST: "dermoscopic"
 	},
+	DIAGNOSIS_SEPARATOR: ":",
+	FILTER_ELEMENT_TYPE: {
+		CHECKBOX: "checkbox",
+		TREE_CHECKBOX: "treeCheckbox",
+		RANGE_CHECKBOX: "rangeCheckbox",
+	},
 };

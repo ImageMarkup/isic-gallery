@@ -1,0 +1,1858 @@
+{
+    "Benign": {
+        "level": 1,
+        "parent": null,
+        "children": {
+            "Mast cell proliferations": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Maculopapular mastocytoma": {
+                        "level": 3,
+                        "parent": "Mast cell proliferations"
+                    },
+                    "Mastocytoma, Solitary or unifocal": {
+                        "level": 3,
+                        "parent": "Mast cell proliferations"
+                    },
+                    "Mastocytosis": {
+                        "level": 3,
+                        "parent": "Mast cell proliferations",
+                        "children": {
+                            "Mastocytosis, Diffuse or multifocal": {
+                                "level": 4,
+                                "parent": "Mastocytosis",
+                                "children": {
+                                    "Telangiectasia macularis eruptiva perstans": {
+                                        "level": 5,
+                                        "parent": "Mastocytosis, Diffuse or multifocal"
+                                    },
+                                    "Mastocytosis, Diffuse cutaenous": {
+                                        "level": 5,
+                                        "parent": "Mastocytosis, Diffuse or multifocal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Inflammatory or infectious diseases": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Verruca": {
+                        "level": 3,
+                        "parent": "Inflammatory or infectious diseases"
+                    },
+                    "Muluscum": {
+                        "level": 3,
+                        "parent": "Inflammatory or infectious diseases"
+                    }
+                }
+            },
+            "Langerhans cell proliferations": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Mixed Langerhans cell histiocytosis and Erdheim Chester disease": {
+                        "level": 3,
+                        "parent": "Langerhans cell proliferations"
+                    },
+                    "Langerhans cell histiocytosis": {
+                        "level": 3,
+                        "parent": "Langerhans cell proliferations",
+                        "children": {
+                            "Langerhans cell histiocytosis, Solitary or unifocal": {
+                                "level": 4,
+                                "parent": "Langerhans cell histiocytosis"
+                            },
+                            "Langerhans cell histiocytosis, Diffuse or multifocal": {
+                                "level": 4,
+                                "parent": "Langerhans cell histiocytosis"
+                            }
+                        }
+                    },
+                    "Erdheim Chester disease": {
+                        "level": 3,
+                        "parent": "Langerhans cell proliferations"
+                    },
+                    "Indeterminate cell histiocytosis": {
+                        "level": 3,
+                        "parent": "Langerhans cell proliferations"
+                    }
+                }
+            },
+            "Benign - Other": {
+                "level": 2,
+                "parent": "Benign"
+            },
+            "Benign adnexal epithelial proliferations - Apocrine or Eccrine": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Apocrine tubular adenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Cylindoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Cystadenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Fibroadenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Hidradenoma papilliferum": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Hidradenoma, Apocrine": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine",
+                        "children": {
+                            "Hidradenoma, Apocrine, Predominantly with clear cells": {
+                                "level": 4,
+                                "parent": "Hidradenoma, Apocrine"
+                            }
+                        }
+                    },
+                    "Hidradenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine",
+                        "children": {
+                            "Hidradenoma, Poroid": {
+                                "level": 4,
+                                "parent": "Hidradenoma"
+                            }
+                        }
+                    },
+                    "Mixed tumor": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine",
+                        "children": {
+                            "Mixed tumor, Apocrine type": {
+                                "level": 4,
+                                "parent": "Mixed tumor"
+                            },
+                            "Mixed tumor, Eccrine type": {
+                                "level": 4,
+                                "parent": "Mixed tumor"
+                            }
+                        }
+                    },
+                    "Poroma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Spiradenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Syringocystadenoma papilliferum": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Syringofibroadenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Syringoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Supernumerary nipple": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Apocrine or Eccrine"
+                    }
+                }
+            },
+            "Benign adnexal epithelial proliferations - Follicular": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Warty dyskeratoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Tumor of follicular infundibulum": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Tricholemmoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular",
+                        "children": {
+                            "Tricholemmoma, Desmoplastic": {
+                                "level": 4,
+                                "parent": "Tricholemmoma"
+                            }
+                        }
+                    },
+                    "Trichofolliculoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Folliculosebaceous cystic hamartoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Nevus comedonicus": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Pilar sheath acanthoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Pilomatricoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Proliferating tricholemmal tumor": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Trichoblastoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    },
+                    "Trichoepithelioma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular",
+                        "children": {
+                            "Trichoepithelioma, Desmoplastic": {
+                                "level": 4,
+                                "parent": "Trichoepithelioma"
+                            }
+                        }
+                    },
+                    "Panfolliculoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Follicular"
+                    }
+                }
+            },
+            "Benign adnexal epithelial proliferations - Sebaceous": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Fibrofolliculoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Fordyce spots": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Nevus sebaceus": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Sebaceoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Sebaceous adenoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Sebaceous hyperplasia": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    },
+                    "Trichodiscoma": {
+                        "level": 3,
+                        "parent": "Benign adnexal epithelial proliferations - Sebaceous"
+                    }
+                }
+            },
+            "Benign epidermal proliferations": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Acantholytic acanthoma": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Clear cell acanthoma": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Epidermal nevus": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Epidermolytic acanthoma": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Large cell acanthoma": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Lichen planus like keratosis": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Melanoacanthoma": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Pigmented benign keratosis": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Porokeratosis": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    },
+                    "Seborrheic keratosis": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations",
+                        "children": {
+                            "Seborrheic keratosis, Clonal": {
+                                "level": 4,
+                                "parent": "Seborrheic keratosis"
+                            }
+                        }
+                    },
+                    "Solar lentigo": {
+                        "level": 3,
+                        "parent": "Benign epidermal proliferations"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Adipocytic": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Angiolipoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Adipocytic"
+                    },
+                    "Lipoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Adipocytic",
+                        "children": {
+                            "Lipoma, Spindle cell": {
+                                "level": 4,
+                                "parent": "Lipoma"
+                            },
+                            "Lipoma, Pleomorphic": {
+                                "level": 4,
+                                "parent": "Lipoma"
+                            }
+                        }
+                    },
+                    "Lipomatous nevus": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Adipocytic"
+                    },
+                    "Fibrolipoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Adipocytic"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Cartilagenous and ossifying": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Accessory tragus": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Cartilagenous and ossifying"
+                    },
+                    "Extraskeletal chondroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Cartilagenous and ossifying"
+                    },
+                    "Osteoma cutis": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Cartilagenous and ossifying"
+                    },
+                    "Subungual osteochodroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Cartilagenous and ossifying"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Fibro-histiocytic": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Angiofibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic",
+                        "children": {
+                            "Angiofibroma, Facial": {
+                                "level": 4,
+                                "parent": "Angiofibroma"
+                            },
+                            "Angiofibroma, Periungual": {
+                                "level": 4,
+                                "parent": "Angiofibroma"
+                            },
+                            "Angiofibroma, Penile": {
+                                "level": 4,
+                                "parent": "Angiofibroma"
+                            }
+                        }
+                    },
+                    "Dermatofibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic",
+                        "children": {
+                            "Dermatofibroma, Atypical": {
+                                "level": 4,
+                                "parent": "Dermatofibroma"
+                            },
+                            "Dermatofibroma, Aneurysmal": {
+                                "level": 4,
+                                "parent": "Dermatofibroma"
+                            },
+                            "Dermatofibroma, Cellular": {
+                                "level": 4,
+                                "parent": "Dermatofibroma"
+                            },
+                            "Dermatofibroma, Epithelioid": {
+                                "level": 4,
+                                "parent": "Dermatofibroma"
+                            },
+                            "Dermatofibroma, Hemosiderotic": {
+                                "level": 4,
+                                "parent": "Dermatofibroma"
+                            }
+                        }
+                    },
+                    "Fibroepithelial polyp": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Fibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic",
+                        "children": {
+                            "Fibroma, Sclerotic": {
+                                "level": 4,
+                                "parent": "Fibroma"
+                            },
+                            "Fibroma, Pleomorphic": {
+                                "level": 4,
+                                "parent": "Fibroma"
+                            }
+                        }
+                    },
+                    "Giant cell tumor of the tendon sheath": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Juvenile xanthogranuloma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Cutaneous Myxoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Non-Langerhans histiocytosis": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Reticulohistiocytosis": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Rosai-Dorfman disease": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Scar": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Fibro-histiocytic",
+                        "children": {
+                            "Scar, Hypertrophic": {
+                                "level": 4,
+                                "parent": "Scar"
+                            },
+                            "Scar, Keloid": {
+                                "level": 4,
+                                "parent": "Scar"
+                            }
+                        }
+                    }
+                }
+            },
+            "Benign melanocytic proliferations": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Nevus": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations",
+                        "children": {
+                            "Nevus, Spitz": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Spilus": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Reed": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Recurrent or persistent": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Of special anatomic site": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, NOS, Junctional": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, NOS, Dermal": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, NOS, Compound": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Meyerson": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Lentiginous": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Halo": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Deep penetrating": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Congenital": {
+                                "level": 4,
+                                "parent": "Nevus",
+                                "children": {
+                                    "Nevus, Congenital, by histopathological pattern": {
+                                        "level": 5,
+                                        "parent": "Nevus, Congenital"
+                                    },
+                                    "Nevus, Congenital, by history and histopathological pattern": {
+                                        "level": 5,
+                                        "parent": "Nevus, Congenital"
+                                    },
+                                    "Nevus, Congenital, by history": {
+                                        "level": 5,
+                                        "parent": "Nevus, Congenital"
+                                    }
+                                }
+                            },
+                            "Nevus, Combined": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Balloon cell": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Acral": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Agminated": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            },
+                            "Nevus, Atypical, Dysplastic, or Clark": {
+                                "level": 4,
+                                "parent": "Nevus",
+                                "children": {
+                                    "Nevus, Atypical": {
+                                        "level": 5,
+                                        "parent": "Nevus, Atypical, Dysplastic, or Clark"
+                                    },
+                                    "Nevus, Dysplastic": {
+                                        "level": 5,
+                                        "parent": "Nevus, Atypical, Dysplastic, or Clark"
+                                    },
+                                    "Nevus, Clark": {
+                                        "level": 5,
+                                        "parent": "Nevus, Atypical, Dysplastic, or Clark"
+                                    }
+                                }
+                            },
+                            "Blue nevus": {
+                                "level": 4,
+                                "parent": "Nevus",
+                                "children": {
+                                    "Blue nevus, Common": {
+                                        "level": 5,
+                                        "parent": "Blue nevus"
+                                    },
+                                    "Blue nevus, Cellular": {
+                                        "level": 5,
+                                        "parent": "Blue nevus"
+                                    },
+                                    "Blue nevus, Epithelioid": {
+                                        "level": 5,
+                                        "parent": "Blue nevus"
+                                    },
+                                    "Blue nevus, Plaque type": {
+                                        "level": 5,
+                                        "parent": "Blue nevus"
+                                    },
+                                    "Blue nevus, Sclerosing": {
+                                        "level": 5,
+                                        "parent": "Blue nevus"
+                                    }
+                                }
+                            },
+                            "Nevus, BAP-1 deficient": {
+                                "level": 4,
+                                "parent": "Nevus"
+                            }
+                        }
+                    },
+                    "Dermal melanocytosis": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations",
+                        "children": {
+                            "Mongolian spot": {
+                                "level": 4,
+                                "parent": "Dermal melanocytosis"
+                            },
+                            "Nevus of Ito": {
+                                "level": 4,
+                                "parent": "Dermal melanocytosis"
+                            },
+                            "Nevus of Ota": {
+                                "level": 4,
+                                "parent": "Dermal melanocytosis"
+                            }
+                        }
+                    },
+                    "Lentiginous melanocytic proliferation": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations"
+                    },
+                    "Lentigo simplex": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations"
+                    },
+                    "Pigmented epithelioid melanocytoma": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations"
+                    },
+                    "Proliferative nodule in congenital melanocytic nevi without atypia": {
+                        "level": 3,
+                        "parent": "Benign melanocytic proliferations"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Myoepithelial": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Myoepithelioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Myoepithelial"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Neural": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Granular cell tumor": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural",
+                        "children": {
+                            "Granular cell tumor, neural and s100 positive": {
+                                "level": 4,
+                                "parent": "Granular cell tumor"
+                            },
+                            "Granular cell tumor, non-neural and s100 negative": {
+                                "level": 4,
+                                "parent": "Granular cell tumor"
+                            }
+                        }
+                    },
+                    "Nerve sheath myxoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural"
+                    },
+                    "Neurofibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural"
+                    },
+                    "Plexiform Neurofibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural"
+                    },
+                    "Neuroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural",
+                        "children": {
+                            "Neuroma, Palisaded and encapsulated": {
+                                "level": 4,
+                                "parent": "Neuroma"
+                            },
+                            "Neuroma, Traumatic": {
+                                "level": 4,
+                                "parent": "Neuroma"
+                            }
+                        }
+                    },
+                    "Perineurioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural"
+                    },
+                    "Schwannoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Neural"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Vascular": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Verrucous hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Venous malformation": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Venous lake": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Vascular spider": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Rapidly involuting congenital hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Telangiectasia": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Acquired elastotic hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Acroangiodermatitis of Mali": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Angiokeratoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Angiolymphoid hyperplasia with eosinophilia": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Glomangiomyoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Glomeruloid hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Glomus tumor": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular",
+                        "children": {
+                            "Hemangioma, Infantile": {
+                                "level": 4,
+                                "parent": "Hemangioma"
+                            },
+                            "Hemangioma, Tufted": {
+                                "level": 4,
+                                "parent": "Hemangioma"
+                            },
+                            "Hemangioma, Cherry": {
+                                "level": 4,
+                                "parent": "Hemangioma"
+                            },
+                            "Hemangioma, Hobnail": {
+                                "level": 4,
+                                "parent": "Hemangioma"
+                            }
+                        }
+                    },
+                    "Lymphangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular",
+                        "children": {
+                            "Lymphangioma, deep": {
+                                "level": 4,
+                                "parent": "Lymphangioma"
+                            },
+                            "Lymphangioma, superficial": {
+                                "level": 4,
+                                "parent": "Lymphangioma"
+                            }
+                        }
+                    },
+                    "Nevus anemicus": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Noninvoluting congenital hemangioma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Other vascular or lymphatic malformation or hamartoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Pyogenic granuloma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Arterio-venous malformation": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    },
+                    "Capillary vascular malformation": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Vascular"
+                    }
+                }
+            },
+            "Collision - Only benign proliferations": {
+                "level": 2,
+                "parent": "Benign"
+            },
+            "Cysts": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Comedo": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Digital mucous cyst": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Dilated pore": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Infundibular or epidermal cyst": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Sebaceous cyst": {
+                        "level": 3,
+                        "parent": "Cysts",
+                        "children": {
+                            "Epidermal, Sebaceous": {
+                                "level": 4,
+                                "parent": "Sebaceous cyst"
+                            },
+                            "Infundibular, Sebaceous": {
+                                "level": 4,
+                                "parent": "Sebaceous cyst"
+                            }
+                        }
+                    },
+                    "Keratinous cyst": {
+                        "level": 3,
+                        "parent": "Cysts",
+                        "children": {
+                            "Epidermal, Keratinous": {
+                                "level": 4,
+                                "parent": "Keratinous cyst"
+                            },
+                            "Infundibular, Keratinous": {
+                                "level": 4,
+                                "parent": "Keratinous cyst"
+                            }
+                        }
+                    },
+                    "Milium": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Steatocystoma": {
+                        "level": 3,
+                        "parent": "Cysts"
+                    },
+                    "Trichilemmal or isthmic-catagen or pilar cyst": {
+                        "level": 3,
+                        "parent": "Cysts",
+                        "children": {
+                            "Pilar cyst": {
+                                "level": 4,
+                                "parent": "Trichilemmal or isthmic-catagen or pilar cyst"
+                            },
+                            "Trichilemmal cyst": {
+                                "level": 4,
+                                "parent": "Trichilemmal or isthmic-catagen or pilar cyst"
+                            },
+                            "Isthmic-catagen cyst": {
+                                "level": 4,
+                                "parent": "Trichilemmal or isthmic-catagen or pilar cyst"
+                            }
+                        }
+                    }
+                }
+            },
+            "Exogenous": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Foreign body granuloma": {
+                        "level": 3,
+                        "parent": "Exogenous"
+                    },
+                    "Tattoo": {
+                        "level": 3,
+                        "parent": "Exogenous"
+                    }
+                }
+            },
+            "Flat melanotic pigmentations - not melanocytic nevus": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Cafe au lait macule or patch": {
+                        "level": 3,
+                        "parent": "Flat melanotic pigmentations - not melanocytic nevus"
+                    },
+                    "Ephelis": {
+                        "level": 3,
+                        "parent": "Flat melanotic pigmentations - not melanocytic nevus"
+                    },
+                    "Ink-spot lentigo": {
+                        "level": 3,
+                        "parent": "Flat melanotic pigmentations - not melanocytic nevus"
+                    },
+                    "Lentigo NOS": {
+                        "level": 3,
+                        "parent": "Flat melanotic pigmentations - not melanocytic nevus"
+                    },
+                    "Mucosal melanotic macule": {
+                        "level": 3,
+                        "parent": "Flat melanotic pigmentations - not melanocytic nevus"
+                    }
+                }
+            },
+            "Benign soft tissue proliferations - Muscle tissue or myofibroblastic": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Smooth muscle hamartoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Nodular Fasciitis": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Piloleiomyoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Dermatomyofibroma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Angioleiomyoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Dartoic muscle leiomyoma": {
+                        "level": 3,
+                        "parent": "Benign soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    }
+                }
+            },
+            "Hemorrhagic lesions": {
+                "level": 2,
+                "parent": "Benign",
+                "children": {
+                    "Hemorrhage": {
+                        "level": 3,
+                        "parent": "Hemorrhagic lesions",
+                        "children": {
+                            "Subungual hemorrhage": {
+                                "level": 4,
+                                "parent": "Hemorrhage"
+                            },
+                            "Subcorneal and intracorneal hemorrhage": {
+                                "level": 4,
+                                "parent": "Hemorrhage"
+                            },
+                            "Mucosal hemorrhage": {
+                                "level": 4,
+                                "parent": "Hemorrhage"
+                            },
+                            "Dermal and subcutaneous hemorhage": {
+                                "level": 4,
+                                "parent": "Hemorrhage"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "Indeterminate": {
+        "level": 1,
+        "parent": null,
+        "children": {
+            "Indeterminate melanocytic proliferations": {
+                "level": 2,
+                "parent": "Indeterminate",
+                "children": {
+                    "Atypical melanocytic neoplasm": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    },
+                    "Atypical intraepithelial melanocytic proliferation": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    },
+                    "Atypical Spitz tumor": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations",
+                        "children": {
+                            "Atypical Spitz tumor, Compound": {
+                                "level": 4,
+                                "parent": "Atypical Spitz tumor"
+                            },
+                            "Atypical Spitz tumor, Dermal": {
+                                "level": 4,
+                                "parent": "Atypical Spitz tumor"
+                            },
+                            "Atypical Spitz tumor, Junctional": {
+                                "level": 4,
+                                "parent": "Atypical Spitz tumor"
+                            }
+                        }
+                    },
+                    "Atypical pigmented spindle cell tumor": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    },
+                    "Atypical proliferative nodules in congenital melanocytic nevus": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    },
+                    "Superficial atypical melanocytic proliferation of uncertain significance": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    },
+                    "Melanocytic tumor of uncertain malignant potential": {
+                        "level": 3,
+                        "parent": "Indeterminate melanocytic proliferations"
+                    }
+                }
+            },
+            "Indeterminate epidermal proliferations": {
+                "level": 2,
+                "parent": "Indeterminate",
+                "children": {
+                    "Solar or actinic cheilitis": {
+                        "level": 3,
+                        "parent": "Indeterminate epidermal proliferations"
+                    },
+                    "Solar or actinic keratosis": {
+                        "level": 3,
+                        "parent": "Indeterminate epidermal proliferations",
+                        "children": {
+                            "Actinic keratosis, Lichenoid": {
+                                "level": 4,
+                                "parent": "Solar or actinic keratosis"
+                            },
+                            "Actinic keratosis, Hypertrophic": {
+                                "level": 4,
+                                "parent": "Solar or actinic keratosis"
+                            },
+                            "Actinic keratosis, Bowenoid": {
+                                "level": 4,
+                                "parent": "Solar or actinic keratosis"
+                            },
+                            "Actinic keratosis, Atrophic": {
+                                "level": 4,
+                                "parent": "Solar or actinic keratosis"
+                            },
+                            "Actinic keratosis, Acantholytic": {
+                                "level": 4,
+                                "parent": "Solar or actinic keratosis"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "Malignant": {
+        "level": 1,
+        "parent": null,
+        "children": {
+            "Collision - At least one malignant proliferation": {
+                "level": 2,
+                "parent": "Malignant"
+            },
+            "Lymphocytic proliferations - B-Cell": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "EBV positive mucocutaneous ulcer": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    },
+                    "Intravascular large B-cell lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    },
+                    "Lymphocytic proliferation, B-Cell, other": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    },
+                    "Primary cutaneous follicle center lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    },
+                    "Primary cutaneous large B-Cell lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    },
+                    "Primary cutaneous marginal zone lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - B-Cell"
+                    }
+                }
+            },
+            "Lymphocytic proliferations - T-Cell/NK": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Chronic active EBV infection": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Adult T-cell leukemia or lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Extranodal T-cell/NK lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK",
+                        "children": {
+                            "Extranodal T-cell/NK lymphoma, Nasal type": {
+                                "level": 4,
+                                "parent": "Extranodal T-cell/NK lymphoma"
+                            }
+                        }
+                    },
+                    "Lymphocytic proliferation, T-Cell/NK": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Mycosis fungoides": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK",
+                        "children": {
+                            "Mycosis fungoides, Folliculotropic": {
+                                "level": 4,
+                                "parent": "Mycosis fungoides"
+                            },
+                            "Mycosis fungoides, Pagetoid reticulosis": {
+                                "level": 4,
+                                "parent": "Mycosis fungoides"
+                            },
+                            "Mycosis fungoides, With large cell transformation": {
+                                "level": 4,
+                                "parent": "Mycosis fungoides"
+                            },
+                            "Mycosis fungoides, Granulomatous slack skin": {
+                                "level": 4,
+                                "parent": "Mycosis fungoides"
+                            }
+                        }
+                    },
+                    "Primary cutaneous CD4+ small or medium T-cell lymphoproliferative disorder": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Primary cutaneous peripheral T-cell lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK",
+                        "children": {
+                            "Primary cutaneous peripheral T-cell lymphoma, Rare subtype": {
+                                "level": 4,
+                                "parent": "Primary cutaneous peripheral T-cell lymphoma"
+                            }
+                        }
+                    },
+                    "Sezary syndrome": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Subcutaneous panniculitis-like T-cell lymphoma": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK"
+                    },
+                    "Primary cutaneous CD30+ lymphoproliferative disease": {
+                        "level": 3,
+                        "parent": "Lymphocytic proliferations - T-Cell/NK",
+                        "children": {
+                            "Cutanous anaplastic large cell lymphoma": {
+                                "level": 4,
+                                "parent": "Primary cutaneous CD30+ lymphoproliferative disease"
+                            },
+                            "Lymphomatoid papulosis": {
+                                "level": 4,
+                                "parent": "Primary cutaneous CD30+ lymphoproliferative disease"
+                            }
+                        }
+                    }
+                }
+            },
+            "Malignant adnexal epithelial proliferations - Apocrine or Eccrine": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Adenoid cystic carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Adnexal adenocarcinoma arising in association with spiradenoma, cylindroma, or spiradenocylindroma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Apocrine carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Digital papillary carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Hidradenocarcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Malignant mixed tumor": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Microcystic adnexal carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Mucinous carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Tubular carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    },
+                    "Paget disease": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine",
+                        "children": {
+                            "Paget disease, Mammary": {
+                                "level": 4,
+                                "parent": "Paget disease"
+                            },
+                            "Paget disease, Extra-mammary": {
+                                "level": 4,
+                                "parent": "Paget disease"
+                            }
+                        }
+                    },
+                    "Porocarcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Apocrine or Eccrine"
+                    }
+                }
+            },
+            "Malignant adnexal epithelial proliferations - Follicular": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Basal cell carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Follicular",
+                        "children": {
+                            "Basal cell carcinoma, Fibroeipthelial": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Infiltrating": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Micronodular": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Nodular": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Sclerosing or morpheaform": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Combined subtypes": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma, Superficial": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma with sarcomatoid differentiation": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            },
+                            "Basal cell carcinoma with adnexal differentiation": {
+                                "level": 4,
+                                "parent": "Basal cell carcinoma"
+                            }
+                        }
+                    },
+                    "Baso-squamous carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Follicular"
+                    },
+                    "Matrical or pilomatrical carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Follicular"
+                    },
+                    "Proliferating trichilemmal carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Follicular"
+                    }
+                }
+            },
+            "Malignant adnexal epithelial proliferations - Sebaceous": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Sebaceous carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant adnexal epithelial proliferations - Sebaceous"
+                    }
+                }
+            },
+            "Malignant epidermal proliferations": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Keratoacanthoma": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations"
+                    },
+                    "Verrucous carcinoma": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations",
+                        "children": {
+                            "Verrucous carcinoma, Carcinoma cuniculatum type": {
+                                "level": 4,
+                                "parent": "Verrucous carcinoma"
+                            },
+                            "Verrucous carcinoma, Giant condyloma type": {
+                                "level": 4,
+                                "parent": "Verrucous carcinoma"
+                            },
+                            "Verrucous carcinoma, Oral florid papilomatosis type": {
+                                "level": 4,
+                                "parent": "Verrucous carcinoma"
+                            }
+                        }
+                    },
+                    "Squamous cell carcinoma, NOS": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations"
+                    },
+                    "Bowenoid papulosis": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations"
+                    },
+                    "Squamous cell carcinoma in situ": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations",
+                        "children": {
+                            "Squamous cell carcinoma in situ, Bowens disease": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma in situ"
+                            }
+                        }
+                    },
+                    "Squamous cell carcinoma, Invasive": {
+                        "level": 3,
+                        "parent": "Malignant epidermal proliferations",
+                        "children": {
+                            "Squamous cell carcinoma, Invasive, Adeno-squamous": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Adeno-squamous, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Adeno-squamous"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Adeno-squamous, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Adeno-squamous"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Adeno-squamous, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Adeno-squamous"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Acantholytic": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Acantholytic, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Acantholytic"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Acantholytic, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Acantholytic"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Acantholytic, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Acantholytic"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Clear cell": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Clear cell, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Clear cell"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Clear cell, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Clear cell"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Clear cell, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Clear cell"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Sarcomatoid": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Sarcomatoid, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Sarcomatoid"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Sarcomatoid, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Sarcomatoid"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Sarcomatoid, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Sarcomatoid"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Keratoacanthoma-type": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Keratoacanthoma-type, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Keratoacanthoma-type"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Keratoacanthoma-type, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Keratoacanthoma-type"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Keratoacanthoma-type, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Keratoacanthoma-type"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Spindle cell": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Spindle cell, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Spindle cell"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Spindle cell, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Spindle cell"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Spindle cell, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Spindle cell"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, Verrucous": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive",
+                                "children": {
+                                    "Squamous cell carcinoma, Invasive, Verrucous, poorly differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Verrucous"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Verrucous, well differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Verrucous"
+                                    },
+                                    "Squamous cell carcinoma, Invasive, Verrucous, moderately differentiated": {
+                                        "level": 5,
+                                        "parent": "Squamous cell carcinoma, Invasive, Verrucous"
+                                    }
+                                }
+                            },
+                            "Squamous cell carcinoma, Invasive, NOS, moderately differentiated": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive"
+                            },
+                            "Squamous cell carcinoma, Invasive, NOS, well differentiated": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive"
+                            },
+                            "Squamous cell carcinoma, Invasive, NOS, poorly differentiated": {
+                                "level": 4,
+                                "parent": "Squamous cell carcinoma, Invasive"
+                            }
+                        }
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Adipocytic": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Liposarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Adipocytic",
+                        "children": {
+                            "Liposarcoma, Undifferentiated": {
+                                "level": 4,
+                                "parent": "Liposarcoma"
+                            },
+                            "Liposarcoma, Well differentiated": {
+                                "level": 4,
+                                "parent": "Liposarcoma"
+                            }
+                        }
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Cartilagenous and ossifying": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Extraskeletal osteosarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Cartilagenous and ossifying"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Fibro-histiocytic": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Atypical fibroxanthoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Dermatofibrosarcoma protuberans": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Epithelioid sarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Fibrosarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Fibro-histiocytic"
+                    },
+                    "Pleomorphic undifferntiated sarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Fibro-histiocytic"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Muscle tissue or myofibroblastic": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Atypical intradermal smooth muscle tumor": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Leiomyosarcoma, Cutaneous": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    },
+                    "Rhabdomyoscaroma, Cutaneous": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Muscle tissue or myofibroblastic"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Myoepithelial": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Myoepithelial sarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Myoepithelial"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Neural": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Malignant granular cell tumor": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Neural"
+                    },
+                    "Malignant peripheral nerve sheath tumor": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Neural"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Unknown or other histiogenesis": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Ewing sarcoma, Primary cutaenous": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Unknown or other histiogenesis"
+                    }
+                }
+            },
+            "Malignant soft tissue proliferations - Vascular": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Angiosarcoma cutaneous": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Vascular",
+                        "children": {
+                            "Angiosarcoma cutaneous, Epithelioid": {
+                                "level": 4,
+                                "parent": "Angiosarcoma cutaneous"
+                            },
+                            "Angiosarcoma cutaneous, Face and scalp of elderly patients": {
+                                "level": 4,
+                                "parent": "Angiosarcoma cutaneous"
+                            },
+                            "Angiosarcoma cutaneous, Post-irradiation": {
+                                "level": 4,
+                                "parent": "Angiosarcoma cutaneous"
+                            },
+                            "Angiosarcoma cutaneous, With associated lymphedema": {
+                                "level": 4,
+                                "parent": "Angiosarcoma cutaneous"
+                            }
+                        }
+                    },
+                    "Hemangioendothelioma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Vascular",
+                        "children": {
+                            "Hemangioendothelioma, Kaposiform": {
+                                "level": 4,
+                                "parent": "Hemangioendothelioma"
+                            }
+                        }
+                    },
+                    "Kaposi sarcoma": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Vascular"
+                    },
+                    "Malignant glomus tumor": {
+                        "level": 3,
+                        "parent": "Malignant soft tissue proliferations - Vascular"
+                    }
+                }
+            },
+            "Merkel cell proliferation": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Merkel cell carcinoma": {
+                        "level": 3,
+                        "parent": "Merkel cell proliferation"
+                    }
+                }
+            },
+            "Skin metastasis of internal solid cancer - non-hematological": {
+                "level": 2,
+                "parent": "Malignant"
+            },
+            "Malignant melanocytic proliferations (Melanoma)": {
+                "level": 2,
+                "parent": "Malignant",
+                "children": {
+                    "Melanoma metastasis": {
+                        "level": 3,
+                        "parent": "Malignant melanocytic proliferations (Melanoma)"
+                    },
+                    "Melanoma, NOS": {
+                        "level": 3,
+                        "parent": "Malignant melanocytic proliferations (Melanoma)"
+                    },
+                    "Melanoma in situ": {
+                        "level": 3,
+                        "parent": "Malignant melanocytic proliferations (Melanoma)",
+                        "children": {
+                            "Melanoma in situ, Mucosal": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            },
+                            "Melanoma in situ, Acral or acral-lentiginous": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            },
+                            "Melanoma in situ, Lentigo maligna type": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            },
+                            "Melanoma in situ, Recurrent or persistent": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            },
+                            "Melanoma in situ, Superficial spreading": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            },
+                            "Melanoma in situ, associated with a nevus": {
+                                "level": 4,
+                                "parent": "Melanoma in situ"
+                            }
+                        }
+                    },
+                    "Melanoma Invasive": {
+                        "level": 3,
+                        "parent": "Malignant melanocytic proliferations (Melanoma)",
+                        "children": {
+                            "Melanoma Invasive, Superficial spreading": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Spitzoid": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Recurrent or persistent": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, On chronically sun-exposed skin or lentigo maligna melanoma": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Acral or Acral-lentiginous": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Arising in a congenital nevus": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Pigmented spindle cell nevus like": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Associated with a nevus": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Desmoplastic": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Heavily pigmented": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive",
+                                "children": {
+                                    "Melanoma Invasive, Heavily pigmented, resembling epithelioid blue nevus or melanoma developing in animals": {
+                                        "level": 5,
+                                        "parent": "Melanoma Invasive, Heavily pigmented"
+                                    }
+                                }
+                            },
+                            "Melanoma Invasive, Mucosal": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Neurotropic": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Nevoid": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Nodular": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive"
+                            },
+                            "Melanoma Invasive, Blue nevus-like": {
+                                "level": 4,
+                                "parent": "Melanoma Invasive",
+                                "children": {
+                                    "Melanoma Invasive, resembling blue nevus": {
+                                        "level": 5,
+                                        "parent": "Melanoma Invasive, Blue nevus-like"
+                                    },
+                                    "Melanoma Invasive, originating from blue nevus": {
+                                        "level": 5,
+                                        "parent": "Melanoma Invasive, Blue nevus-like"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

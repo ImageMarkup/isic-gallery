@@ -1,6 +1,7 @@
 import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
+import diagnosisModel from "../../models/diagnosis";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -71,6 +72,42 @@ function _setFilterCounts(controlView, totalCount, currentCount) {
 	controlView.refresh();
 }
 
+function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
+	const oldLabel = option.name;
+	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
+	const baseLabelText = lastBracketIndex === -1
+		? oldLabel
+		: oldLabel.substring(0, lastBracketIndex);
+	let firstNumberHtml;
+	if (totalCount === currentCount) {
+		firstNumberHtml = "";
+	}
+	else if (!currentCount) {
+		firstNumberHtml = "0 / ";
+	}
+	else {
+		firstNumberHtml = `${currentCount} / `;
+	}
+	const newLabel = `${baseLabelText} (${firstNumberHtml}${totalCount})`;
+	option.name = newLabel;
+	treeView.updateItem(option.id, option);
+}
+
+function _setDiagnosisFilterState(treeView, option, totalCount, currentCount) {
+	if (
+		currentCount !== null
+		&& currentCount < totalCount
+		&& treeView.isBranch(option.id)
+		&& !option.indeterminate
+	) {
+		treeView.blockEvent();
+		treeView.add({id: `${option.id}|empty`, hidden: true, name: ""}, 0, option.id);
+		treeView.uncheckItem(`${option.id}|empty`);
+		treeView.remove(`${option.id}|empty`);
+		treeView.unblockEvent();
+	}
+}
+
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -91,6 +128,11 @@ function updateFiltersFormControl(data) {
 			}
 			break;
 		}
+		case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX:
+		{
+			updateTreeCheckboxControl(data);
+			break;
+		}
 		case "rangeFilter":
 		{
 			break;
@@ -102,10 +144,42 @@ function updateFiltersFormControl(data) {
 	}
 }
 
+function updateTreeCheckboxControl(data) {
+	/** @type {webix.ui.treetable} */
+	const treeView = $$(data.viewId);
+	if (treeView) {
+		// we do not need to call onChange event for the control. so we block event
+		treeView.blockEvent();
+		/* remove key is from "filtersChanged" event parameters.
+		   Its value is inverse for checkbox value */
+		if (!treeView.isVisible()) {
+			treeView.show();
+		}
+		treeView.checkItem(data.id);
+		treeView.open(data.id);
+		const parentId = treeView.getParentId(data.id);
+		if (parentId) {
+			const parent = treeView.getItem(parentId);
+			changeParentState(treeView, parent);
+		}
+		treeView.unblockEvent();
+	}
+}
+
+function changeParentState(treeView, option) {
+	treeView.open(option.id);
+	const parentId = treeView.getParentId(option.id);
+	if (parentId) {
+		const parentOption = treeView.getItem(parentId);
+		changeParentState(treeView, parentOption);
+	}
+}
+
 function _setLabelCount(foundCurrentCount, docCount) {
 	const appliedFiltersArray = appliedFiltersModel.getFiltersArray();
+	const flatFiltersArray = appliedFiltersArray.filter(f => f.view !== "treeCheckbox");
 	const filtersKeys = [];
-	appliedFiltersArray.forEach((filter) => {
+	flatFiltersArray.forEach((filter) => {
 		if (!filtersKeys.includes(filter.key)) {
 			filtersKeys.push(filter.key);
 		}
@@ -136,38 +210,83 @@ function updateFiltersCounts(countsAfterFiltration) {
 	const docCounts = {};
 	filterKeys.forEach((filterKey) => {
 		if (filterKey !== "passedFilters") {
-			const values = state.imagesTotalCounts[filterKey];
+			const imagesTotalCounts = state.imagesTotalCounts[filterKey];
 			filteredCounts[filterKey] = 0;
 			docCounts[filterKey] = 0;
-			values.forEach((value) => {
-				let currentCount;
-				if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
-					currentCount = _findCurrentCount(countsAfterFiltration[filterKey], value.key, filterKey);
-				}
-				else {
-					currentCount = value.doc_count;
-				}
-				if (value.key !== constants.MISSING_KEY_VALUE) {
-					filteredCounts[filterKey] += currentCount;
-				}
-				docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
-					? value.doc_count
-					: 0;
-				const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
-				const controlView = $$(controlId);
-				if (controlView) {
-					if (filterKey !== constants.COLLECTION_KEY) {
-						_setFilterCounts(controlView, value.doc_count, currentCount);
+			const diagnosisRegex = /^diagnosis_\d$/;
+			if (diagnosisRegex.test(filterKey)) {
+				const controlKey = "diagnosis";
+				const diagnosisValues = diagnosisModel.getDiagnosisValuesByLevel(filterKey);
+				const displayDiagnosis = diagnosisModel.getDisplayDiagnosis();
+				const treeView = $$(`treeTable-${controlKey}`);
+				diagnosisValues.forEach((v) => {
+					let value = imagesTotalCounts.find(item => item.key === v);
+					if (!value) {
+						value = {
+							key: v,
+							doc_count: 0
+						};
 					}
-				}
-			});
+					let currentCount;
+					value.fullKey = value.key !== constants.MISSING_KEY_VALUE
+						? diagnosisModel.getDiagnosisConcatenateValue(value.key)
+						: constants.MISSING_KEY_VALUE;
+					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
+						currentCount = _findCurrentCount(
+							countsAfterFiltration[filterKey],
+							value.key,
+							filterKey
+						);
+					}
+					else {
+						currentCount = value.doc_count;
+					}
+					if (value.key !== constants.MISSING_KEY_VALUE) {
+						filteredCounts[filterKey] += currentCount;
+					}
+					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
+						? value.doc_count
+						: 0;
+					const optionId = prepareOptionName(value.fullKey, filterKey);
+					const option = treeView?.getItem(optionId);
+					if (option) {
+						_setDiagnosisFilterCounts(treeView, option, value.doc_count, currentCount);
+						_setDiagnosisFilterState(treeView, option, value.doc_count, currentCount);
+						if (!displayDiagnosis.find(item => item === v)) {
+							treeView.remove(optionId);
+						}
+					}
+				});
+			}
+			else {
+				imagesTotalCounts.forEach((value) => {
+					let currentCount;
+					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
+						currentCount = _findCurrentCount(
+							countsAfterFiltration[filterKey],
+							value.key,
+							filterKey
+						);
+					}
+					else {
+						currentCount = value.doc_count;
+					}
+					if (value.key !== constants.MISSING_KEY_VALUE) {
+						filteredCounts[filterKey] += currentCount;
+					}
+					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
+						? value.doc_count
+						: 0;
+					const controlId = util.getOptionId(filterKey, prepareOptionName(value.key, filterKey));
+					const controlView = $$(controlId);
+					if (controlView) {
+						if (filterKey !== constants.COLLECTION_KEY) {
+							_setFilterCounts(controlView, value.doc_count, currentCount);
+						}
+					}
+				});
+			}
 		}
-		// else if (filterKey === constants.COLLECTION_KEY) {
-		// 	let values = state.imagesTotalCounts[filterKey];
-		// 	values.forEach((value) => {
-
-		// 	})
-		// }
 	});
 	_setLabelCount(filteredCounts, docCounts);
 }
@@ -176,5 +295,6 @@ export default {
 	NULL_OPTION_VALUE,
 	prepareOptionName,
 	updateFiltersCounts,
-	updateFiltersFormControl
+	updateFiltersFormControl,
+	changeParentState,
 };
