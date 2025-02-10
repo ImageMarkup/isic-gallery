@@ -272,7 +272,7 @@ class AjaxActions {
 
 	async getLesionByID(lesionID) {
 		try {
-			const result = await this._ajaxGet(`${API_URL}lesions/${lesionID}`);
+			const result = await this._ajaxGet(`${API_URL}lesions/${lesionID}/`);
 			return this._parseData(result);
 		}
 		catch (error) {
