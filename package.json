@@ -1,7 +1,7 @@
 {
-  "name": "isic-app",
+  "name": "isic-gallery",
   "version": "2.4.1",
-  "description": "ISIC full app",
+  "description": "An interactive image gallery to query and display the ISIC Archive.",
   "main": "sources/app.js",
   "scripts": {
     "test": "jest --config=test/config/jest.config.js --no-cache",
