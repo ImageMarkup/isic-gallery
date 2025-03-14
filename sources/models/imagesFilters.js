@@ -9,6 +9,7 @@ const filtersIds = {
 	lesionDiagnosis: "diagnosis",
 	approximateAge: "age_approx",
 	generalAnatomicSite: "anatom_site_general",
+	specialAnatomicSite: "anatom_site_special",
 	clinicalSize: "clin_size_long_diam_mm",
 	typeDiagnosis: "diagnosis_confirm_type",
 	familyHistoryMelanoma: "family_hx_mm",
@@ -101,6 +102,13 @@ function getFiltersDataValues() {
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.generalAnatomicSite]
+				},
+				{
+					id: filtersIds.specialAnatomicSite,
+					name: "Special anatomic site",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.specialAnatomicSite]
 				},
 				{
 					id: filtersIds.fitzpatrickSkinType,
