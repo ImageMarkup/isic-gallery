@@ -105,7 +105,7 @@ function getFiltersDataValues() {
 				},
 				{
 					id: filtersIds.specialAnatomicSite,
-					name: "Special anatomic site",
+					name: "Special Anatomic Site",
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.specialAnatomicSite]
