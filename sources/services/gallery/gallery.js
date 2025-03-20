@@ -1108,35 +1108,37 @@ class GalleryService {
 			}
 		});
 
-		this._imagesDataview.attachEvent("onAfterRender", () => {
-			if (this._galleryLeftPanel.isVisible()) {
-				this._leftPanelResizer?.show();
-				// resize left panel after initialization to fix the resizer
-				const leftPanelWidth = this._leftPanelWithCollapser.$width;
-				this._leftPanelWithCollapser.define("width", leftPanelWidth);
-				this._leftPanelWithCollapser.define("minWidth", 451);
-				this._leftPanelWithCollapser.define("maxWidth", 700);
-				this._leftPanelWithCollapser.resize();
-				this._leftPanelResizer.resize();
-			}
-			else {
-				this._leftPanelResizer?.hide();
-				// resize left panel after initialization to fix the resizer
-				this._leftPanelWithCollapser.define("width", 0);
-				this._leftPanelWithCollapser.define("minWidth", 0);
-				this._leftPanelWithCollapser.define("maxWidth", 0);
-				this._leftPanelWithCollapser.resize();
-				this._leftPanelResizer.resize();
-			}
-		});
+		if (!util.isMobilePhone()) {
+			this._imagesDataview.attachEvent("onAfterRender", () => {
+				if (this._galleryLeftPanel.isVisible()) {
+					this._leftPanelResizer?.show();
+					// resize left panel after initialization to fix the resizer
+					const leftPanelWidth = this._leftPanelWithCollapser.$width;
+					this._leftPanelWithCollapser.define("width", leftPanelWidth);
+					this._leftPanelWithCollapser.define("minWidth", 451);
+					this._leftPanelWithCollapser.define("maxWidth", 700);
+					this._leftPanelWithCollapser.resize();
+					this._leftPanelResizer.resize();
+				}
+				else {
+					this._leftPanelResizer?.hide();
+					// resize left panel after initialization to fix the resizer
+					this._leftPanelWithCollapser.define("width", 0);
+					this._leftPanelWithCollapser.define("minWidth", 0);
+					this._leftPanelWithCollapser.define("maxWidth", 0);
+					this._leftPanelWithCollapser.resize();
+					this._leftPanelResizer.resize();
+				}
+			});
 
-		// resize left panel after initialization to fix the resizer
-		const leftPanelWidth = this._leftPanelWithCollapser.$width;
-		this._leftPanelWithCollapser.define("width", leftPanelWidth);
-		this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
-		this._leftPanelWithCollapser.define("maxWidth", 700);
-		this._leftPanelWithCollapser.resize();
-		this._leftPanelResizer.resize();
+			// resize left panel after initialization to fix the resizer
+			const leftPanelWidth = this._leftPanelWithCollapser.$width;
+			this._leftPanelWithCollapser.define("width", leftPanelWidth);
+			this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
+			this._leftPanelWithCollapser.define("maxWidth", 700);
+			this._leftPanelWithCollapser.resize();
+			this._leftPanelResizer.resize();
+		}
 	}
 
 	async load() {
