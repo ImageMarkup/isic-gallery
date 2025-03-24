@@ -1108,7 +1108,7 @@ class GalleryService {
 			}
 		});
 
-		if (!util.isMobilePhone()) {
+		if (this._leftPanelWithCollapser) {
 			this._imagesDataview.attachEvent("onAfterRender", () => {
 				if (this._galleryLeftPanel.isVisible()) {
 					this._leftPanelResizer?.show();
