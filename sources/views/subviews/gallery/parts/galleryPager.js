@@ -4,100 +4,61 @@ import util from "../../../../utils/util";
 
 let dataviewId;
 
-const pager = {
-	view: "pager",
-	// size: 80, define in gallery service
+function createPager({height, width, css, template}) {
+	return {
+		view: "pager",
+		height,
+		width,
+		master: false,
+		css,
+		template,
+		on: {
+			onItemClick(id) {
+				let offset = state.imagesOffset;
+				const prevClickHandler = util.debounce(() => {
+					let url = galleryImagesUrls.getPrevImagesUrl() || null;
+					if (url) {
+						offset -= this.data.size;
+						galleryImagesUrls.setCurrImagesUrl(url);
+						$$(dataviewId).loadNext(this.data.size, offset);
+					}
+				}, 100);
+				const nextClickHandler = util.debounce(() => {
+					let url = galleryImagesUrls.getNextImagesUrl() || null;
+					if (url) {
+						offset += this.data.size;
+						galleryImagesUrls.setCurrImagesUrl(url);
+						$$(dataviewId).loadNext(this.data.size, offset);
+					}
+				}, 100);
+				switch (id) {
+					case "prev":
+						prevClickHandler();
+						break;
+					case "next":
+						nextClickHandler();
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	};
+}
+
+const pager = createPager({
 	height: 36,
 	width: 250,
-	master: false,
-	template(obj, common) {
-		return `${common.prev()} ${common.next()}`;
-	},
-	on: {
-		onItemClick(id/* , e, node */) {
-			let offset = state.imagesOffset;
-			const prevClickHandler = util.debounce(() => {
-				let url = galleryImagesUrls.getPrevImagesUrl() || null;
-				if (url) {
-					offset -= this.data.size;
-					galleryImagesUrls.setCurrImagesUrl(url);
-					$$(dataviewId).loadNext(this.data.size, offset);
-				}
-			}, 100);
-			const nextClickHandler = util.debounce(() => {
-				let url = galleryImagesUrls.getNextImagesUrl() || null;
-				if (url) {
-					offset += this.data.size;
-					galleryImagesUrls.setCurrImagesUrl(url);
-					$$(dataviewId).loadNext(this.data.size, offset);
-				}
-			}, 100);
-			switch (id) {
-				case "prev": {
-					prevClickHandler();
-					break;
-				}
-				case "next": {
-					nextClickHandler();
-					break;
-				}
-				default: {
-					break;
-				}
-			}
-		}
-	}
-};
+	template: (obj, common) => `${common.prev()} ${common.next()}`,
+});
 
-const mobilePager = {
-	view: "pager",
+const mobilePager = createPager({
 	height: 60,
 	width: 0,
-	master: false,
 	css: "mobile-pager",
-	template(obj, common) {
-		return `<div style="display: flex; justify-content: space-around">${common.prev()}${common.next()}</div>`;
-	},
-	on: {
-		onItemClick(id/* , e, node */) {
-			let offset = state.imagesOffset;
-			const prevClickHandler = util.debounce(() => {
-				let url = galleryImagesUrls.getPrevImagesUrl() || null;
-				if (url) {
-					offset -= this.data.size;
-					galleryImagesUrls.setCurrImagesUrl(url);
-					$$(dataviewId).loadNext(this.data.size, offset);
-				}
-			}, 100);
-			const nextClickHandler = util.debounce(() => {
-				let url = galleryImagesUrls.getNextImagesUrl() || null;
-				if (url) {
-					offset += this.data.size;
-					galleryImagesUrls.setCurrImagesUrl(url);
-					$$(dataviewId).loadNext(this.data.size, offset);
-				}
-			}, 100);
-			switch (id) {
-				case "prev": {
-					prevClickHandler();
-					break;
-				}
-				case "next": {
-					nextClickHandler();
-					break;
-				}
-				default: {
-					break;
-				}
-			}
-		}
-	},
-	onClick: {
-		"pager-info-panel": function(ev, id) {
+	template: (obj, common) => `<div style="display: flex; justify-content: space-around">${common.prev()}${common.next()}</div>`,
+});
 
-		}
-	}
-};
 
 /**
  * @param id

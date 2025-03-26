@@ -11,8 +11,8 @@ function changeDataviewItemDimensions(collapsedView) {
 	) {
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
 		let dataviewSelectionId = util.getDataviewSelectionId();
-		const doNotCallUpdatePager = true;
-		galleryRichselect.callEvent("onChange", [dataviewSelectionId, null, doNotCallUpdatePager]);
+		const callUpdatePager = false;
+		galleryRichselect.callEvent("onChange", [dataviewSelectionId, dataviewSelectionId, callUpdatePager]);
 	}
 }
 
@@ -43,124 +43,52 @@ function getConfig(collapsedViewId, config) {
 			closedSpan = "<span class='webix_icon fas fa-angle-right'></span>";
 	}
 
-	if (config.type === "top" || config.type === "bottom") {
-		return {
+	const createCollapser = isOpen => ({
+		view: "template",
+		template: isOpen ? openedSpan : closedSpan,
+		css: "collapser-btn",
+		id: isOpen ? BTN_OPENED_STATE_ID : BTN_CLOSED_STATE_ID,
+		state: isOpen ? "wasOpened" : "wasClosed",
+		hidden: isOpen ? config?.closed : !config?.closed,
+		onClick: {
+			// eslint-disable-next-line func-names
+			"collapser-btn": function (thisButton) {
+				const thisCollapsedButton = this?.config ? this : thisButton;
+				const collapsedView = $$(collapsedViewId);
+				if (isOpen) {
+					collapsedView.hide();
+					thisCollapsedButton.hide();
+					$$(BTN_CLOSED_STATE_ID).show();
+				}
+				else {
+					collapsedView.show();
+					thisCollapsedButton.hide();
+					$$(BTN_OPENED_STATE_ID).show();
+				}
+				webix.ui.resize();
+				if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
+					util.setHiddenGalleryCartList(isOpen);
+				} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
+					util.setHiddenGalleryLeftPanel(isOpen);
+				}
+				changeDataviewItemDimensions(collapsedView);
+			}
+		}
+	});
+
+	const layoutConfig = config.type === "top" || config.type === "bottom"
+		? {
 			css: "collapser-vertical",
 			height: 23,
-			cols: [
-				{
-					view: "template",
-					template: openedSpan,
-					css: "collapser-btn",
-					id: BTN_OPENED_STATE_ID,
-					state: "wasOpened",
-					hidden: config && config.closed,
-					onClick: {
-						// eslint-disable-next-line func-names
-						"collapser-btn": function (thisButton) {
-							const thisCollapsedButton = this?.config ? this : thisButton;
-							const collapsedView = $$(collapsedViewId);
-							collapsedView.hide();
-							thisCollapsedButton.hide();
-							$$(BTN_CLOSED_STATE_ID).show();
-							webix.ui.resize();
-							if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
-								util.setHiddenGalleryCartList(true);
-							}
-							else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-								util.setHiddenGalleryLeftPanel(true);
-							}
-							changeDataviewItemDimensions(collapsedView);
-						}
-					}
-				},
-				{
-					view: "template",
-					template: closedSpan,
-					css: "collapser-btn",
-					id: BTN_CLOSED_STATE_ID,
-					state: "wasClosed",
-					hidden: !(config && config.closed),
-					onClick: {
-						// eslint-disable-next-line func-names
-						"collapser-btn": function (thisButton) {
-							const thisCollapsedButton = this?.config ? this : thisButton;
-							const collapsedView = $$(collapsedViewId);
-							collapsedView.show();
-							thisCollapsedButton.hide();
-							$$(BTN_OPENED_STATE_ID).show();
-							webix.ui.resize();
-							if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
-								util.setHiddenGalleryCartList(false);
-							}
-							else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-								util.setHiddenGalleryLeftPanel(false);
-							}
-							changeDataviewItemDimensions(collapsedView);
-						}
-					}
-				}
-			]
+			cols: [createCollapser(true), createCollapser(false)]
+		}
+		: {
+			css: "collapser",
+			width: 23,
+			rows: [createCollapser(true), createCollapser(false)]
 		};
-	}
-	return {
-		css: "collapser",
-		width: 23,
-		rows: [
-			{
-				view: "template",
-				template: openedSpan,
-				css: "collapser-btn",
-				id: BTN_OPENED_STATE_ID,
-				state: "wasOpened",
-				hidden: config && config.closed,
-				onClick: {
-					// eslint-disable-next-line func-names
-					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this?.config ? this : thisButton;
-						const collapsedView = $$(collapsedViewId);
-						collapsedView.hide();
-						thisCollapsedButton.hide();
-						$$(BTN_CLOSED_STATE_ID).show();
-						webix.ui.resize();
-						if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
-							util.setHiddenGalleryCartList(true);
-						}
-						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-							util.setHiddenGalleryLeftPanel(true);
-						}
-						changeDataviewItemDimensions(collapsedView);
-					}
-				}
-			},
-			{
-				view: "template",
-				template: closedSpan,
-				css: "collapser-btn",
-				id: BTN_CLOSED_STATE_ID,
-				state: "wasClosed",
-				hidden: !(config && config.closed),
-				onClick: {
-					// eslint-disable-next-line func-names
-					"collapser-btn": function (thisButton) {
-						const thisCollapsedButton = this?.config ? this : thisButton;
-						const collapsedView = $$(collapsedViewId);
-						collapsedView.show();
-						thisCollapsedButton.hide();
-						$$(BTN_OPENED_STATE_ID).show();
-						webix.ui.resize();
-						if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
-							util.setHiddenGalleryCartList(false);
-						}
-						else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
-							util.setHiddenGalleryLeftPanel(false);
-						}
-						changeDataviewItemDimensions(collapsedView);
-					}
-				}
-			}
-		]
-	};
+
+	return layoutConfig;
 }
 
 export default {
