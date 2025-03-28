@@ -1230,6 +1230,9 @@ class GalleryService {
 						imageId: image,
 						fullFileUrl: item.files.full.url
 					});
+					if (this._imageWindowMetadata) {
+						webix.ui([metadataPart.getConfig("image-window-metadata", item, item)], this._imageWindowMetadata);
+					}
 					this._imageWindow.show();
 				}
 			}

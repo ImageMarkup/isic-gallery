@@ -909,13 +909,6 @@ export default class GalleryMobileView extends JetView {
 		if (!util.isMobilePhone()) {
 			this.app.show(`${constants.PATH_GALLERY}?image=${isicId ?? ""}`);
 		}
-		else if (isicId && isTermsOfUseAccepted) {
-			if (this.imageWindow) {
-				const currentImage = await ajax.getImageItem(isicId);
-				this._galleryService._setImageWindowValues(currentImage);
-				this.imageWindow.show();
-			}
-		}
 	}
 
 	destroy() {

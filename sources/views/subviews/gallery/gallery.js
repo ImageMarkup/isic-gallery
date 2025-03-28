@@ -470,8 +470,6 @@ export default class GalleryView extends JetView {
 		}
 		else if (isicId && isTermsOfUseAccepted) {
 			if (this.imageWindow) {
-				const currentImage = await ajax.getImageItem(isicId);
-				this._galleryService._setImageWindowValues(currentImage);
 				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
 					if (this._imageInstance) {
 						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
@@ -481,7 +479,6 @@ export default class GalleryView extends JetView {
 					}
 					window.wheelzoom(this._imageInstance);
 				});
-				this.imageWindow.show();
 			}
 		}
 		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()})?.$view;
