@@ -262,9 +262,7 @@ class GalleryService {
 		}
 		if (selectedImagesArray.length > 0) {
 			this._activeCartList.parse(selectedImagesArray);
-			webix.delay(() => {
-				this._view.$scope.showList(true);
-			});
+			this._view.$scope.showList(true);
 			let studyFlag = selectedImages.getStudyFlag();
 			this._resizeButtonsLayout(layoutHeightAfterShow, studyFlag, true);
 			this._imagesSelectionTemplate?.refresh();
