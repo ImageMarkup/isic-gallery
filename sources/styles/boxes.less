@@ -167,6 +167,10 @@
   }
 
   .webix_accordionitem_body {
+    .webix_template {
+      padding: 5px 0px;
+    }
+
     .item-content-label, .item-content-value {
       line-height: 24px;
       font-size: 20px;
@@ -234,14 +238,13 @@
   }
 
   .tags-container {
-    padding: 0 10px 0 31px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
 
     .tag {
-      display: inline-block;
-      vertical-align: top;
-      margin-right: 7px;
       padding: 3px 8px;
-      .border-radius(2px);
+      border-radius: 2px;
       background: #d2d4da;
       color: @main-color-light;
     }

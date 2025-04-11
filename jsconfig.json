@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./sources",
+        "paths": {
+            "jet-views/*": ["views/*"],
+            "jet-locales/*": ["locales/*"],
+            "app-templates/*": ["views/templates/*"],
+            "app-services/*": ["services/*"],
+            "app-components/*": ["views/components/*"],
+        }
+    },
+    "include": ["sources/**/*"]
+}

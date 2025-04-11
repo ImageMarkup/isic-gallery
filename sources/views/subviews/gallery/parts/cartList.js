@@ -33,8 +33,8 @@ function getConfig(config) {
  				<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="cart-image">
 			</div>`;},
 		onClick: {
-			delicon: (ev, id) => {
-				$$(ID_CART_LIST).callEvent("onDeleteButtonClick", [id]);
+			delicon(ev, id) {
+				this.callEvent("onDeleteButtonClick", [id]);
 			}
 		}
 	};

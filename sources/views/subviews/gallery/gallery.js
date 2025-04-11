@@ -151,7 +151,7 @@ export default class GalleryView extends JetView {
 									: obj.rangeFinish;
 								const rangeHtml = `Shown images: <b>${obj.rangeStart || ""}</b>-<b>${rangeFinish || ""}</b>.`;
 								const totalAmountHtml = `Total amount of images: <b>${obj.totalCount || ""}</b>.`;
-								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>`;
+								const filteredAmountHtml = `Filtered images: <b>${state.filteredImages.filteredImagesCount || 0}</b>.`;
 								let result = "";
 								if (obj.filtered) {
 									result = ` ${filteredAmountHtml} ${totalAmountHtml}`;
@@ -411,8 +411,8 @@ export default class GalleryView extends JetView {
 	async ready() {
 		const dataviewYCountSelection = this.getDataviewYCountSelection();
 		const yCountSelectionValue = dataviewYCountSelection.getValue();
-		const doNotCallUpdatePager = true;
-		dataviewYCountSelection.callEvent("onChange", [yCountSelectionValue, null, doNotCallUpdatePager]);
+		const callUpdatePager = false;
+		dataviewYCountSelection.callEvent("onChange", [yCountSelectionValue, yCountSelectionValue, callUpdatePager]);
 		const initial = true;
 		this.updatePagerSize(initial);
 		const hiddenLeftPanel = util.getHiddenGalleryLeftPanel();
@@ -470,8 +470,6 @@ export default class GalleryView extends JetView {
 		}
 		else if (isicId && isTermsOfUseAccepted) {
 			if (this.imageWindow) {
-				const currentImage = await ajax.getImageItem(isicId);
-				this._galleryService._setImageWindowValues(currentImage);
 				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
 					if (this._imageInstance) {
 						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
@@ -481,7 +479,6 @@ export default class GalleryView extends JetView {
 					}
 					window.wheelzoom(this._imageInstance);
 				});
-				this.imageWindow.show();
 			}
 		}
 		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()})?.$view;
@@ -602,8 +599,8 @@ export default class GalleryView extends JetView {
 	changeDataviewYCount() {
 		let gallerySelectionId = util.getDataviewSelectionId();
 		const galleryRichselect = $$(constants.ID_GALLERY_RICHSELECT);
-		const doNotCallUpdatePager = true;
-		galleryRichselect.callEvent("onChange", [gallerySelectionId, null, doNotCallUpdatePager]);
+		const callUpdatePager = false;
+		galleryRichselect.callEvent("onChange", [gallerySelectionId, gallerySelectionId, callUpdatePager]);
 	}
 
 	updatePagerSize(initial) {
@@ -665,10 +662,10 @@ export default class GalleryView extends JetView {
 		dataWindowView.define("type", {width: elementWidth, height: elementHeight});
 		util.setDataviewItemDimensions(elementWidth, elementHeight);
 		if (currentCol !== cols) {
-			const doNotCallUpdatePager = true;
+			const callUpdatePager = false;
 			dataviewYCountSelection.callEvent(
 				"onChange",
-				[yCountSelectionValue, null, doNotCallUpdatePager]
+				[yCountSelectionValue, yCountSelectionValue, callUpdatePager]
 			);
 		}
 		const imageWidth = util.getImageWidth();

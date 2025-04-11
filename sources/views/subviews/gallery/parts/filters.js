@@ -25,7 +25,7 @@ function getLabelUI(label) {
 
 const expandedParentsFilters = [];
 
-function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFilters) {
+function _attachCollapseToTreeFilter(filter, dataForCreatingControl, isCollapsedFilter) {
 	const collapsibleFilter = webix.copy(filter);
 	const collapseElement = collapsibleFilter.rows[0];
 	const collapsibleFilterFunction = function () {
@@ -54,7 +54,7 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, expandedFil
 	collapseElement.onClick = {
 		"collapssible-filter-tree": collapsibleFilterFunction
 	};
-	if (expandedFilters?.length === 0) {
+	if (isCollapsedFilter) {
 		collapseElement.css = "collapssible-filter-tree hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;
 	}
@@ -468,7 +468,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 			}
 		]
 	};
-	return _attachCollapseToTreeFilter(view, data, expandedFilters);
+	return _attachCollapseToTreeFilter(view, data, collapsed);
 }
 
 function getParentsIds(treeView, optionId, level) {

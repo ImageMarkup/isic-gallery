@@ -185,7 +185,6 @@ class GalleryService {
 
 		ajax.searchImages(sourceParams)
 			.then((foundImages) => {
-				state.imagesOffset = 0;
 				const allImagesArray = webix.copy(foundImages.results);
 				const foundImagesCount = foundImages.count;
 				allImagesArray.forEach((imageObj) => {
@@ -263,9 +262,7 @@ class GalleryService {
 		}
 		if (selectedImagesArray.length > 0) {
 			this._activeCartList.parse(selectedImagesArray);
-			webix.delay(() => {
-				this._view.$scope.showList(true);
-			});
+			this._view.$scope.showList(true);
 			let studyFlag = selectedImages.getStudyFlag();
 			this._resizeButtonsLayout(layoutHeightAfterShow, studyFlag, true);
 			this._imagesSelectionTemplate?.refresh();
@@ -354,19 +351,16 @@ class GalleryService {
 
 		const dataTableResizeHandler = util.debounce((/* event */) => {
 			dataviewSelectionId = util.getDataviewSelectionId();
-			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId, null, false]);
+			this._dataviewYCountSelection?.callEvent("onChange", [dataviewSelectionId, dataviewSelectionId, true]);
 		});
 		const dataTableResizeObserver = new ResizeObserver(dataTableResizeHandler);
 		const dataTableNode = this._imagesDataview.getNode();
 		dataTableResizeObserver.observe(dataTableNode);
 
-		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, doNotCallUpdatePager) => {
+		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, callUpdatePager = true) => {
 			let newItemWidth;
 			let newImageWidth;
 			let newInnerImageNameSize;
-			if (id !== oldId) {
-				state.imagesOffset = 0;
-			}
 			const previousItemHeight = this._imagesDataview.type.height;
 			let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
 				/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
@@ -420,7 +414,7 @@ class GalleryService {
 			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
-			if (!doNotCallUpdatePager) {
+			if (callUpdatePager) {
 				this._imagesDataview.$scope.updatePagerSize();
 			}
 		});
@@ -478,7 +472,6 @@ class GalleryService {
 					currentCount,
 					filtered
 				});
-				state.imagesOffset = offset;
 			}
 			catch (error) {
 				logger.error(error);
@@ -1108,35 +1101,37 @@ class GalleryService {
 			}
 		});
 
-		this._imagesDataview.attachEvent("onAfterRender", () => {
-			if (this._galleryLeftPanel.isVisible()) {
-				this._leftPanelResizer?.show();
-				// resize left panel after initialization to fix the resizer
-				const leftPanelWidth = this._leftPanelWithCollapser.$width;
-				this._leftPanelWithCollapser.define("width", leftPanelWidth);
-				this._leftPanelWithCollapser.define("minWidth", 451);
-				this._leftPanelWithCollapser.define("maxWidth", 700);
-				this._leftPanelWithCollapser.resize();
-				this._leftPanelResizer.resize();
-			}
-			else {
-				this._leftPanelResizer?.hide();
-				// resize left panel after initialization to fix the resizer
-				this._leftPanelWithCollapser.define("width", 0);
-				this._leftPanelWithCollapser.define("minWidth", 0);
-				this._leftPanelWithCollapser.define("maxWidth", 0);
-				this._leftPanelWithCollapser.resize();
-				this._leftPanelResizer.resize();
-			}
-		});
+		if (this._leftPanelWithCollapser) {
+			this._imagesDataview.attachEvent("onAfterRender", () => {
+				if (this._galleryLeftPanel.isVisible()) {
+					this._leftPanelResizer?.show();
+					// resize left panel after initialization to fix the resizer
+					const leftPanelWidth = this._leftPanelWithCollapser.$width;
+					this._leftPanelWithCollapser.define("width", leftPanelWidth);
+					this._leftPanelWithCollapser.define("minWidth", 451);
+					this._leftPanelWithCollapser.define("maxWidth", 700);
+					this._leftPanelWithCollapser.resize();
+					this._leftPanelResizer.resize();
+				}
+				else {
+					this._leftPanelResizer?.hide();
+					// resize left panel after initialization to fix the resizer
+					this._leftPanelWithCollapser.define("width", 0);
+					this._leftPanelWithCollapser.define("minWidth", 0);
+					this._leftPanelWithCollapser.define("maxWidth", 0);
+					this._leftPanelWithCollapser.resize();
+					this._leftPanelResizer.resize();
+				}
+			});
 
-		// resize left panel after initialization to fix the resizer
-		const leftPanelWidth = this._leftPanelWithCollapser.$width;
-		this._leftPanelWithCollapser.define("width", leftPanelWidth);
-		this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
-		this._leftPanelWithCollapser.define("maxWidth", 700);
-		this._leftPanelWithCollapser.resize();
-		this._leftPanelResizer.resize();
+			// resize left panel after initialization to fix the resizer
+			const leftPanelWidth = this._leftPanelWithCollapser.$width;
+			this._leftPanelWithCollapser.define("width", leftPanelWidth);
+			this._leftPanelWithCollapser.define("minWidth", leftPanelWidth);
+			this._leftPanelWithCollapser.define("maxWidth", 700);
+			this._leftPanelWithCollapser.resize();
+			this._leftPanelResizer.resize();
+		}
 	}
 
 	async load() {
@@ -1233,6 +1228,9 @@ class GalleryService {
 						imageId: image,
 						fullFileUrl: item.files.full.url
 					});
+					if (this._imageWindowMetadata) {
+						webix.ui([metadataPart.getConfig("image-window-metadata", item, item)], this._imageWindowMetadata);
+					}
 					this._imageWindow.show();
 				}
 			}
@@ -1250,7 +1248,6 @@ class GalleryService {
 		if (await state.auth.isTermsOfUseAccepted()) {
 			let limit = limitSource || this._pager.data.size;
 			let offset = offsetSource || 0;
-			state.imagesOffset = offset;
 			const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 			this._createFilters(appliedFiltersArray);
 			this._updateCounts();
@@ -1262,6 +1259,7 @@ class GalleryService {
 	}
 
 	_updateContentHeaderTemplate(ranges) {
+		state.imagesOffset = ranges.rangeStart - 1;
 		if (ranges.filtered) {
 			state.filteredImages.isImagesFiltered = true;
 			if (ranges.currentCount) {
