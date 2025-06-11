@@ -23,6 +23,8 @@ const filtersIds = {
 	personalHistoryMelanoma: "personal_hx_mm",
 	sex: "sex",
 	dermoscopicType: "dermoscopic_type",
+	tbpType: "tbp_tile_type",
+	imageManipulation: "image_manipulation",
 	imageType: "image_type",
 	colorTint: "color_tint",
 	license: "copyright_license",
@@ -156,6 +158,20 @@ function getFiltersDataValues() {
 					type: "checkbox",
 					datatype: "string",
 					options: state.imagesTotalCounts[filtersIds.dermoscopicType]
+				},
+				{
+					id: filtersIds.tbpType,
+					name: "TBP Type",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.tbpType]
+				},
+				{
+					id: filtersIds.imageManipulation,
+					name: "Image Manipulation",
+					type: "checkbox",
+					datatype: "string",
+					options: state.imagesTotalCounts[filtersIds.imageManipulation]
 				},
 			]
 		},
