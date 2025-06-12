@@ -6,9 +6,9 @@ An interactive image gallery to query and display the ISIC Archive.
 - Set the environment variables:
   - `ISIC_NEW_API_URL` to the absolute URL of the ISIC API root
     - this must include a trailing slash
-    - e.g. this value may be `https://api-sandbox.isic-archive.com/api/v2/` for testing
+    - e.g. this value may be `https://api.isic-archive.com/api/v2/` for testing
   - `ISIC_AUTHORIZATION_SERVER` to the absolute URL of authorization server
-    - e.g. this value may be `https://api-sandbox.isic-archive.com`
+    - e.g. this value may be `https://api.isic-archive.com`
   - `ISIC_CLIENT_ID` to the client identifier
   - `ISIC_NEW_API_DOCS_URL` to absolute URL of new api documentation.
 - Run `npm ci`
