@@ -7,6 +7,7 @@
             "app-templates/*": ["views/templates/*"],
             "app-services/*": ["services/*"],
             "app-components/*": ["views/components/*"],
+            "app-models/*": ["models/*"],
         }
     },
     "include": ["sources/**/*"]
