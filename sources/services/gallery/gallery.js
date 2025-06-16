@@ -5,7 +5,6 @@ import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
 import diagnosisModel from "../../models/diagnosis";
-import facetsModel from "../../models/facets";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import lesionsModel from "../../models/lesionsModel";
@@ -1139,15 +1138,6 @@ class GalleryService {
 			state.imagesTotalCounts = {};
 			state.imagesTotalCounts.passedFilters = {};
 			const images = await ajax.getImages();
-			const pinnedCollectionOptions = {
-				limit: 0,
-				pinned: true,
-				sort: "name",
-			};
-			const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
-			collectionsModel.clearPinnedCollections();
-			collectionsModel.setPinnedCollections(pinnedCollectionsData);
-
 			state.imagesTotalCounts.passedFilters.count = images.count ? images.count : 0;
 			this._updateContentHeaderTemplate(
 				{
@@ -1157,36 +1147,9 @@ class GalleryService {
 				}
 			);
 			this._updatePagerCount(state.imagesTotalCounts.passedFilters.count);
-			const diagnosisRegex = /^diagnosis_\d$/;
-			const facets = await ajax.getFacets();
-			const facetsIds = Object.keys(facets);
-			facetsIds.forEach((id) => {
-				state.imagesTotalCounts[id] = webix.copy(facets[id].buckets);
-				if (id !== constants.COLLECTION_KEY) {
-					state.imagesTotalCounts[id].push({
-						key: constants.MISSING_KEY_VALUE,
-						doc_count: facets[id]?.meta?.missing_count
-					});
-				}
-				if (id === constants.COLLECTION_KEY) {
-					state.imagesTotalCounts[id].length = 0;
-					pinnedCollectionsData.results.forEach((pc) => {
-						state.imagesTotalCounts[id].push({
-							key: pc.id,
-							name: pc.name,
-						});
-					});
-				}
-				if (diagnosisRegex.test(id)) {
-					diagnosisModel.addDisplayDiagnosis(facets[id].buckets.map(d => d.key));
-				}
-				const facetValues = state.imagesTotalCounts[id].map(
-					f => f.key
-				);
-				facetsModel.addFacet(id, facetValues);
-			});
+			await this._loadFacetsAndCollectionsIntoState();
 			if (this._searchSuggest) {
-				await suggestService.buildSuggestionsForFilter(this._searchSuggest);
+				await suggestService.buildSuggestionsForFilter();
 				const suggestions = suggestService.getSuggestionsForFilter();
 				this._searchSuggest.getList().parse(suggestions);
 			}
@@ -1242,6 +1205,38 @@ class GalleryService {
 				webix.message("Load: Something went wrong");
 			}
 		}
+	}
+
+	async _loadFacetsAndCollectionsIntoState() {
+		const pinnedCollectionOptions = {
+			limit: 0,
+			pinned: true,
+			sort: "name",
+		};
+		const pinnedCollectionsData = await ajax.getCollections(pinnedCollectionOptions);
+		collectionsModel.clearPinnedCollections();
+		collectionsModel.setPinnedCollections(pinnedCollectionsData);
+		state.imagesTotalCounts[constants.COLLECTION_KEY] = pinnedCollectionsData.results.map(pc => ({
+			key: pc.id,
+			name: pc.name,
+		}));
+
+		const diagnosisRegex = /^diagnosis_\d$/;
+		const facets = await ajax.getFacets();
+		Object.entries(facets).forEach(([id, facet]) => {
+			state.imagesTotalCounts[id] = [
+				...webix.copy(facet.buckets),
+				{
+					key: constants.MISSING_KEY_VALUE,
+					doc_count: facet?.meta?.missing_count || 0,
+				}
+			];
+
+			if (diagnosisRegex.test(id)) {
+				const diagnosisKeys = facet.buckets.map(bucket => bucket.key);
+				diagnosisModel.addDisplayDiagnosis(diagnosisKeys);
+			}
+		});
 	}
 
 	async _reload(offsetSource, limitSource) {
