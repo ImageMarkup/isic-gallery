@@ -85,9 +85,7 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 		let selectNone = !newValue;
 		controlData.options.forEach((currentOption) => {
 			const option = filterService.prepareOptionName(currentOption, controlData.id);
-			const controlId = controlData.id === constants.COLLECTION_KEY
-				? util.getOptionId(controlData.id, currentOption.name)
-				: util.getOptionId(controlData.id, option);
+			const controlId = util.getOptionId(controlData.id, option);
 			const control = elements[controlId];
 			if (control) {
 				control.blockEvent(); // block events for checkbox
@@ -246,7 +244,7 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 			const optionName = data.id === constants.COLLECTION_KEY
 				? filterService.prepareOptionName(currentOption.name, data.id)
 				: filterService.prepareOptionName(currentOption.key, data.id);
-			const id = util.getOptionId(data.id, optionName);
+			const id = util.getOptionId(data.id, currentOption.key);
 			const filtersChangedData = appliedFilters.getFiltersChangedData(
 				data,
 				currentOption,
@@ -505,118 +503,6 @@ function getChildrenIds(treeView, optionId, level) {
 	});
 	return childIds;
 }
-
-function getTreeOptionValueById(id) {
-	const separator = "|";
-	const array = id.split(separator);
-	return array.at(array.length - 1);
-}
-
-/*
-function getRangeSliderUI(data) {
-	var min = data.options[0],
-		max = data.options[1],
-		length, i;
-	if (data.options.length > 2) {
-		length = data.options.length;
-
-		for (i = 0; i < length; i++) {
-			if (data.options[i] < min) {
-				min = data.options[i];
-			}
-			if (data.options[i] > max) {
-				max = data.options[i];
-			}
-		}
-	}
-
-	const view = {
-		rows: [
-			{
-				view: "label",
-				css: "rangeslider-label",
-				label: data.name
-			}
-		]
-	}
-
-	const controls = {
-		height: 110,
-		rows: [
-			{
-				id: data.id + "|start",
-				view: "slider",
-				name: data.name,
-				label: "Start",
-				labelWidth: 100,
-				value: min,
-				min: min,
-				max: max,
-				title: "#value#",
-				on: {
-					onChange: function (a) {
-						app.callEvent("filtersChanged", [{
-							"view": "multiSlider",
-							"max": parseInt($$(data.id + "|end").getValue()),
-							"min": a,
-							"key": data.id,
-							"status": "between",
-							"remove": true
-						}]);
-					}
-				}
-			},
-			{
-				id: data.id + "|end",
-				view: "slider",
-				name: data.name,
-				label: "End",
-				labelWidth: 100,
-				value: max,
-				min: min,
-				max: max,
-				title: "#value#",
-				on: {
-					onChange: function (a) {
-						app.callEvent("filtersChanged", [{
-							"view": "multiSlider",
-							"key": data.id,
-							"max": a,
-							"min": $$(data.id + "|start").getValue(),
-							"status": "between",
-							"remove": true
-						}]);
-					}
-				}
-			},
-			{
-				cols: [
-					{width: 100},
-					{
-						view: 'template',
-						template: min.toString(),
-						type: 'clean',
-						maxWidth: 150,
-						gravity: 1
-					},
-					{},
-					{
-						view: 'template',
-						css: 'slider-label-right',
-						template: max.toString(),
-						type: 'clean',
-						maxWidth: 150,
-						gravity: 1
-					}
-				]
-			}
-		]
-	}
-
-	view.rows[1] = controls;
-	return view;
-};
-*/
 
 function getSelectAllFilersName() {
 	const isMobile = util.isMobilePhone();

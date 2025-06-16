@@ -1,5 +1,4 @@
 import appliedFiltersModel from "../../models/appliedFilters";
-import util from "../../utils/util";
 
 function attachEvents(searchSuggest, searchInput, toggleButton) {
 	const suggestList = searchSuggest.getList();

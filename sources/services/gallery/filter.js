@@ -116,8 +116,7 @@ function updateFiltersFormControl(data) {
 		case "rangeCheckbox":
 		case "checkbox":
 		{
-			const controlId = util.getOptionId(data.key, data.value);
-			const control = $$(controlId);
+			const control = $$(data.id);
 			if (control) {
 				// we do not need to call onChange event for the control. so we block event
 				control.blockEvent();
