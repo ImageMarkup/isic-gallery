@@ -121,6 +121,7 @@ function getConfig(config) {
 	const filtersForm = {
 		id: ID_FILTERS_FORM,
 		name: NAME_FILTERS_FORM,
+		css: "gtm-filter",
 		view: "form",
 		paddingX: 7,
 		margin: 0,
@@ -198,6 +199,7 @@ function getConfig(config) {
 	const landscapeFiltersForm = {
 		id: ID_LANDSCAPE_FILTERS_FORM,
 		name: NAME_LANDSCAPE_FILTERS_FORM,
+		css: "gtm-filter",
 		view: "form",
 		paddingX: 7,
 		margin: 0,
