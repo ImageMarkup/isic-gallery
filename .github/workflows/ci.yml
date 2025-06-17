@@ -4,16 +4,19 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: read
 jobs:
   test:
     name: Test production build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.x"
+          node-version: "22.x"
       - name: Do a production build
         run: |
           npm ci
@@ -22,11 +25,12 @@ jobs:
     name: Dependency vulnerability audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.x"
+          node-version: "22.x"
       - name: Check for dependency vulnerabilities
         run: |
           npm ci
