@@ -127,7 +127,9 @@ module.exports = (env) => {
 					directory: path.join(__dirname, "node_modules")
 				}
 			],
-			https: true
+			server: {
+				type: "https",
+			},
 		}
 	};
 
