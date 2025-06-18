@@ -376,8 +376,8 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 							</span>
 							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
 						</div>` : "";
-					const lesionIcon = `<div class="gtm-lesion-viewer ${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-						<span class="gallery-images-button layer-group tooltip-title">
+					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
+						<span class="gtm-lesion-viewer gallery-images-button layer-group tooltip-title">
 							<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px">
 								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 							</svg>
@@ -401,24 +401,24 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 									<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
 								</div>
 								<div class="gallery-images-buttons" style="bottom: 0px;">
-									<div class="gtm-image-enlargement gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button resize-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
+									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+										<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
 											</svg>
 										</span>
 										<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
 									</div>
-									<div class="gtm-image-metadata gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button info-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
+									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+										<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
 											</svg>
 										</span>
 										<span class="tooltip-block tooltip-block-top">Metadata</span>
 									</div>
-									<div class="gtm-single-download gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gallery-images-button batch-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
+									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
+										<span class="gtm-single-download gallery-images-button batch-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
 											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
 												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
 											</svg>
