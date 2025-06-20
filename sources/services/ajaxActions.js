@@ -161,7 +161,6 @@ class AjaxActions {
 			const intervalMap = {
 				clin_size_long_diam_mm: 10,
 				age_approx: 5,
-				mel_thick_mm: 0.5
 			};
 
 			Object.entries(facets).forEach(([id, facet]) => {
