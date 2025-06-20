@@ -7,39 +7,35 @@ import util from "../utils/util";
 
 const API_URL = process.env.ISIC_NEW_API_URL;
 
-function parseError(xhr) {
+function truncateMessage(message, maxLength = 500) {
+	if (message.length > maxLength) {
+		return `${message.slice(0, maxLength - 3)}...`;
+	}
+	return message;
+}
+
+function parseError(xhr, showMessageToUser = true) {
 	let message;
 	switch (xhr.status) {
-		case 404:
-		{
+		case 404: {
 			message = "Not found";
-			webix.message({type: "error", text: message});
+			if (showMessageToUser) {
+				webix.message({type: "error", text: message});
+			}
 			break;
 		}
-		default:
-		{
+		default: {
 			try {
-				let response = JSON.parse(xhr.response);
-				if (response.message) {
-					message = response.message;
-				}
-				else if (response.query) {
-					message = response.query[0];
-				}
-				else {
-					message = "Something went wrong";
-				}
+				const response = JSON.parse(xhr.responseText || xhr.response);
+				message = response.message || response?.query[0] || "Something went wrong";
 			}
 			catch (e) {
-				message = xhr.response;
+				message = xhr.responseText || xhr.response;
 				logger.info(`Not JSON response for request to ${xhr.responseURL}`);
 			}
 			const regexForId = /".*?" /;
-			let messageToShow = message.replace(regexForId, "");
-			if (messageToShow.length > 500) {
-				messageToShow = messageToShow.slice(0, 497).concat("...");
-			}
-			webix.message({text: messageToShow, expire: 5000});
+			message = truncateMessage(message.replace(regexForId, ""));
+			webix.message({text: message, expire: 5000});
 			break;
 		}
 	}
@@ -257,7 +253,7 @@ class AjaxActions {
 			return this._parseData(result);
 		}
 		catch (error) {
-			parseError(error);
+			parseError(error, false);
 			return null;
 		}
 	}
