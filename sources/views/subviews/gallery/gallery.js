@@ -44,6 +44,7 @@ export default class GalleryView extends JetView {
 		const clonePagerForNameFilter = {
 			view: "pager",
 			name: NAME_CLONED_PAGER_FOR_NAME_SEARCH,
+			css: "gtm-paginator",
 			size: 80,
 			hidden: true,
 			height: 36,

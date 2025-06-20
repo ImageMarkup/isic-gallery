@@ -129,7 +129,7 @@ const dataview = {
 			? ""
 			: " disabled-badge";
 		const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
-			<span class="gallery-images-button layer-group tooltip-title">
+			<span class="gtm-lesion-viewer gallery-images-button layer-group tooltip-title">
 				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
 				</svg>
@@ -151,12 +151,12 @@ const dataview = {
 					<div class="check-layout ${checkedClass}" style="height: ${util.getImageHeight()}px; width: 100%; position: absolute; right:0px; top:${Math.floor((util.getDataviewItemHeight() - util.getImageHeight()) / 2)}px">
 						<div class='gallery-images-info' style="height: ${util.getImageHeight()}px; position: absolute; right:0px;">
 							<div class="gallery-images-header">
-								<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
-			        	        <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
+								<div class="gtm-image-selection gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
+								<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
 							</div>
 							<div class="gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
 								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button resize-icon tooltip-title">
+									<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title">
 										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
 											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
 										</svg>
@@ -164,7 +164,7 @@ const dataview = {
 									<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
 								</div>
 								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button info-icon tooltip-title">
+									<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title">
 										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
 											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
 										</svg>
@@ -172,7 +172,7 @@ const dataview = {
 									<span class="tooltip-block tooltip-block-top">Metadata</span>
 								</div>
 								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button batch-icon tooltip-title">
+									<span class="gtm-single-download gallery-images-button batch-icon tooltip-title">
 										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
 											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
 										</svg>

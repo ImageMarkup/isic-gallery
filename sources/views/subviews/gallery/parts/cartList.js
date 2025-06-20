@@ -42,6 +42,7 @@ function getConfig(config) {
 	const downloadZipButton = {
 		view: "button",
 		value: "Download ZIP",
+		css: "gtm-multi-download",
 		id: ID_DOWNLOAD_SELECTED_IMAGES_BUTTON,
 		name: NAME_DOWNLOAD_SELECTED_IMAGES_BUTTON
 	};

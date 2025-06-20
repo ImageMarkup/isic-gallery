@@ -20,7 +20,7 @@ function getConfig(config) {
 	const switchButton = {
 		view: "switch",
 		name: NAME_SWITCH_BUTTON,
-		css: "switch-search-gallery-button",
+		css: "gtm-selector switch-search-gallery-button",
 		label: "Search by filters",
 		labelRight: "Search by name",
 		width: 285,
@@ -31,6 +31,7 @@ function getConfig(config) {
 	const downloadFilteredImagesButton = {
 		view: "button",
 		value: "Download ZIP",
+		css: "gtm-filtered-download",
 		id: ID_DOWNLOAD_FILTERED_IMAGES_BUTTON,
 		name: NAME_DOWNLOAD_FILTERED_IMAGES_BUTTON,
 		hidden: true
@@ -39,7 +40,7 @@ function getConfig(config) {
 	const searchSuggestConfig = {
 		id: ID_SEARCH_SUGGESTION,
 		fitMaster: false,
-		css: "filters-suggest",
+		css: "gtm-search filters-suggest",
 	};
 	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
 	searchSuggestView.body.template = obj => (obj.name
@@ -99,6 +100,7 @@ function getConfig(config) {
 	const filtersForm = {
 		id: ID_FILTERS_FORM,
 		name: NAME_FILTERS_FORM,
+		css: "gtm-filter",
 		view: "form",
 		paddingX: 7,
 		margin: 0,

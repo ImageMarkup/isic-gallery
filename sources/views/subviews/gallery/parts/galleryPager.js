@@ -5,12 +5,13 @@ import util from "../../../../utils/util";
 let dataviewId;
 
 function createPager({height, width, css, template}) {
+	const combinedCss = `gtm-paginator${css ? ` ${css}` : ""}`;
 	return {
 		view: "pager",
 		height,
 		width,
 		master: false,
-		css,
+		css: combinedCss,
 		template,
 		on: {
 			onItemClick(id) {
