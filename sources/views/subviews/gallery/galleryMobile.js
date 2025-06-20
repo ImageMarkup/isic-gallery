@@ -505,7 +505,7 @@ export default class GalleryMobileView extends JetView {
 			this.removeParam.bind(this)
 		));
 		this.metadataWindow = this.getMetadataLayout();
-		const contextMenuConfig = contextMenu.getConfig(ID_MOBILE_GALLERY_CONTEXT_MENU);
+		const contextMenuConfig = contextMenu.getConfig(ID_MOBILE_GALLERY_CONTEXT_MENU, "gtm-single-download");
 		this.contextMenu = this.ui(contextMenuConfig);
 		const enlargeContextMenuConfig = contextMenu.getConfig(ID_ENLARGE_CONTEXT_MENU);
 		this.enlargeContextMenu = this.ui(enlargeContextMenuConfig);

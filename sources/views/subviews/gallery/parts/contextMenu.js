@@ -5,16 +5,14 @@ const contextMenu = {
 	data: [constants.ID_GALLERY_CONTEXT_MENU_SAVE_IMAGE]
 };
 
-function getConfig(id) {
-	contextMenu.id = id || `contextmenu-${webix.uid()}`;
-	return contextMenu;
-}
-
-function getIdFromConfig() {
-	return contextMenu;
+function getConfig(id = `contextmenu-${webix.uid()}`, css) {
+	return {
+		...contextMenu,
+		id,
+		...(css && { css })
+	};
 }
 
 export default {
 	getConfig,
-	getIdFromConfig
 };
