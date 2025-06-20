@@ -41,7 +41,8 @@ module.exports = {
 					["jet-locales", "./sources/locales"],
 					["app-templates", "./sources/views/templates"],
 					["app-services", "./sources/services"],
-					["app-components", "./sources/views/components"]
+					["app-components", "./sources/views/components"],
+					["app-models", "./sources/models"]
 			  	]
 			}
 		}

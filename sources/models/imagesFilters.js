@@ -198,37 +198,6 @@ function getFiltersDataValues() {
 	return filtersDataValues;
 }
 
-function isNeedShow(datasetId) {
-	const hiddenDatasetIds = [
-		"5a74e97a11659731f017fabf", // Dermoscopedia (CC-0)
-		"5a74e98611659731f017fac3" // Dermoscopedia (CC-BY-NC)
-	];
-	return hiddenDatasetIds.indexOf(datasetId) === -1;
-}
-
-function prepareDatasetFilterData(dataset) {
-	const result = [];
-	state.datasetMapForFilters = {};
-	const options = [];
-	dataset.forEach((item) => {
-		if (isNeedShow(item._id)) {
-			state.datasetMapForFilters[item._id] = item.name;
-			/* we set id as options value.
-			we will replace it with "name" from state.datasetForFilters
-			before rendering checkboxes */
-			options.push(item._id);
-		}
-	});
-	result.push({
-		id: "meta.datasetId",
-		name: "Dataset",
-		type: "checkbox",
-		datatype: "objectid",
-		options
-	});
-	return result;
-}
-
 function getFiltersData(forceRebuild) {
 	return new Promise((resolve) => {
 		// we should rewrite the last item in filtersData (it is place for Database Attributes)

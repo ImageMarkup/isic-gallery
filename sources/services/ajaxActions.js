@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import state from "../models/state";
+import state from "app-models/state";
+
 import logger from "../utils/logger";
 import util from "../utils/util";
 
@@ -143,61 +144,41 @@ class AjaxActions {
 
 	// instead of getHistogram
 	// New API
-	getFacets(sourceParams) {
-		const conditions = sourceParams && sourceParams.conditions ? sourceParams.conditions : null;
-		const collections = sourceParams && sourceParams.collections ? sourceParams.collections : "";
+	async getFacets(sourceParams = {}) {
+		const {conditions = null, collections = ""} = sourceParams;
 		const params = {
 			query: conditions,
 			collections
 		};
-		return this._ajaxGet(`${API_URL}images/facets/`, params)
-			.then((result) => {
-				const facets = this._parseData(result);
-				const ids = Object.keys(facets);
-				ids.forEach((id) => {
-					facets[id].buckets = facets[id].buckets.map((bucket) => {
-						if (bucket.key_as_string) {
-							return {
-								...bucket,
-								key: bucket.key_as_string
-							};
-						}
-						return bucket;
-					});
-					if (id === "clin_size_long_diam_mm"
-						|| id === "age_approx") {
-						let interval;
-						switch (id) {
-							case "clin_size_long_diam_mm": {
-								interval = 10;
-								break;
-							}
-							case "age_approx": {
-								interval = 5;
-								break;
-							}
-							case "mel_thick_mm": {
-								interval = 0.5;
-								break;
-							}
-							default: {
-								break;
-							}
-						}
-						facets[id].buckets = facets[id].buckets.map((bucket) => {
-							const newBucket = {
-								...bucket,
-								key: `[${bucket.key}-${bucket.key + interval})`,
-								from: bucket.key,
-								to: `${bucket.key + interval}`
-							};
-							return newBucket;
-						});
-					}
-				});
-				return facets;
-			})
-			.catch(parseError);
+
+		try {
+			const result = await this._ajaxGet(`${API_URL}images/facets/`, params);
+			const facets = this._parseData(result);
+			const intervalMap = {
+				clin_size_long_diam_mm: 10,
+				age_approx: 5,
+			};
+
+			Object.entries(facets).forEach(([id, facet]) => {
+				facet.buckets = facet.buckets.map(bucket => ({
+					...bucket,
+					key: bucket.key_as_string ?? bucket.key
+				}));
+
+				if (intervalMap[id]) {
+					const interval = intervalMap[id];
+					facet.buckets = facet.buckets.map(bucket => ({
+						...bucket,
+						key: `[${bucket.key}-${bucket.key + interval})`,
+						from: bucket.key,
+						to: bucket.key + interval
+					}));
+				}
+			});
+			return facets;
+		} catch (error) {
+			return parseError(error);
+		}
 	}
 
 	getAllImages(sourceParams, annotatedImages) {

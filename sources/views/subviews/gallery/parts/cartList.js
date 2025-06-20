@@ -31,7 +31,8 @@ function getConfig(config) {
 				<div style='float: right'><span class="delicon fas fa-times" style="width: 25px; height: 25px"></span></div>
  				<div class='card-list-name'>${obj.isic_id}</div>
  				<img src="${galleryImagesUrls.getPreviewImageUrl(obj.isic_id) || ""}" class="cart-image">
-			</div>`;},
+			</div>`;
+		},
 		onClick: {
 			delicon(ev, id) {
 				this.callEvent("onDeleteButtonClick", [id]);

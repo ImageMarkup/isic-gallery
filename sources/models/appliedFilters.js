@@ -1,6 +1,5 @@
 import constants from "../constants";
 import util from "../utils/util";
-import collectionsModel from "./collectionsModel";
 import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
@@ -521,14 +520,7 @@ function getFiltersFromURL(filtersArray) {
 					return data;
 				}
 				return null;
-			}
-			else if (filter.includes(constants.COLLECTION_KEY)) {
-				const pinnedCollections = collectionsModel.getPinnedCollections();
-				const id = Number(filter.substring(filter.indexOf("|") + 1));
-				const collection = pinnedCollections?.find(c => c.id === id);
-				filterId = `${constants.COLLECTION_KEY}|${collection?.name}`;
-			}
-			else {
+			} else {
 				filterId = filter;
 			}
 			const control = $$(filterId);

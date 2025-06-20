@@ -1,5 +1,4 @@
 import appliedFiltersModel from "../../models/appliedFilters";
-import util from "../../utils/util";
 
 function attachEvents(searchSuggest, searchInput, toggleButton) {
 	const suggestList = searchSuggest.getList();
@@ -109,8 +108,8 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 				return false;
 			});
 			if (found) {
-				// for checkbox we use f.id, for other cases we use f.key|f.id
-				const id = f.view === "checkbox" ? f.id : `${f.key}|${f.id}`;
+				// for treeCheckbox we use f.key|f.id, for other cases we use f.id
+				const id = f.view === "treeCheckbox" ? `${f.key}|${f.id}` : f.id;
 				selectedItems.push(id);
 			}
 		});

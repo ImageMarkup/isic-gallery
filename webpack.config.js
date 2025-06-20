@@ -79,7 +79,8 @@ module.exports = (env) => {
 				"jet-locales": path.resolve(__dirname, "sources/locales"),
 				"app-templates": path.resolve(__dirname, "sources/views/templates"),
 				"app-services": path.resolve(__dirname, "sources/services"),
-				"app-components": path.resolve(__dirname, "sources/views/components")
+				"app-components": path.resolve(__dirname, "sources/views/components"),
+				"app-models": path.resolve(__dirname, "sources/models")
 			},
 			fallback: {
 				"util": require.resolve("util/"),
@@ -117,6 +118,7 @@ module.exports = (env) => {
 		devServer: {
 			host: appconfig.devHost,
 			port: appconfig.devPort,
+			open: true,
 			static: [
 				{
 					directory: path.join(__dirname, "codebase")
@@ -125,7 +127,9 @@ module.exports = (env) => {
 					directory: path.join(__dirname, "node_modules")
 				}
 			],
-			https: true
+			server: {
+				type: "https",
+			},
 		}
 	};
 
