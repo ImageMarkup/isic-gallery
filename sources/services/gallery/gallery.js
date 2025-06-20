@@ -1562,6 +1562,9 @@ class GalleryService {
 	}
 
 	_clearActiveListData(clearModifyObjects) {
+		this._activeCartList.data.each(item => {
+			item.imageShown = false;
+		});
 		this._activeCartList.clearAll();
 		if (!clearModifyObjects) modifiedObjects.clearAll();
 		this._view.$scope.hideList();
