@@ -1,3 +1,5 @@
+import {createZoomableImageView} from "app-services/zoomImages";
+
 import constants from "../../constants";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import lesionWindowImagesUrls from "../../models/lesionWindowImagesUrls";
@@ -55,11 +57,20 @@ export default class MultiLesionWindowService {
 	}
 
 	async init() {
-		this._leftImage.attachEvent("onBeforeRender", this.updateImage);
-		this._leftImage.attachEvent("onAfterLoad", this.updateImage);
+		const initZoomableImageView = async (imageObj) => {
+			imageObj._imageView = await createZoomableImageView(
+				imageObj.$view.getElementsByClassName("zoomable-image")[0]
+			);
+		};
 
-		this._rightImage.attachEvent("onBeforeRender", this.updateImage);
-		this._rightImage.attachEvent("onAfterLoad", this.updateImage);
+		const images = [this._leftImage, this._rightImage];
+		images.forEach((imageObj) => {
+			imageObj.attachEvent("onBeforeRender", this.updateImage);
+			imageObj.attachEvent("onAfterRender", async () => {
+				await initZoomableImageView(imageObj);
+			});
+			imageObj.attachEvent("onAfterLoad", this.updateImage);
+		});
 
 		this._fullScreenButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });
 		this._windowedButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });

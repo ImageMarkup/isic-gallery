@@ -1,5 +1,4 @@
-import "wheelzoom";
-import WZoom from "vanilla-js-wheel-zoom";
+import {createZoomableImageView, zoomImage} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
@@ -14,7 +13,6 @@ import logger from "../../utils/logger";
 import util from "../../utils/util";
 import filtersFormElements from "../../views/subviews/gallery/parts/filtersFormElements";
 import metadataPart from "../../views/subviews/gallery/parts/metadata";
-import imageWindow from "../../views/subviews/gallery/windows/imageWindow";
 import ajax from "../ajaxActions";
 import authService from "../auth";
 import filterService from "./filter";
@@ -224,7 +222,6 @@ class GalleryService {
 		this._searchInput.disable();
 		this._createStudyButton = this._view.$scope.getCreateStudyButton();
 		this._dataviewYCountSelection = this._view.$scope.getDataviewYCountSelection();
-		this._imageTemplate = $$(imageWindow.getViewerId());
 		if (this._imageWindow) {
 			[this._imageWindowZoomPlusButtons, this._imageZoomMunusButtons] = this._imageWindow?.$view.getElementsByClassName("zoom-btn");
 		}
@@ -497,51 +494,6 @@ class GalleryService {
 			return true;
 		});
 
-		this._imageWindowTemplate?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this.wzoom.destroy();
-			}
-			if (this._imageWindow) {
-				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			const wzoomOptions = {
-				type: "image",
-				maxScale: 5,
-				zoomOnClick: false,
-				minScale: 1
-			};
-			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-			// TODO: check this
-			setTimeout(() => {
-				this.wzoom.transform(0, 0, 1);
-			});
-		});
-
-		this._imageTemplate?.attachEvent("onBeforeRender", async (obj) => {
-			if (typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
-				const item = await ajax.getImageItem(obj.imageId);
-				galleryImagesUrls.setNormalImageUrl(obj.imageId, item.files.full.url);
-				this._imageTemplate.refresh();
-			}
-			return true;
-		});
-
-		this._imageTemplate?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this.wzoom.destroy();
-			}
-			if (this._imageWindow) {
-				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			const wzoomOptions = {
-				minScale: 1,
-				type: "image",
-				maxScale: 5,
-				speed: 1.2
-			};
-			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-		});
-
 		this._imageWindowTemplateWithoutControls?.attachEvent("onBeforeRender", async (obj) => {
 			if (obj.imageId && typeof galleryImagesUrls.getNormalImageUrl(obj.imageId) === "undefined") {
 				const item = await ajax.getImageItem(obj.imageId);
@@ -551,21 +503,15 @@ class GalleryService {
 			return true;
 		});
 
-		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", () => {
-			if (this._imageInstance) {
-				this.wzoom.destroy();
-			}
-			if (this._imageWindow) {
-				this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-			}
-			const wzoomOptions = {
-				minScale: 1,
-				type: "image",
-				maxScale: 5,
-				speed: 1.2
-			};
-			this.wzoom = WZoom.create(this._imageInstance, wzoomOptions);
-		});
+		const initZoomableImageView = async () => {
+			this._imageView = await createZoomableImageView(
+				this._imageWindow.$view.getElementsByClassName("zoomable-image")[0]
+			);
+		};
+
+		this._imageWindowTemplate?.attachEvent("onAfterRender", initZoomableImageView);
+		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", initZoomableImageView);
+
 
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {
 			this._imageWindowTemplateWithoutControls?.hide();
@@ -595,28 +541,28 @@ class GalleryService {
 
 		this._imageWindowZoomButtons?.define("onClick", {
 			"btn-plus": () => {
-				this._zoomImage("plus");
+				zoomImage(this._imageView, true);
 			},
 			"btn-minus": () => {
-				this._zoomImage("minus");
+				zoomImage(this._imageView, false);
 			}
 		});
 
 		this._leftLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				this._zoomImage("plus");
+				zoomImage(this._imageView, true);
 			},
 			"land-btn-minus": () => {
-				this._zoomImage("minus");
+				zoomImage(this._imageView, false);
 			}
 		});
 
 		this._rightLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				this._zoomImage("plus");
+				zoomImage(this._imageView, true);
 			},
 			"land-btn-minus": () => {
-				this._zoomImage("minus");
+				zoomImage(this._imageView, false);
 			}
 		});
 
@@ -1628,15 +1574,6 @@ class GalleryService {
 		}
 		else {
 			this.load();
-		}
-	}
-
-	_zoomImage(buttonIcon) {
-		if (buttonIcon === "plus") {
-			this.wzoom.zoomUp();
-		}
-		else if (buttonIcon === "minus") {
-			this.wzoom.zoomDown();
 		}
 	}
 
