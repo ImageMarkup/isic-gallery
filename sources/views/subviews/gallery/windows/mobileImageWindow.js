@@ -1,6 +1,5 @@
 import windowWithHeader from "app-components/mobileWindow";
 
-import galleryImageUrl from "../../../../models/galleryImagesUrls";
 import "../../../components/slideButton";
 
 const closeArea = {
@@ -15,10 +14,8 @@ const templateViewer = {
 	autoHeight: true,
 	gravity: 1,
 	template(obj) {
-		const imageUrl = galleryImageUrl.getNormalImageUrl(obj.imageId) ?? "";
-
 		return `<div class="image-zoom-container">
-  					<img class= 'zoomable-image' src="${imageUrl}"/>
+					<div isic_id=${obj.imageId} class="zoomable-image"></div>
 				</div>`;
 	},
 	borderless: true

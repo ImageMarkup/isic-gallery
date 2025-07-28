@@ -517,12 +517,11 @@ function getTemplateViewer(id, showButtons, side) {
 		id,
 		css: "absolute-centered-image-template",
 		template(obj) {
-			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
 			const lesionsImages = side === constants.MULTI_LESION_SIDE.LEFT
 				? lesionsModel.getCurrentLeftImages()
 				: lesionsModel.getCurrentRightImages();
 			return `<div class="image-zoom-container">
-						<img class= 'zoomable-image' src="${imageUrl}"/>
+						<div isic_id=${lesionsModel.getItemID(obj)} class="zoomable-image"></div>
 					</div>
 					${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
 					`;

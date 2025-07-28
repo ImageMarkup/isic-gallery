@@ -5,7 +5,6 @@ import "../../components/activeList";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import selectedImages from "../../../models/selectedGalleryImages";
 import state from "../../../models/state";
-import ajax from "../../../services/ajaxActions";
 import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
 import MultiLesionWindowService from "../../../services/gallery/multiimageLesionWindow";
@@ -469,19 +468,6 @@ export default class GalleryView extends JetView {
 			const filter = this.getRoot().$scope.getParam("filter");
 			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${isicId ?? ""}&filter=${filter ?? ""}`);
 		}
-		else if (isicId && isTermsOfUseAccepted) {
-			if (this.imageWindow) {
-				this.imageWindowTemplate?.attachEvent("onAfterRender", () => {
-					if (this._imageInstance) {
-						this._imageInstance.dispatchEvent(new CustomEvent("wheelzoom.destroy"));
-					}
-					if (this._imageWindow) {
-						this._imageInstance = this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-					}
-					window.wheelzoom(this._imageInstance);
-				});
-			}
-		}
 		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()})?.$view;
 		if (imgTemplateView) {
 			this.enlargeContextMenu.attachTo(imgTemplateView);
@@ -491,7 +477,6 @@ export default class GalleryView extends JetView {
 				}
 			);
 		}
-		// this.galleryContextMenu.attachTo(galleryDataview.$view);
 	}
 
 	destroy() {

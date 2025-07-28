@@ -1,15 +1,12 @@
-import galleryImagesUrls from "../../../../models/galleryImagesUrls";
 import windowWithHeader from "../../../components/windowWithHeader";
 import "../../../components/slideButton";
-
 
 const templateViewer = {
 	view: "template",
 	css: "absolute-centered-image-template",
 	template(obj) {
-		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-					<img class= 'zoomable-image' src="${imageUrl}"/>
+					<div isic_id=${obj.imageId} class= "zoomable-image"></div>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>
@@ -23,9 +20,8 @@ const templateViewerWithoutControls = {
 	css: "absolute-centered-image-template",
 	hidden: true,
 	template(obj) {
-		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-					<img class= 'zoomable-image' src="${imageUrl}"/>
+					<div isic_id=${obj.imageId} class= "zoomable-image"></div>
 				</div>
 				`;
 	},
