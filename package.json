@@ -54,10 +54,10 @@
     "markdown-it-bracketed-spans": "^1.0.1",
     "markdown-it-container": "^3.0.0",
     "mouse-wheel-zoom": "^1.1.5",
+    "ol": "^10.6.1",
     "openseadragon": "^2.4.2",
     "promise-file-reader": "^1.0.3",
     "util": "^0.12.4",
-    "vanilla-js-wheel-zoom": "^8.0.0",
     "webix": "6.2.0",
     "webix-jet": "^1.5.3",
     "wheelzoom": "^4.0.1"
