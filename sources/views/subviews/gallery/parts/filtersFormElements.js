@@ -11,7 +11,7 @@ const NAME_SELECT_NONE_FILTER = filtersViewHelper.getSelectNoneFiltersName();
 function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	const collapsibleFilter = webix.copy(filter);
 	const isMobile = util.isMobilePhone();
-	const template = isMobile || filter.type === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX
+	const template = isMobile
 		? collapsibleFilter.rows[0].cols[0]
 		: collapsibleFilter.rows[0];
 	const collapsibleFilterFunction = function () {
@@ -103,9 +103,6 @@ function transformToFormFormat(data, expandedFilters) {
 							elems.push(_attachCollapseToFilter(filtersConfig, collapsed, dataForCreatingControl));
 						}
 						break;
-					/* case "range_slider":
-						t = filtersViewHelper.getRangeSliderUI(data[key].data[i]);
-						break; */
 					case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
 						if (util.isMobilePhone()) {
 							break;
