@@ -78,7 +78,7 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 	return collapsibleFilter;
 }
 
-function transformToFormFormat(data, expandedFilters) {
+function transformToFormFormat(data, appliedFiltersKeys) {
 	const elems = [];
 	const dataKeys = Object.keys(data);
 	dataKeys.forEach((key) => {
@@ -87,14 +87,11 @@ function transformToFormFormat(data, expandedFilters) {
 			for (let i = 0; i < data[key].data.length; i++) {
 				let filtersConfig = null;
 				const dataForCreatingControl = data[key].data[i];
-				let collapsed = true;
-				const indexOfDataForCreatingControl = expandedFilters.indexOf(dataForCreatingControl.id);
-				const foundFilterCollection = showedFiltersCollection.find(
-					showedFilter => dataForCreatingControl.id === showedFilter.id
-				);
-				if (indexOfDataForCreatingControl !== -1 || foundFilterCollection.length !== 0) {
-					collapsed = false;
-				}
+
+				const isInAppliedFilters = appliedFiltersKeys.includes(dataForCreatingControl.id);
+				const isInShownFilters = shownFiltersCollection.exists(dataForCreatingControl.id);
+				const collapsed = !isInAppliedFilters && !isInShownFilters;
+
 				switch (data[key].data[i].type) {
 					case "checkbox":
 					case "rangeCheckbox":
@@ -107,15 +104,11 @@ function transformToFormFormat(data, expandedFilters) {
 						if (util.isMobilePhone()) {
 							break;
 						}
-						const openedItems = getOpenElementFromTreeTable(`treeTable-${dataForCreatingControl.id}`);
-						expandedFilters.push(...openedItems);
-						const diagnosisRegex = /^diagnosis\|.*/;
-						const diagnosisFilter = expandedFilters.find(f => diagnosisRegex.test(f));
-						collapsed = !diagnosisFilter;
+						const openedElements = getOpenElementFromTreeTable(`treeTable-${dataForCreatingControl.id}`);
 						filtersConfig = filtersViewHelper.getTreeCheckboxUI(
 							dataForCreatingControl,
 							collapsed,
-							expandedFilters
+							openedElements
 						);
 						if (filtersConfig) {
 							elems.push(filtersConfig);

@@ -1258,19 +1258,11 @@ class GalleryService {
 		}
 	}
 
-	// expandedFilters - array of filter that should be initially expanded
-	_createFilters(expandedFilters, forceRebuild) {
-		let expandedFiltersKeys = [];
-		if (expandedFilters && expandedFilters.length) {
-			expandedFiltersKeys = expandedFilters.map((item) => {
-				if (item.view === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX) {
-					return item.id;
-				}
-				return item.key;
-			});
-		}
+	// appliedFilters - array of filter that should be initially expanded
+	_createFilters(appliedFilters, forceRebuild) {
+		const appliedFiltersKeys = (appliedFilters || []).map(item => item.key);
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
-			const elements = filtersFormElements.transformToFormFormat(data, expandedFiltersKeys);
+			const elements = filtersFormElements.transformToFormFormat(data, appliedFiltersKeys);
 			this.clearFilterForm();
 			this._filtersForm = this._view.$scope.getFiltersForm();
 			webix.ui(elements, this._filtersForm);

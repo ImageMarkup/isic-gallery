@@ -279,8 +279,7 @@ function getCheckboxUI(data, collapsed) {
 	return view;
 }
 
-function getTreeCheckboxUI(data, collapsed, expandedFilters) {
-	const elementsToOpen = [...expandedFilters];
+function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 	const labelId = data.id;
 	const treeTableId = `treeTable-${data.id}`;
 	const treeTableDataForFilters = {
