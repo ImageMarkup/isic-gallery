@@ -4,7 +4,7 @@ import state from "./state";
 
 const appliedFilters = new webix.DataCollection();
 const appliedFilterBySearch = new webix.DataCollection();
-const showedFilters = new webix.DataCollection();
+const shownFilters = new webix.DataCollection();
 let filterValue = "";
 let filterByName;
 
@@ -12,8 +12,8 @@ function getAppliedFilterBySearchCollection() {
 	return appliedFilterBySearch;
 }
 
-function getShowedFiltersCollection() {
-	return showedFilters;
+function getShownFiltersCollection() {
+	return shownFilters;
 }
 
 function setAppliedFiltersToLocalStorage(appliedFiltersToStorage) {
@@ -617,7 +617,7 @@ export default {
 	getAppliedFilterBySearchCollection,
 	setFilterValue,
 	getFilterValue,
-	getShowedFiltersCollection,
+	getShownFiltersCollection,
 	getFiltersFromURL,
 	convertAppliedFiltersToParams,
 	getAppliedCollectionsForApi,

@@ -3,7 +3,7 @@ import appliedFilters from "../../../../models/appliedFilters";
 import util from "../../../../utils/util";
 import filtersViewHelper from "./filters";
 
-const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
+const shownFiltersCollection = appliedFilters.getShownFiltersCollection();
 const NAME_SELECT_ALL_FILTER = filtersViewHelper.getSelectAllFilersName();
 const NAME_SELECT_NONE_FILTER = filtersViewHelper.getSelectNoneFiltersName();
 // we assume that the first child of any filter will be a label
@@ -33,7 +33,7 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 			selectAllFiltersButton.show();
 			selectNoneFiltersButton.show();
 			showOrHideAggregateButton(filter, controls, dataForCreatingControl, currentMobile);
-			webix.html.addCss(labelObject.getNode(), "showed-filter");
+			webix.html.addCss(labelObject.getNode(), "shown-filter");
 			webix.html.removeCss(labelObject.getNode(), "hidden-filter");
 			this.config.isRowsVisible = true;
 			controls.show();
@@ -41,35 +41,35 @@ function _attachCollapseToFilter(filter, collapsed, dataForCreatingControl) {
 			// TODO: fix mobile view
 			// const filtersNode = controls.getParentView().getNode();
 			// filtersNode.scrollIntoView();
-			showedFiltersCollection.add({
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
 		}
 		else {
 			selectAllFiltersButton?.hide();
 			selectNoneFiltersButton?.hide();
-			webix.html.removeCss(labelObject.getNode(), "showed-filter");
+			webix.html.removeCss(labelObject.getNode(), "shown-filter");
 			webix.html.addCss(labelObject.getNode(), "hidden-filter");
 			this.config.isRowsVisible = false;
-			if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
-				showedFiltersCollection.remove(dataForCreatingControl.id);
+			if (shownFiltersCollection.exists(dataForCreatingControl.id)) {
+				shownFiltersCollection.remove(dataForCreatingControl.id);
 			}
 			controls.hide();
 		}
 	};
 	template.onClick = {
 		// eslint-disable-next-line func-names
-		"collapssible-filter": collapsibleFilterFunction
+		"collapsible-filter": collapsibleFilterFunction
 	};
 	if (collapsed) {
-		template.css += " collapssible-filter hidden-filter";
+		template.css += " collapsible-filter hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;
 	}
 	else {
-		template.css += " collapssible-filter showed-filter";
+		template.css += " collapsible-filter shown-filter";
 		collapsibleFilter.rows[1].hidden = false;
-		if (!showedFiltersCollection.exists(dataForCreatingControl.id)) {
-			showedFiltersCollection.add({
+		if (!shownFiltersCollection.exists(dataForCreatingControl.id)) {
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
 		}

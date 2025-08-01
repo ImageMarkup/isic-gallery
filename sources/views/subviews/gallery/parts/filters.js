@@ -11,7 +11,7 @@ const NAME_SELECT_ALL_FILTERS_MOBILE = "filter-images-select-all-mobile-name";
 const NAME_SELECT_NONE_FILTERS = "filter-images-select-none-name";
 const NAME_SELECT_NONE_FILTERS_MOBILE = "filter-images-select-none-mobile-name";
 
-const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
+const shownFiltersCollection = appliedFilters.getShownFiltersCollection();
 
 function getLabelUI(label) {
 	const view = {
@@ -33,36 +33,36 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, isCollapsed
 		const collapser = children[0];
 		const controls = children[1];
 		if (!controls.isVisible()) {
-			webix.html.addCss(collapser.getNode(), "showed-filter");
+			webix.html.addCss(collapser.getNode(), "shown-filter");
 			webix.html.removeCss(collapser.getNode(), "hidden-filter");
 			this.config.isRowsVisible = true;
 			controls.show();
-			showedFiltersCollection.add({
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
 		}
 		else {
-			webix.html.removeCss(collapser.getNode(), "showed-filter");
+			webix.html.removeCss(collapser.getNode(), "shown-filter");
 			webix.html.addCss(collapser.getNode(), "hidden-filter");
 			this.config.isRowsVisible = false;
-			if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
-				showedFiltersCollection.remove(dataForCreatingControl.id);
+			if (shownFiltersCollection.exists(dataForCreatingControl.id)) {
+				shownFiltersCollection.remove(dataForCreatingControl.id);
 			}
 			controls.hide();
 		}
 	};
 	collapseElement.onClick = {
-		"collapssible-filter-tree": collapsibleFilterFunction
+		"collapsible-filter-tree": collapsibleFilterFunction
 	};
 	if (isCollapsedFilter) {
-		collapseElement.css = "collapssible-filter-tree hidden-filter";
+		collapseElement.css = "collapsible-filter-tree hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;
 	}
 	else {
-		collapseElement.css = "collapssible-filter-tree showed-filter";
+		collapseElement.css = "collapsible-filter-tree shown-filter";
 		collapsibleFilter.rows[1].hidden = false;
-		if (!showedFiltersCollection.exists(dataForCreatingControl.id)) {
-			showedFiltersCollection.add({
+		if (!shownFiltersCollection.exists(dataForCreatingControl.id)) {
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
 		}
