@@ -60,13 +60,9 @@ const slideButton = {
 		onChange(newv) {
 			if (newv) {
 				$$(metadataContainer.id).show();
-				// eslint-disable-next-line no-use-before-define
-				refreshTemplate();
 			}
 			else {
 				$$(metadataContainer.id).hide();
-				// eslint-disable-next-line no-use-before-define
-				refreshTemplate();
 			}
 		}
 	}
@@ -100,12 +96,6 @@ const windowBody = {
 		{height: 10}
 	]
 };
-
-function refreshTemplate() {
-	// eslint-disable-next-line no-use-before-define
-	let imageTemplate = $$(getViewerId());
-	imageTemplate.refresh();
-}
 
 function getConfig(id, studyImage, closeCallback) {
 	let windowTitle;
