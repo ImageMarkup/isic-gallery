@@ -56,16 +56,6 @@ const slideButton = {
 	labelLeft: "off",
 	labelRight: "on",
 	value: false,
-	on: {
-		onChange(newv) {
-			if (newv) {
-				$$(metadataContainer.id).show();
-			}
-			else {
-				$$(metadataContainer.id).hide();
-			}
-		}
-	}
 };
 
 const windowBody = {
@@ -134,6 +124,10 @@ function getMetadataLayoutId() {
 	return layoutForMetadata.id;
 }
 
+function getMetadataContainerId() {
+	return metadataContainer.id;
+}
+
 function getZoomButtonTemplateId() {
 	return zoomButtonsTemplate.id;
 }
@@ -145,5 +139,6 @@ export default {
 	getViewerWithoutControlsId,
 	getSliderButtonId,
 	getMetadataLayoutId,
+	getMetadataContainerId,
 	getZoomButtonTemplateId
 };

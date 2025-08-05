@@ -554,6 +554,8 @@ export default class GalleryMobileView extends JetView {
 			$$(ID_CONTENT_HEADER), // contentHeaderTemplate
 			this.imageWindow, // imageWindowInstance
 			$$(mobileImageWindow.getViewerId()), // imageWindowViewer
+			null, // imageWindowSlideButton
+			null, // imageWindowMetadataContainer
 			null, // imageWindowMetadata
 			null, // metadataWindow
 			null, // metadataWindowMetadata

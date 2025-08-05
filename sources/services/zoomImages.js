@@ -15,15 +15,24 @@ const DESKTOP_SIZE = "100%";
 
 /**
  * @typedef {import("ol/View").default} OlView
+ * @typedef {import("ol/Map").default} OlMap
+ */
+
+/**
+ * @typedef {Object} ZoomableImageProperties
+ * @property {OlView} view
+ * @property {OlMap} map
+ * @property {number} width
+ * @property {number} height
  */
 
 /**
  * Creates and initializes an OpenLayers View with zoom functionality for the given HTML element
  * Works with jpg/png/tif formats
  * @param {HTMLElement} htmlElement with isic_id attribute
- * @returns {Promise<OlView|null>}
+ * @returns {Promise<ZoomableImageProperties|null>}
  */
-export async function createZoomableImageView(htmlElement) {
+export async function createZoomableImage(htmlElement) {
 	const imageUrl = galleryImagesUrls.getNormalImageUrl(htmlElement?.getAttribute("isic_id"));
 	if (!htmlElement || !imageUrl) return null;
 
@@ -57,8 +66,7 @@ export async function createZoomableImageView(htmlElement) {
 	}
 
 	const imageView = new View({extent});
-	// eslint-disable-next-line no-new
-	new Map({
+	const imageMap = new Map({
 		target: htmlElement,
 		layers: [layer],
 		view: imageView,
@@ -72,7 +80,12 @@ export async function createZoomableImageView(htmlElement) {
 	// Need to set width or height because the map container's width or height are automatically 0
 	setImageContainerSize(htmlElement, width, height);
 
-	return imageView;
+	return {
+		view: imageView,
+		map: imageMap,
+		width,
+		height
+	};
 }
 
 /**
@@ -115,4 +128,16 @@ export function zoomImage(imageView, isZoomIn) {
 	const newZoom = isZoomIn ? zoom + 1 : zoom - 1;
 
 	imageView.animate({zoom: newZoom, duration: 250});
+}
+
+/**
+ * @param {ZoomableImageProperties} properties
+ * @param {htmlElement} zoomableImageNode
+ * @returns {void}
+ */
+export function restoreImageViewExtent(properties, zoomableImageNode) {
+	const extentBeforeResize = properties.view.calculateExtent(properties.map.getSize());
+	setImageContainerSize(zoomableImageNode, properties.width, properties.height);
+	properties.map.updateSize();
+	properties.view.fit(extentBeforeResize, {size: properties.map.getSize()});
 }

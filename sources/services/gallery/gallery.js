@@ -1,4 +1,4 @@
-import {createZoomableImageView, zoomImage} from "app-services/zoomImages";
+import {createZoomableImage, restoreImageViewExtent, zoomImage} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
@@ -36,6 +36,8 @@ class GalleryService {
 		contentHeaderTemplate,
 		imageWindowInstance,
 		imageWindowViewer,
+		imageWindowSlideButton,
+		imageWindowMetadataContainer,
 		imageWindowMetadata,
 		metadataWindow,
 		metadataWindowMetadata,
@@ -70,6 +72,8 @@ class GalleryService {
 		this._contentHeaderTemplate = contentHeaderTemplate;
 		this._imageWindow = imageWindowInstance;
 		this._imageWindowViewer = imageWindowViewer;
+		this._imageWindowSlideButton = imageWindowSlideButton;
+		this._imageWindowMetadataContainer = imageWindowMetadataContainer;
 		this._imageWindowMetadata = imageWindowMetadata;
 		this._metadataWindow = metadataWindow;
 		this._metadataWindowMetadata = metadataWindowMetadata;
@@ -503,15 +507,27 @@ class GalleryService {
 			return true;
 		});
 
-		const initZoomableImageView = async () => {
-			this._imageView = await createZoomableImageView(
-				this._imageWindow.$view.getElementsByClassName("zoomable-image")[0]
-			);
+		const getZoomableImageNode = () => {
+			return this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
+		}
+
+		const initZoomableImage = async () => {
+			this._zoomableImageProperties = await createZoomableImage(getZoomableImageNode());
 		};
 
-		this._imageWindowTemplate?.attachEvent("onAfterRender", initZoomableImageView);
-		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", initZoomableImageView);
+		this._imageWindowTemplate?.attachEvent("onAfterRender", initZoomableImage);
+		this._imageWindowTemplateWithoutControls?.attachEvent("onAfterRender", initZoomableImage);
 
+		this._imageWindowSlideButton?.attachEvent("onChange", (shouldShowMetadata) => {
+			if (shouldShowMetadata) {
+				this._imageWindowMetadataContainer.show();
+			}
+			else {
+				this._imageWindowMetadataContainer.hide();
+			}
+
+			restoreImageViewExtent(this._zoomableImageProperties, getZoomableImageNode());
+		});
 
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {
 			this._imageWindowTemplateWithoutControls?.hide();
@@ -541,28 +557,28 @@ class GalleryService {
 
 		this._imageWindowZoomButtons?.define("onClick", {
 			"btn-plus": () => {
-				zoomImage(this._imageView, true);
+				zoomImage(this._zoomableImageProperties.view, true);
 			},
 			"btn-minus": () => {
-				zoomImage(this._imageView, false);
+				zoomImage(this._zoomableImageProperties.view, false);
 			}
 		});
 
 		this._leftLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				zoomImage(this._imageView, true);
+				zoomImage(this._zoomableImageProperties.view, true);
 			},
 			"land-btn-minus": () => {
-				zoomImage(this._imageView, false);
+				zoomImage(this._zoomableImageProperties.view, false);
 			}
 		});
 
 		this._rightLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				zoomImage(this._imageView, true);
+				zoomImage(this._zoomableImageProperties.view, true);
 			},
 			"land-btn-minus": () => {
-				zoomImage(this._imageView, false);
+				zoomImage(this._zoomableImageProperties.view, false);
 			}
 		});
 

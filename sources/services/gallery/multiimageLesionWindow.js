@@ -1,4 +1,4 @@
-import {createZoomableImageView} from "app-services/zoomImages";
+import {createZoomableImage, restoreImageViewExtent} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
@@ -57,9 +57,9 @@ export default class MultiLesionWindowService {
 	}
 
 	async init() {
-		const initZoomableImageView = async (imageObj) => {
-			imageObj._imageView = await createZoomableImageView(
-				imageObj.$view.getElementsByClassName("zoomable-image")[0]
+		const initZoomableImage = async (imageObj) => {
+			imageObj._zoomableImageProperties = await createZoomableImage(
+				this.getZoomableImageNode(imageObj.$view)
 			);
 		};
 
@@ -67,7 +67,7 @@ export default class MultiLesionWindowService {
 		images.forEach((imageObj) => {
 			imageObj.attachEvent("onBeforeRender", this.updateImage);
 			imageObj.attachEvent("onAfterRender", async () => {
-				await initZoomableImageView(imageObj);
+				await initZoomableImage(imageObj);
 			});
 			imageObj.attachEvent("onAfterLoad", this.updateImage);
 		});
@@ -387,6 +387,10 @@ export default class MultiLesionWindowService {
 		}
 	}
 
+	getZoomableImageNode(containerNode) {
+		return containerNode.getElementsByClassName("zoomable-image")[0];
+	}
+
 	changeWindowMode() {
 		if (this._fullscreen) {
 			this._fullscreen = false;
@@ -404,6 +408,13 @@ export default class MultiLesionWindowService {
 			this._fullScreenButton.hide();
 			this._windowedButton.show();
 		}
+
+		const images = [this._leftImage, this._rightImage];
+		images.forEach((imageObj) => {
+			restoreImageViewExtent(imageObj._zoomableImageProperties, 
+				this.getZoomableImageNode(imageObj.$view));
+		});
+
 		this.searchImagesByQueryHandler();
 	}
 

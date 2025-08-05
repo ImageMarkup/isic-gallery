@@ -372,6 +372,8 @@ export default class GalleryView extends JetView {
 			$$(ID_CONTENT_HEADER),
 			this.imageWindow,
 			$$(imageWindow.getViewerId()),
+			$$(imageWindow.getSliderButtonId()),
+			$$(imageWindow.getMetadataContainerId()),
 			$$(imageWindow.getMetadataLayoutId()),
 			this.metadataWindow,
 			$$(metadataWindow.getMetadataLayoutId()),
