@@ -465,10 +465,11 @@ export default class GalleryView extends JetView {
 		const galleryDataview = this.getGalleryDataview();
 		this.galleryContextMenu.attachTo(galleryDataview);
 
-		const isicId = this.getRoot().$scope.getParam("image");
 		if (util.isMobilePhone()) {
-			const filter = this.getRoot().$scope.getParam("filter");
-			this.app.show(`${constants.PATH_GALLERY_MOBILE}?image=${isicId ?? ""}&filter=${filter ?? ""}`);
+			const hash = window.location.hash;
+			const questionMarkIndex = hash.indexOf("?");
+			const queryString = hash.substring(questionMarkIndex) || "";
+			this.app.show(`${constants.PATH_GALLERY_MOBILE}${queryString}`);
 		}
 		const imgTemplateView = this.imageWindow.queryView({id: imageWindow.getViewerId()})?.$view;
 		if (imgTemplateView) {
