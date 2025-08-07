@@ -88,19 +88,13 @@ const windowBody = {
 };
 
 function getConfig(id, studyImage, closeCallback) {
-	let windowTitle;
 	templateViewer.id = `viewer-${webix.uid()}`;
 	templateViewerWithoutControls.id = `viewer-without-controls-${webix.uid()}`;
 	slideButton.id = `slidebutton-${webix.uid()}`;
 	layoutForMetadata.id = `layout-for-metadata-${webix.uid()}`;
 	metadataContainer.id = `metadata-container-${webix.uid()}`;
 	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
-	if (!studyImage) {
-		windowTitle = "Metadata";
-	}
-	else {
-		windowTitle = studyImage;
-	}
+	const windowTitle = studyImage ?? "";
 	return windowWithHeader.getConfig(id, windowBody, windowTitle, closeCallback);
 }
 
