@@ -106,13 +106,11 @@ function getConfig(windowTitle, closeCallback) {
 
 	const leftTemplateViewer = getTemplateViewer(
 		ID_LEFT_IMAGE,
-		true,
 		constants.MULTI_LESION_SIDE.LEFT
 	);
 
 	const rightTemplateViewer = getTemplateViewer(
 		ID_RIGHT_IMAGE,
-		true,
 		constants.MULTI_LESION_SIDE.RIGHT
 	);
 
@@ -216,11 +214,16 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
+	const initialWidth = Math.floor(window.innerWidth * 0.85);
+	const initialHeight = Math.floor(window.innerHeight * 0.85);
+
 	return {
 		view: "window",
 		id: ID_MULTI_IMAGE_LESION_WINDOW,
-		width: 1240,
-		height: 750,
+		width: initialWidth,
+		height: initialHeight,
+		initialWidth,
+		initialHeight,
 		css: "window-with-header",
 		modal: true,
 		fullscreen: false,
@@ -508,10 +511,9 @@ function getVerticalSlider(id, side) {
 /**
  * Description placeholder
  *
- * @param {boolean} showButtons
  * @returns {webix.ui.templateConfig}
  */
-function getTemplateViewer(id, showButtons, side) {
+function getTemplateViewer(id, side) {
 	return {
 		view: "template",
 		id,
@@ -523,7 +525,7 @@ function getTemplateViewer(id, showButtons, side) {
 			return `<div class="image-zoom-container">
 						<div isic_id=${lesionsModel.getItemID(obj)} class="zoomable-image"></div>
 					</div>
-					${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
+					${lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
 					`;
 		},
 		borderless: true

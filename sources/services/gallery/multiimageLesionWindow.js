@@ -394,8 +394,8 @@ export default class MultiLesionWindowService {
 	changeWindowMode() {
 		if (this._fullscreen) {
 			this._fullscreen = false;
-			this._window.define("width", 1240);
-			this._window.define("height", 750);
+			this._window.define("width", this._window.config.initialWidth);
+			this._window.define("height", this._window.config.initialHeight);
 			this._window.define("position", "center");
 			this._fullScreenButton.show();
 			this._windowedButton.hide();
