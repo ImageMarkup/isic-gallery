@@ -52,7 +52,7 @@ function getConfig(windowTitle, closeCallback) {
 	const leftAnchorIcon = {
 		view: "icon",
 		id: ID_LEFT_ANCHOR_ICON,
-		width: 20,
+		width: 30,
 		height: 20,
 		icon: "fas fa-anchor"
 	};
@@ -60,7 +60,7 @@ function getConfig(windowTitle, closeCallback) {
 	const rightAnchorIcon = {
 		view: "icon",
 		id: ID_RIGHT_ANCHOR_ICON,
-		width: 20,
+		width: 30,
 		height: 20,
 		icon: "fas fa-anchor"
 	};
