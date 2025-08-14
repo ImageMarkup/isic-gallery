@@ -58,8 +58,8 @@ export default class GalleryMobileView extends JetView {
 
 		const logo = {
 			template: "ISIC",
-			gravity: 1,
 			css: "mobile-gallery-header-logo",
+			width: 45,
 			borderless: true,
 			onClick: {
 				"mobile-gallery-header-logo": () => menuHandlerService.clickHome()
@@ -95,7 +95,6 @@ export default class GalleryMobileView extends JetView {
 		const userPanel = {
 			view: "multiview",
 			css: "userbar-mobile userbar",
-			gravity: 1,
 			cells: [
 				loginPanel,
 				logoutPanel
@@ -135,8 +134,7 @@ export default class GalleryMobileView extends JetView {
 
 		const filteredImagesCountTemplate = {
 			id: ID_CONTENT_HEADER,
-			css: "gallery-header-mobile-context",
-			width: 1,
+			maxWidth: 60,
 			template(obj) {
 				const result = obj?.filtered ? `(${state.filteredImages.filteredImagesCount})` : "";
 				return result;
@@ -185,19 +183,11 @@ export default class GalleryMobileView extends JetView {
 			id: ID_MOBILE_GALLERY_HEADER,
 			cols: [
 				{width: 20},
-				{
-					cols: [
-						logo,
-						{gravity: 1}
-					]
-				},
-				{
-					cols: [
-						openFilterButton,
-						filteredImagesCountTemplate,
-						userPanel
-					]
-				}
+				logo,
+				{},
+				openFilterButton,
+				filteredImagesCountTemplate,
+				userPanel
 			]
 		};
 
