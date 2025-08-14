@@ -45,64 +45,14 @@ function getConfig(windowTitle, closeCallback) {
 	const leftSlider = getVerticalSlider(ID_LEFT_SLIDER, constants.MULTI_LESION_SIDE.LEFT);
 	const rightSlider = getVerticalSlider(ID_RIGHT_SLIDER, constants.MULTI_LESION_SIDE.RIGHT);
 
-	/** @type {webix.ui.labelConfig} */
 	const leftImageLabel = getImageLabel(ID_LEFT_IMAGE_NAME_LABEL);
 	const rightImageLabel = getImageLabel(ID_RIGHT_IMAGE_NAME_LABEL);
 
-	const leftAnchorIcon = {
-		view: "icon",
-		id: ID_LEFT_ANCHOR_ICON,
-		width: 30,
-		height: 20,
-		icon: "fas fa-anchor"
-	};
+	const leftAnchorIcon = getAnchorIcon(ID_LEFT_ANCHOR_ICON);
+	const rightAnchorIcon = getAnchorIcon(ID_RIGHT_ANCHOR_ICON);
 
-	const rightAnchorIcon = {
-		view: "icon",
-		id: ID_RIGHT_ANCHOR_ICON,
-		width: 30,
-		height: 20,
-		icon: "fas fa-anchor"
-	};
-
-	/** @type {webix.ui.richselectConfig} */
-	const leftGroupDropdown = {
-		view: "richselect",
-		id: ID_LEFT_DROP_DOWN_FILTER,
-		css: "multilesion-filter-dropdown",
-		label: "Group by:",
-		labelAlign: "left",
-		width: 270,
-		height: 24,
-		labelWidth: 75,
-		value: constants.MULTI_LESION_GROUP_BY.TIME,
-		// TODO: check options
-		options: [
-			constants.MULTI_LESION_GROUP_BY.TIME,
-			constants.MULTI_LESION_GROUP_BY.TYPE,
-			constants.MULTI_LESION_GROUP_BY.COMBINATION,
-			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
-		]
-	};
-
-	const rightGroupDropdown = {
-		view: "richselect",
-		id: ID_RIGHT_DROP_DOWN_FILTER,
-		css: "multilesion-filter-dropdown",
-		label: "Group by:",
-		labelAlign: "left",
-		width: 270,
-		height: 30,
-		labelWidth: 75,
-		value: constants.MULTI_LESION_GROUP_BY.TIME,
-		// TODO: check options
-		options: [
-			constants.MULTI_LESION_GROUP_BY.TIME,
-			constants.MULTI_LESION_GROUP_BY.TYPE,
-			constants.MULTI_LESION_GROUP_BY.COMBINATION,
-			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
-		]
-	};
+	const leftGroupDropdown = getGroupDropdown(ID_LEFT_DROP_DOWN_FILTER);
+	const rightGroupDropdown = getGroupDropdown(ID_RIGHT_DROP_DOWN_FILTER);
 
 	const leftTemplateViewer = getTemplateViewer(
 		ID_LEFT_IMAGE,
@@ -316,8 +266,6 @@ function getConfig(windowTitle, closeCallback) {
 }
 
 /**
- * Description placeholder
- *
  * @returns {webix.ui.listConfig}
  */
 function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
@@ -509,8 +457,6 @@ function getVerticalSlider(id, side) {
 
 
 /**
- * Description placeholder
- *
  * @returns {webix.ui.templateConfig}
  */
 function getTemplateViewer(id, side) {
@@ -532,6 +478,9 @@ function getTemplateViewer(id, side) {
 	};
 }
 
+/**
+ * @returns {webix.ui.labelConfig}
+ */
 function getImageLabel(imageNameId) {
 	return {
 		view: "label",
@@ -540,6 +489,42 @@ function getImageLabel(imageNameId) {
 		id: imageNameId,
 		label: ""
 	};
+}
+
+/**
+ * @returns {webix.ui.iconConfig}
+ */
+function getAnchorIcon(id) {
+	return {
+		view: "icon",
+		id: id,
+		width: 30,
+		height: 20,
+		icon: "fas fa-anchor"
+	};
+}
+
+/**
+ * @returns {webix.ui.richselectConfig}
+ */
+function getGroupDropdown(id) {
+    return {
+        view: "richselect",
+        id: id,
+        css: "multilesion-filter-dropdown",
+        label: "Group by:",
+        labelAlign: "left",
+        width: 270,
+        height: 30,
+        labelWidth: 75,
+        value: constants.MULTI_LESION_GROUP_BY.TIME,
+        options: [
+            constants.MULTI_LESION_GROUP_BY.TIME,
+            constants.MULTI_LESION_GROUP_BY.TYPE,
+            constants.MULTI_LESION_GROUP_BY.COMBINATION,
+            constants.MULTI_LESION_GROUP_BY.NO_GROUP,
+        ]
+    };
 }
 
 function footerTemplateFunction(obj, /* common */) {
