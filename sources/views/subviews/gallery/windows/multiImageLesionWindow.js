@@ -298,47 +298,19 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 					const lesion = lesionsModel.getLesionByID(lesionID);
 					const lesionModalitiesCount = lesionID
 						? lesionsModel.getLesionModalitiesCount(lesionID)
-						: null;
+						: 0;
 					const lesionTimePointsCount = lesionID
 						? lesionsModel.getLesionTimePointsCount(lesionID)
-						: null;
-					const imageIconDimensions = {
-						iconContainerDimensions: {
-							width: constants.DEFAULT_RIBBON_ICON_CONTAINER_WIDTH,
-							height: constants.DEFAULT_RIBBON_ICON_CONTAINER_HEIGHT
-						},
-						iconDimensions: {
-							width: constants.DEFAULT_RIBBON_IMAGE_ICON_WIDTH,
-							height: constants.DEFAULT_RIBBON_IMAGE_ICON_HEIGHT
-						}
-					};
-					const lesionIconElementClass = lesion
-						? "gallery-images-button-elem"
-						: "gallery-images-button-elem-disabled";
-					const disabledBadge = lesion
-						? ""
-						: " disabled-badge";
-					const diagnosisIcon = obj.hasAnnotations ?
-						`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-							<span class="gallery-images-button diagnosis-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-								<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#diagnosis-icon" class="gallery-icon-use"></use>
-								</svg>
-							</span>
-							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
-						</div>` : "";
-					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-						<span class="gtm-lesion-viewer gallery-images-button layer-group tooltip-title">
-							<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px">
-								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
-							</svg>
-						</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-						<span class="gallery-images-badge gallery-images-badge_1${disabledBadge} tooltip-title">${lesionModalitiesCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Modalities count</span>
-						<span class="gallery-images-badge gallery-images-badge_2${disabledBadge} tooltip-title">${lesionTimePointsCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Time points count</span>
-					</div>`;
+						: 0;
+
+					const lesionIconBadges = `
+						${util.getIconBadge(lesionTimePointsCount, "Lesion time points count", lesion, true)}
+						${util.getIconBadge(lesionModalitiesCount, "Lesion modalities count", lesion, false)}
+					`;
+					const diagnosisIcon = obj.hasAnnotations
+						? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
+						: "";
+					
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
 						galleryImageUrl.setPreviewImageUrl(
@@ -347,37 +319,16 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 						); // to prevent sending query more than 1 time
 					}
 					return `<div class="gallery-images-container" style="height: 104px;">
-							<div class='gallery-images-info' style="height: 104px; position: absolute; right:0px;">
+							<div class='gallery-images-info' style="height: 104px;">
 								<div class="gallery-images-header">
-									<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
+									<div class="thumbnails-name" style="font-size: ${util.getImageNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
 								</div>
-								<div class="gallery-images-buttons" style="bottom: 0px;">
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
-									</div>
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top">Metadata</span>
-									</div>
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-single-download gallery-images-button batch-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top">Download ZIP</span>
-									</div>
+								<div class="gallery-images-buttons">
+									${util.getIconButton("resize-icon", true, "Enlarge", "gtm-image-enlargement", "")}
+									${util.getIconButton("info-icon", true, "Metadata", "gtm-image-metadata", "")}
+									${util.getIconButton("batch-icon", true, "Download ZIP", "gtm-single-download", "")}
+									${util.getIconButton("layer-group", lesion, "Lesion", "gtm-lesion-viewer", lesionIconBadges)}
 									${diagnosisIcon}
-									${lesionIcon}
 								</div>
 							</div>
 							${starHtml}

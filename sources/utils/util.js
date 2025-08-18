@@ -250,83 +250,69 @@ function getFilterLabelId(filterId) {
 	return `filter-label-${filterId || ""}`
 }
 
-function getImageIconDimensions() {
-	const initialIconWidth = constants.DEFAULT_GALLERY_IMAGE_ICON_WIDTH;
-	const initialIconHeight = constants.DEFAULT_GALLERY_IMAGE_ICON_HEIGHT;
-	const initialIconContainerWidth = constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_WIDTH;
-	const initialIconContainerHeight = constants.DEFAULT_GALLERY_IMAGE_ICON_CONTAINER_HEIGHT;
-	const defaultIconWidthDifference = initialIconContainerWidth - initialIconWidth;
-	const deafultIconHeightDifference = initialIconContainerHeight - initialIconHeight;
+/**
+ * @param {string} iconId
+ * @param {boolean} isIconEnabled
+ * @param {string} tooltipText
+ * @param {string} gtmClass
+ * @param {string} iconBadges
+ * @returns {string}
+ */
+function getIconButton(iconId, isIconEnabled, tooltipText, gtmClass, iconBadges) {
+	const buttonClass = `${isIconEnabled ? '' : 'gallery-images-button-elem-disabled'} tooltip-container tooltip-gallery-images`;
+	return `
+	<div class="${buttonClass}">
+		<span class="${gtmClass} ${iconId} gallery-images-button tooltip-title">
+			<svg viewBox="0 0 26 26" class="gallery-icon-svg">
+				<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#${iconId}" class="gallery-icon-use"></use>
+			</svg>
+		</span>
+		<span class="tooltip-block tooltip-block-top">${tooltipText}</span>
+		${iconBadges}
+	</div>
+	`;
+};
 
-	let bottomOffsetPercentage;
-	let newIconWidth;
-	let newIconHeight;
-	let newIconContainerWidth;
-	let newIconContainerHeight;
-	let iconContainerDimensions;
-	let iconDimensions;
-	let dataviewItemWidth = getDataviewItemWidth();
+/**
+ * @param {string} badgeText
+ * @param {string} tooltipText
+ * @param {boolean} isEnabledBadge
+ * @param {boolean} isLeftBadge
+ * @returns {string}
+ */
+function getIconBadge(badgeText, tooltipText, isEnabledBadge, isLeftBadge) {
+	const badgeAbilityClass = isEnabledBadge ? "" : "disabled-badge";
+	const maxIconBadgeFontSize = 10;
 
-	if (dataviewItemWidth <= 110) {
-		if (dataviewItemWidth > 100) {
-			newIconContainerWidth = initialIconWidth - 1;
-			newIconContainerHeight = initialIconHeight - 1;
-			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
-			newIconHeight = newIconContainerHeight - deafultIconHeightDifference;
-			bottomOffsetPercentage = -8;
-		}
-		else if (dataviewItemWidth <= 100 && dataviewItemWidth > 95) {
-			newIconContainerWidth = initialIconWidth - 2;
-			newIconContainerHeight = initialIconHeight - 2;
-			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
-			newIconHeight = newIconContainerHeight - deafultIconHeightDifference;
-			bottomOffsetPercentage = -10;
-		}
-		else if (dataviewItemWidth <= 95) {
-			newIconContainerWidth = initialIconWidth - 3;
-			newIconContainerHeight = initialIconHeight - 3;
-			newIconWidth = newIconContainerWidth - defaultIconWidthDifference;
-			newIconHeight = newIconContainerHeight - deafultIconHeightDifference;
-			bottomOffsetPercentage = -12;
-		}
-		iconContainerDimensions = {
-			width: newIconContainerWidth,
-			height: newIconContainerHeight
-		};
+	const iconBadgeStyle = `
+		font-size: ${Math.min(getImageNameFontSize(), maxIconBadgeFontSize)}px;
+		${isLeftBadge ? `transform: translateX(-50%); left: 0;` : `transform: translateX(50%); right: 0;`}
+	`;
 
-		iconDimensions = {
-			width: newIconWidth,
-			height: newIconHeight
-		};
-	}
-	else {
-		iconContainerDimensions = {
-			width: initialIconContainerWidth,
-			height: initialIconContainerHeight
-		};
-
-		iconDimensions = {
-			width: initialIconWidth,
-			height: initialIconHeight
-		};
-		bottomOffsetPercentage = 0;
-	}
-	return [iconContainerDimensions, iconDimensions, bottomOffsetPercentage];
+	return `
+		<span class="gallery-images-badge ${badgeAbilityClass} tooltip-title" style="${iconBadgeStyle}">
+			${badgeText}
+		</span>
+		<span class="tooltip-block tooltip-block-top">${tooltipText}</span>
+	`;
 }
 
-function setNewThumnailsNameFontSize(nameFontSize) {
-	if (nameFontSize > 28) {
-		nameFontSize = 28;
-	}
-	else if (nameFontSize < 7.5) {
-		nameFontSize = 7.5;
-	}
-	webix.storage.local.put(`thumbnailsNameFontSize-${getUserId()}`, nameFontSize);
+/**
+ * @param {number} imageNameFontSize
+ */
+function setImageNameFontSize(imageNameFontSize) {
+	const maxImageNameFontSize = 28;
+	const minImageNameFontSize = 5;
+	const fontSize = Math.min(maxImageNameFontSize, Math.max(minImageNameFontSize, imageNameFontSize));
+	webix.storage.local.put(`thumbnailsNameFontSize-${getUserId()}`, fontSize);
 }
 
-function getNewThumnailsNameFontSize() {
-	let fontSize = webix.storage.local.get(`thumbnailsNameFontSize-${getUserId()}`);
-	return fontSize || 14;
+/**
+ * @returns {number}
+ */
+function getImageNameFontSize() {
+	const storageImageNameFontSize = webix.storage.local.get(`thumbnailsNameFontSize-${getUserId()}`);
+	return storageImageNameFontSize || constants.DEFAULT_GALLERY_IMAGE_NAME_FONT_SIZE;
 }
 
 function separateThousandsInNumber(number) {
@@ -570,9 +556,10 @@ export default {
 	getDataviewItemHeight,
 	setDataviewSelectionId,
 	getDataviewSelectionId,
-	getImageIconDimensions,
-	setNewThumnailsNameFontSize,
-	getNewThumnailsNameFontSize,
+	getIconButton,
+	getIconBadge,
+	setImageNameFontSize,
+	getImageNameFontSize,
 	separateThousandsInNumber,
 	isObjectEmpty,
 	angleIconChange,

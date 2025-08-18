@@ -411,7 +411,7 @@ class GalleryService {
 
 			const newImageHeight = Math.round(multiplier * newImageWidth);
 			newInnerImageNameSize = Math.round(newImageHeight * fontSizeMultiplier);
-			util.setNewThumnailsNameFontSize(newInnerImageNameSize);
+			util.setImageNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
 			if (callUpdatePager) {
