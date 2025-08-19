@@ -1,4 +1,4 @@
-import {createZoomableImage, restoreImageViewExtent, zoomImage} from "app-services/zoomImages";
+import {createZoomableImage, zoomImage} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
@@ -525,8 +525,6 @@ class GalleryService {
 			else {
 				this._imageWindowMetadataContainer.hide();
 			}
-
-			restoreImageViewExtent(this._zoomableImageProperties, getZoomableImageNode());
 		});
 
 		this._imagesDataview.on_click["resize-icon"] = (e, id) => {

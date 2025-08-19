@@ -73,19 +73,41 @@ export async function createZoomableImage(htmlElement) {
 		controls: [],
 	});
 
-	imageView.fit(extent);
 	const [minX, minY, maxX, maxY] = extent;
 	const width = maxX - minX;
 	const height = maxY - minY;
-	// Need to set width or height because the map container's width or height are automatically 0
-	setImageContainerSize(htmlElement, width, height);
 
-	return {
+	const zoomableImageProperties = {
 		view: imageView,
 		map: imageMap,
 		width,
 		height
-	};
+	}
+
+	attachResizeObserver(htmlElement, zoomableImageProperties, extent);
+
+	return zoomableImageProperties;
+}
+
+/**
+ * Resizes image element and restores image view extent when parent element resizes
+ * @param {htmlElement} htmlElement
+ * @param {ZoomableImageProperties} properties
+ * @param {Array<number>} defaultExtent
+ * @returns {void}
+ */
+function attachResizeObserver(htmlElement, properties, defaultExtent) {
+	let previousExtent = defaultExtent;
+	properties.view.on('change', () => {
+		previousExtent = properties.view.calculateExtent(properties.map.getSize());
+	});
+
+	const resizeObserver = new ResizeObserver(() => {
+		setImageContainerSize(htmlElement, properties.width, properties.height);
+		properties.map.updateSize();
+		properties.view.fit(previousExtent, {size: properties.map.getSize()});
+	});
+	resizeObserver.observe(htmlElement.parentElement);
 }
 
 /**
@@ -128,16 +150,4 @@ export function zoomImage(imageView, isZoomIn) {
 	const newZoom = isZoomIn ? zoom + 1 : zoom - 1;
 
 	imageView.animate({zoom: newZoom, duration: 250});
-}
-
-/**
- * @param {ZoomableImageProperties} properties
- * @param {htmlElement} zoomableImageNode
- * @returns {void}
- */
-export function restoreImageViewExtent(properties, zoomableImageNode) {
-	const extentBeforeResize = properties.view.calculateExtent(properties.map.getSize());
-	setImageContainerSize(zoomableImageNode, properties.width, properties.height);
-	properties.map.updateSize();
-	properties.view.fit(extentBeforeResize, {size: properties.map.getSize()});
 }

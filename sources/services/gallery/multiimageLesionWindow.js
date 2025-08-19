@@ -1,4 +1,4 @@
-import {createZoomableImage, restoreImageViewExtent} from "app-services/zoomImages";
+import {createZoomableImage} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
@@ -408,12 +408,6 @@ export default class MultiLesionWindowService {
 			this._fullScreenButton.hide();
 			this._windowedButton.show();
 		}
-
-		const images = [this._leftImage, this._rightImage];
-		images.forEach((imageObj) => {
-			restoreImageViewExtent(imageObj._zoomableImageProperties, 
-				this.getZoomableImageNode(imageObj.$view));
-		});
 
 		this.searchImagesByQueryHandler();
 	}
