@@ -310,7 +310,7 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 					const diagnosisIcon = obj.hasAnnotations
 						? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
 						: "";
-					
+
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
 						galleryImageUrl.setPreviewImageUrl(
