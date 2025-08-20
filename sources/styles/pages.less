@@ -1416,16 +1416,17 @@
 
 /* gallery-images-container */
 .gallery-images-header {
+  container-type: size;
   background: rgba(255, 255, 255, 0.6);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: ~"min(35%, 27px)";
+  height: ~"min(35%, 28px)";
   width: 100%;
 
   .thumbnails-name {
     color: rgba(0, 0, 0, 0.8);
-    font-size: 14px;
+    font-size: ~"min(8cqw, 28px)";
     font-weight: 500;
     text-align: left;
   }
@@ -1457,7 +1458,13 @@
   height: 22px;
 }
 
-.gallery-images-button-elem-disabled {
+.gallery-images-button-elem {
+  container-type: size;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.gallery-images-button-elem.disabled {
   pointer-events: none;
 }
 .gallery-images-button {

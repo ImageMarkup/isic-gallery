@@ -321,7 +321,7 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 					return `<div class="gallery-images-container" style="height: 104px;">
 							<div class='gallery-images-info' style="height: 104px;">
 								<div class="gallery-images-header">
-									<div class="thumbnails-name" style="font-size: ${util.getImageNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
+									<div class="thumbnails-name">${lesionsModel.getItemID(obj)}</div>
 								</div>
 								<div class="gallery-images-buttons">
 									${util.getIconButton("resize-icon", true, "Enlarge", "gtm-image-enlargement", "")}

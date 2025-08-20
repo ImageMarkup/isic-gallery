@@ -132,7 +132,7 @@ const dataview = {
 					<div class="check-layout ${checkedClass}" style="height: ${util.getImageHeight()}px; width: 100%; position: absolute; right:0px; top:${Math.floor((util.getDataviewItemHeight() - util.getImageHeight()) / 2)}px">
 						<div class='gallery-images-info' style="height: ${util.getImageHeight()}px;">
 							<div class="gallery-images-header">
-								<div class="thumbnails-name" style="font-size: ${util.getImageNameFontSize()}px">${obj.isic_id}</div>
+								<div class="thumbnails-name">${obj.isic_id}</div>
 								<input type="checkbox" class="gtm-image-selection gallery-images-checkbox" ${obj.markCheckbox ? "checked" : ""}>
 							</div>
 							<div class="gallery-images-buttons">

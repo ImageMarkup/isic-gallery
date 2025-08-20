@@ -259,7 +259,7 @@ function getFilterLabelId(filterId) {
  * @returns {string}
  */
 function getIconButton(iconId, isIconEnabled, tooltipText, gtmClass, iconBadges) {
-	const buttonClass = `${isIconEnabled ? '' : 'gallery-images-button-elem-disabled'} tooltip-container tooltip-gallery-images`;
+	const buttonClass = `gallery-images-button-elem ${isIconEnabled ? '' : 'disabled'} tooltip-container tooltip-gallery-images`;
 	return `
 	<div class="${buttonClass}">
 		<span class="${gtmClass} ${iconId} gallery-images-button tooltip-title">
@@ -282,10 +282,8 @@ function getIconButton(iconId, isIconEnabled, tooltipText, gtmClass, iconBadges)
  */
 function getIconBadge(badgeText, tooltipText, isEnabledBadge, isLeftBadge) {
 	const badgeAbilityClass = isEnabledBadge ? "" : "disabled-badge";
-	const maxIconBadgeFontSize = 10;
 
 	const iconBadgeStyle = `
-		font-size: ${Math.min(getImageNameFontSize(), maxIconBadgeFontSize)}px;
 		${isLeftBadge ? `transform: translateX(-50%); left: 0;` : `transform: translateX(50%); right: 0;`}
 	`;
 
@@ -295,24 +293,6 @@ function getIconBadge(badgeText, tooltipText, isEnabledBadge, isLeftBadge) {
 		</span>
 		<span class="tooltip-block tooltip-block-top">${tooltipText}</span>
 	`;
-}
-
-/**
- * @param {number} imageNameFontSize
- */
-function setImageNameFontSize(imageNameFontSize) {
-	const maxImageNameFontSize = 28;
-	const minImageNameFontSize = 5;
-	const fontSize = Math.min(maxImageNameFontSize, Math.max(minImageNameFontSize, imageNameFontSize));
-	webix.storage.local.put(`thumbnailsNameFontSize-${getUserId()}`, fontSize);
-}
-
-/**
- * @returns {number}
- */
-function getImageNameFontSize() {
-	const storageImageNameFontSize = webix.storage.local.get(`thumbnailsNameFontSize-${getUserId()}`);
-	return storageImageNameFontSize || constants.DEFAULT_GALLERY_IMAGE_NAME_FONT_SIZE;
 }
 
 function separateThousandsInNumber(number) {
@@ -558,8 +538,6 @@ export default {
 	getDataviewSelectionId,
 	getIconButton,
 	getIconBadge,
-	setImageNameFontSize,
-	getImageNameFontSize,
 	separateThousandsInNumber,
 	isObjectEmpty,
 	angleIconChange,

@@ -360,12 +360,10 @@ class GalleryService {
 		this._dataviewYCountSelection?.attachEvent("onChange", (id, oldId, callUpdatePager = true) => {
 			let newItemWidth;
 			let newImageWidth;
-			let newInnerImageNameSize;
 			const previousItemHeight = this._imagesDataview.type.height;
 			let multiplier = constants.DEFAULT_GALLERY_IMAGE_HEIGHT
 				/ constants.DEFAULT_GALLERY_IMAGE_WIDTH;
 			let dataviewWidth = this._imagesDataview.$width;
-			let fontSizeMultiplier = this._getInitialFontSizeMultiplier();
 
 			switch (id) {
 				case constants.TWO_DATAVIEW_COLUMNS: {
@@ -410,8 +408,6 @@ class GalleryService {
 			}
 
 			const newImageHeight = Math.round(multiplier * newImageWidth);
-			newInnerImageNameSize = Math.round(newImageHeight * fontSizeMultiplier);
-			util.setImageNameFontSize(newInnerImageNameSize);
 			util.setDataviewSelectionId(id);
 			this._setDataviewColumns(newItemWidth, previousItemHeight, newImageWidth, newImageHeight);
 			if (callUpdatePager) {
@@ -1505,12 +1501,6 @@ class GalleryService {
 		util.setDataviewItemDimensions(width, height);
 		util.setImageDimensions(imageWidth, imageHeight);
 		this._imagesDataview.refresh();
-	}
-
-	_getInitialFontSizeMultiplier() {
-		const initialFontSize = constants.DEFAULT_GALLERY_IMAGE_NAME_FONT_SIZE;
-		const initialImageWidth = constants.DEFAULT_GALLERY_IMAGE_WIDTH;
-		return initialFontSize / initialImageWidth;
 	}
 
 	_clearActiveListData(clearModifyObjects) {

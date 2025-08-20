@@ -151,7 +151,7 @@ function setImageContainerSize(container, width, height) {
  * @returns {void}
  */
 export function zoomImage(properties, isZoomIn) {
-	const imageView = properties.view; 
+	const imageView = properties.view;
 	if (!imageView) return;
 
 	const minZoom = imageView.getMinZoom();
@@ -184,7 +184,7 @@ function getAdjustedCenter(properties, newZoom) {
 	const maxCenterX = maxX - visibleWidth / 2;
 	const minCenterY = minY + visibleHeight / 2;
 	const maxCenterY = maxY - visibleHeight / 2;
-	
+
 	const currentCenter = properties.view.getCenter();
 	const newCenterX = imageWidth <= visibleWidth
 		? imageCenterX
