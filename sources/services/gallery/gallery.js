@@ -555,28 +555,28 @@ class GalleryService {
 
 		this._imageWindowZoomButtons?.define("onClick", {
 			"btn-plus": () => {
-				zoomImage(this._zoomableImageProperties.view, true);
+				zoomImage(this._zoomableImageProperties, true);
 			},
 			"btn-minus": () => {
-				zoomImage(this._zoomableImageProperties.view, false);
+				zoomImage(this._zoomableImageProperties, false);
 			}
 		});
 
 		this._leftLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				zoomImage(this._zoomableImageProperties.view, true);
+				zoomImage(this._zoomableImageProperties, true);
 			},
 			"land-btn-minus": () => {
-				zoomImage(this._zoomableImageProperties.view, false);
+				zoomImage(this._zoomableImageProperties, false);
 			}
 		});
 
 		this._rightLandImageWindowZoomButton?.define("onClick", {
 			"land-btn-plus": () => {
-				zoomImage(this._zoomableImageProperties.view, true);
+				zoomImage(this._zoomableImageProperties, true);
 			},
 			"land-btn-minus": () => {
-				zoomImage(this._zoomableImageProperties.view, false);
+				zoomImage(this._zoomableImageProperties, false);
 			}
 		});
 

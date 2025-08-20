@@ -22,8 +22,7 @@ const DESKTOP_SIZE = "100%";
  * @typedef {Object} ZoomableImageProperties
  * @property {OlView} view
  * @property {OlMap} map
- * @property {number} width
- * @property {number} height
+ * @property {Array<number>} defaultExtent
  */
 
 /**
@@ -73,41 +72,49 @@ export async function createZoomableImage(htmlElement) {
 		controls: [],
 	});
 
-	const [minX, minY, maxX, maxY] = extent;
-	const width = maxX - minX;
-	const height = maxY - minY;
-
 	const zoomableImageProperties = {
 		view: imageView,
 		map: imageMap,
-		width,
-		height
-	}
-
-	attachResizeObserver(htmlElement, zoomableImageProperties, extent);
+		defaultExtent: extent,
+	};
+	
+	setImageViewExtent(zoomableImageProperties, htmlElement, extent);
+	attachResizeObserver(htmlElement, zoomableImageProperties);
 
 	return zoomableImageProperties;
 }
 
 /**
  * Resizes image element and restores image view extent when parent element resizes
- * @param {htmlElement} htmlElement
+ * @param {HTMLElement} htmlElement
  * @param {ZoomableImageProperties} properties
- * @param {Array<number>} defaultExtent
  * @returns {void}
  */
-function attachResizeObserver(htmlElement, properties, defaultExtent) {
-	let previousExtent = defaultExtent;
-	properties.view.on('change', () => {
+function attachResizeObserver(htmlElement, properties) {
+	let previousExtent = properties.defaultExtent;
+	properties.view.on("change", () => {
 		previousExtent = properties.view.calculateExtent(properties.map.getSize());
 	});
 
 	const resizeObserver = new ResizeObserver(() => {
-		setImageContainerSize(htmlElement, properties.width, properties.height);
-		properties.map.updateSize();
-		properties.view.fit(previousExtent, {size: properties.map.getSize()});
+		setImageViewExtent(properties, htmlElement, previousExtent);
 	});
 	resizeObserver.observe(htmlElement.parentElement);
+}
+
+/**
+ * @param {ZoomableImageProperties} properties
+ * @param {HTMLElement} htmlElement
+ * @param {Array<number>} extent
+ * @returns {void}
+ */
+function setImageViewExtent(properties, htmlElement, extent) {
+	const [minX, minY, maxX, maxY] = properties.defaultExtent;
+	const width = maxX - minX;
+	const height = maxY - minY;
+	setImageContainerSize(htmlElement, width, height);
+	properties.map.updateSize();
+	properties.view.fit(extent, {size: properties.map.getSize()});
 }
 
 /**
@@ -139,15 +146,52 @@ function setImageContainerSize(container, width, height) {
 }
 
 /**
- * @param {OlView} imageView
+ * @param {ZoomableImageProperties} properties
  * @param {boolean} isZoomIn
  * @returns {void}
  */
-export function zoomImage(imageView, isZoomIn) {
+export function zoomImage(properties, isZoomIn) {
+	const imageView = properties.view; 
 	if (!imageView) return;
 
-	const zoom = imageView.getZoom() ?? imageView.getMinZoom();
-	const newZoom = isZoomIn ? zoom + 1 : zoom - 1;
+	const minZoom = imageView.getMinZoom();
+	const maxZoom = imageView.getMaxZoom();
+	const zoom = imageView.getZoom() ?? minZoom;
+	const newZoom = isZoomIn ? Math.min(zoom + 0.5, maxZoom) : Math.max(zoom - 0.5, minZoom);
+	const newCenter = getAdjustedCenter(properties, newZoom);
 
-	imageView.animate({zoom: newZoom, duration: 250});
+	imageView.animate({zoom: newZoom, center: newCenter, duration: 250});
+}
+
+/**
+ * @param {ZoomableImageProperties} properties
+ * @param {number} newZoom
+ * @returns {Array<number>}
+ */
+function getAdjustedCenter(properties, newZoom) {
+	const mapSize = properties.map.getSize();
+	const resolution = properties.view.getResolutionForZoom(newZoom);
+	const visibleWidth = mapSize[0] * resolution;
+	const visibleHeight = mapSize[1] * resolution;
+
+	const [minX, minY, maxX, maxY] = properties.defaultExtent;
+	const imageWidth = maxX - minX;
+	const imageHeight = maxY - minY;
+	const imageCenterX = (minX + maxX) / 2;
+	const imageCenterY = (minY + maxY) / 2;
+
+	const minCenterX = minX + visibleWidth / 2;
+	const maxCenterX = maxX - visibleWidth / 2;
+	const minCenterY = minY + visibleHeight / 2;
+	const maxCenterY = maxY - visibleHeight / 2;
+	
+	const currentCenter = properties.view.getCenter();
+	const newCenterX = imageWidth <= visibleWidth
+		? imageCenterX
+		: Math.min(Math.max(currentCenter[0], minCenterX), maxCenterX);
+	const newCenterY = imageHeight <= visibleHeight
+		? imageCenterY
+		: Math.min(Math.max(currentCenter[1], minCenterY), maxCenterY);
+
+	return [newCenterX, newCenterY];
 }
