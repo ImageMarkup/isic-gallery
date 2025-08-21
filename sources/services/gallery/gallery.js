@@ -279,11 +279,7 @@ class GalleryService {
 				if (newValue) {
 					this._filtersForm.disable();
 					this._appliedFiltersList.disable();
-					if (appliedFilterModel.count()) {
-						this._appliedFiltersList.clearAll();
-						appliedFilterModel.clearAll();
-						this._reload();
-					}
+					clearAllFilters();
 
 					tooltipText = "Clear name filter";
 					this._searchEventsMethods(this._searchHandlerByName.bind(this), true);
