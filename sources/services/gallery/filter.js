@@ -93,21 +93,6 @@ function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
 	treeView.updateItem(option.id, option);
 }
 
-function _setDiagnosisFilterState(treeView, option, totalCount, currentCount) {
-	if (
-		currentCount !== null
-		&& currentCount < totalCount
-		&& treeView.isBranch(option.id)
-		&& !option.indeterminate
-	) {
-		treeView.blockEvent();
-		treeView.add({id: `${option.id}|empty`, hidden: true, name: ""}, 0, option.id);
-		treeView.uncheckItem(`${option.id}|empty`);
-		treeView.remove(`${option.id}|empty`);
-		treeView.unblockEvent();
-	}
-}
-
 function updateFiltersFormControl(data) {
 	if (!data) {
 		return;
@@ -155,22 +140,32 @@ function updateTreeCheckboxControl(data) {
 			treeView.show();
 		}
 		treeView.checkItem(data.id);
-		treeView.open(data.id);
-		const parentId = treeView.getParentId(data.id);
-		if (parentId) {
-			const parent = treeView.getItem(parentId);
-			changeParentState(treeView, parent);
-		}
+		openParentBranch(treeView, data.id);
+		setParentCheckboxState(treeView, data.id);
 		treeView.unblockEvent();
 	}
 }
 
-function changeParentState(treeView, option) {
-	treeView.open(option.id);
-	const parentId = treeView.getParentId(option.id);
+function setParentCheckboxState(treeView, optionId) {
+	const parentId = treeView.getParentId(optionId);
+	if (!parentId) return;
+
+	const parentItem = treeView.getItem(parentId);
+	if (parentItem.hasHiddenOption) {
+		treeView.add({id: `${parentId}|empty`, hidden: true, name: ""}, 0, parentId);
+		treeView.uncheckItem(`${parentId}|empty`);
+		treeView.remove(`${parentId}|empty`);
+	}
+	else {
+		setParentCheckboxState(treeView, parentId);
+	}
+}
+
+function openParentBranch(treeView, optionId) {
+	treeView.open(optionId);
+	const parentId = treeView.getParentId(optionId);
 	if (parentId) {
-		const parentOption = treeView.getItem(parentId);
-		changeParentState(treeView, parentOption);
+		openParentBranch(treeView, parentId);
 	}
 }
 
@@ -250,7 +245,6 @@ function updateFiltersCounts(countsAfterFiltration) {
 					const option = treeView?.getItem(optionId);
 					if (option) {
 						_setDiagnosisFilterCounts(treeView, option, value.doc_count, currentCount);
-						_setDiagnosisFilterState(treeView, option, value.doc_count, currentCount);
 						if (!displayDiagnosis.find(item => item === v)) {
 							treeView.remove(optionId);
 						}
@@ -295,5 +289,4 @@ export default {
 	prepareOptionName,
 	updateFiltersCounts,
 	updateFiltersFormControl,
-	changeParentState,
 };

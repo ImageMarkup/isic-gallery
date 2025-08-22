@@ -31,8 +31,8 @@ const filtersIds = {
 	fitzpatrickSkinType: "fitzpatrick_skin_type"
 };
 
-function getFiltersDataValues() {
-	const diagnosisData = diagnosisModel.getDiagnosisDataForFilters();
+async function getFiltersDataValues() {
+	const diagnosisData = await diagnosisModel.getDiagnosisDataForFilters();
 	const filtersDataValues = [
 		{
 			label: "Diagnostic Attributes",
@@ -198,14 +198,11 @@ function getFiltersDataValues() {
 	return filtersDataValues;
 }
 
-function getFiltersData(forceRebuild) {
-	return new Promise((resolve) => {
-		// we should rewrite the last item in filtersData (it is place for Database Attributes)
-		if (forceRebuild || !filtersData) {
-			filtersData = getFiltersDataValues();
-		}
-		resolve(filtersData);
-	});
+async function getFiltersData(forceRebuild) {
+	if (forceRebuild || !filtersData) {
+		filtersData = await getFiltersDataValues();
+	}
+	return filtersData;
 }
 
 export default {

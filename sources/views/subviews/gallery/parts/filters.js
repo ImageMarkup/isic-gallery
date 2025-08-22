@@ -325,7 +325,7 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 				rowHeight: 28,
 				borderless: true,
 				on: {
-					onItemCheck(id, state, event) {
+					onItemCheck(id, state) {
 						const item = this.getItem(id);
 						const treeData = globalState.filtersTreeData.get(treeTableId);
 						const filtersChangedData = [];
