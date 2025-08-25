@@ -66,6 +66,7 @@ function formSuggestionsFromOptions(parent) {
 				value,
 				level: o.level,
 				optionId: o.id,
+				hasHiddenOption: o.hasHiddenOption,
 			});
 			if (o.data) {
 				suggestions.push(...formSuggestionsFromData(o));
@@ -97,6 +98,8 @@ function formSuggestionsFromData(parent) {
 			key: "diagnosis",
 			optionId: d.id,
 			value: valueArray.join("|") ?? "",
+			level: d.level,
+			hasHiddenOption: d.hasHiddenOption,
 		});
 		if (d.data) {
 			suggestions.push(...formSuggestionsFromData(d));
