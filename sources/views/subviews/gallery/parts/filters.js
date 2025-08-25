@@ -358,15 +358,8 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 							});
 							const currentParent = this.getItem(this.getParentId(id));
 							const firstChildId = currentParent ? this.getFirstChildId(currentParent.id) : null;
-							const firstChildItem = firstChildId ? this.getItem(firstChildId) : null;
-							if (firstChildItem) {
-								filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
-									treeData,
-									firstChildItem,
-									item.datatype,
-									true,
-								));
-								let nextSiblingId = this.getNextSiblingId(firstChildId);
+							if (firstChildId) {
+								let nextSiblingId = firstChildId;
 								while (nextSiblingId) {
 									const nextSiblingItem = this.getItem(nextSiblingId);
 									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
