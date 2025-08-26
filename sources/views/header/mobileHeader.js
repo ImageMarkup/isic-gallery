@@ -9,16 +9,9 @@ import uploadWindow from "./windows/uploadTypeWindow";
 const ID_LOGOUT_PANEL = `logout-panel-id-${webix.uid()}`;
 const ID_LOGIN_MENU = `login-menu-id-${webix.uid()}`;
 const ID_LOGIN_PANEL = `login-panel-id-${webix.uid()}`;
-const ID_MENU_PANEL = `menu-panel-id-${webix.uid()}`;
 
 export default class MobileHeader extends JetView {
 	config() {
-		const menuPanel = {
-			view: "sidebar",
-			id: ID_MENU_PANEL,
-			data: []
-		};
-
 		const logo = {
 			template: "ISIC",
 			css: "mobile-header-logo",

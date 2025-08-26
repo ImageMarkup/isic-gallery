@@ -169,7 +169,6 @@ export default class CreateStudyService {
 		this._createStudyButton.attachEvent("onItemClick", () => {
 			let features = [];
 			let annotatorsIds = [];
-			let imageIds = [];
 			let questions = [];
 			let nameRegEx = / /g;
 			let studyName = this._studyNameTextView.getValue();
@@ -275,11 +274,6 @@ export default class CreateStudyService {
 			annotatorsItemsIdsArray.forEach((annotatorItemId) => {
 				let annotatorItem = this._annotatorsList.getItem(annotatorItemId);
 				annotatorsIds.push(annotatorItem.isic_id);
-			});
-			this._imageDataView.find((obj) => {
-				if (obj.isic_id) {
-					imageIds.push(obj.isic_id);
-				}
 			});
 			return false;
 		});

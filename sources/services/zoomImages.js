@@ -77,7 +77,7 @@ export async function createZoomableImage(htmlElement) {
 		map: imageMap,
 		defaultExtent: extent,
 	};
-	
+
 	setImageViewExtent(zoomableImageProperties, htmlElement, extent);
 	attachResizeObserver(htmlElement, zoomableImageProperties);
 

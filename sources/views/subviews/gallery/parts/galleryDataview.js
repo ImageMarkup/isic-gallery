@@ -154,7 +154,7 @@ const dataview = {
 		height: util.getDataviewItemHeight()
 	},
 	onClick: {
-		"gallery-images-checkbox"(event, id, checkbox) {
+		"gallery-images-checkbox": function (event, id, checkbox) {
 			const studyFlag = selectedImages.getStudyFlag();
 			const item = this.getItem(id);
 			const value = checkbox.checked;

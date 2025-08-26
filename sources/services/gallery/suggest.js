@@ -92,7 +92,12 @@ function formSuggestionsFromOptions(parent) {
 function formSuggestionsFromData(parent) {
 	const suggestions = [];
 	parent.data?.forEach((d) => {
-		const valueArray = d.id.split("|").map((v, index) => (index < 2 ? v.toUpperCase() : v));
+		const valueArray = d.id.split("|").map((v, index) => {
+			if (index < 2) {
+				return v.toUpperCase();
+			}
+			return v;
+		});
 		suggestions.push({
 			id: `diagnosis|${d.id}`,
 			key: "diagnosis",

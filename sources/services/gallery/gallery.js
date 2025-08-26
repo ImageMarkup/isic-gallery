@@ -499,9 +499,7 @@ class GalleryService {
 			return true;
 		});
 
-		const getZoomableImageNode = () => {
-			return this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
-		}
+		const getZoomableImageNode = () => this._imageWindow.$view.getElementsByClassName("zoomable-image")[0];
 
 		const initZoomableImage = async () => {
 			this._zoomableImageProperties = await createZoomableImage(getZoomableImageNode());
@@ -1500,7 +1498,7 @@ class GalleryService {
 	}
 
 	_clearActiveListData(clearModifyObjects) {
-		this._activeCartList.data.each(item => {
+		this._activeCartList.data.each((item) => {
 			item.imageShown = false;
 		});
 		this._activeCartList.clearAll();

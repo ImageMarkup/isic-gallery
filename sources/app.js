@@ -89,7 +89,7 @@ webix.ready(() => {
 			auth.refreshUserInfo();
 		}
 		const root = app.getRoot();
-		if (typeof (root.scrollTo) === "function") {
+		if (typeof root.scrollTo === "function") {
 			root.scrollTo(0, 0);
 		}
 	});

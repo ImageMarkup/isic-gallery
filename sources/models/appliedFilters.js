@@ -428,7 +428,7 @@ function getConditionsForApi() {
 	if (diagnosisFilters.length !== 0) {
 		conditions.operator = diagnosisFilters.length > 1 ? "OR" : "";
 		diagnosisFilters.forEach((d) => {
-			conditions.operands.push(...(_prepareCondition(d)));
+			conditions.operands.push(..._prepareCondition(d));
 		});
 	}
 	let query = diagnosisFilters.length > 0 ? "(" : "";
@@ -457,7 +457,7 @@ function getConditionsForApi() {
 		query += query === "" ? "" : " AND ";
 		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
 		groupedFilters.forEach((groupedFilter) => {
-			conditions.operands.push(...(_prepareCondition(groupedFilter)));
+			conditions.operands.push(..._prepareCondition(groupedFilter));
 		});
 	}
 	conditions.operands.forEach((itemOfConditions, paramIndex) => {
@@ -520,9 +520,9 @@ function getFiltersFromURL(filtersArray) {
 					return data;
 				}
 				return null;
-			} else {
-				filterId = filter;
 			}
+			filterId = filter;
+
 			const control = $$(filterId);
 			if (control) {
 				const data = control.config.filtersChangedData;
@@ -554,9 +554,10 @@ function getAppliedCollectionsForApi() {
 
 /**
  * Get filters changed data for checkboxes
- * @param {object} data
- * @param {object} currentOption
- * @param {String} optionName
+ * @param {Object} data
+ * @param {Object} currentOption
+ * @param {string} optionName
+ * @returns {Object}
  */
 function getFiltersChangedData(data, currentOption, optionName) {
 	const filtersChangedData = {};
@@ -576,10 +577,11 @@ function getFiltersChangedData(data, currentOption, optionName) {
 
 /**
  *
- * @param {object} data
- * @param {object} item
- * @param {String} datatype
- * @param {boolean} state
+ * @param {Object} data
+ * @param {Object} item
+ * @param {string} datatype
+ * @param {boolean} remove
+ * @returns {Object}
  */
 function getFiltersChangeTreeItemData(data, item, datatype, remove) {
 	const filtersChangedData = {};

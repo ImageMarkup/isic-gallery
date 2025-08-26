@@ -92,7 +92,7 @@ function getCheckboxUI(data, collapsed) {
 		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
 	};
 
-	const showOrHideSelectAllButton = function() {
+	const showOrHideSelectAllButton = function () {
 		const currentFiltersArray = appliedFilters.getFiltersArray();
 		const currentFiltersCount = currentFiltersArray.reduce((count, filterFromFilterArray) => {
 			if (data.id.includes(filterFromFilterArray.key)) {
@@ -272,7 +272,8 @@ function getCheckboxUI(data, collapsed) {
 			view.rows[1].rows.push({
 				cols: [checkboxConfig]
 			});
-		} else {
+		}
+		else {
 			view.rows[1].rows.push(checkboxConfig);
 		}
 	});

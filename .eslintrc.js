@@ -31,7 +31,8 @@ module.exports = {
 		"valid-jsdoc": "warn",
 		"no-useless-escape": "off",
 		"no-use-before-define": "off",
-		"comma-dangle": "off"
+		"comma-dangle": "off",
+		"func-names": "off"
 	},
 	"settings": {
 		"import/resolver": {

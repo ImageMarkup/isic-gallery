@@ -1061,8 +1061,10 @@ export default class GalleryMobileView extends JetView {
 	showOrHideElementsOnOrientation(portrait, initial) {
 		try {
 			const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
-			const leftLandscapeImageWindowZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
-			const rightLandscapeImageWindowZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
+			const leftLandscapeImageWindowZoomButton =
+				$$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
+			const rightLandscapeImageWindowZoomButton =
+				$$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
 			const currentFilterPanel = $$(ID_FILTER_PANEL);
 			const galleryDataview = $$(ID_DATAVIEW);
 			const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);

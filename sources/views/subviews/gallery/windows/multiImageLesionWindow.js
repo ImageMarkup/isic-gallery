@@ -266,6 +266,10 @@ function getConfig(windowTitle, closeCallback) {
 }
 
 /**
+ * @param {string} topPanelID
+ * @param {string} sliderID
+ * @param {string} prevButtonID
+ * @param {string} nextButtonID
  * @returns {webix.ui.listConfig}
  */
 function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
@@ -368,7 +372,7 @@ function getVerticalSlider(id, side) {
 		 * @param {string} obj.groupBy
 		 * @param {string | number} obj.groupValue
 		 * @param {Array} obj.images
-		 * @returns
+		 * @returns {string}
 		 */
 		template(obj, /* common */) {
 			let images;
@@ -408,6 +412,8 @@ function getVerticalSlider(id, side) {
 
 
 /**
+ * @param {string} id
+ * @param {string} side
  * @returns {webix.ui.templateConfig}
  */
 function getTemplateViewer(id, side) {
@@ -430,6 +436,7 @@ function getTemplateViewer(id, side) {
 }
 
 /**
+ * @param {string} imageNameId
  * @returns {webix.ui.labelConfig}
  */
 function getImageLabel(imageNameId) {
@@ -443,12 +450,13 @@ function getImageLabel(imageNameId) {
 }
 
 /**
+ * @param {string} id
  * @returns {webix.ui.iconConfig}
  */
 function getAnchorIcon(id) {
 	return {
 		view: "icon",
-		id: id,
+		id,
 		width: 30,
 		height: 20,
 		icon: "fas fa-anchor"
@@ -456,26 +464,27 @@ function getAnchorIcon(id) {
 }
 
 /**
+ * @param {string} id
  * @returns {webix.ui.richselectConfig}
  */
 function getGroupDropdown(id) {
-    return {
-        view: "richselect",
-        id: id,
-        css: "multilesion-filter-dropdown",
-        label: "Group by:",
-        labelAlign: "left",
-        width: 270,
-        height: 30,
-        labelWidth: 75,
-        value: constants.MULTI_LESION_GROUP_BY.TIME,
-        options: [
-            constants.MULTI_LESION_GROUP_BY.TIME,
-            constants.MULTI_LESION_GROUP_BY.TYPE,
-            constants.MULTI_LESION_GROUP_BY.COMBINATION,
-            constants.MULTI_LESION_GROUP_BY.NO_GROUP,
-        ]
-    };
+	return {
+		view: "richselect",
+		id,
+		css: "multilesion-filter-dropdown",
+		label: "Group by:",
+		labelAlign: "left",
+		width: 270,
+		height: 30,
+		labelWidth: 75,
+		value: constants.MULTI_LESION_GROUP_BY.TIME,
+		options: [
+			constants.MULTI_LESION_GROUP_BY.TIME,
+			constants.MULTI_LESION_GROUP_BY.TYPE,
+			constants.MULTI_LESION_GROUP_BY.COMBINATION,
+			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
+		]
+	};
 }
 
 function footerTemplateFunction(obj, /* common */) {

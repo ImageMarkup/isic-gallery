@@ -1,7 +1,6 @@
 import galleryImagesUrls from "../../../../models/galleryImagesUrls";
 import util from "../../../../utils/util";
 
-const ID_CART_LIST_PANEL = `cart-list-panel-id-${webix.uid()}`;
 const ID_CART_LIST = `cart-list-id-${webix.uid()}`;
 const ID_DOWNLOAD_SELECTED_IMAGES_BUTTON = `download-selected-images-button-id-${webix.uid()}`;
 const NAME_CART_LIST = `cartListName-${webix.uid()}`;
