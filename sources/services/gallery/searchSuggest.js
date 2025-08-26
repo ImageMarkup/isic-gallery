@@ -57,7 +57,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	// remove default behavior
 	suggestList.detachEvent("onItemClick");
 
-	const getAffectedSuggestItems = (clickedItem) => {
+	const getAffectedSuggestTreeItems = (clickedItem, selectedIds) => {
 		const suggestData = suggestList.serialize();
 		const isClickedItemSelected = suggestList.isSelected(clickedItem.id);
 
@@ -81,7 +81,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 					&& item.optionId !== clickedItem.optionId
 					&& item.optionId.includes(parent.optionId)
 					&& item.level === parent.level + 1
-					&& !suggestList.isSelected(item.id));
+					&& !selectedIds.includes(item.id));
 			if (!parent.hasHiddenOption && nonSelectedChildren.length === 0) {
 				affectedParents.push(parent);
 			}
@@ -100,7 +100,8 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		const isTreeCheckbox = clickedItem.key === "diagnosis";
 
 		if (isTreeCheckbox) {
-			const suggestItemsToToggle = getAffectedSuggestItems(clickedItem);
+			const suggestItemsToToggle =
+				getAffectedSuggestTreeItems(clickedItem, suggestList.getSelectedId());
 			const suggestIdsToToggle = suggestItemsToToggle.map(suggestItem => suggestItem.id);
 
 			suggestList.blockEvent();
@@ -155,17 +156,20 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		const filters = appliedFiltersModel.getFiltersArray();
 		const suggestData = suggestList.serialize();
 
+		const selectedTreeIds = filters
+			.filter(filter => filter.view === "treeCheckbox")
+			.map(filter => `${filter.key}|${filter.optionId}`);
+
 		const suggestIdsToSelect = filters.flatMap((filter) => {
+			const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
+			if (!suggestItemToSelect) return [];
 			const isTreeCheckbox = filter.view === "treeCheckbox";
-
-			const suggestItemsToSelect = suggestData.filter((item) => {
-				if (isTreeCheckbox) {
-					return item.optionId.includes(filter.id);
-				}
-				return item.optionId === filter.id;
-			});
-
-			return suggestItemsToSelect.map(item => item.id);
+			if (!isTreeCheckbox) {
+				return [suggestItemToSelect.id];
+			}
+			const suggestTreeItemsToSelect =
+				[suggestItemToSelect, ...getAffectedSuggestTreeItems(suggestItemToSelect, selectedTreeIds)];
+			return suggestTreeItemsToSelect.map(item => item.id);
 		});
 
 		suggestList.blockEvent();
