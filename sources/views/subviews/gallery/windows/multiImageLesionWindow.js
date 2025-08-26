@@ -70,17 +70,13 @@ function getConfig(windowTitle, closeCallback) {
 		cols: [
 			{width: 20},
 			leftImageLabel,
-			{width: 5},
 			leftAnchorIcon,
-			{
-				gravity: 1,
-				minWidth: 10
-			},
+			{},
 			{
 				rows: [
-					{gravity: 1},
+					{},
 					leftGroupDropdown,
-					{gravity: 1},
+					{},
 				]
 			},
 			{width: 100}
@@ -94,16 +90,15 @@ function getConfig(windowTitle, closeCallback) {
 			{width: 100},
 			{
 				rows: [
-					{gravity: 1},
+					{},
 					rightGroupDropdown,
-					{gravity: 1},
+					{},
 				]
 			},
-			{gravity: 1},
+			{},
 			rightImageLabel,
-			{width: 5},
 			rightAnchorIcon,
-			{gravity: 1},
+			{width: 20},
 		],
 	};
 

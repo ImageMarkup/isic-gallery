@@ -330,6 +330,11 @@
   .container {
     position: relative;
     .vertical-slider-left, .vertical-slider-right {
+      .webix_scroll_cont {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
       position: absolute;
       border: none;
       z-index: 10;
@@ -398,7 +403,7 @@
     }
 
     .vertical-slider-right {
-      left: 10px;
+      left: 18px;
     }
 
     .multi-image-lesion-window__image-label {
@@ -406,6 +411,7 @@
       font-weight: 500;
       font-size: 14px;
       line-height: 16px;
+      text-align: center;
     }
 
     .footer-template {
@@ -455,6 +461,7 @@
     .webix_inp_static {
       border: none;
       padding-left: 0px;
+      padding-top: 2px;
     }
     .webix_input_icon.wxi-menu-down, .webix_input_icon.wxi-menu-down:focus {
       outline: none;
