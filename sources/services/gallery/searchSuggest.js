@@ -76,12 +76,15 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		}
 
 		const affectedParents = [];
+		let directChild = clickedItem;
 		for (const parent of itemParents) {
-			const nonSelectedChildren = suggestData.filter(item => item.optionId !== parent.optionId
-					&& item.optionId !== clickedItem.optionId
-					&& item.optionId.includes(parent.optionId)
+			const directChildOptionId = directChild.optionId;
+			const nonSelectedChildren = suggestData.filter(item => item.optionId.includes(parent.optionId)
+					&& item.optionId !== parent.optionId
 					&& item.level === parent.level + 1
+					&& item.optionId !== directChildOptionId
 					&& !selectedIds.includes(item.id));
+			directChild = parent;
 			if (!parent.hasHiddenOption && nonSelectedChildren.length === 0) {
 				affectedParents.push(parent);
 			}

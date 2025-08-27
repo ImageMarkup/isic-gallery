@@ -386,7 +386,7 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 							allCheckedItems.forEach((checkedItemId) => {
 								const checkedItem = this.getItem(checkedItemId);
 								const parentForCheckedItem = this.getItem(this.getParentId(checkedItemId));
-								if (!parentForCheckedItem.checked) {
+								if (!parentForCheckedItem?.checked) {
 									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
 										treeData,
 										checkedItem,
