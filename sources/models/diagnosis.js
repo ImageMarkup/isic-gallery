@@ -1,3 +1,5 @@
+import ajaxActions from "app-services/ajaxActions";
+
 /**
  * @typedef {Object} Diagnosis
  * @property {number} level
@@ -16,12 +18,20 @@ function getDiagnosisFlat() {
 	return diagnosisFlat;
 }
 
-function getDiagnosisDataForFilters() {
-	const data = convertDiagnosisToTreeArray(diagnosisTree);
-	return data;
+async function getDiagnosisDataForFilters() {
+	const facets = await ajaxActions.getFacets();
+	const diagnosisKeys = Object.keys(facets).filter(key => /^diagnosis_\d+$/.test(key));
+	const diagnosisCountMap = new Map();
+
+	diagnosisKeys.forEach((key) => {
+		(facets[key].buckets || []).forEach((bucket) => {
+			diagnosisCountMap.set(bucket.key, bucket.doc_count ?? 0);
+		});
+	});
+	return convertDiagnosisToTreeArray(diagnosisTree, diagnosisCountMap);
 }
 
-function convertDiagnosisToTreeArray(tree) {
+function convertDiagnosisToTreeArray(tree, diagnosisCountMap) {
 	const dataForFilters = [];
 	const diagnosisKeys = Object.keys(tree);
 	diagnosisKeys.forEach((k) => {
@@ -33,9 +43,13 @@ function convertDiagnosisToTreeArray(tree) {
 			diagnosisItem.datatype = "string";
 			diagnosisItem.level = diagnosisFlat[k].level;
 			diagnosisItem.data = diagnosisFlat[k].children
-				? convertDiagnosisToTreeArray(tree[k].children)
+				? convertDiagnosisToTreeArray(tree[k].children, diagnosisCountMap)
 				: null;
 			diagnosisItem.parent = diagnosisFlat[k].parent;
+			const optionCount = diagnosisCountMap.get(k) ?? 0;
+			const optionChildrenCount = (diagnosisFlat[k].children || [])
+				.reduce((sum, childKey) => sum + (diagnosisCountMap.get(childKey) ?? 0), 0);
+			diagnosisItem.hasHiddenOption = optionCount > optionChildrenCount;
 			dataForFilters.push(diagnosisItem);
 		}
 	});

@@ -89,16 +89,15 @@ const dataview = {
 	scroll: false,
 	datathrottle: 500,
 	onContext: {},
-	template(obj, common) {
+	template(obj) {
 		const lesionID = lesionsModel.getItemLesionID(obj);
 		const lesion = lesionsModel.getLesionByID(lesionID);
 		const lesionModalitiesCount = lesionID
 			? lesionsModel.getLesionModalitiesCount(lesionID)
-			: null;
+			: 0;
 		const lesionTimePointsCount = lesionID
 			? lesionsModel.getLesionTimePointsCount(lesionID)
-			: null;
-		const imageIconDimensions = util.getImageIconDimensions();
+			: 0;
 		let flagForStudies = selectedImages.getStudyFlag();
 		// TODO check this when if study works
 		if (flagForStudies) {
@@ -112,34 +111,16 @@ const dataview = {
 				}
 			});
 		}
-		let checkedClass = obj.markCheckbox ? "is-checked" : "";
-		const diagnosisIcon = obj.hasAnnotations ?
-			`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-				<span class="gallery-images-button diagnosis-icon tooltip-title">
-					<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#diagnosis-icon" class="gallery-icon-use"></use>
-					</svg>
-				</span>
-				<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
-			</div>` : "";
-		const lesionIconElementClass = lesion
-			? "gallery-images-button-elem"
-			: "gallery-images-button-elem-disabled";
-		const disabledBadge = lesion
-			? ""
-			: " disabled-badge";
-		const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="height:${imageIconDimensions[0].height}px;width:${imageIconDimensions[0].width}px;">
-			<span class="gtm-lesion-viewer gallery-images-button layer-group tooltip-title">
-				<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px">
-					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
-				</svg>
-			</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-			<span class="gallery-images-badge gallery-images-badge_1${disabledBadge} tooltip-title">${lesionModalitiesCount ?? 0}</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion modalities count</span>
-			<span class="gallery-images-badge gallery-images-badge_2${disabledBadge} tooltip-title">${lesionTimePointsCount ?? 0}</span>
-			<span class="tooltip-block tooltip-block-top" style="display: block">Lesion time points count</span>
-		</div>`;
+
+		const checkedClass = obj.markCheckbox ? "is-checked" : "";
+		const lesionIconBadges = `
+			${util.getIconBadge(lesionTimePointsCount, "Lesion time points count", lesion, true)}
+			${util.getIconBadge(lesionModalitiesCount, "Lesion modalities count", lesion, false)}
+		`;
+		const diagnosisIcon = obj.hasAnnotations
+			? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
+			: "";
+
 		const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 		if (typeof galleryImageUrl.getPreviewImageUrl(obj.isic_id) === "undefined") {
 			galleryImageUrl.setPreviewImageUrl(
@@ -149,37 +130,16 @@ const dataview = {
 		}
 		return `<div class="gallery-images-container">
 					<div class="check-layout ${checkedClass}" style="height: ${util.getImageHeight()}px; width: 100%; position: absolute; right:0px; top:${Math.floor((util.getDataviewItemHeight() - util.getImageHeight()) / 2)}px">
-						<div class='gallery-images-info' style="height: ${util.getImageHeight()}px; position: absolute; right:0px;">
+						<div class='gallery-images-info' style="height: ${util.getImageHeight()}px;">
 							<div class="gallery-images-header">
-								<div class="gtm-image-selection gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
-								<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.isic_id}</div>
+								<div class="thumbnails-name">${obj.isic_id}</div>
+								<input type="checkbox" class="gtm-image-selection gallery-images-checkbox" ${obj.markCheckbox ? "checked" : ""}>
 							</div>
-							<div class="gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
-								</div>
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top">Metadata</span>
-								</div>
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gtm-single-download gallery-images-button batch-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top">Download ZIP</span>
-								</div>
-								${lesionIcon}
+							<div class="gallery-images-buttons">
+								${util.getIconButton("resize-icon", true, "Enlarge", "gtm-image-enlargement", "")}
+								${util.getIconButton("info-icon", true, "Metadata", "gtm-image-metadata", "")}
+								${util.getIconButton("batch-icon", true, "Download ZIP", "gtm-single-download", "")}
+								${util.getIconButton("layer-group", lesion, "Lesion", "gtm-lesion-viewer", lesionIconBadges)}
 								${diagnosisIcon}
 							</div>
 						</div>
@@ -193,32 +153,24 @@ const dataview = {
 		width: util.getDataviewItemWidth(),
 		height: util.getDataviewItemHeight()
 	},
-	activeContent: {
-		markCheckbox: {
-			view: "checkbox",
-			css: "checkbox-ctrl",
-			width: 20,
-			height: 30,
-			on: {
-				onChange(value, oldValue) {
-					let studyFlag = selectedImages.getStudyFlag();
-					const datav = $$(dataview.id);
-					const item = datav.getItem(this.config.$masterId);
-					if (value
-						&& (
-							selectedImages.count() >= constants.MAX_COUNT_IMAGES_SELECTION
-							|| selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION
-						)
-					) {
-						datav.updateItem(item.id, {markCheckbox: oldValue});
-						webix.alert({
-							text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
-						});
-						return;
-					}
-					changeSelectedItem(item, value, datav, studyFlag);
-				}
+	onClick: {
+		"gallery-images-checkbox": function (event, id, checkbox) {
+			const studyFlag = selectedImages.getStudyFlag();
+			const item = this.getItem(id);
+			const value = checkbox.checked;
+			if (value
+				&& (
+					selectedImages.count() >= constants.MAX_COUNT_IMAGES_SELECTION
+					|| selectedImages.countForStudies() >= constants.MAX_COUNT_IMAGES_SELECTION
+				)
+			) {
+				this.updateItem(id, {markCheckbox: !value});
+				webix.alert({
+					text: `You can select maximum ${constants.MAX_COUNT_IMAGES_SELECTION} images`
+				});
+				return;
 			}
+			changeSelectedItem(item, value, this, studyFlag);
 		}
 	}
 };

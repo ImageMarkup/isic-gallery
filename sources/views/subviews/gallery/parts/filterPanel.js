@@ -43,9 +43,12 @@ function getConfig(config) {
 		css: "gtm-search filters-suggest",
 	};
 	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
-	searchSuggestView.body.template = obj => (obj.name
-		? `${obj.name}: ${obj.value}`
-		: `${obj.value}`);
+	searchSuggestView.body.template = (obj) => {
+		if (obj.name) {
+			return `${obj.name}: ${obj.value}`;
+		}
+		return `${obj.value}`;
+	};
 	searchSuggestView.filter = (obj, value) => {
 		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
 		return result;

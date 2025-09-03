@@ -176,7 +176,8 @@ class AjaxActions {
 				}
 			});
 			return facets;
-		} catch (error) {
+		}
+		catch (error) {
 			return parseError(error);
 		}
 	}

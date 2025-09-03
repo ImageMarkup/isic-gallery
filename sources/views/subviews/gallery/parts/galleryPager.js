@@ -62,9 +62,10 @@ const mobilePager = createPager({
 
 
 /**
- * @param id
- * @param sourceDataviewId
+ * @param {string} id
+ * @param {string} sourceDataviewId
  * @param {boolean} isMobile
+ * @returns {webix.ui.pagerConfig}
  */
 function getConfig(id, sourceDataviewId, isMobile) {
 	if (isMobile) {

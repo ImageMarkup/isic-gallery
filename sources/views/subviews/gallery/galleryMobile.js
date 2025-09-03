@@ -58,8 +58,8 @@ export default class GalleryMobileView extends JetView {
 
 		const logo = {
 			template: "ISIC",
-			gravity: 1,
 			css: "mobile-gallery-header-logo",
+			width: 45,
 			borderless: true,
 			onClick: {
 				"mobile-gallery-header-logo": () => menuHandlerService.clickHome()
@@ -95,7 +95,6 @@ export default class GalleryMobileView extends JetView {
 		const userPanel = {
 			view: "multiview",
 			css: "userbar-mobile userbar",
-			gravity: 1,
 			cells: [
 				loginPanel,
 				logoutPanel
@@ -135,8 +134,7 @@ export default class GalleryMobileView extends JetView {
 
 		const filteredImagesCountTemplate = {
 			id: ID_CONTENT_HEADER,
-			css: "gallery-header-mobile-context",
-			width: 1,
+			maxWidth: 60,
 			template(obj) {
 				const result = obj?.filtered ? `(${state.filteredImages.filteredImagesCount})` : "";
 				return result;
@@ -185,19 +183,11 @@ export default class GalleryMobileView extends JetView {
 			id: ID_MOBILE_GALLERY_HEADER,
 			cols: [
 				{width: 20},
-				{
-					cols: [
-						logo,
-						{gravity: 1}
-					]
-				},
-				{
-					cols: [
-						openFilterButton,
-						filteredImagesCountTemplate,
-						userPanel
-					]
-				}
+				logo,
+				{},
+				openFilterButton,
+				filteredImagesCountTemplate,
+				userPanel
 			]
 		};
 
@@ -244,53 +234,23 @@ export default class GalleryMobileView extends JetView {
 			height: 30,
 			rows: [{
 				id: ID_MOBILE_GALLERY_FOOTER,
-				css: "mobile-gallery-footer",
 				view: "template",
 				height: 30,
 				hidden: true,
+				borderless: true,
 				template(obj) {
-					const imageIconDimensions = util.getImageIconDimensions();
 					const diagnosisIcon = obj.hasAnnotations
-						? `<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button diagnosis-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#diagnosis-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
-								</div>`
+						? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
 						: "";
-					const html = `<div class="mobile-gallery-images-info">
-									<div class="thumbnails-name" style="font-size: 20px">${obj.isic_id}</div>
-									<div class="mobile-gallery-images-buttons" style="bottom: ${imageIconDimensions[2]}px;">
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
+					return `<div class="mobile-gallery-images-info">
+								<div class="thumbnails-name">${obj.isic_id}</div>
+								<div class="gallery-images-buttons">
+									${util.getIconButton("resize-icon", true, "Enlarge", "gtm-image-enlargement", "")}
+									${util.getIconButton("info-icon", true, "Metadata", "gtm-image-metadata", "")}
+									${util.getIconButton("share-icon", true, "Share", "", "")}
+									${diagnosisIcon}
 								</div>
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top">Metadata</span>
-								</div>
-								<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions[0].width}px; height: ${imageIconDimensions[0].height}px;">
-									<span class="gallery-images-button share-icon tooltip-title">
-										<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions[1].width}px; height: ${imageIconDimensions[1].height}px;">
-											<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#share-icon" class="gallery-icon-use"></use>
-										</svg>
-									</span>
-									<span class="tooltip-block tooltip-block-top">Share</span>
-								</div>
-								${diagnosisIcon}
-								</div>
-								</div>`;
-					return html;
+							</div>`;
 				},
 				onClick: {
 					"resize-icon": (/* e, id */) => {
@@ -554,6 +514,8 @@ export default class GalleryMobileView extends JetView {
 			$$(ID_CONTENT_HEADER), // contentHeaderTemplate
 			this.imageWindow, // imageWindowInstance
 			$$(mobileImageWindow.getViewerId()), // imageWindowViewer
+			null, // imageWindowSlideButton
+			null, // imageWindowMetadataContainer
 			null, // imageWindowMetadata
 			null, // metadataWindow
 			null, // metadataWindowMetadata
@@ -1099,8 +1061,10 @@ export default class GalleryMobileView extends JetView {
 	showOrHideElementsOnOrientation(portrait, initial) {
 		try {
 			const imageWindowZoomButtons = $$(mobileImageWindow.getZoomButtonTemplateId());
-			const leftLandscapeImageWindowZoomButton = $$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
-			const rightLandscapeImageWindowZoomButton = $$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
+			const leftLandscapeImageWindowZoomButton =
+				$$(mobileImageWindow.getLeftLandscapeZoomButtonTemplateId());
+			const rightLandscapeImageWindowZoomButton =
+				$$(mobileImageWindow.getRightLandscapeZoomButtonTemplateId());
 			const currentFilterPanel = $$(ID_FILTER_PANEL);
 			const galleryDataview = $$(ID_DATAVIEW);
 			const currentGalleryFooter = $$(ID_MOBILE_GALLERY_FOOTER);

@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+
 import authService from "../../../services/auth";
 import licensesWindow from "./windows/licenseInfo";
 

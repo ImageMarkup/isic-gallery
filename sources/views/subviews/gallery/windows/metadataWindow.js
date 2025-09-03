@@ -10,7 +10,7 @@ const windowBody = {
 	css: "metadata-window-body",
 	paddingX: 35,
 	width: 523,
-	height: 610,
+	height: Math.floor(window.innerHeight * 0.7),
 	type: "clean",
 	rows: [
 		{ // this container is needed to draw external borders

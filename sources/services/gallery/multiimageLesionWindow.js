@@ -1,3 +1,5 @@
+import {createZoomableImage} from "app-services/zoomImages";
+
 import constants from "../../constants";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import lesionWindowImagesUrls from "../../models/lesionWindowImagesUrls";
@@ -55,11 +57,20 @@ export default class MultiLesionWindowService {
 	}
 
 	async init() {
-		this._leftImage.attachEvent("onBeforeRender", this.updateImage);
-		this._leftImage.attachEvent("onAfterLoad", this.updateImage);
+		const initZoomableImage = async (imageObj) => {
+			imageObj._zoomableImageProperties = await createZoomableImage(
+				this.getZoomableImageNode(imageObj.$view)
+			);
+		};
 
-		this._rightImage.attachEvent("onBeforeRender", this.updateImage);
-		this._rightImage.attachEvent("onAfterLoad", this.updateImage);
+		const images = [this._leftImage, this._rightImage];
+		images.forEach((imageObj) => {
+			imageObj.attachEvent("onBeforeRender", this.updateImage);
+			imageObj.attachEvent("onAfterRender", async () => {
+				await initZoomableImage(imageObj);
+			});
+			imageObj.attachEvent("onAfterLoad", this.updateImage);
+		});
 
 		this._fullScreenButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });
 		this._windowedButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });
@@ -376,11 +387,15 @@ export default class MultiLesionWindowService {
 		}
 	}
 
+	getZoomableImageNode(containerNode) {
+		return containerNode.getElementsByClassName("zoomable-image")[0];
+	}
+
 	changeWindowMode() {
 		if (this._fullscreen) {
 			this._fullscreen = false;
-			this._window.define("width", 1240);
-			this._window.define("height", 750);
+			this._window.define("width", this._window.config.initialWidth);
+			this._window.define("height", this._window.config.initialHeight);
 			this._window.define("position", "center");
 			this._fullScreenButton.show();
 			this._windowedButton.hide();
@@ -393,6 +408,7 @@ export default class MultiLesionWindowService {
 			this._fullScreenButton.hide();
 			this._windowedButton.show();
 		}
+
 		this.searchImagesByQueryHandler();
 	}
 

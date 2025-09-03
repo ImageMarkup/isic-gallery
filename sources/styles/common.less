@@ -263,7 +263,7 @@ a, .link {
       font-weight: 600;
       text-align: center;
       position: absolute;
-      left: 50%;
+      left: calc(50% - 10px);
     }
   }
 }
@@ -271,32 +271,21 @@ a, .link {
 /* gallery-images-badge */
 .gallery-images-badge {
   background-color: #3C87CB;
-  font-size: 8px;
-  line-height: 10px;
-  text-align: center;
   color: #FFFFFF;
-  border: 1px;
-  border-radius: 10px;
-  height: 13px;
-  width: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  height: 60%;
+  top: -30%;
+  border-radius: 50%;
   padding: 2px;
   text-align: center;
+  font-size: 50cqw;
   position: absolute;
-  right: -5px;
-  top: -5px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-}
-
-.gallery-images-badge_1 {
-  top: -5px;
-  right: -5px;
-}
-
-.gallery-images-badge_2 {
-  top: -5px;
-  right: 13px;
 }
 
 .disabled-badge {

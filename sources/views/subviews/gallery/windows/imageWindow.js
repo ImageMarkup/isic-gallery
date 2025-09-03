@@ -1,15 +1,12 @@
-import galleryImagesUrls from "../../../../models/galleryImagesUrls";
 import windowWithHeader from "../../../components/windowWithHeader";
 import "../../../components/slideButton";
-
 
 const templateViewer = {
 	view: "template",
 	css: "absolute-centered-image-template",
 	template(obj) {
-		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-					<img class= 'zoomable-image' src="${imageUrl}"/>
+					<div isic_id=${obj.imageId} class= "zoomable-image"></div>
 				</div>
 					<a class="prev">&#10094;</a>
  					<a class="next">&#10095;</a>
@@ -23,9 +20,8 @@ const templateViewerWithoutControls = {
 	css: "absolute-centered-image-template",
 	hidden: true,
 	template(obj) {
-		const imageUrl = galleryImagesUrls.getNormalImageUrl(obj.imageId) || "";
 		return `<div class="image-zoom-container">
-					<img class= 'zoomable-image' src="${imageUrl}"/>
+					<div isic_id=${obj.imageId} class= "zoomable-image"></div>
 				</div>
 				`;
 	},
@@ -60,27 +56,13 @@ const slideButton = {
 	labelLeft: "off",
 	labelRight: "on",
 	value: false,
-	on: {
-		onChange(newv) {
-			if (newv) {
-				$$(metadataContainer.id).show();
-				// eslint-disable-next-line no-use-before-define
-				refreshTemplate();
-			}
-			else {
-				$$(metadataContainer.id).hide();
-				// eslint-disable-next-line no-use-before-define
-				refreshTemplate();
-			}
-		}
-	}
 };
 
 const windowBody = {
 	css: "metadata-window-body",
 	paddingX: 35,
-	width: 1100,
-	height: 610,
+	width: Math.floor(window.innerWidth * 0.7),
+	height: Math.floor(window.innerHeight * 0.7),
 	type: "clean",
 	rows: [
 		{
@@ -105,26 +87,14 @@ const windowBody = {
 	]
 };
 
-function refreshTemplate() {
-	// eslint-disable-next-line no-use-before-define
-	let imageTemplate = $$(getViewerId());
-	imageTemplate.refresh();
-}
-
 function getConfig(id, studyImage, closeCallback) {
-	let windowTitle;
 	templateViewer.id = `viewer-${webix.uid()}`;
 	templateViewerWithoutControls.id = `viewer-without-controls-${webix.uid()}`;
 	slideButton.id = `slidebutton-${webix.uid()}`;
 	layoutForMetadata.id = `layout-for-metadata-${webix.uid()}`;
 	metadataContainer.id = `metadata-container-${webix.uid()}`;
 	zoomButtonsTemplate.id = `zoombuttons-template-${webix.uid()}`;
-	if (!studyImage) {
-		windowTitle = "Metadata";
-	}
-	else {
-		windowTitle = studyImage;
-	}
+	const windowTitle = studyImage ?? "";
 	return windowWithHeader.getConfig(id, windowBody, windowTitle, closeCallback);
 }
 
@@ -148,6 +118,10 @@ function getMetadataLayoutId() {
 	return layoutForMetadata.id;
 }
 
+function getMetadataContainerId() {
+	return metadataContainer.id;
+}
+
 function getZoomButtonTemplateId() {
 	return zoomButtonsTemplate.id;
 }
@@ -159,5 +133,6 @@ export default {
 	getViewerWithoutControlsId,
 	getSliderButtonId,
 	getMetadataLayoutId,
+	getMetadataContainerId,
 	getZoomButtonTemplateId
 };

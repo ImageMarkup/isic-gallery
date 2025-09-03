@@ -68,7 +68,8 @@ function getConfig(collapsedViewId, config) {
 				webix.ui.resize();
 				if (collapsedViewId === constants.ID_GALLERY_RIGHT_PANEL) {
 					util.setHiddenGalleryCartList(isOpen);
-				} else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
+				}
+				else if (collapsedViewId === constants.ID_GALLERY_LEFT_PANEL) {
 					util.setHiddenGalleryLeftPanel(isOpen);
 				}
 				changeDataviewItemDimensions(collapsedView);

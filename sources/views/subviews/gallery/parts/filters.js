@@ -1,7 +1,6 @@
 import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
 import collectionsModel from "../../../../models/collectionsModel";
-import diagnosisModel from "../../../../models/diagnosis";
 import globalState from "../../../../models/state";
 import filterService from "../../../../services/gallery/filter";
 import util from "../../../../utils/util";
@@ -11,7 +10,7 @@ const NAME_SELECT_ALL_FILTERS_MOBILE = "filter-images-select-all-mobile-name";
 const NAME_SELECT_NONE_FILTERS = "filter-images-select-none-name";
 const NAME_SELECT_NONE_FILTERS_MOBILE = "filter-images-select-none-mobile-name";
 
-const showedFiltersCollection = appliedFilters.getShowedFiltersCollection();
+const shownFiltersCollection = appliedFilters.getShownFiltersCollection();
 
 function getLabelUI(label) {
 	const view = {
@@ -23,8 +22,6 @@ function getLabelUI(label) {
 	return view;
 }
 
-const expandedParentsFilters = [];
-
 function _attachCollapseToTreeFilter(filter, dataForCreatingControl, isCollapsedFilter) {
 	const collapsibleFilter = webix.copy(filter);
 	const collapseElement = collapsibleFilter.rows[0];
@@ -33,52 +30,45 @@ function _attachCollapseToTreeFilter(filter, dataForCreatingControl, isCollapsed
 		const collapser = children[0];
 		const controls = children[1];
 		if (!controls.isVisible()) {
-			webix.html.addCss(collapser.getNode(), "showed-filter");
+			webix.html.addCss(collapser.getNode(), "shown-filter");
 			webix.html.removeCss(collapser.getNode(), "hidden-filter");
 			this.config.isRowsVisible = true;
 			controls.show();
-			showedFiltersCollection.add({
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
 		}
 		else {
-			webix.html.removeCss(collapser.getNode(), "showed-filter");
+			webix.html.removeCss(collapser.getNode(), "shown-filter");
 			webix.html.addCss(collapser.getNode(), "hidden-filter");
 			this.config.isRowsVisible = false;
-			if (showedFiltersCollection.exists(dataForCreatingControl.id)) {
-				showedFiltersCollection.remove(dataForCreatingControl.id);
+			if (shownFiltersCollection.exists(dataForCreatingControl.id)) {
+				shownFiltersCollection.remove(dataForCreatingControl.id);
 			}
 			controls.hide();
 		}
 	};
 	collapseElement.onClick = {
-		"collapssible-filter-tree": collapsibleFilterFunction
+		"collapsible-filter-tree": collapsibleFilterFunction
 	};
 	if (isCollapsedFilter) {
-		collapseElement.css = "collapssible-filter-tree hidden-filter";
+		collapseElement.css = "collapsible-filter-tree hidden-filter";
 		collapsibleFilter.rows[1].hidden = true;
 	}
 	else {
-		collapseElement.css = "collapssible-filter-tree showed-filter";
+		collapseElement.css = "collapsible-filter-tree shown-filter";
 		collapsibleFilter.rows[1].hidden = false;
-		if (!showedFiltersCollection.exists(dataForCreatingControl.id)) {
-			showedFiltersCollection.add({
+		if (!shownFiltersCollection.exists(dataForCreatingControl.id)) {
+			shownFiltersCollection.add({
 				id: dataForCreatingControl.id
 			});
-		}
-		if (dataForCreatingControl.parent) {
-			const parentValue = diagnosisModel.getDiagnosisConcatenateValue(
-				dataForCreatingControl.parent
-			);
-			const parentId = util.getOptionId("diagnosis", parentValue);
-			expandedParentsFilters.push(parentId);
 		}
 	}
 
 	return collapsibleFilter;
 }
 
-function getCheckboxUI(data, collapsed, expandedFilters) {
+function getCheckboxUI(data, collapsed) {
 	const isMobile = util.isMobilePhone();
 	const handleAggregateButton = function (controlData, elements, newValue, app) {
 		const filtersInfo = [];
@@ -102,7 +92,7 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 		app.callEvent("filtersChanged", [filtersInfo, selectNone]);
 	};
 
-	const showOrHideSelectAllButton = function() {
+	const showOrHideSelectAllButton = function () {
 		const currentFiltersArray = appliedFilters.getFiltersArray();
 		const currentFiltersCount = currentFiltersArray.reduce((count, filterFromFilterArray) => {
 			if (data.id.includes(filterFromFilterArray.key)) {
@@ -218,118 +208,79 @@ function getCheckboxUI(data, collapsed, expandedFilters) {
 			]
 		};
 
-	if (data.type === constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX) {
-		expandedParentsFilters.length = 0;
-		data.options?.forEach((currentOption) => {
-			view.rows[1].rows.push(getTreeCheckboxUI(currentOption, data.id, expandedFilters));
-		});
-	}
-	else {
-		data?.options?.forEach((currentOption) => {
-			if (data.id === constants.COLLECTION_KEY) {
-				if (!currentOption.updated) {
-					const pinnedCollections = collectionsModel
-						.getPinnedCollections()
-						.map(collection => ({name: collection.name, id: collection.id}));
-					const currentCollection = pinnedCollections
-						.find(collection => collection.id === currentOption.key);
-					if (currentCollection) {
-						currentOption.updated = true;
-						currentOption.optionId = currentCollection.id;
-						currentOption.key = currentCollection.id;
-						currentOption.collectionName = currentCollection.name;
-					}
+	data?.options?.forEach((currentOption) => {
+		const isCollection = data.id === constants.COLLECTION_KEY;
+		if (isCollection) {
+			if (!currentOption.updated) {
+				const pinnedCollections = collectionsModel
+					.getPinnedCollections()
+					.map(collection => ({name: collection.name, id: collection.id}));
+				const currentCollection = pinnedCollections
+					.find(collection => collection.id === currentOption.key);
+				if (currentCollection) {
+					currentOption.updated = true;
+					currentOption.optionId = currentCollection.id;
+					currentOption.key = currentCollection.id;
+					currentOption.collectionName = currentCollection.name;
 				}
 			}
-			const optionName = data.id === constants.COLLECTION_KEY
-				? filterService.prepareOptionName(currentOption.name, data.id)
-				: filterService.prepareOptionName(currentOption.key, data.id);
-			const id = util.getOptionId(data.id, currentOption.key);
-			const filtersChangedData = appliedFilters.getFiltersChangedData(
-				data,
-				currentOption,
-				optionName
-			);
-			if (data.id === constants.COLLECTION_KEY) {
-				view.rows[1].rows.push(
-					{
-						cols: [
-							{
-								id,
-								view: "checkbox",
-								css: "checkbox-ctrl",
-								label: "",
-								labelRight: optionName,
-								value: 0,
-								name: id,
-								height: 28,
-								gravity: 3,
-								attributes: {
-									title: `${optionName}`,
-									dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
-								},
-								labelWidth: 0,
-								filtersChangedData,
-								on: {
-									onChange(status) {
-										let params = webix.copy(this.config.filtersChangedData);
-										if (currentOption && data.type === "rangeCheckbox") {
-											webix.extend(this.config.filtersChangedData, {
-												to: currentOption.to,
-												from: currentOption.from
-											});
-										}
-										params.remove = !status;
-										params.optionId = currentOption.optionId;
-										this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
-									}
-								}
-							},
-						]
+		}
+
+		const optionName = isCollection
+			? filterService.prepareOptionName(currentOption.name, data.id)
+			: filterService.prepareOptionName(currentOption.key, data.id);
+		const labelRight = isCollection ? optionName : `${optionName} (0)`;
+		const id = util.getOptionId(data.id, currentOption.key);
+		const filtersChangedData = appliedFilters.getFiltersChangedData(
+			data,
+			currentOption,
+			optionName
+		);
+
+		const checkboxConfig = {
+			id,
+			view: "checkbox",
+			css: "checkbox-ctrl",
+			label: "",
+			labelRight,
+			value: 0,
+			name: id,
+			height: 28,
+			attributes: {
+				title: labelRight,
+				dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null,
+			},
+			labelWidth: 0,
+			filtersChangedData,
+			on: {
+				onChange(status) {
+					let params = webix.copy(this.config.filtersChangedData);
+					if (currentOption && data.type === "rangeCheckbox") {
+						webix.extend(this.config.filtersChangedData, {
+							to: currentOption.to,
+							from: currentOption.from
+						});
 					}
-				);
+					params.remove = !status;
+					params.optionId = currentOption.optionId;
+					this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
+				}
 			}
-			else {
-				view.rows[1].rows.push(
-					{
-						id,
-						view: "checkbox",
-						css: "checkbox-ctrl",
-						label: "",
-						labelRight: `${optionName} (0)`,
-						value: 0,
-						name: id,
-						height: 28,
-						attributes: {
-							title: `${optionName} (0)`,
-							dataOptionId: currentOption.optionId ? `${currentOption.optionId}` : null
-						},
-						labelWidth: 0,
-						filtersChangedData,
-						on: {
-							onChange(status) {
-								let params = webix.copy(this.config.filtersChangedData);
-								if (currentOption && data.type === "rangeCheckbox") {
-									webix.extend(this.config.filtersChangedData, {
-										to: currentOption.to,
-										from: currentOption.from
-									});
-								}
-								params.remove = !status;
-								params.optionId = currentOption.optionId;
-								this.getTopParentView().$scope.app.callEvent("filtersChanged", [params]);
-							}
-						}
-					}
-				);
-			}
-		});
-	}
+		};
+
+		if (isCollection) {
+			view.rows[1].rows.push({
+				cols: [checkboxConfig]
+			});
+		}
+		else {
+			view.rows[1].rows.push(checkboxConfig);
+		}
+	});
 	return view;
 }
 
-function getTreeCheckboxUI(data, collapsed, expandedFilters) {
-	const elementsToOpen = [...expandedFilters];
+function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 	const labelId = data.id;
 	const treeTableId = `treeTable-${data.id}`;
 	const treeTableDataForFilters = {
@@ -375,7 +326,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 				rowHeight: 28,
 				borderless: true,
 				on: {
-					onItemCheck(id, state, event) {
+					onItemCheck(id, state) {
 						const item = this.getItem(id);
 						const treeData = globalState.filtersTreeData.get(treeTableId);
 						const filtersChangedData = [];
@@ -408,15 +359,8 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 							});
 							const currentParent = this.getItem(this.getParentId(id));
 							const firstChildId = currentParent ? this.getFirstChildId(currentParent.id) : null;
-							const firstChildItem = firstChildId ? this.getItem(firstChildId) : null;
-							if (firstChildItem) {
-								filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
-									treeData,
-									firstChildItem,
-									item.datatype,
-									true,
-								));
-								let nextSiblingId = this.getNextSiblingId(firstChildId);
+							if (firstChildId) {
+								let nextSiblingId = firstChildId;
 								while (nextSiblingId) {
 									const nextSiblingItem = this.getItem(nextSiblingId);
 									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
@@ -442,7 +386,7 @@ function getTreeCheckboxUI(data, collapsed, expandedFilters) {
 							allCheckedItems.forEach((checkedItemId) => {
 								const checkedItem = this.getItem(checkedItemId);
 								const parentForCheckedItem = this.getItem(this.getParentId(checkedItemId));
-								if (!parentForCheckedItem.checked) {
+								if (!parentForCheckedItem?.checked) {
 									filtersChangedData.push(appliedFilters.getFiltersChangeTreeItemData(
 										treeData,
 										checkedItem,

@@ -89,7 +89,7 @@ export default class ImagesSelectionWindow extends JetView {
 					<div class='gallery-images-info'>
 						<div class="gallery-images-header">
 							<div class="gallery-images-checkbox"> ${common.markCheckbox(obj, common)}</div>
-			                <div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${obj.name}</div>
+							<div class="thumbnails-name">${obj.name}</div>
 						</div>
 						<div class="gallery-images-buttons">
 						</div>

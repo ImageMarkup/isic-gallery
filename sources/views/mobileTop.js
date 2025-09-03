@@ -1,7 +1,5 @@
 import {JetView} from "webix-jet";
 
-import MobileHeader from "./header/mobileHeader";
-
 export default class MobileTopView extends JetView {
 	config() {
 		const ui = {

@@ -57,15 +57,74 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	// remove default behavior
 	suggestList.detachEvent("onItemClick");
 
+	const getAffectedSuggestTreeItems = (clickedItem, selectedIds) => {
+		const suggestData = suggestList.serialize();
+		const isClickedItemSelected = suggestList.isSelected(clickedItem.id);
+
+		const itemParents = suggestData.filter(
+			suggestItem => clickedItem.optionId.includes(suggestItem.optionId)
+			&& suggestItem.optionId !== clickedItem.optionId
+		).sort((a, b) => b.level - a.level);
+
+		const itemChildren = suggestData.filter(
+			suggestItem => suggestItem.optionId.includes(clickedItem.optionId)
+			&& suggestItem.optionId !== clickedItem.optionId
+		);
+
+		if (isClickedItemSelected) {
+			return [...itemParents, ...itemChildren];
+		}
+
+		const affectedParents = [];
+		let directChild = clickedItem;
+		for (const parent of itemParents) {
+			const directChildOptionId = directChild.optionId;
+			const nonSelectedChildren = suggestData.filter(item => item.optionId.includes(parent.optionId)
+					&& item.optionId !== parent.optionId
+					&& item.level === parent.level + 1
+					&& item.optionId !== directChildOptionId
+					&& !selectedIds.includes(item.id));
+			directChild = parent;
+			if (!parent.hasHiddenOption && nonSelectedChildren.length === 0) {
+				affectedParents.push(parent);
+			}
+			else {
+				break;
+			}
+		}
+
+		return [...affectedParents, ...itemChildren];
+	};
+
 	// add new behavior
 	suggestList.attachEvent("onItemClick", (id, event) => {
-		const item = suggestList.getItem(id);
+		const clickedItem = suggestList.getItem(id);
+		const isClickedItemSelected = suggestList.isSelected(id);
+		const isTreeCheckbox = clickedItem.key === "diagnosis";
+
+		if (isTreeCheckbox) {
+			const suggestItemsToToggle =
+				getAffectedSuggestTreeItems(clickedItem, suggestList.getSelectedId());
+			const suggestIdsToToggle = suggestItemsToToggle.map(suggestItem => suggestItem.id);
+
+			suggestList.blockEvent();
+			if (!isClickedItemSelected) {
+				suggestList.select(suggestIdsToToggle, true);
+			}
+			else {
+				suggestIdsToToggle.forEach((suggestIdToToggle) => {
+					suggestList.unselect(suggestIdToToggle);
+				});
+			}
+			suggestList.unblockEvent();
+		}
+
 		const appliedFilters = appliedFiltersModel.getFiltersArray();
 		const filterIds = appliedFilters.map(a => a.id);
-		if (item.key === "diagnosis") {
+		if (clickedItem.key === "diagnosis") {
 			/** @type {webix.ui.treetable} */
-			const diagnosisTree = $$(`treeTable-${item.key}`);
-			const controlId = item.optionId;
+			const diagnosisTree = $$(`treeTable-${clickedItem.key}`);
+			const controlId = clickedItem.optionId;
 			const control = diagnosisTree.getItem(controlId);
 			if (control) {
 				if (diagnosisTree.isChecked(controlId)) {
@@ -83,7 +142,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			}
 		}
 		else {
-			const controlId = item.optionId;
+			const controlId = clickedItem.optionId;
 			/** @type {webix.ui.checkbox} */
 			const control = $$(controlId);
 			if (control) {
@@ -99,23 +158,27 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	searchSuggest.attachEvent("onShow", () => {
 		const filters = appliedFiltersModel.getFiltersArray();
 		const suggestData = suggestList.serialize();
-		const selectedItems = [];
-		filters.forEach((f) => {
-			const found = suggestData.find((item) => {
-				if (f.id === item.optionId) {
-					return true;
-				}
-				return false;
-			});
-			if (found) {
-				// for treeCheckbox we use f.key|f.id, for other cases we use f.id
-				const id = f.view === "treeCheckbox" ? `${f.key}|${f.id}` : f.id;
-				selectedItems.push(id);
+
+		const selectedTreeIds = filters
+			.filter(filter => filter.view === "treeCheckbox")
+			.map(filter => `${filter.key}|${filter.optionId}`);
+
+		const suggestIdsToSelect = filters.flatMap((filter) => {
+			const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
+			if (!suggestItemToSelect) return [];
+			const isTreeCheckbox = filter.view === "treeCheckbox";
+			if (!isTreeCheckbox) {
+				return [suggestItemToSelect.id];
 			}
+			const suggestTreeItemsToSelect =
+				[suggestItemToSelect, ...getAffectedSuggestTreeItems(suggestItemToSelect, selectedTreeIds)];
+			return suggestTreeItemsToSelect.map(item => item.id);
 		});
+
 		suggestList.blockEvent();
-		suggestList.select(selectedItems);
+		suggestList.select(suggestIdsToSelect);
 		suggestList.unblockEvent();
+
 		foundCountTemplate.parse({count: suggestList.count()});
 		foundCountPopup.define("width", searchSuggest.config.width);
 		foundCountPopup.resize();

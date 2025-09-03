@@ -45,74 +45,22 @@ function getConfig(windowTitle, closeCallback) {
 	const leftSlider = getVerticalSlider(ID_LEFT_SLIDER, constants.MULTI_LESION_SIDE.LEFT);
 	const rightSlider = getVerticalSlider(ID_RIGHT_SLIDER, constants.MULTI_LESION_SIDE.RIGHT);
 
-	/** @type {webix.ui.labelConfig} */
 	const leftImageLabel = getImageLabel(ID_LEFT_IMAGE_NAME_LABEL);
 	const rightImageLabel = getImageLabel(ID_RIGHT_IMAGE_NAME_LABEL);
 
-	const leftAnchorIcon = {
-		view: "icon",
-		id: ID_LEFT_ANCHOR_ICON,
-		width: 20,
-		height: 20,
-		icon: "fas fa-anchor"
-	};
+	const leftAnchorIcon = getAnchorIcon(ID_LEFT_ANCHOR_ICON);
+	const rightAnchorIcon = getAnchorIcon(ID_RIGHT_ANCHOR_ICON);
 
-	const rightAnchorIcon = {
-		view: "icon",
-		id: ID_RIGHT_ANCHOR_ICON,
-		width: 20,
-		height: 20,
-		icon: "fas fa-anchor"
-	};
-
-	/** @type {webix.ui.richselectConfig} */
-	const leftGroupDropdown = {
-		view: "richselect",
-		id: ID_LEFT_DROP_DOWN_FILTER,
-		css: "multilesion-filter-dropdown",
-		label: "Group by:",
-		labelAlign: "left",
-		width: 270,
-		height: 24,
-		labelWidth: 75,
-		value: constants.MULTI_LESION_GROUP_BY.TIME,
-		// TODO: check options
-		options: [
-			constants.MULTI_LESION_GROUP_BY.TIME,
-			constants.MULTI_LESION_GROUP_BY.TYPE,
-			constants.MULTI_LESION_GROUP_BY.COMBINATION,
-			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
-		]
-	};
-
-	const rightGroupDropdown = {
-		view: "richselect",
-		id: ID_RIGHT_DROP_DOWN_FILTER,
-		css: "multilesion-filter-dropdown",
-		label: "Group by:",
-		labelAlign: "left",
-		width: 270,
-		height: 30,
-		labelWidth: 75,
-		value: constants.MULTI_LESION_GROUP_BY.TIME,
-		// TODO: check options
-		options: [
-			constants.MULTI_LESION_GROUP_BY.TIME,
-			constants.MULTI_LESION_GROUP_BY.TYPE,
-			constants.MULTI_LESION_GROUP_BY.COMBINATION,
-			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
-		]
-	};
+	const leftGroupDropdown = getGroupDropdown(ID_LEFT_DROP_DOWN_FILTER);
+	const rightGroupDropdown = getGroupDropdown(ID_RIGHT_DROP_DOWN_FILTER);
 
 	const leftTemplateViewer = getTemplateViewer(
 		ID_LEFT_IMAGE,
-		true,
 		constants.MULTI_LESION_SIDE.LEFT
 	);
 
 	const rightTemplateViewer = getTemplateViewer(
 		ID_RIGHT_IMAGE,
-		true,
 		constants.MULTI_LESION_SIDE.RIGHT
 	);
 
@@ -122,17 +70,13 @@ function getConfig(windowTitle, closeCallback) {
 		cols: [
 			{width: 20},
 			leftImageLabel,
-			{width: 5},
 			leftAnchorIcon,
-			{
-				gravity: 1,
-				minWidth: 10
-			},
+			{},
 			{
 				rows: [
-					{gravity: 1},
+					{},
 					leftGroupDropdown,
-					{gravity: 1},
+					{},
 				]
 			},
 			{width: 100}
@@ -146,16 +90,15 @@ function getConfig(windowTitle, closeCallback) {
 			{width: 100},
 			{
 				rows: [
-					{gravity: 1},
+					{},
 					rightGroupDropdown,
-					{gravity: 1},
+					{},
 				]
 			},
-			{gravity: 1},
+			{},
 			rightImageLabel,
-			{width: 5},
 			rightAnchorIcon,
-			{gravity: 1},
+			{width: 20},
 		],
 	};
 
@@ -216,11 +159,16 @@ function getConfig(windowTitle, closeCallback) {
 		]
 	};
 
+	const initialWidth = Math.floor(window.innerWidth * 0.85);
+	const initialHeight = Math.floor(window.innerHeight * 0.85);
+
 	return {
 		view: "window",
 		id: ID_MULTI_IMAGE_LESION_WINDOW,
-		width: 1240,
-		height: 750,
+		width: initialWidth,
+		height: initialHeight,
+		initialWidth,
+		initialHeight,
 		css: "window-with-header",
 		modal: true,
 		fullscreen: false,
@@ -313,8 +261,10 @@ function getConfig(windowTitle, closeCallback) {
 }
 
 /**
- * Description placeholder
- *
+ * @param {string} topPanelID
+ * @param {string} sliderID
+ * @param {string} prevButtonID
+ * @param {string} nextButtonID
  * @returns {webix.ui.listConfig}
  */
 function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
@@ -347,47 +297,19 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 					const lesion = lesionsModel.getLesionByID(lesionID);
 					const lesionModalitiesCount = lesionID
 						? lesionsModel.getLesionModalitiesCount(lesionID)
-						: null;
+						: 0;
 					const lesionTimePointsCount = lesionID
 						? lesionsModel.getLesionTimePointsCount(lesionID)
-						: null;
-					const imageIconDimensions = {
-						iconContainerDimensions: {
-							width: constants.DEFAULT_RIBBON_ICON_CONTAINER_WIDTH,
-							height: constants.DEFAULT_RIBBON_ICON_CONTAINER_HEIGHT
-						},
-						iconDimensions: {
-							width: constants.DEFAULT_RIBBON_IMAGE_ICON_WIDTH,
-							height: constants.DEFAULT_RIBBON_IMAGE_ICON_HEIGHT
-						}
-					};
-					const lesionIconElementClass = lesion
-						? "gallery-images-button-elem"
-						: "gallery-images-button-elem-disabled";
-					const disabledBadge = lesion
-						? ""
-						: " disabled-badge";
-					const diagnosisIcon = obj.hasAnnotations ?
-						`<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-							<span class="gallery-images-button diagnosis-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-								<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#diagnosis-icon" class="gallery-icon-use"></use>
-								</svg>
-							</span>
-							<span class="tooltip-block tooltip-block-top" style="z-index: 1000000">Multirater</span>
-						</div>` : "";
-					const lesionIcon = `<div class="${lesionIconElementClass} tooltip-container tooltip-gallery-images" style="style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-						<span class="gtm-lesion-viewer gallery-images-button layer-group tooltip-title">
-							<svg viewBox="0 0 26 26" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px">
-								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#layer-group" class="gallery-icon-use"></use>
-							</svg>
-						</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Lesion</span>
-						<span class="gallery-images-badge gallery-images-badge_1${disabledBadge} tooltip-title">${lesionModalitiesCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Modalities count</span>
-						<span class="gallery-images-badge gallery-images-badge_2${disabledBadge} tooltip-title">${lesionTimePointsCount ?? 0}</span>
-						<span class="tooltip-block tooltip-block-top" style="display: block">Time points count</span>
-					</div>`;
+						: 0;
+
+					const lesionIconBadges = `
+						${util.getIconBadge(lesionTimePointsCount, "Lesion time points count", lesion, true)}
+						${util.getIconBadge(lesionModalitiesCount, "Lesion modalities count", lesion, false)}
+					`;
+					const diagnosisIcon = obj.hasAnnotations
+						? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
+						: "";
+
 					const starHtml = obj.hasAnnotations ? "<span class='webix_icon fas fa-star gallery-images-star-icon'></span>" : "";
 					if (typeof galleryImageUrl.getPreviewImageUrl(lesionsModel.getItemID(obj)) === "undefined") {
 						galleryImageUrl.setPreviewImageUrl(
@@ -396,37 +318,16 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 						); // to prevent sending query more than 1 time
 					}
 					return `<div class="gallery-images-container" style="height: 104px;">
-							<div class='gallery-images-info' style="height: 104px; position: absolute; right:0px;">
+							<div class='gallery-images-info' style="height: 104px;">
 								<div class="gallery-images-header">
-									<div class="thumbnails-name" style="font-size: ${util.getNewThumnailsNameFontSize()}px">${lesionsModel.getItemID(obj)}</div>
+									<div class="thumbnails-name">${lesionsModel.getItemID(obj)}</div>
 								</div>
-								<div class="gallery-images-buttons" style="bottom: 0px;">
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-image-enlargement gallery-images-button resize-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#resize-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top" style="display: block">Enlarge</span>
-									</div>
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-image-metadata gallery-images-button info-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#info-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top">Metadata</span>
-									</div>
-									<div class="gallery-images-button-elem tooltip-container tooltip-gallery-images" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-										<span class="gtm-single-download gallery-images-button batch-icon tooltip-title" style="width: ${imageIconDimensions.iconContainerDimensions.width}px; height: ${imageIconDimensions.iconContainerDimensions.height}px;">
-											<svg viewBox="0 0 14 14" class="gallery-icon-svg" style="width: ${imageIconDimensions.iconDimensions.width}px; height: ${imageIconDimensions.iconDimensions.height}px;">
-												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#batch-icon" class="gallery-icon-use"></use>
-											</svg>
-										</span>
-										<span class="tooltip-block tooltip-block-top">Download ZIP</span>
-									</div>
+								<div class="gallery-images-buttons">
+									${util.getIconButton("resize-icon", true, "Enlarge", "gtm-image-enlargement", "")}
+									${util.getIconButton("info-icon", true, "Metadata", "gtm-image-metadata", "")}
+									${util.getIconButton("batch-icon", true, "Download ZIP", "gtm-single-download", "")}
+									${util.getIconButton("layer-group", lesion, "Lesion", "gtm-lesion-viewer", lesionIconBadges)}
 									${diagnosisIcon}
-									${lesionIcon}
 								</div>
 							</div>
 							${starHtml}
@@ -466,7 +367,7 @@ function getVerticalSlider(id, side) {
 		 * @param {string} obj.groupBy
 		 * @param {string | number} obj.groupValue
 		 * @param {Array} obj.images
-		 * @returns
+		 * @returns {string}
 		 */
 		template(obj, /* common */) {
 			let images;
@@ -506,31 +407,33 @@ function getVerticalSlider(id, side) {
 
 
 /**
- * Description placeholder
- *
- * @param {boolean} showButtons
+ * @param {string} id
+ * @param {string} side
  * @returns {webix.ui.templateConfig}
  */
-function getTemplateViewer(id, showButtons, side) {
+function getTemplateViewer(id, side) {
 	return {
 		view: "template",
 		id,
 		css: "absolute-centered-image-template",
 		template(obj) {
-			const imageUrl = galleryImageUrl.getNormalImageUrl(lesionsModel.getItemID(obj)) || "";
 			const lesionsImages = side === constants.MULTI_LESION_SIDE.LEFT
 				? lesionsModel.getCurrentLeftImages()
 				: lesionsModel.getCurrentRightImages();
 			return `<div class="image-zoom-container">
-						<img class= 'zoomable-image' src="${imageUrl}"/>
+						<div isic_id=${lesionsModel.getItemID(obj)} class="zoomable-image"></div>
 					</div>
-					${showButtons && lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
+					${lesionsImages.length > 1 ? '<a class="prev">&#10094;</a><a class="next">&#10095;</a>' : ""}
 					`;
 		},
 		borderless: true
 	};
 }
 
+/**
+ * @param {string} imageNameId
+ * @returns {webix.ui.labelConfig}
+ */
 function getImageLabel(imageNameId) {
 	return {
 		view: "label",
@@ -538,6 +441,44 @@ function getImageLabel(imageNameId) {
 		width: 100,
 		id: imageNameId,
 		label: ""
+	};
+}
+
+/**
+ * @param {string} id
+ * @returns {webix.ui.iconConfig}
+ */
+function getAnchorIcon(id) {
+	return {
+		view: "icon",
+		id,
+		width: 30,
+		height: 20,
+		icon: "fas fa-anchor"
+	};
+}
+
+/**
+ * @param {string} id
+ * @returns {webix.ui.richselectConfig}
+ */
+function getGroupDropdown(id) {
+	return {
+		view: "richselect",
+		id,
+		css: "multilesion-filter-dropdown",
+		label: "Group by:",
+		labelAlign: "left",
+		width: 270,
+		height: 30,
+		labelWidth: 75,
+		value: constants.MULTI_LESION_GROUP_BY.TIME,
+		options: [
+			constants.MULTI_LESION_GROUP_BY.TIME,
+			constants.MULTI_LESION_GROUP_BY.TYPE,
+			constants.MULTI_LESION_GROUP_BY.COMBINATION,
+			constants.MULTI_LESION_GROUP_BY.NO_GROUP,
+		]
 	};
 }
 
