@@ -39,6 +39,7 @@ function convertDiagnosisToTreeArray(tree, diagnosisCountMap) {
 			const diagnosisItem = {};
 			diagnosisItem.id = diagnosisFlat[k].concatenate.replaceAll(CONCATENATE_SEPARATOR, "|");
 			diagnosisItem.name = k;
+			diagnosisItem.displayName = k;
 			diagnosisItem.type = "treeCheckbox";
 			diagnosisItem.datatype = "string";
 			diagnosisItem.level = diagnosisFlat[k].level;

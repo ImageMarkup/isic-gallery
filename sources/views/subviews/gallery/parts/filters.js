@@ -311,8 +311,8 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 					{
 						id: "name",
 						template: (obj, common) => {
-							const name = obj.$level < 3 ? obj.name.toUpperCase() : obj.name;
-							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;" title="${name}">${name}</span>`;
+							const displayName = obj.$level < 3 ? obj.displayName.toUpperCase() : obj.displayName;
+							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;" title="${displayName}">${displayName}</span>`;
 						},
 						fillspace: true,
 						select: false

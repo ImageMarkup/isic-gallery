@@ -50,46 +50,42 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 	return foundItem ? foundItem.doc_count : null;
 }
 
-function _setFilterCounts(controlView, totalCount, currentCount) {
-	const oldLabel = controlView.config.labelRight;
-	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
-	const baseLabelText = lastBracketIndex === -1
-		? oldLabel
-		: oldLabel.substring(0, lastBracketIndex);
-	let firstNumberHtml;
-	if (totalCount === currentCount) {
-		firstNumberHtml = "";
-	}
-	else if (!currentCount) {
-		firstNumberHtml = "0 / ";
-	}
-	else {
-		firstNumberHtml = `${currentCount} / `;
-	}
-	const newLabel = `${baseLabelText}(${firstNumberHtml}${totalCount})`;
-	controlView.define("labelRight", newLabel);
-	controlView.getNode().setAttribute("title", newLabel);
+/**
+ * @private
+ * @param {string} filterName
+ * @param {number} totalCount
+ * @param {number} currentCount
+ * @returns {string}
+ */
+function _getFilterLabelWithCount(filterName, totalCount, currentCount) {
+	const firstNumberHtml = totalCount === currentCount ? "" : `${currentCount || 0} / `;
+	return `${filterName} (${firstNumberHtml}${totalCount})`;
+}
+
+/**
+ * @private
+ * @param {Object} controlView
+ * @param {number} totalCount
+ * @param {number} currentCount
+ * @returns {void}
+ */
+function _setFilterCount(controlView, totalCount, currentCount) {
+	const newLabelRight = _getFilterLabelWithCount(controlView.config.filtersChangedData.value, totalCount, currentCount);
+	controlView.define("labelRight", newLabelRight);
+	controlView.getNode().setAttribute("title", newLabelRight);
 	controlView.refresh();
 }
 
-function _setDiagnosisFilterCounts(treeView, option, totalCount, currentCount) {
-	const oldLabel = option.name;
-	const lastBracketIndex = oldLabel.lastIndexOf("("); // counts is in () in label. We should remove old counts and set new counts
-	const baseLabelText = lastBracketIndex === -1
-		? oldLabel
-		: oldLabel.substring(0, lastBracketIndex);
-	let firstNumberHtml;
-	if (totalCount === currentCount) {
-		firstNumberHtml = "";
-	}
-	else if (!currentCount) {
-		firstNumberHtml = "0 / ";
-	}
-	else {
-		firstNumberHtml = `${currentCount} / `;
-	}
-	const newLabel = `${baseLabelText} (${firstNumberHtml}${totalCount})`;
-	option.name = newLabel;
+/**
+ * @private
+ * @param {Object} treeView
+ * @param {{ id: string, name: string, displayName: string }} option
+ * @param {number} totalCount
+ * @param {number} currentCount
+ * @returns {void}
+ */
+function _setTreeFilterCount(treeView, option, totalCount, currentCount) {
+	option.displayName = _getFilterLabelWithCount(option.name, totalCount, currentCount);
 	treeView.updateItem(option.id, option);
 }
 
@@ -152,7 +148,7 @@ function setParentCheckboxState(treeView, optionId) {
 
 	const parentItem = treeView.getItem(parentId);
 	if (parentItem.hasHiddenOption) {
-		treeView.add({id: `${parentId}|empty`, hidden: true, name: ""}, 0, parentId);
+		treeView.add({id: `${parentId}|empty`, hidden: true, name: "", displayName: ""}, 0, parentId);
 		treeView.uncheckItem(`${parentId}|empty`);
 		treeView.remove(`${parentId}|empty`);
 	}
@@ -244,7 +240,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 					const optionId = prepareOptionName(value.fullKey, filterKey);
 					const option = treeView?.getItem(optionId);
 					if (option) {
-						_setDiagnosisFilterCounts(treeView, option, value.doc_count, currentCount);
+						_setTreeFilterCount(treeView, option, value.doc_count, currentCount);
 						if (!displayDiagnosis.find(item => item === v)) {
 							treeView.remove(optionId);
 						}
@@ -274,7 +270,7 @@ function updateFiltersCounts(countsAfterFiltration) {
 					const controlView = $$(controlId);
 					if (controlView) {
 						if (filterKey !== constants.COLLECTION_KEY) {
-							_setFilterCounts(controlView, value.doc_count, currentCount);
+							_setFilterCount(controlView, value.doc_count, currentCount);
 						}
 					}
 				});
