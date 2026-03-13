@@ -1,4 +1,3 @@
-// import AWS from "aws-sdk";
 // import ajaxActions from "../ajaxActions";
 // import createDatasetModel from "../../models/createDatasetModel";
 // import constants from "../../constants";
