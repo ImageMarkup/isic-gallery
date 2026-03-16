@@ -164,15 +164,16 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			.map(filter => `${filter.key}|${filter.optionId}`);
 
 		const suggestIdsToSelect = filters.flatMap((filter) => {
-			const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
-			if (!suggestItemToSelect) return [];
 			const isTreeCheckbox = filter.view === "treeCheckbox";
 			if (!isTreeCheckbox) {
-				return [suggestItemToSelect.id];
+				const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
+				return suggestItemToSelect ? [suggestItemToSelect.id] : [];
 			}
-			const suggestTreeItemsToSelect =
-				[suggestItemToSelect, ...getAffectedSuggestTreeItems(suggestItemToSelect, selectedTreeIds)];
-			return suggestTreeItemsToSelect.map(item => item.id);
+			const suggestTreeItemsToSelect = suggestData
+				.filter(item => item.key === filter.key && (item.optionId === filter.id || item.optionId.startsWith(`${filter.id}|`)))
+				.flatMap(item => [item, ...getAffectedSuggestTreeItems(item, selectedTreeIds)]);
+
+			return Array.from(new Set(suggestTreeItemsToSelect.map(item => item.id)));
 		});
 
 		suggestList.blockEvent();
