@@ -1,0 +1,1499 @@
+{
+    "Head and neck": {
+        "level": 1,
+        "parent": null,
+        "concatenate": "Head and neck",
+        "children": [
+            "Neck",
+            "Head"
+        ]
+    },
+    "Trunk": {
+        "level": 1,
+        "parent": null,
+        "concatenate": "Trunk",
+        "children": [
+            "Posterior trunk",
+            "Lateral trunk",
+            "Anterior trunk"
+        ]
+    },
+    "Upper extremity": {
+        "level": 1,
+        "parent": null,
+        "concatenate": "Upper extremity",
+        "children": [
+            "Hand",
+            "Wrist",
+            "Elbow",
+            "Upper arm",
+            "Shoulder",
+            "Forearm"
+        ]
+    },
+    "Lower extremity": {
+        "level": 1,
+        "parent": null,
+        "concatenate": "Lower extremity",
+        "children": [
+            "Foot",
+            "Ankle",
+            "Lower leg",
+            "Thigh",
+            "Buttock",
+            "Knee"
+        ]
+    },
+    "Anogenital region": {
+        "level": 1,
+        "parent": null,
+        "concatenate": "Anogenital region",
+        "children": [
+            "Genital region",
+            "Perianal region"
+        ]
+    },
+    "Genital region": {
+        "level": 2,
+        "parent": "Anogenital region",
+        "concatenate": "Anogenital region::Genital region",
+        "children": [
+            "Vagina",
+            "Vulva",
+            "Penis",
+            "Scrotum",
+            "Perigenital region"
+        ]
+    },
+    "Perianal region": {
+        "level": 2,
+        "parent": "Anogenital region",
+        "concatenate": "Anogenital region::Perianal region",
+        "children": [
+            "Anus",
+            "Intergluteal cleft",
+            "Perineum"
+        ]
+    },
+    "Foot": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Foot",
+        "children": [
+            "Dorsum of foot",
+            "Sole of foot",
+            "Toes"
+        ]
+    },
+    "Ankle": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Ankle",
+        "children": [
+            "Medial ankle",
+            "Lateral ankle",
+            "Achilles region",
+            "Anterior ankle"
+        ]
+    },
+    "Lower leg": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Lower leg",
+        "children": [
+            "Shin",
+            "Calf"
+        ]
+    },
+    "Thigh": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Thigh",
+        "children": [
+            "Medial thigh",
+            "Posterior thigh",
+            "Anterior thigh",
+            "Lateral thigh"
+        ]
+    },
+    "Buttock": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Buttock",
+        "children": [
+            "Gluteal fold"
+        ]
+    },
+    "Hand": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Hand",
+        "children": [
+            "Palm of hand",
+            "Fingers and thumb",
+            "Dorsum of hand"
+        ]
+    },
+    "Wrist": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Wrist",
+        "children": [
+            "Ulnar wrist",
+            "Radial wrist",
+            "Volar wrist",
+            "Dorsal wrist"
+        ]
+    },
+    "Knee": {
+        "level": 2,
+        "parent": "Lower extremity",
+        "concatenate": "Lower extremity::Knee",
+        "children": [
+            "Popliteal fossa",
+            "Medial knee",
+            "Lateral knee",
+            "Patellar region"
+        ]
+    },
+    "Elbow": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Elbow",
+        "children": [
+            "Elbow tip",
+            "Lateral elbow",
+            "Medial elbow",
+            "Antecubital fossa"
+        ]
+    },
+    "Upper arm": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Upper arm",
+        "children": [
+            "Anterior upper arm",
+            "Lateral upper arm",
+            "Posterior upper arm",
+            "Medial upper arm"
+        ]
+    },
+    "Shoulder": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Shoulder",
+        "children": [
+            "Lateral shoulder",
+            "Posterior shoulder",
+            "Anterior shoulder"
+        ]
+    },
+    "Posterior trunk": {
+        "level": 2,
+        "parent": "Trunk",
+        "concatenate": "Trunk::Posterior trunk",
+        "children": [
+            "Upper back",
+            "Mid back",
+            "Lower back"
+        ]
+    },
+    "Lateral trunk": {
+        "level": 2,
+        "parent": "Trunk",
+        "concatenate": "Trunk::Lateral trunk",
+        "children": [
+            "Axilla",
+            "Lateral chest",
+            "Lateral abdomen"
+        ]
+    },
+    "Anterior trunk": {
+        "level": 2,
+        "parent": "Trunk",
+        "concatenate": "Trunk::Anterior trunk",
+        "children": [
+            "Anterior abdomen",
+            "Anterior chest"
+        ]
+    },
+    "Neck": {
+        "level": 2,
+        "parent": "Head and neck",
+        "concatenate": "Head and neck::Neck",
+        "children": [
+            "Front of neck",
+            "Side of neck",
+            "Nape of neck",
+            "Supraclavicular region"
+        ]
+    },
+    "Head": {
+        "level": 2,
+        "parent": "Head and neck",
+        "concatenate": "Head and neck::Head",
+        "children": [
+            "Scalp",
+            "Ear",
+            "Face"
+        ]
+    },
+    "Forearm": {
+        "level": 2,
+        "parent": "Upper extremity",
+        "concatenate": "Upper extremity::Forearm",
+        "children": [
+            "Ulnar forearm",
+            "Dorsal forearm",
+            "Volar forearm",
+            "Radial forearm"
+        ]
+    },
+    "Popliteal fossa": {
+        "level": 3,
+        "parent": "Knee",
+        "concatenate": "Lower extremity::Knee::Popliteal fossa",
+        "children": null
+    },
+    "Medial knee": {
+        "level": 3,
+        "parent": "Knee",
+        "concatenate": "Lower extremity::Knee::Medial knee",
+        "children": null
+    },
+    "Lateral knee": {
+        "level": 3,
+        "parent": "Knee",
+        "concatenate": "Lower extremity::Knee::Lateral knee",
+        "children": null
+    },
+    "Patellar region": {
+        "level": 3,
+        "parent": "Knee",
+        "concatenate": "Lower extremity::Knee::Patellar region",
+        "children": null
+    },
+    "Medial thigh": {
+        "level": 3,
+        "parent": "Thigh",
+        "concatenate": "Lower extremity::Thigh::Medial thigh",
+        "children": [
+            "Upper medial thigh"
+        ]
+    },
+    "Posterior thigh": {
+        "level": 3,
+        "parent": "Thigh",
+        "concatenate": "Lower extremity::Thigh::Posterior thigh",
+        "children": null
+    },
+    "Palm of hand": {
+        "level": 3,
+        "parent": "Hand",
+        "concatenate": "Upper extremity::Hand::Palm of hand",
+        "children": [
+            "Distal palm",
+            "Central palm",
+            "Thenar eminence",
+            "Hypothenar eminence"
+        ]
+    },
+    "Anterior thigh": {
+        "level": 3,
+        "parent": "Thigh",
+        "concatenate": "Lower extremity::Thigh::Anterior thigh",
+        "children": null
+    },
+    "Fingers and thumb": {
+        "level": 3,
+        "parent": "Hand",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb",
+        "children": [
+            "Index finger",
+            "Little finger",
+            "Ring finger",
+            "Middle finger",
+            "Thumb"
+        ]
+    },
+    "Dorsum of hand": {
+        "level": 3,
+        "parent": "Hand",
+        "concatenate": "Upper extremity::Hand::Dorsum of hand",
+        "children": [
+            "Interdigital web spaces of hand",
+            "Knuckles"
+        ]
+    },
+    "Ulnar wrist": {
+        "level": 3,
+        "parent": "Wrist",
+        "concatenate": "Upper extremity::Wrist::Ulnar wrist",
+        "children": null
+    },
+    "Shin": {
+        "level": 3,
+        "parent": "Lower leg",
+        "concatenate": "Lower extremity::Lower leg::Shin",
+        "children": null
+    },
+    "Lateral thigh": {
+        "level": 3,
+        "parent": "Thigh",
+        "concatenate": "Lower extremity::Thigh::Lateral thigh",
+        "children": [
+            "Hip"
+        ]
+    },
+    "Calf": {
+        "level": 3,
+        "parent": "Lower leg",
+        "concatenate": "Lower extremity::Lower leg::Calf",
+        "children": [
+            "Posterior calf",
+            "Medial calf",
+            "Lateral calf"
+        ]
+    },
+    "Vagina": {
+        "level": 3,
+        "parent": "Genital region",
+        "concatenate": "Anogenital region::Genital region::Vagina",
+        "children": [
+            "Vaginal introitus"
+        ]
+    },
+    "Medial ankle": {
+        "level": 3,
+        "parent": "Ankle",
+        "concatenate": "Lower extremity::Ankle::Medial ankle",
+        "children": [
+            "Medial malleolus"
+        ]
+    },
+    "Lateral ankle": {
+        "level": 3,
+        "parent": "Ankle",
+        "concatenate": "Lower extremity::Ankle::Lateral ankle",
+        "children": [
+            "Lateral malleolus"
+        ]
+    },
+    "Achilles region": {
+        "level": 3,
+        "parent": "Ankle",
+        "concatenate": "Lower extremity::Ankle::Achilles region",
+        "children": null
+    },
+    "Dorsum of foot": {
+        "level": 3,
+        "parent": "Foot",
+        "concatenate": "Lower extremity::Foot::Dorsum of foot",
+        "children": [
+            "Metatarsophalangeal joints",
+            "Interdigital web spaces of foot"
+        ]
+    },
+    "Sole of foot": {
+        "level": 3,
+        "parent": "Foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot",
+        "children": [
+            "Plantar surface of forefoot",
+            "Lateral plantar region",
+            "Arch of foot",
+            "Heel",
+            "Medial surface of sole of foot"
+        ]
+    },
+    "Toes": {
+        "level": 3,
+        "parent": "Foot",
+        "concatenate": "Lower extremity::Foot::Toes",
+        "children": [
+            "Fifth toe",
+            "Fourth toe",
+            "Third toe",
+            "Second toe",
+            "Great toe"
+        ]
+    },
+    "Anus": {
+        "level": 3,
+        "parent": "Perianal region",
+        "concatenate": "Anogenital region::Perianal region::Anus",
+        "children": null
+    },
+    "Intergluteal cleft": {
+        "level": 3,
+        "parent": "Perianal region",
+        "concatenate": "Anogenital region::Perianal region::Intergluteal cleft",
+        "children": null
+    },
+    "Perineum": {
+        "level": 3,
+        "parent": "Perianal region",
+        "concatenate": "Anogenital region::Perianal region::Perineum",
+        "children": null
+    },
+    "Vulva": {
+        "level": 3,
+        "parent": "Genital region",
+        "concatenate": "Anogenital region::Genital region::Vulva",
+        "children": [
+            "Frenulum of labia minora",
+            "Vulval vestibule",
+            "Clitoris",
+            "Labium minus",
+            "Labium majus"
+        ]
+    },
+    "Radial wrist": {
+        "level": 3,
+        "parent": "Wrist",
+        "concatenate": "Upper extremity::Wrist::Radial wrist",
+        "children": null
+    },
+    "Penis": {
+        "level": 3,
+        "parent": "Genital region",
+        "concatenate": "Anogenital region::Genital region::Penis",
+        "children": [
+            "Glans penis"
+        ]
+    },
+    "Scrotum": {
+        "level": 3,
+        "parent": "Genital region",
+        "concatenate": "Anogenital region::Genital region::Scrotum",
+        "children": null
+    },
+    "Perigenital region": {
+        "level": 3,
+        "parent": "Genital region",
+        "concatenate": "Anogenital region::Genital region::Perigenital region",
+        "children": [
+            "Suprapubic region",
+            "Inguinocrural fold"
+        ]
+    },
+    "Anterior ankle": {
+        "level": 3,
+        "parent": "Ankle",
+        "concatenate": "Lower extremity::Ankle::Anterior ankle",
+        "children": null
+    },
+    "Volar wrist": {
+        "level": 3,
+        "parent": "Wrist",
+        "concatenate": "Upper extremity::Wrist::Volar wrist",
+        "children": null
+    },
+    "Gluteal fold": {
+        "level": 3,
+        "parent": "Buttock",
+        "concatenate": "Lower extremity::Buttock::Gluteal fold",
+        "children": null
+    },
+    "Ulnar forearm": {
+        "level": 3,
+        "parent": "Forearm",
+        "concatenate": "Upper extremity::Forearm::Ulnar forearm",
+        "children": null
+    },
+    "Dorsal wrist": {
+        "level": 3,
+        "parent": "Wrist",
+        "concatenate": "Upper extremity::Wrist::Dorsal wrist",
+        "children": null
+    },
+    "Scalp": {
+        "level": 3,
+        "parent": "Head",
+        "concatenate": "Head and neck::Head::Scalp",
+        "children": [
+            "Vertex of scalp",
+            "Occipital scalp",
+            "Parietal scalp",
+            "Temporal scalp",
+            "Frontal scalp"
+        ]
+    },
+    "Ear": {
+        "level": 3,
+        "parent": "Head",
+        "concatenate": "Head and neck::Head::Ear",
+        "children": [
+            "Pinna",
+            "External auditory canal"
+        ]
+    },
+    "Face": {
+        "level": 3,
+        "parent": "Head",
+        "concatenate": "Head and neck::Head::Face",
+        "children": [
+            "Mouth",
+            "Oral region",
+            "Nose",
+            "Cheek",
+            "Orbital region",
+            "Temple",
+            "Chin",
+            "Forehead"
+        ]
+    },
+    "Front of neck": {
+        "level": 3,
+        "parent": "Neck",
+        "concatenate": "Head and neck::Neck::Front of neck",
+        "children": null
+    },
+    "Side of neck": {
+        "level": 3,
+        "parent": "Neck",
+        "concatenate": "Head and neck::Neck::Side of neck",
+        "children": null
+    },
+    "Nape of neck": {
+        "level": 3,
+        "parent": "Neck",
+        "concatenate": "Head and neck::Neck::Nape of neck",
+        "children": null
+    },
+    "Supraclavicular region": {
+        "level": 3,
+        "parent": "Neck",
+        "concatenate": "Head and neck::Neck::Supraclavicular region",
+        "children": null
+    },
+    "Anterior abdomen": {
+        "level": 3,
+        "parent": "Anterior trunk",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen",
+        "children": [
+            "Upper anterior abdomen",
+            "Lower anterior abdomen",
+            "Periumbilical region",
+            "Mid anterior abdomen"
+        ]
+    },
+    "Axilla": {
+        "level": 3,
+        "parent": "Lateral trunk",
+        "concatenate": "Trunk::Lateral trunk::Axilla",
+        "children": [
+            "Posterior axillary fold",
+            "Anterior axillary fold",
+            "Apex of axilla"
+        ]
+    },
+    "Lateral chest": {
+        "level": 3,
+        "parent": "Lateral trunk",
+        "concatenate": "Trunk::Lateral trunk::Lateral chest",
+        "children": [
+            "Lower lateral chest",
+            "Upper lateral chest"
+        ]
+    },
+    "Lateral abdomen": {
+        "level": 3,
+        "parent": "Lateral trunk",
+        "concatenate": "Trunk::Lateral trunk::Lateral abdomen",
+        "children": null
+    },
+    "Upper back": {
+        "level": 3,
+        "parent": "Posterior trunk",
+        "concatenate": "Trunk::Posterior trunk::Upper back",
+        "children": [
+            "Paraspinal upper back",
+            "Lateral upper back"
+        ]
+    },
+    "Mid back": {
+        "level": 3,
+        "parent": "Posterior trunk",
+        "concatenate": "Trunk::Posterior trunk::Mid back",
+        "children": [
+            "Paraspinal mid back",
+            "Lateral mid back"
+        ]
+    },
+    "Lower back": {
+        "level": 3,
+        "parent": "Posterior trunk",
+        "concatenate": "Trunk::Posterior trunk::Lower back",
+        "children": [
+            "Paraspinal lower back",
+            "Lateral lower back"
+        ]
+    },
+    "Anterior chest": {
+        "level": 3,
+        "parent": "Anterior trunk",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest",
+        "children": [
+            "Upper anterior chest",
+            "Lower anterior chest",
+            "Breast"
+        ]
+    },
+    "Lateral shoulder": {
+        "level": 3,
+        "parent": "Shoulder",
+        "concatenate": "Upper extremity::Shoulder::Lateral shoulder",
+        "children": null
+    },
+    "Posterior shoulder": {
+        "level": 3,
+        "parent": "Shoulder",
+        "concatenate": "Upper extremity::Shoulder::Posterior shoulder",
+        "children": null
+    },
+    "Anterior upper arm": {
+        "level": 3,
+        "parent": "Upper arm",
+        "concatenate": "Upper extremity::Upper arm::Anterior upper arm",
+        "children": null
+    },
+    "Lateral upper arm": {
+        "level": 3,
+        "parent": "Upper arm",
+        "concatenate": "Upper extremity::Upper arm::Lateral upper arm",
+        "children": null
+    },
+    "Posterior upper arm": {
+        "level": 3,
+        "parent": "Upper arm",
+        "concatenate": "Upper extremity::Upper arm::Posterior upper arm",
+        "children": null
+    },
+    "Medial upper arm": {
+        "level": 3,
+        "parent": "Upper arm",
+        "concatenate": "Upper extremity::Upper arm::Medial upper arm",
+        "children": null
+    },
+    "Elbow tip": {
+        "level": 3,
+        "parent": "Elbow",
+        "concatenate": "Upper extremity::Elbow::Elbow tip",
+        "children": null
+    },
+    "Lateral elbow": {
+        "level": 3,
+        "parent": "Elbow",
+        "concatenate": "Upper extremity::Elbow::Lateral elbow",
+        "children": null
+    },
+    "Medial elbow": {
+        "level": 3,
+        "parent": "Elbow",
+        "concatenate": "Upper extremity::Elbow::Medial elbow",
+        "children": null
+    },
+    "Antecubital fossa": {
+        "level": 3,
+        "parent": "Elbow",
+        "concatenate": "Upper extremity::Elbow::Antecubital fossa",
+        "children": null
+    },
+    "Dorsal forearm": {
+        "level": 3,
+        "parent": "Forearm",
+        "concatenate": "Upper extremity::Forearm::Dorsal forearm",
+        "children": null
+    },
+    "Volar forearm": {
+        "level": 3,
+        "parent": "Forearm",
+        "concatenate": "Upper extremity::Forearm::Volar forearm",
+        "children": null
+    },
+    "Radial forearm": {
+        "level": 3,
+        "parent": "Forearm",
+        "concatenate": "Upper extremity::Forearm::Radial forearm",
+        "children": null
+    },
+    "Anterior shoulder": {
+        "level": 3,
+        "parent": "Shoulder",
+        "concatenate": "Upper extremity::Shoulder::Anterior shoulder",
+        "children": null
+    },
+    "Posterior calf": {
+        "level": 4,
+        "parent": "Calf",
+        "concatenate": "Lower extremity::Lower leg::Calf::Posterior calf",
+        "children": null
+    },
+    "Medial malleolus": {
+        "level": 4,
+        "parent": "Medial ankle",
+        "concatenate": "Lower extremity::Ankle::Medial ankle::Medial malleolus",
+        "children": null
+    },
+    "Metatarsophalangeal joints": {
+        "level": 4,
+        "parent": "Dorsum of foot",
+        "concatenate": "Lower extremity::Foot::Dorsum of foot::Metatarsophalangeal joints",
+        "children": null
+    },
+    "Medial calf": {
+        "level": 4,
+        "parent": "Calf",
+        "concatenate": "Lower extremity::Lower leg::Calf::Medial calf",
+        "children": null
+    },
+    "Interdigital web spaces of foot": {
+        "level": 4,
+        "parent": "Dorsum of foot",
+        "concatenate": "Lower extremity::Foot::Dorsum of foot::Interdigital web spaces of foot",
+        "children": null
+    },
+    "Lateral malleolus": {
+        "level": 4,
+        "parent": "Lateral ankle",
+        "concatenate": "Lower extremity::Ankle::Lateral ankle::Lateral malleolus",
+        "children": null
+    },
+    "Lateral calf": {
+        "level": 4,
+        "parent": "Calf",
+        "concatenate": "Lower extremity::Lower leg::Calf::Lateral calf",
+        "children": null
+    },
+    "Index finger": {
+        "level": 4,
+        "parent": "Fingers and thumb",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb::Index finger",
+        "children": null
+    },
+    "Hip": {
+        "level": 4,
+        "parent": "Lateral thigh",
+        "concatenate": "Lower extremity::Thigh::Lateral thigh::Hip",
+        "children": null
+    },
+    "Little finger": {
+        "level": 4,
+        "parent": "Fingers and thumb",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb::Little finger",
+        "children": null
+    },
+    "Ring finger": {
+        "level": 4,
+        "parent": "Fingers and thumb",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb::Ring finger",
+        "children": null
+    },
+    "Middle finger": {
+        "level": 4,
+        "parent": "Fingers and thumb",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb::Middle finger",
+        "children": null
+    },
+    "Thumb": {
+        "level": 4,
+        "parent": "Fingers and thumb",
+        "concatenate": "Upper extremity::Hand::Fingers and thumb::Thumb",
+        "children": null
+    },
+    "Distal palm": {
+        "level": 4,
+        "parent": "Palm of hand",
+        "concatenate": "Upper extremity::Hand::Palm of hand::Distal palm",
+        "children": null
+    },
+    "Plantar surface of forefoot": {
+        "level": 4,
+        "parent": "Sole of foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot::Plantar surface of forefoot",
+        "children": null
+    },
+    "Upper medial thigh": {
+        "level": 4,
+        "parent": "Medial thigh",
+        "concatenate": "Lower extremity::Thigh::Medial thigh::Upper medial thigh",
+        "children": null
+    },
+    "Lateral plantar region": {
+        "level": 4,
+        "parent": "Sole of foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot::Lateral plantar region",
+        "children": null
+    },
+    "Glans penis": {
+        "level": 4,
+        "parent": "Penis",
+        "concatenate": "Anogenital region::Genital region::Penis::Glans penis",
+        "children": null
+    },
+    "Arch of foot": {
+        "level": 4,
+        "parent": "Sole of foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot::Arch of foot",
+        "children": null
+    },
+    "Central palm": {
+        "level": 4,
+        "parent": "Palm of hand",
+        "concatenate": "Upper extremity::Hand::Palm of hand::Central palm",
+        "children": null
+    },
+    "Suprapubic region": {
+        "level": 4,
+        "parent": "Perigenital region",
+        "concatenate": "Anogenital region::Genital region::Perigenital region::Suprapubic region",
+        "children": [
+            "Mons pubis"
+        ]
+    },
+    "Inguinocrural fold": {
+        "level": 4,
+        "parent": "Perigenital region",
+        "concatenate": "Anogenital region::Genital region::Perigenital region::Inguinocrural fold",
+        "children": null
+    },
+    "Vaginal introitus": {
+        "level": 4,
+        "parent": "Vagina",
+        "concatenate": "Anogenital region::Genital region::Vagina::Vaginal introitus",
+        "children": null
+    },
+    "Frenulum of labia minora": {
+        "level": 4,
+        "parent": "Vulva",
+        "concatenate": "Anogenital region::Genital region::Vulva::Frenulum of labia minora",
+        "children": null
+    },
+    "Vulval vestibule": {
+        "level": 4,
+        "parent": "Vulva",
+        "concatenate": "Anogenital region::Genital region::Vulva::Vulval vestibule",
+        "children": null
+    },
+    "Clitoris": {
+        "level": 4,
+        "parent": "Vulva",
+        "concatenate": "Anogenital region::Genital region::Vulva::Clitoris",
+        "children": null
+    },
+    "Labium minus": {
+        "level": 4,
+        "parent": "Vulva",
+        "concatenate": "Anogenital region::Genital region::Vulva::Labium minus",
+        "children": null
+    },
+    "Labium majus": {
+        "level": 4,
+        "parent": "Vulva",
+        "concatenate": "Anogenital region::Genital region::Vulva::Labium majus",
+        "children": null
+    },
+    "Fifth toe": {
+        "level": 4,
+        "parent": "Toes",
+        "concatenate": "Lower extremity::Foot::Toes::Fifth toe",
+        "children": null
+    },
+    "Fourth toe": {
+        "level": 4,
+        "parent": "Toes",
+        "concatenate": "Lower extremity::Foot::Toes::Fourth toe",
+        "children": null
+    },
+    "Third toe": {
+        "level": 4,
+        "parent": "Toes",
+        "concatenate": "Lower extremity::Foot::Toes::Third toe",
+        "children": null
+    },
+    "Second toe": {
+        "level": 4,
+        "parent": "Toes",
+        "concatenate": "Lower extremity::Foot::Toes::Second toe",
+        "children": null
+    },
+    "Great toe": {
+        "level": 4,
+        "parent": "Toes",
+        "concatenate": "Lower extremity::Foot::Toes::Great toe",
+        "children": null
+    },
+    "Heel": {
+        "level": 4,
+        "parent": "Sole of foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot::Heel",
+        "children": null
+    },
+    "Medial surface of sole of foot": {
+        "level": 4,
+        "parent": "Sole of foot",
+        "concatenate": "Lower extremity::Foot::Sole of foot::Medial surface of sole of foot",
+        "children": null
+    },
+    "Thenar eminence": {
+        "level": 4,
+        "parent": "Palm of hand",
+        "concatenate": "Upper extremity::Hand::Palm of hand::Thenar eminence",
+        "children": null
+    },
+    "Upper anterior chest": {
+        "level": 4,
+        "parent": "Anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Upper anterior chest",
+        "children": [
+            "Clavicle",
+            "Infraclavicular region",
+            "Presternal region"
+        ]
+    },
+    "Interdigital web spaces of hand": {
+        "level": 4,
+        "parent": "Dorsum of hand",
+        "concatenate": "Upper extremity::Hand::Dorsum of hand::Interdigital web spaces of hand",
+        "children": null
+    },
+    "Mouth": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Mouth",
+        "children": [
+            "Palate",
+            "Oropharynx",
+            "Oral mucosa",
+            "Gingiva",
+            "Tongue",
+            "Floor of mouth",
+            "Tonsillar region"
+        ]
+    },
+    "Oral region": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Oral region",
+        "children": [
+            "Nasolabial fold",
+            "Lower lip",
+            "Lip",
+            "Perioral region",
+            "Upper lip"
+        ]
+    },
+    "Nose": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Nose",
+        "children": [
+            "Root of nose",
+            "Dorsum of nose",
+            "Lateral side wall of nose",
+            "Tip of nose",
+            "Ala nasi",
+            "Nostril"
+        ]
+    },
+    "Cheek": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Cheek",
+        "children": [
+            "Upper cheek",
+            "Central cheek",
+            "Lateral cheek",
+            "Lower cheek",
+            "Perinasal region"
+        ]
+    },
+    "Orbital region": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Orbital region",
+        "children": [
+            "Conjunctiva",
+            "Periorbital region",
+            "Eyelid",
+            "Sclera",
+            "Cornea",
+            "Iris"
+        ]
+    },
+    "Temple": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Temple",
+        "children": null
+    },
+    "Chin": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Chin",
+        "children": null
+    },
+    "Forehead": {
+        "level": 4,
+        "parent": "Face",
+        "concatenate": "Head and neck::Head::Face::Forehead",
+        "children": null
+    },
+    "Vertex of scalp": {
+        "level": 4,
+        "parent": "Scalp",
+        "concatenate": "Head and neck::Head::Scalp::Vertex of scalp",
+        "children": null
+    },
+    "Occipital scalp": {
+        "level": 4,
+        "parent": "Scalp",
+        "concatenate": "Head and neck::Head::Scalp::Occipital scalp",
+        "children": null
+    },
+    "Parietal scalp": {
+        "level": 4,
+        "parent": "Scalp",
+        "concatenate": "Head and neck::Head::Scalp::Parietal scalp",
+        "children": null
+    },
+    "Temporal scalp": {
+        "level": 4,
+        "parent": "Scalp",
+        "concatenate": "Head and neck::Head::Scalp::Temporal scalp",
+        "children": null
+    },
+    "Frontal scalp": {
+        "level": 4,
+        "parent": "Scalp",
+        "concatenate": "Head and neck::Head::Scalp::Frontal scalp",
+        "children": null
+    },
+    "Hypothenar eminence": {
+        "level": 4,
+        "parent": "Palm of hand",
+        "concatenate": "Upper extremity::Hand::Palm of hand::Hypothenar eminence",
+        "children": null
+    },
+    "Pinna": {
+        "level": 4,
+        "parent": "Ear",
+        "concatenate": "Head and neck::Head::Ear::Pinna",
+        "children": [
+            "Helix of pinna",
+            "Antihelix of pinna",
+            "Concha"
+        ]
+    },
+    "Lower anterior chest": {
+        "level": 4,
+        "parent": "Anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Lower anterior chest",
+        "children": null
+    },
+    "External auditory canal": {
+        "level": 4,
+        "parent": "Ear",
+        "concatenate": "Head and neck::Head::Ear::External auditory canal",
+        "children": null
+    },
+    "Upper anterior abdomen": {
+        "level": 4,
+        "parent": "Anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Upper anterior abdomen",
+        "children": null
+    },
+    "Knuckles": {
+        "level": 4,
+        "parent": "Dorsum of hand",
+        "concatenate": "Upper extremity::Hand::Dorsum of hand::Knuckles",
+        "children": null
+    },
+    "Breast": {
+        "level": 4,
+        "parent": "Anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast",
+        "children": [
+            "Areola",
+            "Upper inner quadrant of breast",
+            "Lower outer quadrant of breast",
+            "Lower inner quadrant of breast",
+            "Axillary tail of breast",
+            "Inframammary flexure",
+            "Nipple",
+            "Upper outer quadrant of breast"
+        ]
+    },
+    "Paraspinal lower back": {
+        "level": 4,
+        "parent": "Lower back",
+        "concatenate": "Trunk::Posterior trunk::Lower back::Paraspinal lower back",
+        "children": null
+    },
+    "Lateral lower back": {
+        "level": 4,
+        "parent": "Lower back",
+        "concatenate": "Trunk::Posterior trunk::Lower back::Lateral lower back",
+        "children": null
+    },
+    "Paraspinal mid back": {
+        "level": 4,
+        "parent": "Mid back",
+        "concatenate": "Trunk::Posterior trunk::Mid back::Paraspinal mid back",
+        "children": null
+    },
+    "Paraspinal upper back": {
+        "level": 4,
+        "parent": "Upper back",
+        "concatenate": "Trunk::Posterior trunk::Upper back::Paraspinal upper back",
+        "children": null
+    },
+    "Lateral upper back": {
+        "level": 4,
+        "parent": "Upper back",
+        "concatenate": "Trunk::Posterior trunk::Upper back::Lateral upper back",
+        "children": null
+    },
+    "Lower lateral chest": {
+        "level": 4,
+        "parent": "Lateral chest",
+        "concatenate": "Trunk::Lateral trunk::Lateral chest::Lower lateral chest",
+        "children": null
+    },
+    "Lateral mid back": {
+        "level": 4,
+        "parent": "Mid back",
+        "concatenate": "Trunk::Posterior trunk::Mid back::Lateral mid back",
+        "children": null
+    },
+    "Posterior axillary fold": {
+        "level": 4,
+        "parent": "Axilla",
+        "concatenate": "Trunk::Lateral trunk::Axilla::Posterior axillary fold",
+        "children": null
+    },
+    "Anterior axillary fold": {
+        "level": 4,
+        "parent": "Axilla",
+        "concatenate": "Trunk::Lateral trunk::Axilla::Anterior axillary fold",
+        "children": null
+    },
+    "Apex of axilla": {
+        "level": 4,
+        "parent": "Axilla",
+        "concatenate": "Trunk::Lateral trunk::Axilla::Apex of axilla",
+        "children": null
+    },
+    "Lower anterior abdomen": {
+        "level": 4,
+        "parent": "Anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Lower anterior abdomen",
+        "children": [
+            "Hypogastric region",
+            "Inguinal region"
+        ]
+    },
+    "Periumbilical region": {
+        "level": 4,
+        "parent": "Anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Periumbilical region",
+        "children": [
+            "Umbilicus"
+        ]
+    },
+    "Upper lateral chest": {
+        "level": 4,
+        "parent": "Lateral chest",
+        "concatenate": "Trunk::Lateral trunk::Lateral chest::Upper lateral chest",
+        "children": null
+    },
+    "Mid anterior abdomen": {
+        "level": 4,
+        "parent": "Anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Mid anterior abdomen",
+        "children": null
+    },
+    "Palate": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Palate",
+        "children": null
+    },
+    "Clavicle": {
+        "level": 5,
+        "parent": "Upper anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Upper anterior chest::Clavicle",
+        "children": null
+    },
+    "Oropharynx": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Oropharynx",
+        "children": null
+    },
+    "Oral mucosa": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Oral mucosa",
+        "children": null
+    },
+    "Gingiva": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Gingiva",
+        "children": null
+    },
+    "Tongue": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Tongue",
+        "children": null
+    },
+    "Floor of mouth": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Floor of mouth",
+        "children": null
+    },
+    "Infraclavicular region": {
+        "level": 5,
+        "parent": "Upper anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Upper anterior chest::Infraclavicular region",
+        "children": null
+    },
+    "Tonsillar region": {
+        "level": 5,
+        "parent": "Mouth",
+        "concatenate": "Head and neck::Head::Face::Mouth::Tonsillar region",
+        "children": null
+    },
+    "Presternal region": {
+        "level": 5,
+        "parent": "Upper anterior chest",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Upper anterior chest::Presternal region",
+        "children": null
+    },
+    "Areola": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Areola",
+        "children": null
+    },
+    "Upper inner quadrant of breast": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Upper inner quadrant of breast",
+        "children": null
+    },
+    "Lower outer quadrant of breast": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Lower outer quadrant of breast",
+        "children": null
+    },
+    "Lower inner quadrant of breast": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Lower inner quadrant of breast",
+        "children": null
+    },
+    "Axillary tail of breast": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Axillary tail of breast",
+        "children": null
+    },
+    "Inframammary flexure": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Inframammary flexure",
+        "children": null
+    },
+    "Nipple": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Nipple",
+        "children": null
+    },
+    "Umbilicus": {
+        "level": 5,
+        "parent": "Periumbilical region",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Periumbilical region::Umbilicus",
+        "children": null
+    },
+    "Nasolabial fold": {
+        "level": 5,
+        "parent": "Oral region",
+        "concatenate": "Head and neck::Head::Face::Oral region::Nasolabial fold",
+        "children": null
+    },
+    "Hypogastric region": {
+        "level": 5,
+        "parent": "Lower anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Lower anterior abdomen::Hypogastric region",
+        "children": null
+    },
+    "Upper outer quadrant of breast": {
+        "level": 5,
+        "parent": "Breast",
+        "concatenate": "Trunk::Anterior trunk::Anterior chest::Breast::Upper outer quadrant of breast",
+        "children": null
+    },
+    "Lower lip": {
+        "level": 5,
+        "parent": "Oral region",
+        "concatenate": "Head and neck::Head::Face::Oral region::Lower lip",
+        "children": null
+    },
+    "Conjunctiva": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Conjunctiva",
+        "children": null
+    },
+    "Lip": {
+        "level": 5,
+        "parent": "Oral region",
+        "concatenate": "Head and neck::Head::Face::Oral region::Lip",
+        "children": null
+    },
+    "Inguinal region": {
+        "level": 5,
+        "parent": "Lower anterior abdomen",
+        "concatenate": "Trunk::Anterior trunk::Anterior abdomen::Lower anterior abdomen::Inguinal region",
+        "children": null
+    },
+    "Helix of pinna": {
+        "level": 5,
+        "parent": "Pinna",
+        "concatenate": "Head and neck::Head::Ear::Pinna::Helix of pinna",
+        "children": null
+    },
+    "Antihelix of pinna": {
+        "level": 5,
+        "parent": "Pinna",
+        "concatenate": "Head and neck::Head::Ear::Pinna::Antihelix of pinna",
+        "children": null
+    },
+    "Concha": {
+        "level": 5,
+        "parent": "Pinna",
+        "concatenate": "Head and neck::Head::Ear::Pinna::Concha",
+        "children": null
+    },
+    "Periorbital region": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Periorbital region",
+        "children": null
+    },
+    "Eyelid": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Eyelid",
+        "children": null
+    },
+    "Sclera": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Sclera",
+        "children": null
+    },
+    "Cornea": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Cornea",
+        "children": null
+    },
+    "Iris": {
+        "level": 5,
+        "parent": "Orbital region",
+        "concatenate": "Head and neck::Head::Face::Orbital region::Iris",
+        "children": null
+    },
+    "Upper cheek": {
+        "level": 5,
+        "parent": "Cheek",
+        "concatenate": "Head and neck::Head::Face::Cheek::Upper cheek",
+        "children": null
+    },
+    "Central cheek": {
+        "level": 5,
+        "parent": "Cheek",
+        "concatenate": "Head and neck::Head::Face::Cheek::Central cheek",
+        "children": null
+    },
+    "Lateral cheek": {
+        "level": 5,
+        "parent": "Cheek",
+        "concatenate": "Head and neck::Head::Face::Cheek::Lateral cheek",
+        "children": null
+    },
+    "Lower cheek": {
+        "level": 5,
+        "parent": "Cheek",
+        "concatenate": "Head and neck::Head::Face::Cheek::Lower cheek",
+        "children": null
+    },
+    "Perinasal region": {
+        "level": 5,
+        "parent": "Cheek",
+        "concatenate": "Head and neck::Head::Face::Cheek::Perinasal region",
+        "children": null
+    },
+    "Root of nose": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Root of nose",
+        "children": null
+    },
+    "Dorsum of nose": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Dorsum of nose",
+        "children": null
+    },
+    "Lateral side wall of nose": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Lateral side wall of nose",
+        "children": null
+    },
+    "Tip of nose": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Tip of nose",
+        "children": null
+    },
+    "Ala nasi": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Ala nasi",
+        "children": null
+    },
+    "Nostril": {
+        "level": 5,
+        "parent": "Nose",
+        "concatenate": "Head and neck::Head::Face::Nose::Nostril",
+        "children": null
+    },
+    "Perioral region": {
+        "level": 5,
+        "parent": "Oral region",
+        "concatenate": "Head and neck::Head::Face::Oral region::Perioral region",
+        "children": null
+    },
+    "Upper lip": {
+        "level": 5,
+        "parent": "Oral region",
+        "concatenate": "Head and neck::Head::Face::Oral region::Upper lip",
+        "children": null
+    },
+    "Mons pubis": {
+        "level": 5,
+        "parent": "Suprapubic region",
+        "concatenate": "Anogenital region::Genital region::Perigenital region::Suprapubic region::Mons pubis",
+        "children": null
+    }
+}

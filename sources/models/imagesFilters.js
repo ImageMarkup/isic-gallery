@@ -1,14 +1,14 @@
 import constants from "../constants";
-import diagnosisModel from "./diagnosis";
 import state from "./state";
+import {TREE_MODELS_CONFIG} from "./treeModels";
 
 let filtersData;
 
 const filtersIds = {
 	pinnedCollections: "collections",
-	lesionDiagnosis: "diagnosis",
+	lesionDiagnosis: TREE_MODELS_CONFIG.diagnosis.key,
 	approximateAge: "age_approx",
-	generalAnatomicSite: "anatom_site_general",
+	generalAnatomicSite: TREE_MODELS_CONFIG.anatom_site.key,
 	specialAnatomicSite: "anatom_site_special",
 	clinicalSize: "clin_size_long_diam_mm",
 	typeDiagnosis: "diagnosis_confirm_type",
@@ -32,7 +32,10 @@ const filtersIds = {
 };
 
 async function getFiltersDataValues() {
-	const diagnosisData = await diagnosisModel.getDiagnosisDataForFilters();
+	const [anatomyData, diagnosisData] = await Promise.all([
+		TREE_MODELS_CONFIG.anatom_site.model.getDataForFilters(),
+		TREE_MODELS_CONFIG.diagnosis.model.getDataForFilters()
+	]);
 	const filtersDataValues = [
 		{
 			label: "Diagnostic Attributes",
@@ -101,9 +104,9 @@ async function getFiltersDataValues() {
 				{
 					id: filtersIds.generalAnatomicSite,
 					name: "General Anatomic Site",
-					type: "checkbox",
+					type: constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX,
 					datatype: "string",
-					options: state.imagesTotalCounts[filtersIds.generalAnatomicSite]
+					options: anatomyData
 				},
 				{
 					id: filtersIds.specialAnatomicSite,

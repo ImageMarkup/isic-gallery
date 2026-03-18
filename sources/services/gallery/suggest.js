@@ -1,3 +1,5 @@
+import {TREE_MODELS_CONFIG, isTreeModel} from "app-models/treeModels";
+
 import constants from "../../constants";
 import collectionsModel from "../../models/collectionsModel";
 import imagesFilters from "../../models/imagesFilters";
@@ -42,7 +44,7 @@ function formSuggestionsFromOptions(parent) {
 			});
 		});
 	}
-	else if (parent.id === "diagnosis") {
+	else if (isTreeModel(parent.id)) {
 		parent.options?.forEach((o) => {
 			const namesArray = o.id.split("|");
 			const value = namesArray.reduce((name, currentValue, currentIndex) => {
@@ -50,7 +52,10 @@ function formSuggestionsFromOptions(parent) {
 				switch (currentIndex) {
 					case 0:
 					case 1: {
-						result = name === "" ? currentValue.toUpperCase() : `${name} | ${currentValue.toUpperCase()}`;
+						const formattedCurrentValue = parent.id === TREE_MODELS_CONFIG.anatom_site.key
+							? currentValue
+							: currentValue.toUpperCase();
+						result = name === "" ? formattedCurrentValue : `${name} | ${formattedCurrentValue}`;
 						break;
 					}
 					default: {
@@ -62,14 +67,14 @@ function formSuggestionsFromOptions(parent) {
 
 			suggestions.push({
 				id: `${parent.id}|${o.name}`,
-				key: "diagnosis",
+				key: parent.id,
 				value,
 				level: o.level,
 				optionId: o.id,
 				hasHiddenOption: o.hasHiddenOption,
 			});
 			if (o.data) {
-				suggestions.push(...formSuggestionsFromData(o));
+				suggestions.push(...formSuggestionsFromData(o, parent.id));
 			}
 		});
 	}
@@ -89,25 +94,25 @@ function formSuggestionsFromOptions(parent) {
 	return suggestions;
 }
 
-function formSuggestionsFromData(parent) {
+function formSuggestionsFromData(parent, parentId) {
 	const suggestions = [];
 	parent.data?.forEach((d) => {
 		const valueArray = d.id.split("|").map((v, index) => {
-			if (index < 2) {
+			if (index < 2 && parentId !== TREE_MODELS_CONFIG.anatom_site.key) {
 				return v.toUpperCase();
 			}
 			return v;
 		});
 		suggestions.push({
-			id: `diagnosis|${d.id}`,
-			key: "diagnosis",
+			id: `${parentId}|${d.id}`,
+			key: parentId,
 			optionId: d.id,
 			value: valueArray.join("|") ?? "",
 			level: d.level,
 			hasHiddenOption: d.hasHiddenOption,
 		});
 		if (d.data) {
-			suggestions.push(...formSuggestionsFromData(d));
+			suggestions.push(...formSuggestionsFromData(d, parentId));
 		}
 	});
 	return suggestions;

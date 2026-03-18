@@ -1,3 +1,5 @@
+import {TREE_MODELS_CONFIG} from "app-models/treeModels";
+
 import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
 import collectionsModel from "../../../../models/collectionsModel";
@@ -311,7 +313,9 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 					{
 						id: "name",
 						template: (obj, common) => {
-							const displayName = obj.$level < 3 ? obj.displayName.toUpperCase() : obj.displayName;
+							const displayName = obj.$level < 3 && labelId !== TREE_MODELS_CONFIG.anatom_site.key
+								? obj.displayName.toUpperCase()
+								: obj.displayName;
 							return `${common.space(obj, common)}${common.icon(obj, common)} ${common.treecheckbox(obj, common)}<span style="padding-left:5px;" title="${displayName}">${displayName}</span>`;
 						},
 						fillspace: true,

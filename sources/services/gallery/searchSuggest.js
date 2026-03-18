@@ -1,3 +1,5 @@
+import {isTreeModel} from "app-models/treeModels";
+
 import appliedFiltersModel from "../../models/appliedFilters";
 
 function attachEvents(searchSuggest, searchInput, toggleButton) {
@@ -100,7 +102,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	suggestList.attachEvent("onItemClick", (id, event) => {
 		const clickedItem = suggestList.getItem(id);
 		const isClickedItemSelected = suggestList.isSelected(id);
-		const isTreeCheckbox = clickedItem.key === "diagnosis";
+		const isTreeCheckbox = isTreeModel(clickedItem.key);
 
 		if (isTreeCheckbox) {
 			const suggestItemsToToggle =
@@ -121,23 +123,23 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 
 		const appliedFilters = appliedFiltersModel.getFiltersArray();
 		const filterIds = appliedFilters.map(a => a.id);
-		if (clickedItem.key === "diagnosis") {
+		if (isTreeCheckbox) {
 			/** @type {webix.ui.treetable} */
-			const diagnosisTree = $$(`treeTable-${clickedItem.key}`);
+			const tree = $$(`treeTable-${clickedItem.key}`);
 			const controlId = clickedItem.optionId;
-			const control = diagnosisTree.getItem(controlId);
+			const control = tree.getItem(controlId);
 			if (control) {
-				if (diagnosisTree.isChecked(controlId)) {
-					diagnosisTree.uncheckItem(controlId);
+				if (tree.isChecked(controlId)) {
+					tree.uncheckItem(controlId);
 				}
 				else if (filterIds.includes(controlId)) {
-					diagnosisTree.blockEvent();
-					diagnosisTree.checkItem(controlId);
-					diagnosisTree.unblockEvent();
-					diagnosisTree.uncheckItem(controlId);
+					tree.blockEvent();
+					tree.checkItem(controlId);
+					tree.unblockEvent();
+					tree.uncheckItem(controlId);
 				}
 				else {
-					diagnosisTree.checkItem(controlId);
+					tree.checkItem(controlId);
 				}
 			}
 		}

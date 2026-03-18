@@ -1,7 +1,8 @@
+import {findTreeModelConfig} from "app-models/treeModels";
+
 import constants from "../../constants";
 import appliedFiltersModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
-import diagnosisModel from "../../models/diagnosis";
 import state from "../../models/state";
 import util from "../../utils/util";
 
@@ -70,7 +71,11 @@ function _getFilterLabelWithCount(filterName, totalCount, currentCount) {
  * @returns {void}
  */
 function _setFilterCount(controlView, totalCount, currentCount) {
-	const newLabelRight = _getFilterLabelWithCount(controlView.config.filtersChangedData.value, totalCount, currentCount);
+	const newLabelRight = _getFilterLabelWithCount(
+		controlView.config.filtersChangedData.value,
+		totalCount,
+		currentCount
+	);
 	controlView.define("labelRight", newLabelRight);
 	controlView.getNode().setAttribute("title", newLabelRight);
 	controlView.refresh();
@@ -168,23 +173,22 @@ function openParentBranch(treeView, optionId) {
 function _setLabelCount(foundCurrentCount, docCount) {
 	const appliedFiltersArray = appliedFiltersModel.getFiltersArray();
 	const flatFiltersArray = appliedFiltersArray.filter(f => f.view !== "treeCheckbox");
-	const filtersKeys = [];
+	const filtersKeyNames = [];
 	flatFiltersArray.forEach((filter) => {
-		if (!filtersKeys.includes(filter.key)) {
-			filtersKeys.push(filter.key);
+		if (!filtersKeyNames.find(f => f.filterKey === filter.key)) {
+			filtersKeyNames.push({filterKey: filter.key, filterName: filter.filterName});
 		}
 	});
-	filtersKeys.forEach((filterKey) => {
+	filtersKeyNames.forEach(({filterKey, filterName}) => {
 		const labelView = $$(util.getFilterLabelId(filterKey));
-		const template = labelView.config.template();
 		let newTemplate;
 		if (docCount[filterKey]) {
 			newTemplate = filterKey === constants.MISSING_KEY_VALUE
-				? `${template} (${docCount[filterKey]})`
-				: `${template} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
+				? `${filterName} (${docCount[filterKey]})`
+				: `${filterName} (${foundCurrentCount[filterKey]} / ${docCount[filterKey]})`;
 		}
 		else {
-			newTemplate = template;
+			newTemplate = filterName;
 		}
 		labelView.define("template", newTemplate);
 		labelView.refresh();
@@ -203,45 +207,37 @@ function updateFiltersCounts(countsAfterFiltration) {
 			const imagesTotalCounts = state.imagesTotalCounts[filterKey];
 			filteredCounts[filterKey] = 0;
 			docCounts[filterKey] = 0;
-			const diagnosisRegex = /^diagnosis_\d$/;
-			if (diagnosisRegex.test(filterKey)) {
-				const controlKey = "diagnosis";
-				const diagnosisValues = diagnosisModel.getDiagnosisValuesByLevel(filterKey);
-				const displayDiagnosis = diagnosisModel.getDisplayDiagnosis();
-				const treeView = $$(`treeTable-${controlKey}`);
-				diagnosisValues.forEach((v) => {
+
+			const config = findTreeModelConfig(filterKey);
+			if (config) {
+				const {model, key} = config;
+				const treeView = $$(`treeTable-${key}`);
+				const displayItems = model.getDisplayItems();
+
+				model.getValuesByLevel(filterKey).forEach((v) => {
 					let value = imagesTotalCounts.find(item => item.key === v);
 					if (!value) {
-						value = {
-							key: v,
-							doc_count: 0
-						};
+						value = {key: v, doc_count: 0};
 					}
-					let currentCount;
+
 					value.fullKey = value.key !== constants.MISSING_KEY_VALUE
-						? diagnosisModel.getDiagnosisConcatenateValue(value.key)
+						? model.getConcatenateValue(value.key)
 						: constants.MISSING_KEY_VALUE;
-					if (countsAfterFiltration && countsAfterFiltration[filterKey]) {
-						currentCount = _findCurrentCount(
-							countsAfterFiltration[filterKey],
-							value.key,
-							filterKey
-						);
-					}
-					else {
-						currentCount = value.doc_count;
-					}
+
+					const currentCount = countsAfterFiltration?.[filterKey]
+						? _findCurrentCount(countsAfterFiltration[filterKey], value.key, filterKey)
+						: value.doc_count;
+
 					if (value.key !== constants.MISSING_KEY_VALUE) {
 						filteredCounts[filterKey] += currentCount;
 					}
-					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE
-						? value.doc_count
-						: 0;
+					docCounts[filterKey] += value.key !== constants.MISSING_KEY_VALUE ? value.doc_count : 0;
+
 					const optionId = prepareOptionName(value.fullKey, filterKey);
 					const option = treeView?.getItem(optionId);
 					if (option) {
 						_setTreeFilterCount(treeView, option, value.doc_count, currentCount);
-						if (!displayDiagnosis.find(item => item === v)) {
+						if (!displayItems.find(item => item === v)) {
 							treeView.remove(optionId);
 						}
 					}
