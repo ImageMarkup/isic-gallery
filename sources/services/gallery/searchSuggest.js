@@ -2,6 +2,10 @@ import {isTreeModel} from "app-models/treeModels";
 
 import appliedFiltersModel from "../../models/appliedFilters";
 
+const WINDOW_SCROLL_WIDTH = 15;
+const WINDOW_HORIZONTAL_PADDINGS = 8 * 2;
+const additionalSuggestWidth = WINDOW_SCROLL_WIDTH + WINDOW_HORIZONTAL_PADDINGS;
+
 function attachEvents(searchSuggest, searchInput, toggleButton) {
 	const suggestList = searchSuggest.getList();
 
@@ -41,7 +45,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		// searchSuggest.config.master does not work in some cases
 		const masterView = searchInput;
 		const maxWidth = Math.max(
-			webix.html.getTextSize(texts, "webix_list_item").width + 30,
+			webix.html.getTextSize(texts, "webix_list_item").width + additionalSuggestWidth,
 			masterView.getInputNode().getBoundingClientRect().width
 		);
 		const width = maxWidth < window.innerWidth
