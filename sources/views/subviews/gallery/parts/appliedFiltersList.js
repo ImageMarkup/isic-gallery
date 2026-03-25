@@ -1,3 +1,5 @@
+import {TREE_MODELS_CONFIG} from "app-models/treeModels";
+
 function _prepareFilterName(obj) {
 	let result = "";
 	switch (obj.view) {
@@ -149,11 +151,10 @@ function getIdFromConfig() {
 function getTreeCheckboxFilterName(obj) {
 	let result = ["<div class='applied-filters-item-hierarchy_container'>"];
 	const namesArray = obj.optionId.split("|");
-	namesArray.forEach((n, index) => {
-		const lastBlockClass = index === namesArray.length - 1
-			? " last-block"
-			: "";
-		result.push(`<div class="applied-filters-item-hierarchy-item${lastBlockClass}" title="${n}">${n}</div>`);
+	const isAnatomicSite = obj.key === TREE_MODELS_CONFIG.anatom_site.key;
+	namesArray.forEach((name, index) => {
+		const itemName = index < 2 && !isAnatomicSite ? name.toUpperCase() : name;
+		result.push(`<div class="applied-filters-item-hierarchy-item" title="${itemName}">${itemName}</div>`);
 	});
 	result.push("</div>");
 	return result.join(" ");
