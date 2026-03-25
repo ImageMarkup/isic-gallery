@@ -65,6 +65,13 @@ function getConfig(config) {
 		width: 270,
 		suggest: searchSuggestView,
 		on: {
+			onItemClick() {
+				const suggest = $$(ID_SEARCH_SUGGESTION);
+				const inputNode = $$(ID_SEARCH_FIELD).getInputNode();
+				if (suggest && suggest.show) {
+					suggest.show(inputNode);
+				}
+			},
 			onAfterRender: () => {
 				const inputNode = $$(ID_SEARCH_FIELD).$view.getElementsByClassName("webix_el_box")[0];
 				const tooltipText = "Clear search value";
