@@ -42,7 +42,7 @@ async function getFiltersDataValues() {
 			data: [
 				{
 					id: filtersIds.lesionDiagnosis,
-					name: "Lesion diagnosis",
+					name: "Lesion Diagnosis",
 					type: constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX,
 					datatype: "string",
 					options: diagnosisData

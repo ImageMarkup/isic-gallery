@@ -1,129 +1,106 @@
 import {TREE_MODELS_CONFIG} from "app-models/treeModels";
 
-function _prepareFilterName(obj) {
-	let result = "";
-	switch (obj.view) {
-		case "rangeCheckbox":
-		case "checkbox": {
-			result += `${obj.filterName}: ${obj.value}`;
-			break;
-		}
-		case "rangeSlider": {
-			break;
-		}
-		default: {
-			break;
-		}
+import util from "../../../../utils/util";
+
+function prepareFilterName(obj) {
+	const {view, filterName, value} = obj;
+	if (view === "rangeCheckbox" || view === "checkbox") {
+		return `
+			<div class='applied-filters-item-hierarchy_container'>
+				<div class='applied-filters-item-hierarchy-item' title='${filterName}'>${filterName}</div>
+				<div class="applied-filters-item-hierarchy-item" title='${value}'>${value}</div>
+			</div>
+		`;
 	}
-	return result;
+	return "";
 }
 
-const list = {
+function getTreeCheckboxFilterName(obj) {
+	const {optionId, filterName, key} = obj;
+	const namesArray = optionId.split("|");
+	const isAnatomicSite = key === TREE_MODELS_CONFIG.anatom_site.key;
+
+	const items = ["<div class='applied-filters-item-hierarchy_container'>"];
+	items.push(`<div class="applied-filters-item-hierarchy-item" title="${filterName}">${filterName}</div>`);
+	namesArray.forEach((name, index) => {
+		const itemName = index < 2 && !isAnatomicSite ? name.toUpperCase() : name;
+		items.push(
+			`<div class="applied-filters-item-hierarchy-item" title="${itemName}">${itemName}</div>`
+		);
+	});
+	items.push("</div>");
+	return items.join(" ");
+}
+
+function getFilterHTML(obj) {
+	const crossIconName = util.isMobilePhone() ? "close-icon" : "remove-filter-icon";
+
+	let filterNameHTML = "";
+	if (obj.treeCheckboxFlag) {
+		filterNameHTML = getTreeCheckboxFilterName(obj);
+	}
+	else {
+		filterNameHTML = prepareFilterName(obj);
+	}
+
+	return `
+		<div class='applied-filters-item'>
+			${filterNameHTML}
+			<span class="remove-filter-icon">
+				<svg viewBox="0 0 26 26" class="close-icon-svg">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#${crossIconName}" class="close-icon-svg-use"></use>
+				</svg>
+			</span>
+		</div>
+	`;
+}
+
+function createFilterListConfig(baseConfig) {
+	return {
+		...baseConfig,
+		scroll: "auto",
+		template(obj) {
+			return getFilterHTML(obj);
+		},
+		onClick: {
+			// eslint-disable-next-line func-names
+			"remove-filter-icon": function (e, id) {
+				const clickedItem = this.getItem(id);
+				this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
+					view: clickedItem.view,
+					key: clickedItem.key,
+					datatype: clickedItem.datatype,
+					filterName: clickedItem.filterName,
+					value: clickedItem.value,
+					optionId: clickedItem.optionId,
+					remove: 1,
+					status: clickedItem.status
+				}, true]); // true - isNeedUpdateFiltersFormControls
+			}
+		}
+	};
+}
+
+const listBase = {
 	view: "list",
 	css: "applied-filters-list",
 	height: 100,
-	scroll: "auto",
-	template(obj) {
-		if (obj.treeCheckboxFlag) {
-			const result = getTreeCheckboxFilterName(obj);
-			return `<div class='applied-filters-item'>
-						${result}
-						<span class="remove-filter-icon">
-							<svg viewBox="0 0 26 26" style="width:26px;height:26px">
-								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#remove-filter-icon" class="close-icon-svg-use"></use>
-							</svg>
-						</span>
-					</div>`;
-		}
-		const filterName = _prepareFilterName(obj);
-		return `<div class='applied-filters-item' title="${filterName}">${filterName}
-					<span class="remove-filter-icon">
-						<svg viewBox="0 0 26 26" class="close-icon-svg">
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#remove-filter-icon" class="close-icon-svg-use"></use>
-						</svg>
-					</span>
-				</div>`;
-	},
-	onClick: {
-		// eslint-disable-next-line func-names
-		"remove-filter-icon": function (e, id) {
-			const clickedItem = this.getItem(id);
-			this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
-				view: clickedItem.view,
-				key: clickedItem.key,
-				datatype: clickedItem.datatype,
-				filterName: clickedItem.filterName,
-				value: clickedItem.value,
-				optionId: clickedItem.optionId,
-				remove: 1,
-				status: clickedItem.status
-			}, true]); // true - isNeedUpdateFiltersFormControls
-		}
-	}
 };
 
-const mobileList = {
+const mobileListBase = {
 	view: "list",
 	css: "mobile-applied-filters-list",
 	height: 100,
-	scroll: "auto",
-	template(obj) {
-		const filterName = _prepareFilterName(obj);
-		return `<div class='applied-filters-item' title="${filterName}">${filterName}
-					<span class="remove-filter-icon">
-						<svg viewBox="0 0 26 26" class="close-icon-svg">
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use>
-						</svg>
-					</span></div>`;
-	},
-	onClick: {
-		// eslint-disable-next-line func-names
-		"remove-filter-icon": function (e, id) {
-			const clickedItem = this.getItem(id);
-			this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
-				view: clickedItem.view,
-				key: clickedItem.key,
-				datatype: clickedItem.datatype,
-				filterName: clickedItem.filterName,
-				value: clickedItem.value,
-				optionId: clickedItem.optionId,
-				remove: 1,
-				status: clickedItem.status
-			}, true]); // true - isNeedUpdateFiltersFormControls
-		}
-	}
 };
 
-const landscapeMobileList = {
+const landscapeMobileListBase = {
 	view: "list",
 	css: "mobile-applied-filters-list",
-	scroll: "auto",
-	template(obj) {
-		const filterName = _prepareFilterName(obj);
-		return `<div class='applied-filters-item' title="${filterName}">${filterName}
-					<span class="remove-filter-icon">
-						<svg viewBox="0 0 26 26" class="close-icon-svg">
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close-icon" class="close-icon-svg-use"></use>
-						</svg>
-					</span></div>`;
-	},
-	onClick: {
-		// eslint-disable-next-line func-names
-		"remove-filter-icon": function (e, id) {
-			const clickedItem = this.getItem(id);
-			this.getTopParentView().$scope.app.callEvent("filtersChanged", [{
-				view: clickedItem.view,
-				key: clickedItem.key,
-				datatype: clickedItem.datatype,
-				filterName: clickedItem.filterName,
-				value: clickedItem.value,
-				optionId: clickedItem.optionId,
-				remove: 1,
-				status: clickedItem.status
-			}, true]); // true - isNeedUpdateFiltersFormControls
-		}
-	}
 };
+
+const list = createFilterListConfig(listBase);
+const mobileList = createFilterListConfig(mobileListBase);
+const landscapeMobileList = createFilterListConfig(landscapeMobileListBase);
 
 function getMobileConfig(id) {
 	mobileList.id = id ?? `list-${webix.uid()}`;
@@ -148,17 +125,6 @@ function getIdFromConfig() {
 	return list.id;
 }
 
-function getTreeCheckboxFilterName(obj) {
-	let result = ["<div class='applied-filters-item-hierarchy_container'>"];
-	const namesArray = obj.optionId.split("|");
-	const isAnatomicSite = obj.key === TREE_MODELS_CONFIG.anatom_site.key;
-	namesArray.forEach((name, index) => {
-		const itemName = index < 2 && !isAnatomicSite ? name.toUpperCase() : name;
-		result.push(`<div class="applied-filters-item-hierarchy-item" title="${itemName}">${itemName}</div>`);
-	});
-	result.push("</div>");
-	return result.join(" ");
-}
 
 export default {
 	getConfig,

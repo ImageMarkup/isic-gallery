@@ -46,35 +46,18 @@ function formSuggestionsFromOptions(parent) {
 	}
 	else if (isTreeModel(parent.id)) {
 		parent.options?.forEach((o) => {
-			const namesArray = o.id.split("|");
-			const value = namesArray.reduce((name, currentValue, currentIndex) => {
-				let result;
-				switch (currentIndex) {
-					case 0:
-					case 1: {
-						const formattedCurrentValue = parent.id === TREE_MODELS_CONFIG.anatom_site.key
-							? currentValue
-							: currentValue.toUpperCase();
-						result = name === "" ? formattedCurrentValue : `${name} | ${formattedCurrentValue}`;
-						break;
-					}
-					default: {
-						result = `${name} | ${currentValue}`;
-					}
-				}
-				return result;
-			}, "");
+			const suggestionValue = getSuggestionValue(o.id, parent.id);
 
 			suggestions.push({
 				id: `${parent.id}|${o.name}`,
 				key: parent.id,
-				value,
+				value: `${parent.name} | ${suggestionValue}`,
 				level: o.level,
 				optionId: o.id,
 				hasHiddenOption: o.hasHiddenOption,
 			});
 			if (o.data) {
-				suggestions.push(...formSuggestionsFromData(o, parent.id));
+				suggestions.push(...formSuggestionsFromData(o.data, parent.id, parent.name));
 			}
 		});
 	}
@@ -83,7 +66,7 @@ function formSuggestionsFromOptions(parent) {
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
 				key: parent.id,
-				value: `${parent.name}: ${o.key}` ?? "",
+				value: `${parent.name} | ${o.key}`,
 				optionId: `${parent.id}|${o.key}`,
 			});
 			if (o.options) {
@@ -94,25 +77,30 @@ function formSuggestionsFromOptions(parent) {
 	return suggestions;
 }
 
-function formSuggestionsFromData(parent, parentId) {
+function getSuggestionValue(id, parentId) {
+	const isAnatomicSite = parentId === TREE_MODELS_CONFIG.anatom_site.key;
+	return id.split("|").map((v, index) => {
+		if (index < 2 && !isAnatomicSite) {
+			return v.toUpperCase();
+		}
+		return v;
+	}).join(" | ");
+}
+
+function formSuggestionsFromData(data, parentId, parentFilterName) {
 	const suggestions = [];
-	parent.data?.forEach((d) => {
-		const valueArray = d.id.split("|").map((v, index) => {
-			if (index < 2 && parentId !== TREE_MODELS_CONFIG.anatom_site.key) {
-				return v.toUpperCase();
-			}
-			return v;
-		});
+	data.forEach((d) => {
+		const suggestionValue = getSuggestionValue(d.id, parentId);
 		suggestions.push({
 			id: `${parentId}|${d.id}`,
 			key: parentId,
 			optionId: d.id,
-			value: valueArray.join("|") ?? "",
+			value: `${parentFilterName} | ${suggestionValue}`,
 			level: d.level,
 			hasHiddenOption: d.hasHiddenOption,
 		});
 		if (d.data) {
-			suggestions.push(...formSuggestionsFromData(d, parentId));
+			suggestions.push(...formSuggestionsFromData(d.data, parentId, parentFilterName));
 		}
 	});
 	return suggestions;

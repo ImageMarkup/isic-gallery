@@ -433,7 +433,7 @@ function getConditionsForApi() {
 		...Object.values(treeFiltersByModel)
 			.filter(filters => filters.length > 0)
 			.map(filters => buildGroupQuery(filters, "OR")),
-		...(otherFilters.length ? [buildGroupQuery(otherFilters, "AND")]: [])
+		...(otherFilters.length ? [buildGroupQuery(otherFilters, "AND")] : [])
 	];
 
 	return groupQueries.join(" AND ");

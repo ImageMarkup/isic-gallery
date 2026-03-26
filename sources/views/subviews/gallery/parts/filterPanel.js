@@ -50,7 +50,7 @@ function getConfig(config) {
 		return `${obj.value}`;
 	};
 	searchSuggestView.filter = (obj, value) => {
-		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
+		const result = obj.value.toLowerCase().includes(value.toLowerCase());
 		return result;
 	};
 
