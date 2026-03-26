@@ -107,7 +107,8 @@ class GalleryService {
 	}
 
 	_searchHandlerByFilter() {
-		let searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
+		const searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
+		const searchValueLowercase = searchValue.toLowerCase();
 		this._searchInput.setValue(searchValue);
 		if (searchValue.length < 3) {
 			webix.alert("You should type minimum 3 characters");
@@ -124,8 +125,8 @@ class GalleryService {
 				const filterData = element.config.filtersChangedData;
 				const filterNameLowercase = filterData.filterName.toLowerCase();
 				const filterValueLowercase = filterData.value.toLowerCase();
-				if (filterNameLowercase.includes(searchValue.toLowerCase())
-					|| filterValueLowercase.includes(searchValue.toLowerCase())) {
+				if (filterNameLowercase.includes(searchValueLowercase)
+					|| filterValueLowercase.includes(searchValueLowercase)) {
 					element.blockEvent(); // block events for checkbox
 					element.setValue(1);// mark checkbox
 					element.unblockEvent();
@@ -140,9 +141,11 @@ class GalleryService {
 		const treeDataElements = this._filtersForm.queryView({view: "treetable"}, "all");
 		let foundTreeDataElementFlag = false;
 		treeDataElements.forEach((e) => {
+			const filterNameLowercase = e.config.filterName.toLowerCase();
+			const filterNameIncludeSearch = filterNameLowercase.includes(searchValueLowercase);
 			e.data.each((i) => {
-				const labelLowerCase = i.id.toLowerCase();
-				if (labelLowerCase.includes(searchValue.toLowerCase())) {
+				const filterValueLowercase = i.id.toLowerCase();
+				if (filterNameIncludeSearch || filterValueLowercase.includes(searchValueLowercase)) {
 					const parent = i.$parent;
 					if (!e.isChecked(i.id)) {
 						e.checkItem(i.id);

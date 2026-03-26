@@ -322,6 +322,7 @@ function getTreeCheckboxUI(data, collapsed, elementsToOpen) {
 						select: false
 					}
 				],
+				filterName: data.name,
 				header: false,
 				threeState: true,
 				data: data.options,
