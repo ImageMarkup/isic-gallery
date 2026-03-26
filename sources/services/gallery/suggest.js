@@ -37,8 +37,7 @@ function formSuggestionsFromOptions(parent) {
 			suggestions.push({
 				id: `${parent.id}|${o.key}`,
 				key: parent.id,
-				name: "Collections",
-				value: currentCollection.name ?? "",
+				value: `Collections | ${currentCollection.name}` ?? "",
 				optionId: `${parent.id}|${currentCollection.id}`,
 				isCollection: true,
 			});
