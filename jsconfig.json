@@ -8,6 +8,7 @@
             "app-services/*": ["services/*"],
             "app-components/*": ["views/components/*"],
             "app-models/*": ["models/*"],
+            "app-utils/*": ["utils/*"],
         }
     },
     "include": ["sources/**/*"]

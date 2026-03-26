@@ -43,7 +43,8 @@ module.exports = {
 					["app-templates", "./sources/views/templates"],
 					["app-services", "./sources/services"],
 					["app-components", "./sources/views/components"],
-					["app-models", "./sources/models"]
+					["app-models", "./sources/models"],
+					["app-utils", "./sources/utils"]
 			  	]
 			}
 		}

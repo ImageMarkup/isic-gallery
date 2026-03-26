@@ -1,6 +1,5 @@
 import {TREE_MODELS_CONFIG} from "app-models/treeModels";
-
-import util from "../../../../utils/util";
+import util from "app-utils/util";
 
 function prepareFilterName(obj) {
 	const {view, filterName, value} = obj;
