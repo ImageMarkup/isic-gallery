@@ -197,7 +197,7 @@ export default class ImagesSelectionWindow extends JetView {
 			height: 638,
 			body: {
 				name: "windowBodyTemplate",
-				// eslint-disable-next-line quote-props
+				// eslint-disable-next-line @stylistic/js/quote-props
 				css: {"background": "#E8EBF1"},
 				rows: [
 					{height: 10},

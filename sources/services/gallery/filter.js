@@ -44,8 +44,11 @@ function _findCurrentCount(facets, valueThatLookingFor, key) {
 			return facets.meta.missing_count;
 		}
 		else {
-			// eslint-disable-next-line max-len
-			foundItem = facets.buckets.find(element => prepareOptionName(element.key, key) === prepareOptionName(valueThatLookingFor, key));
+			foundItem = facets.buckets.find((element) => {
+				const elementOptionName = prepareOptionName(element.key, key);
+				const valueOptionName = prepareOptionName(valueThatLookingFor, key);
+				return elementOptionName === valueOptionName;
+			});
 		}
 	}
 	return foundItem ? foundItem.doc_count : null;

@@ -1,7 +1,7 @@
 import constants from "../constants";
-import util from "../utils/util";
 import state from "./state";
 import {TREE_MODELS_CONFIG} from "./treeModels";
+import util from "../utils/util";
 
 const appliedFilters = new webix.DataCollection();
 const appliedFilterBySearch = new webix.DataCollection();
@@ -433,6 +433,7 @@ function getConditionsForApi() {
 		...Object.values(treeFiltersByModel)
 			.filter(filters => filters.length > 0)
 			.map(filters => buildGroupQuery(filters, "OR")),
+		// eslint-disable-next-line @stylistic/js/no-extra-parens
 		...(otherFilters.length ? [buildGroupQuery(otherFilters, "AND")] : [])
 	];
 

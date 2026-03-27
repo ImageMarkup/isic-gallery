@@ -1,12 +1,12 @@
 import {JetView} from "webix-jet";
 
+import studyProgressWindow from "./windows/studyProgressWindow";
 import constants from "../../../constants";
 import authService from "../../../services/auth";
 import BreadcrumbsManager from "../../../services/breadcrumbs";
 import "../../components/activeDataview";
 import StudiesService from "../../../services/studies/studies";
 import util from "../../../utils/util";
-import studyProgressWindow from "./windows/studyProgressWindow";
 
 const DATAVIEW_ID = "study-items-dataview";
 const TOOLBAR_ID = "toolbar-id";

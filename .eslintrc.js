@@ -1,14 +1,6 @@
-const xbsEslint = require("eslint-config-xbsoftware");
-const {INDENT, QUOTES, PLUGINS} = require("eslint-config-xbsoftware/constants");
-
 module.exports = {
 	"extends": [
-		xbsEslint({
-			config: {
-				indent: INDENT.TABS,
-				quotes: QUOTES.DOUBLE
-			}
-		})
+		"eslint-config-xbsoftware/javascript"
 	],
 	"env": {
 		"browser": true,
@@ -27,12 +19,16 @@ module.exports = {
 		"ecmaVersion": "latest"
 	},
 	"rules": {
-		"no-extra-parens": "warn",
+		"import/no-extraneous-dependencies": "off",
+		"@stylistic/js/no-extra-parens": "warn",
 		"valid-jsdoc": "warn",
 		"no-useless-escape": "off",
 		"no-use-before-define": "off",
-		"comma-dangle": "off",
-		"func-names": "off"
+		"@stylistic/js/comma-dangle": "off",
+		"func-names": "off",
+		"@stylistic/js/indent": ["error", "tab", {SwitchCase: 1}],
+		"@stylistic/js/quotes": ["error", "double", {avoidEscape: true}],
+		"@stylistic/js/linebreak-style": "off",
 	},
 	"settings": {
 		"import/resolver": {

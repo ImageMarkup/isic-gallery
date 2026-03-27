@@ -1,7 +1,7 @@
-import appliedFiltersModel from "../../../../models/appliedFilters";
-import searchButtonModel from "../../../../services/gallery/searchButtonModel";
 import appliedFiltersList from "./appliedFiltersList";
 import searchSuggest from "./searchSuggest";
+import appliedFiltersModel from "../../../../models/appliedFilters";
+import searchButtonModel from "../../../../services/gallery/searchButtonModel";
 
 const ID_SEARCH_FIELD = `search-field-id-${webix.uid()}`;
 const ID_SEARCH_SUGGESTION = `search-suggestion-id-${webix.uid()}`;

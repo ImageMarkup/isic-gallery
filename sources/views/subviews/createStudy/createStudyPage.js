@@ -1,13 +1,13 @@
 import {JetView} from "webix-jet";
 
-import constants from "../../../constants";
-import authService from "../../../services/auth";
-import BreadcrumbsManager from "../../../services/breadcrumbs";
-import CreateStudyService from "../../../services/createStudy/createStudy";
 import annotators from "./parts/annotators";
 import featureSet from "./parts/featureSet";
 import studyDataview from "./parts/imagesDataview";
 import studyQuestions from "./parts/questions";
+import constants from "../../../constants";
+import authService from "../../../services/auth";
+import BreadcrumbsManager from "../../../services/breadcrumbs";
+import CreateStudyService from "../../../services/createStudy/createStudy";
 
 export default class CreateStudyPage extends JetView {
 	config() {

@@ -145,7 +145,7 @@ const searchFieldset = {
 				options: {
 					keyPressTimeout: 300,
 					filter() {}, // because of webix bug in webix 5.3.0
-					body: {		// list
+					body: { // list
 						scheme: {
 							$init(obj) {
 								if (obj._modelType === "user") {

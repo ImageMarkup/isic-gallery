@@ -1,7 +1,7 @@
 import {JetView} from "webix-jet";
 
-import authService from "../../../services/auth";
 import licensesWindow from "./windows/licenseInfo";
+import authService from "../../../services/auth";
 
 const ID_WINDOW_LICENSES = "licenses-window";
 const LICENSE_TYPE_CC_0 = "CC-0";

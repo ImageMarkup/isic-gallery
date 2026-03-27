@@ -1,7 +1,7 @@
+import filtersViewHelper from "./filters";
 import constants from "../../../../constants";
 import appliedFilters from "../../../../models/appliedFilters";
 import util from "../../../../utils/util";
-import filtersViewHelper from "./filters";
 
 const shownFiltersCollection = appliedFilters.getShownFiltersCollection();
 const NAME_SELECT_ALL_FILTER = filtersViewHelper.getSelectAllFilersName();

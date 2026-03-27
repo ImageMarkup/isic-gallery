@@ -3,6 +3,12 @@ import {JetView} from "webix-jet";
 import MobileHeaderService from "app-services/header/mobileHeaderServices";
 import menuHandlerService from "app-services/menuHandlers";
 
+import cartList from "./parts/cartList";
+import contextMenu from "./parts/contextMenu";
+import pager from "./parts/galleryPager";
+import metadataPart from "./parts/metadata";
+import filterPanel from "./parts/mobileFilterPanel";
+import mobileImageWindow from "./windows/mobileImageWindow";
 import constants from "../../../constants";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
 import state from "../../../models/state";
@@ -11,12 +17,6 @@ import authService from "../../../services/auth";
 import GalleryService from "../../../services/gallery/gallery";
 import logger from "../../../utils/logger";
 import util from "../../../utils/util";
-import cartList from "./parts/cartList";
-import contextMenu from "./parts/contextMenu";
-import pager from "./parts/galleryPager";
-import metadataPart from "./parts/metadata";
-import filterPanel from "./parts/mobileFilterPanel";
-import mobileImageWindow from "./windows/mobileImageWindow";
 
 const ID_RIGHT_PANEL = `right-panel-id-${webix.uid()}`;
 const ID_PAGER = `gallery-pager-id-${webix.uid()}`;
