@@ -1,11 +1,11 @@
 import {JetView/* , plugins */} from "webix-jet";
 
 // import BreadcrumbsManager from "../../../services/breadcrumbs";
+import accessControlWindow from "./windows/accessControl";
 import constants from "../../../constants";
 import state from "../../../models/state";
 import authService from "../../../services/auth";
 import DatasetViewService from "../../../services/dataset/dataset";
-import accessControlWindow from "./windows/accessControl";
 // import datasetModel from "../../../models/dataset";
 // import accView from "./parts/accordionView";
 

@@ -2,6 +2,7 @@ import OauthClient from "@resonant/oauth-client";
 import {AxiosError} from "axios";
 
 import constants from "../constants";
+import ajax from "./ajaxActions";
 import appliedFilters from "../models/appliedFilters";
 import gallerySelectedImages from "../models/selectedGalleryImages";
 import state from "../models/state";
@@ -11,7 +12,6 @@ import util from "../utils/util";
 import mobileLandscapeTermOfUse from "../views/authWindows/mobileLandscapeTermOfUse";
 import mobileTermOfUseWindow from "../views/authWindows/mobileTermOfUse";
 import termOfUseWindow from "../views/authWindows/termOfUse";
-import ajax from "./ajaxActions";
 
 const ISIC_CLIENT_ID = process.env.ISIC_CLIENT_ID;
 const AUTHORIZATION_SERVER = process.env.ISIC_AUTHORIZATION_SERVER;
@@ -45,7 +45,7 @@ class OAuthISIC {
 					this.errorHandler(e);
 				});
 		}
-		webix.attachEvent("onRotate", (landscape) => {
+		webix.attachEvent("onRotate", () => {
 			const win = $$(constants.ID_MOBILE_WINDOW_TERMS_OF_USE)
 				|| webix.ui(mobileTermOfUseWindow.getConfig(constants.ID_MOBILE_WINDOW_TERMS_OF_USE));
 			const landWin = $$(constants.ID_MOBILE_LANDSCAPE_TERMS_OF_USE)

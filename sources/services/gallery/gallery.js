@@ -1,9 +1,9 @@
+import {findTreeModelConfig} from "app-models/treeModels";
 import {createZoomableImage, zoomImage} from "app-services/zoomImages";
 
 import constants from "../../constants";
 import appliedFilterModel from "../../models/appliedFilters";
 import collectionsModel from "../../models/collectionsModel";
-import diagnosisModel from "../../models/diagnosis";
 import galleryImagesUrls from "../../models/galleryImagesUrls";
 import filtersData from "../../models/imagesFilters";
 import lesionsModel from "../../models/lesionsModel";
@@ -107,7 +107,8 @@ class GalleryService {
 	}
 
 	_searchHandlerByFilter() {
-		let searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
+		const searchValue = this._searchInput.getValue().trim().replace(/\s+/g, " ");
+		const searchValueLowercase = searchValue.toLowerCase();
 		this._searchInput.setValue(searchValue);
 		if (searchValue.length < 3) {
 			webix.alert("You should type minimum 3 characters");
@@ -121,9 +122,11 @@ class GalleryService {
 			if (this._filtersForm.elements.hasOwnProperty(key)) {
 				appliedFilterModel.setFilterValue(searchValue);
 				let element = this._filtersForm.elements[key];
-				let labelLowercase = element.config.labelRight.toLowerCase();
-				labelLowercase = labelLowercase.replace(/\([\/ 0-9]*\)$/, ""); // delete count of images
-				if (labelLowercase.indexOf(searchValue.toLowerCase()) > -1) {
+				const filterData = element.config.filtersChangedData;
+				const filterNameLowercase = filterData.filterName.toLowerCase();
+				const filterValueLowercase = filterData.value.toLowerCase();
+				if (filterNameLowercase.includes(searchValueLowercase)
+					|| filterValueLowercase.includes(searchValueLowercase)) {
 					element.blockEvent(); // block events for checkbox
 					element.setValue(1);// mark checkbox
 					element.unblockEvent();
@@ -138,11 +141,23 @@ class GalleryService {
 		const treeDataElements = this._filtersForm.queryView({view: "treetable"}, "all");
 		let foundTreeDataElementFlag = false;
 		treeDataElements.forEach((e) => {
+			const filterNameLowercase = e.config.filterName.toLowerCase();
+			const filterNameIncludeSearch = filterNameLowercase.includes(searchValueLowercase);
 			e.data.each((i) => {
-				const labelLowerCase = i.name.replace(/\([\/ 0-9]*\)$/, "");
-				if (labelLowerCase.indexOf(searchValue.toLowerCase()) > -1) {
-					e.checkItem(i.id);
+				const filterValueLowercase = i.id.toLowerCase();
+				if (filterNameIncludeSearch || filterValueLowercase.includes(searchValueLowercase)) {
+					const parent = i.$parent;
+					if (!e.isChecked(i.id)) {
+						e.checkItem(i.id);
+					}
+					else if (!parent || !e.isChecked(parent)) {
+						e.uncheckItem(i.id);
+						e.checkItem(i.id);
+					}
 					foundTreeDataElementFlag = true;
+				}
+				else if (e.isChecked(i.id)) {
+					e.uncheckItem(i.id);
 				}
 			});
 		});
@@ -796,6 +811,8 @@ class GalleryService {
 			this._allPagesTemplate?.refresh();
 		});
 		this._view.$scope.on(this._view.$scope.app, "filtersChanged", async (data/* , selectNone */) => {
+			const scrollView = this._getCurrrentFilterScrollView();
+			const scroll = scrollView.getScrollState().y;
 			// add (or remove) filters data to model
 			appliedFilterModel.processNewFilters(data);
 			// refresh data in list
@@ -805,24 +822,11 @@ class GalleryService {
 				const appliedFiltersArray = appliedFilterModel.getFiltersArray();
 				this._updateFiltersFormControls(appliedFiltersArray);
 			});
-			const item = Array.isArray(data) ? data[0] : data;
-			const element = item?.treeCheckboxFlag
-				? this._filtersForm.queryView({id: `${item?.viewId}`})?.getItem(item?.optionId)
-				: this._filtersForm.queryView({id: `${item?.key}|${item?.value}`})?.config;
 			await this._reload(0, this._pager?.data?.size || 10);
 			if (util.isMobilePhone()) {
-				// Fix scrollView
 				this.resizeFilterScrollView();
-				if (element) {
-					this._scrollToFilterFormElement(element);
-				}
 			}
-			else if (item?.treeCheckboxFlag) {
-				const treeView = $$(item?.viewId);
-				if (treeView) {
-					this._scrollToFilterFormElementFromTree(element, treeView);
-				}
-			}
+			scrollView.scrollTo(0, scroll);
 		});
 
 		const clearAllFilters = () => {
@@ -1171,7 +1175,6 @@ class GalleryService {
 			name: pc.name,
 		}));
 
-		const diagnosisRegex = /^diagnosis_\d$/;
 		const facets = await ajax.getFacets();
 		Object.entries(facets).forEach(([id, facet]) => {
 			state.imagesTotalCounts[id] = [
@@ -1182,9 +1185,10 @@ class GalleryService {
 				}
 			];
 
-			if (diagnosisRegex.test(id)) {
-				const diagnosisKeys = facet.buckets.map(bucket => bucket.key);
-				diagnosisModel.addDisplayDiagnosis(diagnosisKeys);
+			const config = findTreeModelConfig(id);
+			if (config) {
+				const keys = facet.buckets.map(bucket => bucket.key);
+				config.model.addDisplayItems(keys);
 			}
 		});
 	}
@@ -1241,7 +1245,7 @@ class GalleryService {
 	_updateFiltersFormControls(data) {
 		if (Array.isArray(data)) {
 			// For treetable elements sorting from highest level to lowest
-			[...data].sort((a, b) => a.diagnosisLevel > b.diagnosisLevel).forEach((item) => {
+			[...data].sort((a, b) => a.nestingLevel > b.nestingLevel).forEach((item) => {
 				filterService.updateFiltersFormControl(item);
 			});
 		}
@@ -1582,9 +1586,7 @@ class GalleryService {
 	}
 
 	_scrollToFilterFormElement(element) {
-		const currentFilterScrollView = this._view.$scope.getFilterScrollView
-			? this._view.$scope.getFilterScrollView()
-			: this._filterScrollView;
+		const currentFilterScrollView = this._getCurrrentFilterScrollView();
 		const elementView = $$(element.id);
 		const elementOffsetTop = elementView.$view.offsetTop;
 		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop;
@@ -1593,21 +1595,14 @@ class GalleryService {
 		currentFilterScrollView.callEvent("onAfterScroll");
 	}
 
-	_scrollToFilterFormElementFromTree(element, tree) {
-		const currentFilterScrollView = this._view.$scope.getFilterScrollView
+	_getCurrrentFilterScrollView() {
+		return this._view.$scope.getFilterScrollView
 			? this._view.$scope.getFilterScrollView()
 			: this._filterScrollView;
-		const elementNode = tree.getItemNode(element.id);
-		const elementOffsetTop = elementNode.offsetTop;
-		const filterScrollViewOffsetTop = currentFilterScrollView.$view.offsetTop / 2;
-		const positionToScroll = elementOffsetTop - filterScrollViewOffsetTop;
-		currentFilterScrollView.scrollTo(0, positionToScroll);
 	}
 
 	resizeFilterScrollView() {
-		const currentFilterScrollView = this._view.$scope.getFilterScrollView
-			? this._view.$scope.getFilterScrollView()
-			: this._filterScrollView;
+		const currentFilterScrollView = this._getCurrrentFilterScrollView();
 		const filterScrollViewChildren = currentFilterScrollView.getChildViews();
 		const scrollViewWidth = currentFilterScrollView.$width;
 		let scrollViewHeight = 0;

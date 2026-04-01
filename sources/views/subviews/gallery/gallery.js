@@ -1,5 +1,13 @@
 import {JetView} from "webix-jet";
 
+import cartList from "./parts/cartList";
+import contextMenu from "./parts/contextMenu";
+import filterPanel from "./parts/filterPanel";
+import dataview from "./parts/galleryDataview";
+import pager from "./parts/galleryPager";
+import imageWindow from "./windows/imageWindow";
+import metadataWindow from "./windows/metadataWindow";
+import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 import constants from "../../../constants";
 import "../../components/activeList";
 import galleryImagesUrls from "../../../models/galleryImagesUrls";
@@ -11,14 +19,6 @@ import MultiLesionWindowService from "../../../services/gallery/multiimageLesion
 import searchButtonModel from "../../../services/gallery/searchButtonModel";
 import util from "../../../utils/util";
 import collapser from "../../components/collapser";
-import cartList from "./parts/cartList";
-import contextMenu from "./parts/contextMenu";
-import filterPanel from "./parts/filterPanel";
-import dataview from "./parts/galleryDataview";
-import pager from "./parts/galleryPager";
-import imageWindow from "./windows/imageWindow";
-import metadataWindow from "./windows/metadataWindow";
-import multiImageLesionWindow from "./windows/multiImageLesionWindow";
 
 const ID_PAGER = "gallery-pager-id";
 const ID_DATAVIEW = "gallery-dataview-id";

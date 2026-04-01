@@ -80,7 +80,8 @@ module.exports = (env) => {
 				"app-templates": path.resolve(__dirname, "sources/views/templates"),
 				"app-services": path.resolve(__dirname, "sources/services"),
 				"app-components": path.resolve(__dirname, "sources/views/components"),
-				"app-models": path.resolve(__dirname, "sources/models")
+				"app-models": path.resolve(__dirname, "sources/models"),
+				"app-utils": path.resolve(__dirname, "sources/utils")
 			},
 			fallback: {
 				"util": require.resolve("util/"),

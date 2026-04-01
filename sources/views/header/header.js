@@ -1,10 +1,10 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../constants";
+import uploadWindow from "./windows/uploadTypeWindow";
 import authService from "../../services/auth";
 import HeaderService from "../../services/header/headerServices";
 import menuHandlerService from "../../services/menuHandlers";
-import uploadWindow from "./windows/uploadTypeWindow";
 // import state from "../../models/state";
 
 const LOGIN_MENU_ID = "login-menu";

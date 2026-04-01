@@ -1032,92 +1032,74 @@
   }
 }
 
-.applied-filters-list {
-  border-color: @lines-color;
-
-  .webix_list_item {
-    background-color: @main-bg;
-    font-size: 14px;
-    font-weight: 500;
-    padding-right: 38px;
-    position: relative;
-  }
-
-  .applied-filters-item-hierarchy_container {
-    display: flex;
-    .applied-filters-item-hierarchy-item {
-      background-color: #FAFBFD;
-      overflow: hidden;
-      white-space: nowrap;
-      padding-left: 5px;
-      padding-right: 5px;
-      text-overflow: ellipsis;
-      border-right: 1px solid #E8EBF0;;
-      box-sizing: border-box;
-      max-width: max-content;
-      min-width: 65px;
-    }
-    .applied-filters-item-hierarchy-item:not(:last-child) {
-      flex: 1;
-      padding-right: 5px;
-    }
-    .applied-filters-item-hierarchy-item:last-child {
-      flex: 10;
-    }
-    .applied-filters-item-hierarchy-item:first-child {
-      text-transform: uppercase;
-      background-color: transparent;
-    }
-    .applied-filters-item-hierarchy-item:nth-child(2) {
-      text-transform: uppercase;
-      background-color: transparent;
-    }
-    .applied-filters-item-hierarchy-item:hover  {
-      flex: 10;
-    }
-  }
-  .applied-filters-item-hierarchy_container:hover .applied-filters-item-hierarchy-item:not(:hover) {
-    flex: 1;
-  }
-  .applied-filters-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .remove-filter-icon {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    margin-top: -14px;
-  }
+.applied-filters-item-hierarchy_container {
+  display: flex;
 }
-
+.applied-filters-item-hierarchy-item {
+  background-color: #FAFBFD;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-overflow: ellipsis;
+  border-right: 1px solid #E8EBF0;
+  box-sizing: border-box;
+  max-width: max-content;
+  min-width: 45px;
+}
+.applied-filters-item-hierarchy-item:not(:last-child) {
+  flex: 1;
+}
+.applied-filters-item-hierarchy-item:last-child {
+  flex: 10;
+}
+.applied-filters-item-hierarchy-item:first-child {
+  padding-left: 0;
+  background-color: transparent;
+}
+.applied-filters-item-hierarchy-item:nth-child(2) {
+  background-color: transparent;
+}
+.applied-filters-item-hierarchy-item:hover {
+  flex: 100;
+}
+.applied-filters-item-hierarchy_container:hover .applied-filters-item-hierarchy-item:not(:hover):not(:last-child) {
+  flex: 1;
+}
+.applied-filters-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.applied-filters-list,
 .mobile-applied-filters-list {
   border-color: @lines-color;
+}
 
-  .webix_list_item {
-    background-color: @select-color;
-    color: #FFFFFF;
-    font-size: 14px;
-    font-weight: 500;
-    padding-right: 38px;
-    position: relative;
-    border-radius: 7px;
-  }
+.applied-filters-list .webix_list_item,
+.mobile-applied-filters-list .webix_list_item {
+  font-size: 14px;
+  font-weight: 500;
+  padding-right: 38px;
+  position: relative;
+}
 
-  .applied-filters-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.applied-filters-list .webix_list_item {
+  background-color: @main-bg;
+}
 
-  .remove-filter-icon {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    margin-top: -14px;
-  }
+.mobile-applied-filters-list .webix_list_item {
+  background-color: @select-color;
+  color: #FFFFFF;
+  border-radius: 7px;
+}
+
+.applied-filters-list .remove-filter-icon,
+.mobile-applied-filters-list .remove-filter-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  margin-top: -14px;
 }
 
 .gallery-sidebar-attr {

@@ -1,4 +1,10 @@
+import {isTreeModel} from "app-models/treeModels";
+
 import appliedFiltersModel from "../../models/appliedFilters";
+
+const WINDOW_SCROLL_WIDTH = 15;
+const WINDOW_HORIZONTAL_PADDINGS = 8 * 2;
+const additionalSuggestWidth = WINDOW_SCROLL_WIDTH + WINDOW_HORIZONTAL_PADDINGS;
 
 function attachEvents(searchSuggest, searchInput, toggleButton) {
 	const suggestList = searchSuggest.getList();
@@ -39,7 +45,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 		// searchSuggest.config.master does not work in some cases
 		const masterView = searchInput;
 		const maxWidth = Math.max(
-			webix.html.getTextSize(texts, "webix_list_item").width + 30,
+			webix.html.getTextSize(texts, "webix_list_item").width + additionalSuggestWidth,
 			masterView.getInputNode().getBoundingClientRect().width
 		);
 		const width = maxWidth < window.innerWidth
@@ -100,7 +106,7 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 	suggestList.attachEvent("onItemClick", (id, event) => {
 		const clickedItem = suggestList.getItem(id);
 		const isClickedItemSelected = suggestList.isSelected(id);
-		const isTreeCheckbox = clickedItem.key === "diagnosis";
+		const isTreeCheckbox = isTreeModel(clickedItem.key);
 
 		if (isTreeCheckbox) {
 			const suggestItemsToToggle =
@@ -121,23 +127,23 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 
 		const appliedFilters = appliedFiltersModel.getFiltersArray();
 		const filterIds = appliedFilters.map(a => a.id);
-		if (clickedItem.key === "diagnosis") {
+		if (isTreeCheckbox) {
 			/** @type {webix.ui.treetable} */
-			const diagnosisTree = $$(`treeTable-${clickedItem.key}`);
+			const tree = $$(`treeTable-${clickedItem.key}`);
 			const controlId = clickedItem.optionId;
-			const control = diagnosisTree.getItem(controlId);
+			const control = tree.getItem(controlId);
 			if (control) {
-				if (diagnosisTree.isChecked(controlId)) {
-					diagnosisTree.uncheckItem(controlId);
+				if (tree.isChecked(controlId)) {
+					tree.uncheckItem(controlId);
 				}
 				else if (filterIds.includes(controlId)) {
-					diagnosisTree.blockEvent();
-					diagnosisTree.checkItem(controlId);
-					diagnosisTree.unblockEvent();
-					diagnosisTree.uncheckItem(controlId);
+					tree.blockEvent();
+					tree.checkItem(controlId);
+					tree.unblockEvent();
+					tree.uncheckItem(controlId);
 				}
 				else {
-					diagnosisTree.checkItem(controlId);
+					tree.checkItem(controlId);
 				}
 			}
 		}
@@ -164,15 +170,16 @@ function attachEvents(searchSuggest, searchInput, toggleButton) {
 			.map(filter => `${filter.key}|${filter.optionId}`);
 
 		const suggestIdsToSelect = filters.flatMap((filter) => {
-			const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
-			if (!suggestItemToSelect) return [];
 			const isTreeCheckbox = filter.view === "treeCheckbox";
 			if (!isTreeCheckbox) {
-				return [suggestItemToSelect.id];
+				const suggestItemToSelect = suggestData.find(item => item.optionId === filter.id);
+				return suggestItemToSelect ? [suggestItemToSelect.id] : [];
 			}
-			const suggestTreeItemsToSelect =
-				[suggestItemToSelect, ...getAffectedSuggestTreeItems(suggestItemToSelect, selectedTreeIds)];
-			return suggestTreeItemsToSelect.map(item => item.id);
+			const suggestTreeItemsToSelect = suggestData
+				.filter(item => item.key === filter.key && (item.optionId === filter.id || item.optionId.startsWith(`${filter.id}|`)))
+				.flatMap(item => [item, ...getAffectedSuggestTreeItems(item, selectedTreeIds)]);
+
+			return Array.from(new Set(suggestTreeItemsToSelect.map(item => item.id)));
 		});
 
 		suggestList.blockEvent();

@@ -1,7 +1,7 @@
-import appliedFiltersModel from "../../../../models/appliedFilters";
-import searchButtonModel from "../../../../services/gallery/searchButtonModel";
 import appliedFiltersList from "./appliedFiltersList";
 import searchSuggest from "./searchSuggest";
+import appliedFiltersModel from "../../../../models/appliedFilters";
+import searchButtonModel from "../../../../services/gallery/searchButtonModel";
 
 const ID_SEARCH_FIELD = `search-field-id-${webix.uid()}`;
 const ID_SEARCH_SUGGESTION = `search-suggestion-id-${webix.uid()}`;
@@ -43,14 +43,8 @@ function getConfig(config) {
 		css: "gtm-search filters-suggest",
 	};
 	const searchSuggestView = searchSuggest.getConfig(searchSuggestConfig);
-	searchSuggestView.body.template = (obj) => {
-		if (obj.name) {
-			return `${obj.name}: ${obj.value}`;
-		}
-		return `${obj.value}`;
-	};
 	searchSuggestView.filter = (obj, value) => {
-		const result = `${obj.id}: ${obj.value}`.toLowerCase().includes(value.toLowerCase());
+		const result = obj.value.toLowerCase().includes(value.toLowerCase());
 		return result;
 	};
 
@@ -65,6 +59,13 @@ function getConfig(config) {
 		width: 270,
 		suggest: searchSuggestView,
 		on: {
+			onItemClick() {
+				const suggest = $$(ID_SEARCH_SUGGESTION);
+				const inputNode = $$(ID_SEARCH_FIELD).getInputNode();
+				if (suggest && suggest.show) {
+					suggest.show(inputNode);
+				}
+			},
 			onAfterRender: () => {
 				const inputNode = $$(ID_SEARCH_FIELD).$view.getElementsByClassName("webix_el_box")[0];
 				const tooltipText = "Clear search value";

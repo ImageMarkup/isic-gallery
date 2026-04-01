@@ -1,6 +1,6 @@
+import appliedFiltersList from "./appliedFiltersList";
 import appliedFiltersModel from "../../../../models/appliedFilters";
 import searchButtonModel from "../../../../services/gallery/searchButtonModel";
-import appliedFiltersList from "./appliedFiltersList";
 
 const ID_SEARCH_FIELD = `search-field-id-${webix.uid()}`;
 const ID_DOWNLOAD_FILTERED_IMAGES_BUTTON = `download-filtered-images-button-id-${webix.uid()}`;

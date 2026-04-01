@@ -415,7 +415,7 @@ export default class WizzardUploaderView extends JetView {
 					cols: [
 						{
 							template: "<span> Electronic<br> signature <span style='color: red;'>*</span></span>",
-							// eslint-disable-next-line quote-props
+							// eslint-disable-next-line @stylistic/js/quote-props
 							css: {"padding-left": "5px;", "width": "130px !important"},
 							borderless: true,
 							autoheight: true,

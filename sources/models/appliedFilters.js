@@ -1,6 +1,7 @@
 import constants from "../constants";
-import util from "../utils/util";
 import state from "./state";
+import {TREE_MODELS_CONFIG} from "./treeModels";
+import util from "../utils/util";
 
 const appliedFilters = new webix.DataCollection();
 const appliedFilterBySearch = new webix.DataCollection();
@@ -372,17 +373,17 @@ function _groupFiltersByKey() {
 				break;
 			}
 			case constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX: {
-				let itemFromResult = result.find(comparedItem => comparedItem.key === `${item.key}_${item.diagnosisLevel}`, true);
+				let itemFromResult = result.find(comparedItem => comparedItem.key === `${item.key}_${item.nestingLevel}`, true);
 				if (!itemFromResult) {
 					itemFromResult = {
 						view: item.view,
-						key: `${item.key}_${item.diagnosisLevel}`,
+						key: `${item.key}_${item.nestingLevel}`,
 						datatype: item.datatype,
 						values: []
 					};
 					result.push(itemFromResult);
 				}
-				itemFromResult.values.push(_prepareOptionNameForApi(item.value, `${item.key}_${item.diagnosisLevel}`));
+				itemFromResult.values.push(_prepareOptionNameForApi(item.value, `${item.key}_${item.nestingLevel}`));
 				break;
 			}
 			default:
@@ -418,68 +419,52 @@ function _prepareCondition(filter) {
 
 // see conditions example in the bottom of this file
 function getConditionsForApi() {
-	const conditions = {};
-	conditions.operands = [];
-	const diagnosisRegex = /^diagnosis_\d$/;
-	const diagnosisFilters = _groupFiltersByKey().filter(f => diagnosisRegex.test(f.key));
-	const groupedFilters = _groupFiltersByKey()
-		.filter(groupedFilter => groupedFilter.key !== constants.COLLECTION_KEY
-			&& !diagnosisRegex.test(groupedFilter.key));
-	if (diagnosisFilters.length !== 0) {
-		conditions.operator = diagnosisFilters.length > 1 ? "OR" : "";
-		diagnosisFilters.forEach((d) => {
-			conditions.operands.push(..._prepareCondition(d));
-		});
-	}
-	let query = diagnosisFilters.length > 0 ? "(" : "";
-	conditions.operands.forEach((itemOfConditions, paramIndex) => {
-		if (paramIndex > 0) {
-			if (itemOfConditions.operator.toUpperCase() === "OR") {
-				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-					? ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
-					: ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
-			}
-			else {
-				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-					? ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}`
-					: ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"`;
-			}
-		}
-		else {
-			query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-				? `${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
-				: `${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
-		}
+	const allGroupedFilters = _groupFiltersByKey();
+
+	const treeFiltersByModel = Object.values(TREE_MODELS_CONFIG).reduce((acc, config) => {
+		acc[config.key] = allGroupedFilters.filter(f => config.regex.test(f.key));
+		return acc;
+	}, {});
+
+	const otherFilters = allGroupedFilters.filter(f => f.key !== constants.COLLECTION_KEY
+		&& !Object.values(TREE_MODELS_CONFIG).some(config => config.regex.test(f.key)));
+
+	const groupQueries = [
+		...Object.values(treeFiltersByModel)
+			.filter(filters => filters.length > 0)
+			.map(filters => buildGroupQuery(filters, "OR")),
+		// eslint-disable-next-line @stylistic/js/no-extra-parens
+		...(otherFilters.length ? [buildGroupQuery(otherFilters, "AND")] : [])
+	];
+
+	return groupQueries.join(" AND ");
+}
+
+function buildGroupQuery(filters, groupOperator) {
+	const conditions = filters.flatMap(f => _prepareCondition(f));
+	if (conditions.length === 0) return "";
+
+	const terms = conditions.map((cond) => {
+		const needsQuote = !(cond.type === "number" || cond.type === "boolean" || cond.value.includes("["));
+		const term = needsQuote ? `${cond.key}:"${cond.value}"` : `${cond.key}:${cond.value}`;
+		return `${cond.openingBracket}${term}${cond.closingBracket}`;
 	});
-	query += query === "" ? "" : ")";
-	conditions.operands.length = 0;
-	if (groupedFilters.length !== 0) {
-		query += query === "" ? "" : " AND ";
-		conditions.operator = groupedFilters.length > 1 ? "AND" : "";
-		groupedFilters.forEach((groupedFilter) => {
-			conditions.operands.push(..._prepareCondition(groupedFilter));
+
+	if (conditions.length === 1) return terms[0];
+
+	const operators = conditions
+		.slice(1)
+		.map((cond) => {
+			const op = cond.operator?.toUpperCase();
+			return op === "OR" ? op : groupOperator;
 		});
-	}
-	conditions.operands.forEach((itemOfConditions, paramIndex) => {
-		if (paramIndex > 0) {
-			if (itemOfConditions.operator.toUpperCase() === "OR") {
-				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-					? ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
-					: ` ${itemOfConditions.operator.toUpperCase()} ${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
-			}
-			else {
-				query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-					? ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}`
-					: ` ${conditions.operator.toUpperCase()} ${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"`;
-			}
-		}
-		else {
-			query += itemOfConditions.type === "number" || itemOfConditions.type === "boolean" || itemOfConditions.value.includes("[")
-				? `${itemOfConditions.openingBracket}${itemOfConditions.key}:${itemOfConditions.value}${itemOfConditions.closingBracket}`
-				: `${itemOfConditions.openingBracket}${itemOfConditions.key}:"${itemOfConditions.value}"${itemOfConditions.closingBracket}`;
-		}
-	});
-	return query;
+
+	const groupQuery = terms.reduce((acc, term, i) => {
+		if (i === 0) return term;
+		return `${acc} ${operators[i - 1]} ${term}`;
+	}, "");
+
+	return `(${groupQuery})`;
 }
 
 function count() {
@@ -592,7 +577,7 @@ function getFiltersChangeTreeItemData(data, item, datatype, remove) {
 	filtersChangedData.value = getTreeOptionValueById(item.id);
 	filtersChangedData.status = "equals";
 	filtersChangedData.treeCheckboxFlag = true;
-	filtersChangedData.diagnosisLevel = item.$level;
+	filtersChangedData.nestingLevel = item.$level;
 	filtersChangedData.optionId = item.id;
 	filtersChangedData.viewId = `treeTable-${data.id}`;
 	filtersChangedData.remove = remove;

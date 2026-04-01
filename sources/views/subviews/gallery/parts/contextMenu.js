@@ -9,7 +9,7 @@ function getConfig(id = `contextmenu-${webix.uid()}`, css) {
 	return {
 		...contextMenu,
 		id,
-		// eslint-disable-next-line no-extra-parens
+		// eslint-disable-next-line @stylistic/js/no-extra-parens
 		...(css && {css})
 	};
 }

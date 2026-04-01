@@ -1,6 +1,6 @@
+import datatables from "./studiesDataTables";
 import authService from "../../../../services/auth";
 import addUserWindow from "../windows/addAnnotator";
-import datatables from "./studiesDataTables";
 
 const ADD_USER_WINDOW_ID = "user-adding-window";
 

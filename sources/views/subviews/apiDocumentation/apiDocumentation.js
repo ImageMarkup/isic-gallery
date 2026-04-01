@@ -1,7 +1,6 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../../constants";
-import ApiDocumentationService from "../../../services/apiDocumentation/apiDocumentation";
 import annotationsDetailsHTML from "./htmlTemplate/annotations/annotationsDetails.html";
 import annotationsDownloadHTML from "./htmlTemplate/annotations/annotationsDownload.html";
 import annotationsListHTML from "./htmlTemplate/annotations/annotationsList.html";
@@ -44,6 +43,7 @@ import studiesDetailsHTML from "./htmlTemplate/studies/studiesDetails.html";
 import studiesListHTML from "./htmlTemplate/studies/studiesList.html";
 import superpixelsHTML from "./htmlTemplate/superpixels.html";
 import terminologyHTML from "./htmlTemplate/terminology.html";
+import ApiDocumentationService from "../../../services/apiDocumentation/apiDocumentation";
 
 export default class APIDocumentationPage extends JetView {
 	config() {

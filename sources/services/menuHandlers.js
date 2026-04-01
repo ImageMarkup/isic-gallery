@@ -1,7 +1,7 @@
 import constants from "../constants";
+import authService from "./auth";
 import state from "../models/state";
 import util from "../utils/util";
-import authService from "./auth";
 
 export default {
 	clickAbout() {
