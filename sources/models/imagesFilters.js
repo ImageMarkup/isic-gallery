@@ -8,7 +8,7 @@ const filtersIds = {
 	pinnedCollections: "collections",
 	lesionDiagnosis: TREE_MODELS_CONFIG.diagnosis.key,
 	approximateAge: "age_approx",
-	generalAnatomicSite: TREE_MODELS_CONFIG.anatom_site.key,
+	anatomicSite: TREE_MODELS_CONFIG.anatom_site.key,
 	specialAnatomicSite: "anatom_site_special",
 	clinicalSize: "clin_size_long_diam_mm",
 	typeDiagnosis: "diagnosis_confirm_type",
@@ -102,8 +102,8 @@ async function getFiltersDataValues() {
 					options: state.imagesTotalCounts[filtersIds.approximateAge]
 				},
 				{
-					id: filtersIds.generalAnatomicSite,
-					name: "General Anatomic Site",
+					id: filtersIds.anatomicSite,
+					name: "Anatomic Site",
 					type: constants.FILTER_ELEMENT_TYPE.TREE_CHECKBOX,
 					datatype: "string",
 					options: anatomyData
