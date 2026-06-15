@@ -150,6 +150,7 @@ export default {
 	URL_CHALLENGE_2019: "https://challenge2019.isic-archive.com/",
 	URL_CHALLENGE_2020: "https://challenge2020.isic-archive.com/",
 	URL_MULTIRATER: "https://dermannotator.org/multirater/",
+	URL_RCM_VIEWER: "https://rcm.dermannotator.org/",
 	URL_FORUM: "https://forum.isic-archive.com",
 	URL_DASHBOARD: "https://api.isic-archive.com/stats/",
 	URL_PARTICIPATE_BUTTON: "http://bit.ly/ISICpart",

@@ -306,6 +306,9 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 						${util.getIconBadge(lesionTimePointsCount, "Lesion time points count", lesion, true)}
 						${util.getIconBadge(lesionModalitiesCount, "Lesion modalities count", lesion, false)}
 					`;
+					const rcmViewerIcon = obj.metadata.clinical.rcm_case_id
+						? util.getIconButton("rcm-icon", true, "RCM Viewer", "gtm-rcm-viewer", "")
+						: "";
 					const diagnosisIcon = obj.hasAnnotations
 						? util.getIconButton("diagnosis-icon", true, "Multirater", "", "")
 						: "";
@@ -327,6 +330,7 @@ function getTopSlider(topPanelID, sliderID, prevButtonID, nextButtonID) {
 									${util.getIconButton("info-icon", true, "Metadata", "gtm-image-metadata", "")}
 									${util.getIconButton("batch-icon", true, "Download ZIP", "gtm-single-download", "")}
 									${util.getIconButton("layer-group", lesion, "Lesion", "gtm-lesion-viewer", lesionIconBadges)}
+									${rcmViewerIcon}
 									${diagnosisIcon}
 								</div>
 							</div>

@@ -273,6 +273,8 @@ export default class MultiLesionWindowService {
 			}
 		};
 
+		this._topSlider.on_click["rcm-icon"] = (_e, id) => util.openRcmViewer(this._topSlider.getItem(id));
+
 		this._topSlider.on_click["diagnosis-icon"] = (e, id) => {
 			const currentItem = this._topSlider.getItem(id);
 			const url = `${constants.URL_MULTIRATER}?id=${currentItem.isic_id}&sid=${currentItem.studyId}&uid=${authService.getToken()}`;

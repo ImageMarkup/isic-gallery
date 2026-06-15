@@ -608,6 +608,8 @@ class GalleryService {
 			}
 		};
 
+		this._imagesDataview.on_click["rcm-icon"] = (_e, id) => util.openRcmViewer(this._imagesDataview.getItem(id));
+
 		this._imagesDataview.on_click["diagnosis-icon"] = (e, id) => {
 			const currentItem = this._imagesDataview.getItem(id);
 			const url = `${constants.URL_MULTIRATER}?id=${currentItem.isic_id}&sid=${currentItem.studyId}&uid=${authService.getToken()}`;
