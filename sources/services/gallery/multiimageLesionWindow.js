@@ -389,16 +389,15 @@ export default class MultiLesionWindowService {
 	changeWindowMode() {
 		this._window.fullscreen = !this._window.fullscreen;
 
-		this._window.define("width", this._window.fullscreen ? window.innerWidth : this._window.config.initialWidth);
-		this._window.define("height", this._window.fullscreen ? window.innerHeight : this._window.config.initialHeight);
-		this._window.define("position", "center");
+		const width = this._window.fullscreen ? window.innerWidth : this._window.config.initialWidth;
+		const height = this._window.fullscreen ? window.innerHeight : this._window.config.initialHeight;
+		this._window.define({width, height, position: "center"});
 		this._window.resize();
 
 		const mode = this._window.fullscreen
 			? constants.FULL_SCREEN_STATES.WINDOWED
 			: constants.FULL_SCREEN_STATES.FULLSCREEN;
-		this._fullScreenButton.define("icon", mode.icon);
-		this._fullScreenButton.define("label", mode.label);
+		this._fullScreenButton.define({icon: mode.icon, label: mode.label});
 		this._fullScreenButton.refresh();
 	}
 
