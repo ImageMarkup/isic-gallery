@@ -22,7 +22,7 @@ function createConfig(firstName, lastName) {
 				{
 					view: "menu",
 					openAction: "click",
-					maxWidth: 150,
+					width: 150,
 					css: "logout-menu",
 					data: [
 						{
