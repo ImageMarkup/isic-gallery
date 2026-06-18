@@ -209,4 +209,15 @@ export default {
 		TREE_CHECKBOX: "treeCheckbox",
 		RANGE_CHECKBOX: "rangeCheckbox",
 	},
+
+	FULL_SCREEN_STATES: {
+		FULLSCREEN: {
+			icon: "fas fa-expand",
+			label: "Full Screen"
+		},
+		WINDOWED: {
+			icon: "fas fa-compress",
+			label: "Windowed"
+		},
+	}
 };

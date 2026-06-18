@@ -23,7 +23,6 @@ const ID_RIGHT_SLIDER = `slider-id-${webix.uid()}`;
 const ID_LEFT_IMAGE = `image-id-${webix.uid()}`;
 const ID_RIGHT_IMAGE = `image-id-${webix.uid()}`;
 const ID_BUTTON_FULL_SCREEN = `button-full-screen-id-${webix.uid()}`;
-const ID_BUTTON_WINDOWED = `button-windowed-id-${webix.uid()}`;
 const ID_SEARCH = `search-id-${webix.uid()}`;
 const ID_LEFT_ANCHOR_ICON = `left-anchor-icon-id-${webix.uid()}`;
 const ID_RIGHT_ANCHOR_ICON = `right-anchor-icon-id-${webix.uid()}`;
@@ -205,21 +204,10 @@ function getConfig(windowTitle, closeCallback) {
 				{
 					view: "button",
 					id: ID_BUTTON_FULL_SCREEN,
-					label: "Full Screen",
+					label: constants.FULL_SCREEN_STATES.FULLSCREEN.label,
 					css: "window-header-toolbar2__fullscreen-button",
 					type: "icon",
-					icon: "fas fa-expand",
-					width: 120,
-					height: 32,
-				},
-				{
-					view: "button",
-					id: ID_BUTTON_WINDOWED,
-					hidden: true,
-					label: "Windowed",
-					css: "window-header-toolbar2__fullscreen-button",
-					type: "icon",
-					icon: "fas fa-compress",
+					icon: constants.FULL_SCREEN_STATES.FULLSCREEN.icon,
 					width: 120,
 					height: 32,
 				},
@@ -611,10 +599,6 @@ function getFullScreenButtonID() {
 	return ID_BUTTON_FULL_SCREEN;
 }
 
-function getWindowedButtonID() {
-	return ID_BUTTON_WINDOWED;
-}
-
 function getWindowID() {
 	return ID_MULTI_IMAGE_LESION_WINDOW;
 }
@@ -672,7 +656,6 @@ export default {
 	getLeftImageID,
 	getRightImageID,
 	getFullScreenButtonID,
-	getWindowedButtonID,
 	getWindowID,
 	getSearchID,
 	getNextPageButtonID,
