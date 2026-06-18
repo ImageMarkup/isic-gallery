@@ -2,11 +2,6 @@ import constants from "../../../constants";
 import state from "../../../models/state";
 import authService from "../../../services/auth";
 
-function calcUserMenuWidth(str) {
-	const nameWidth = str && str.length ? str.length * 20 : 1;
-	return nameWidth <= 150 ? nameWidth : 150;
-}
-
 function createConfig(firstName, lastName) {
 	const name = `${firstName || ""} ${lastName || ""}`;
 	const cols = [
@@ -27,11 +22,12 @@ function createConfig(firstName, lastName) {
 				{
 					view: "menu",
 					openAction: "click",
-					width: calcUserMenuWidth(name),
+					maxWidth: 150,
+					css: "logout-menu",
 					data: [
 						{
 							id: "name",
-							value: `<span style="margin-left: -10px; width: ${calcUserMenuWidth(name)}px;" title="${firstName} ${lastName}"}>${name}</span>`,
+							value: `<div class="menu-option" title="${name}">${name}</div>`,
 							submenu: [
 								{id: "logout", value: "<span class='webix_icon fas fa-arrow-right'></span> Logout"}
 							]
