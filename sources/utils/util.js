@@ -567,15 +567,12 @@ function getNumericId(id) {
  */
 function openRcmViewer(currentItem) {
 	const {rcm_case_id, lesion_id, patient_id} = currentItem.metadata.clinical;
-	const rcmCaseId = getNumericId(rcm_case_id);
-	const lesionId = getNumericId(lesion_id);
-	const patientId = getNumericId(patient_id);
 
 	const params = new URLSearchParams({
-		rcm_case_id: rcmCaseId,
+		rcm_case_id: getNumericId(rcm_case_id),
 		isic_id: currentItem.isic_id,
-		...(lesionId && { lesion_id: lesionId }),
-		...(patientId && { patient_id: patientId }),
+		...(lesion_id && { lesion_id }),
+		...(patient_id && { patient_id }),
 	});
 	const url = `${constants.URL_RCM_VIEWER}?${params}`;
 	openInNewTab(url);
