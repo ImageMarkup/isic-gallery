@@ -466,19 +466,6 @@ class GalleryService {
 				const url = galleryImagesUrls.getCurrImagesUrl();
 				await this._updateImagesDataview(offset, limit, url);
 				galleryImagesUrls.setCurrImagesUrl(null);
-				const currentCount = state.imagesTotalCounts.passedFilters.currentCount
-					|| null;
-				const count = state.imagesTotalCounts.passedFilters.count;
-				const filtered = state.imagesTotalCounts.passedFilters.filtered;
-				this._updateContentHeaderTemplate({
-					rangeStart: offset + 1,
-					rangeFinish: currentCount && offset + limit >= currentCount
-						? currentCount
-						: offset + limit,
-					totalCount: count,
-					currentCount,
-					filtered
-				});
 			}
 			catch (error) {
 				logger.error(error);
@@ -607,6 +594,8 @@ class GalleryService {
 				}
 			}
 		};
+
+		this._imagesDataview.on_click["rcm-icon"] = (_e, id) => util.openRcmViewer(this._imagesDataview.getItem(id));
 
 		this._imagesDataview.on_click["diagnosis-icon"] = (e, id) => {
 			const currentItem = this._imagesDataview.getItem(id);
@@ -1340,10 +1329,9 @@ class GalleryService {
 					collections
 				});
 			state.imagesTotalCounts.passedFilters.currentCount = images.count;
-			const start = offset > 0 ? offset : 1;
+			const start = offset + 1;
 			if (filter || collections) {
 				state.imagesTotalCounts.passedFilters.filtered = true;
-				state.imagesTotalCounts.passedFilters.currentCount = images.count;
 				this._updateContentHeaderTemplate({
 					rangeStart: start,
 					rangeFinish: start + this._pager.data.size - 1,

@@ -41,7 +41,6 @@ export default class MultiLesionWindowService {
 		/** @type {webix.ui.template} */
 		this._rightImage = $$(multiImageLesionWindow.getRightImageID());
 		this._fullScreenButton = $$(multiImageLesionWindow.getFullScreenButtonID());
-		this._windowedButton = $$(multiImageLesionWindow.getWindowedButtonID());
 		/** @type {webix.ui.search} */
 		this._searchInput = $$(multiImageLesionWindow.getSearchID());
 		this._prevPageButton = $$(multiImageLesionWindow.getPrevPageButtonID());
@@ -52,7 +51,6 @@ export default class MultiLesionWindowService {
 		this._topPanel = $$(multiImageLesionWindow.getTopPanelID());
 		this._expandButton = $$(multiImageLesionWindow.getExpandButtonID());
 		this._collapseButton = $$(multiImageLesionWindow.getCollapseButtonID());
-		this._fullscreen = false;
 		this.init();
 	}
 
@@ -73,8 +71,6 @@ export default class MultiLesionWindowService {
 		});
 
 		this._fullScreenButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });
-		this._windowedButton.attachEvent("onItemClick", () => { this.changeWindowMode(); });
-
 		this._searchInput.on_click["lesionWindow__filter-search"] = this.searchImagesByQueryHandler.bind(this);
 		this._searchInput.on_click["lesionWindow__fa-times"] = () => {
 			if (this._searchInput.getValue() !== "") {
@@ -119,9 +115,6 @@ export default class MultiLesionWindowService {
 			this._rightSlider.clearAll();
 			this._topSlider.clearAll();
 			this._searchInput.setValue("");
-			if (this._window.config.fullscreen) {
-				this.changeWindowMode();
-			}
 		};
 		this._window.attachEvent("onHide", clearWindow);
 		this._window.attachEvent("onShow", this.searchImagesByQueryHandler.bind(this));
@@ -273,6 +266,8 @@ export default class MultiLesionWindowService {
 			}
 		};
 
+		this._topSlider.on_click["rcm-icon"] = (_e, id) => util.openRcmViewer(this._topSlider.getItem(id));
+
 		this._topSlider.on_click["diagnosis-icon"] = (e, id) => {
 			const currentItem = this._topSlider.getItem(id);
 			const url = `${constants.URL_MULTIRATER}?id=${currentItem.isic_id}&sid=${currentItem.studyId}&uid=${authService.getToken()}`;
@@ -392,24 +387,18 @@ export default class MultiLesionWindowService {
 	}
 
 	changeWindowMode() {
-		if (this._fullscreen) {
-			this._fullscreen = false;
-			this._window.define("width", this._window.config.initialWidth);
-			this._window.define("height", this._window.config.initialHeight);
-			this._window.define("position", "center");
-			this._fullScreenButton.show();
-			this._windowedButton.hide();
-		}
-		else {
-			this._fullscreen = true;
-			this._window.define("width", window.innerWidth);
-			this._window.define("height", window.innerHeight);
-			this._window.define("position", "center");
-			this._fullScreenButton.hide();
-			this._windowedButton.show();
-		}
+		this._window.fullscreen = !this._window.fullscreen;
 
-		this.searchImagesByQueryHandler();
+		const width = this._window.fullscreen ? window.innerWidth : this._window.config.initialWidth;
+		const height = this._window.fullscreen ? window.innerHeight : this._window.config.initialHeight;
+		this._window.define({width, height, position: "center"});
+		this._window.resize();
+
+		const mode = this._window.fullscreen
+			? constants.FULL_SCREEN_STATES.WINDOWED
+			: constants.FULL_SCREEN_STATES.FULLSCREEN;
+		this._fullScreenButton.define({icon: mode.icon, label: mode.label});
+		this._fullScreenButton.refresh();
 	}
 
 	async searchImagesByQueryHandler() {

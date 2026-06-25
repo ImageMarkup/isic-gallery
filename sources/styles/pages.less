@@ -1450,11 +1450,11 @@
   pointer-events: none;
 }
 .gallery-images-button {
-  height: 100%;
-  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   .box-sizing(border-box);
   border: 1px solid @lines-color;
   .border-radius(2px);
@@ -1469,17 +1469,15 @@
   .gallery-icon-use {
     width: 100%;
     height: 100%;
-  }
-
-  .gallery-icon-use {
-    fill: #6E7480;
+    color: @main-color-light;
+    fill: currentColor;
   }
 
   &:hover, &:focus {
     border-color: @btn-hover;
 
     .gallery-icon-use {
-      fill: @btn-hover;
+      color: @btn-hover;
     }
   }
 }
@@ -2255,5 +2253,15 @@
   color:rgba(0, 0, 0, 0.4);
   .webix_template .fas {
     margin: 0 50%;
+  }
+}
+
+.logout-menu {
+  .menu-option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
   }
 }

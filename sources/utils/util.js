@@ -521,7 +521,65 @@ function isMacintosh() {
 	return webix.env.isMac;
 }
 
+/**
+ * @param {string | undefined | null} id - Prefixed ID (e.g. "IRCM_1234567", "IP_2345678", "IL_3456789")
+ * @returns {string | undefined} 7-digit numeric ID (e.g. "1234567")
+ */
+function getNumericId(id) {
+	return id?.replace(/\D/g, '');
+}
+
+/**
+ * @typedef {Object} GalleryItem
+ * @property {string} isic_id
+ * @property {string} copyright_license
+ * @property {string} attribution
+ * @property {{ full: FileEntry, thumbnail_256: FileEntry }} files
+ * @property {{ acquisition: AcquisitionMeta, clinical: ClinicalMeta }} metadata
+ * @property {boolean} public
+ * @property {boolean} markCheckbox
+ * @property {number} id
+ */
+
+/**
+ * @typedef {Object} FileEntry
+ * @property {string} url
+ * @property {number} size
+ */
+
+/**
+ * @typedef {Object} AcquisitionMeta
+ * @property {number} pixels_x
+ * @property {number} pixels_y
+ * @property {string} image_manipulation
+ * @property {string} image_type
+ */
+
+/**
+ * @typedef {Object} ClinicalMeta
+ * @property {string} rcm_case_id
+ * @property {string | null} [lesion_id]
+ * @property {string | null} [patient_id]
+ */
+
+/**
+ * @param {GalleryItem} currentItem
+ */
+function openRcmViewer(currentItem) {
+	const {rcm_case_id, lesion_id, patient_id} = currentItem.metadata.clinical;
+
+	const params = new URLSearchParams({
+		rcm_case_id: getNumericId(rcm_case_id),
+		isic_id: currentItem.isic_id,
+		...(lesion_id && { lesion_id }),
+		...(patient_id && { patient_id }),
+	});
+	const url = `${constants.URL_RCM_VIEWER}?${params}`;
+	openInNewTab(url);
+}
+
 export default {
+	openRcmViewer,
 	openInNewTab,
 	openImageInNewTab,
 	downloadByLink,
