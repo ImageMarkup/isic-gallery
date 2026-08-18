@@ -107,9 +107,10 @@ class AjaxActions {
 			sourceParams.conditions = sourceParams.filter;
 			return this.searchImages(sourceParams);
 		}
-		const params = sourceParams ? {
-			limit: sourceParams.limit || 0
-		} : {};
+		const params = {
+			pin_sort: true,
+			...(sourceParams ? {limit: sourceParams.limit || 0} : {})
+		};
 		return this._ajaxGet(`${API_URL}images/`, params)
 			.then(result => this._parseData(result))
 			.catch(parseError);
@@ -135,7 +136,8 @@ class AjaxActions {
 		const params = {
 			limit: sourceParams.limit || 0,
 			query: conditions,
-			collections
+			collections,
+			pin_sort: true
 		};
 		return this._ajaxGet(`${API_URL}images/search/`, params)
 			.then(result => this._parseData(result))
@@ -183,9 +185,10 @@ class AjaxActions {
 	}
 
 	getAllImages(sourceParams, annotatedImages) {
-		const params = sourceParams ? {
-			limit: sourceParams.limit || 0
-		} : {limit: 0};
+		const params = {
+			limit: sourceParams?.limit || 0,
+			pin_sort: true
+		};
 
 		return this._ajaxGet(`${API_URL}images/`, params)
 			.then((result) => {
