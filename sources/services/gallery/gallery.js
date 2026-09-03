@@ -1260,7 +1260,6 @@ class GalleryService {
 		const appliedFiltersKeys = (appliedFilters || []).map(item => item.key);
 		return filtersData.getFiltersData(forceRebuild).then((data) => {
 			const elements = filtersFormElements.transformToFormFormat(data, appliedFiltersKeys);
-			this.clearFilterForm();
 			this._filtersForm = this._view.$scope.getFiltersForm();
 			webix.ui(elements, this._filtersForm);
 			const firstItemToScroll = filtersBySearchCollection.getItem(
